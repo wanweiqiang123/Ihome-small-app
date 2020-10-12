@@ -5,10 +5,11 @@
 		 
 	},
 	"pages": [
+		
 		{
-			"path": "pages/home/index/index",
+			"path": "pages/message/index/index",
 			"style": {
-				"navigationBarTitleText": "首页"
+				"navigationBarTitleText": "消息"
 			}
 		},
 		{
@@ -16,7 +17,21 @@
 			"style": {
 				"navigationBarTitleText": "我的"
 			}
+		},
+		{
+			"path": "pages/customer/index/index",
+			"style": {
+				"navigationBarTitleText": "客户"
+			}
+		},
+		{
+			"path": "pages/home/index/index",
+			"style": {
+				"navigationBarTitleText": "首页"
+			}
 		}
+		
+		 
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
@@ -35,6 +50,18 @@
 				"iconPath": "static/img/tabbar/home.png",
 				"selectedIconPath": "static/img/tabbar/homeactive.png",
 				"text": "首页"
+			},
+			{
+				"pagePath": "pages/customer/index/index",
+				"iconPath": "static/img/tabbar/guanzhu.png",
+				"selectedIconPath": "static/img/tabbar/guanzhuactive.png",
+				"text": "客户"
+			},
+			{
+				"pagePath": "pages/message/index/index",
+				"iconPath": "static/img/tabbar/news.png",
+				"selectedIconPath": "static/img/tabbar/newsactive.png",
+				"text": "消息"
 			},
 			{
 				"pagePath": "pages/personal/index/index",
