@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-09 14:38:31
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-12 14:21:13
+ * @LastEditTime: 2020-10-28 15:22:10
 -->
 <template>
   <view class="page">
@@ -25,7 +25,7 @@
       <u-swiper :list="list"></u-swiper>
     </view>
     <view class="navigation">
-      <view class="item" v-for="item in navigationList">
+      <view class="item" v-for="(item,index) in navigationList" :key="index">
         <view class="item-ico">
           <u-image
             class="item-ico-img"
@@ -40,7 +40,7 @@
     <view class="house">
       <view class="house-top"> 推荐房源 </view>
       <view class="house-list">
-        <view class="house-item" v-for="item in houseList">
+        <view class="house-item" v-for="(item,index) in houseList" :key="index">
           <view class="house-item-left">
             <u-image width="160rpx" height="120rpx" :src="item.url"></u-image>
           </view>

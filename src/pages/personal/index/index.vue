@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-09 15:20:30
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-12 17:32:40
+ * @LastEditTime: 2020-10-28 15:55:58
 -->
 <template>
   <view>
@@ -40,6 +40,9 @@
         <u-cell-item icon="setting" title="我的收藏"></u-cell-item>
       </u-cell-group>
     </view>
+    <view class="u-m-t-20">
+      <u-button type="primary" @click="ajax()">http请求</u-button>
+    </view>
   </view>
 </template>
 
@@ -52,7 +55,14 @@ export default {
     };
   },
   onLoad() {},
-  methods: {},
+  methods: {
+    async ajax() {
+      const res = await this.$u.get(
+        "http://api.polyihome.develop/sales-api/system/dict/getAll"
+      );
+      console.log(res);
+    },
+  },
 };
 </script>
 

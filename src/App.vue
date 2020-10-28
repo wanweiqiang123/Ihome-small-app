@@ -4,12 +4,13 @@
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-09 14:51:28
+ * @LastEditTime: 2020-10-28 15:40:56
 -->
 <script>
 	export default {
 		onLaunch: function() {
-			console.log('App Launch')
+			console.log('App Launch');
+			console.log('envVersion',__wxConfig.envVersion);
 		},
 		onShow: function() {
 			console.log('App Show')
