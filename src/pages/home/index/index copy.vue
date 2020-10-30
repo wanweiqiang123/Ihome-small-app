@@ -2,12 +2,12 @@
  * @Descripttion: 
  * @version: 
  * @Author: zyc
- * @Date: 2020-10-09 15:20:30
+ * @Date: 2020-10-09 14:38:31
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-30 11:53:50
+ * @LastEditTime: 2020-10-29 17:27:41
 -->
 <template>
-  <TabBarPage>  <view class="page">
+  <view class="page">
     <view class="top">
       <view class="position" @click="setItem"
         >广州市
@@ -68,7 +68,7 @@
         </view>
       </view>
     </view>
-  </view> </TabBarPage>
+  </view>
 </template>
 
 <script>
@@ -149,37 +149,13 @@ export default {
   onLoad() {},
   methods: {
     setItem() {
-      console.log('setItem')
-        let data = [
-            {
-              pagePath: "/pages/home/index/index",
-              iconPath: "home",
-              selectedIconPath: "home-fill",
-              text: "首页",
-              count: 2,
-              isDot: true,
-              customIcon: false,
-            },
-            {
-              pagePath: "/pages/customer/index/index",
-              iconPath: "photo",
-              selectedIconPath: "photo-fill",
-              text: "客户",
-              customIcon: false,
-            },
-
-            
-            {
-              pagePath: "/pages/personal/index/index",
-              iconPath: "account",
-              selectedIconPath: "account-fill",
-              text: "我的",
-              count: 25,
-              isDot: false,
-              customIcon: false,
-            },
-          ];
-          this.$store.commit("setTabBarList", data);
+      uni.setTabBarItem({
+        index: 2,
+        pagePath: "pages/personal/index/index",
+        iconPath: "static/img/tabbar/me.png",
+        selectedIconPath: "static/img/tabbar/meactive.png",
+        text: "我的",
+      });
     },
   },
 };

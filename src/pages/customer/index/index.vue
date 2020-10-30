@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-09 14:38:31
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-12 18:09:13
+ * @LastEditTime: 2020-10-30 11:42:44
 -->
 <template>
   <view class="page">
@@ -22,6 +22,7 @@
         class="wrap-item"
         v-for="(item, index) in resPageInfo.list"
         :key="index"
+        @click="goto()"
       >
         <view class="wrap-item-left">
           <u-image
@@ -100,6 +101,12 @@ export default {
         this.resPageInfo.list.push(element);
       }
     },
+    goto(item){
+      uni.redirectTo({
+        url:'/pages/customer/info/index'
+      })
+
+    }
   },
 };
 </script>
