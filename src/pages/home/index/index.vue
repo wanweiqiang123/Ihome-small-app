@@ -4,71 +4,73 @@
  * @Author: zyc
  * @Date: 2020-10-09 15:20:30
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-30 11:53:50
+ * @LastEditTime: 2020-11-02 17:42:50
 -->
 <template>
-  <TabBarPage>  <view class="page">
-    <view class="top">
-      <view class="position" @click="setItem"
-        >广州市
-        <u-icon name="iconfont uicon-arrow-down"></u-icon>
-      </view>
-      <u-input
-        class="search"
-        v-model="search"
-        :type="type"
-        :border="border"
-        placeholder="楼盘关键词"
-      />
-    </view>
-    <view class="wrap">
-      <u-swiper :list="list"></u-swiper>
-    </view>
-    <view class="navigation">
-      <view class="item" v-for="(item, index) in navigationList" :key="index">
-        <view class="item-ico">
-          <u-image
-            class="item-ico-img"
-            width="100rpx"
-            height="100rpx"
-            :src="item.url"
-          ></u-image>
+  <TabBarPage>
+    <view class="page">
+      <view class="top">
+        <view class="position" @click="setItem"
+          >广州市
+          <u-icon name="iconfont uicon-arrow-down"></u-icon>
         </view>
-        <view class="item-text"> {{ item.text }}</view>
+        <u-input
+          class="search"
+          v-model="search"
+          :type="type"
+          :border="border"
+          placeholder="楼盘关键词"
+        />
       </view>
-    </view>
-    <view class="house">
-      <view class="house-top"> 推荐房源 </view>
-      <view class="house-list">
-        <view
-          class="house-item"
-          v-for="(item, index) in houseList"
-          :key="index"
-        >
-          <view class="house-item-left">
-            <u-image width="160rpx" height="120rpx" :src="item.url"></u-image>
+      <view class="wrap">
+        <u-swiper :list="list"></u-swiper>
+      </view>
+      <view class="navigation">
+        <view class="item" v-for="(item, index) in navigationList" :key="index">
+          <view class="item-ico">
+            <u-image
+              class="item-ico-img"
+              width="100rpx"
+              height="100rpx"
+              :src="item.url"
+            ></u-image>
           </view>
-          <view class="house-item-right">
-            <view class="house-item-right-item-title">
-              {{ item.text }}
+          <view class="item-text"> {{ item.text }}</view>
+        </view>
+      </view>
+      <view class="house">
+        <view class="house-top"> 推荐房源 </view>
+        <view class="house-list">
+          <view
+            class="house-item"
+            v-for="(item, index) in houseList"
+            :key="index"
+          >
+            <view class="house-item-left">
+              <u-image width="160rpx" height="120rpx" :src="item.url"></u-image>
             </view>
-            <view class="house-item-right-item-position">
-              {{ item.position }}
-            </view>
-            <view class="house-item-right-item-price">
-              {{ item.price }}
-            </view>
-            <view class="house-item-right-item-rules">
-              <view class="house-item-right-item-rules-left"> 佣 </view>
-              <view class="house-item-right-item-rules-right">
-                {{ item.rules }}
+            <view class="house-item-right">
+              <view class="house-item-right-item-title">
+                {{ item.text }}
+              </view>
+              <view class="house-item-right-item-position">
+                {{ item.position }}
+              </view>
+              <view class="house-item-right-item-price">
+                {{ item.price }}
+              </view>
+              <view class="house-item-right-item-rules">
+                <view class="house-item-right-item-rules-left"> 佣 </view>
+                <view class="house-item-right-item-rules-right">
+                  {{ item.rules }}
+                </view>
               </view>
             </view>
           </view>
         </view>
       </view>
     </view>
-  </view> </TabBarPage>
+  </TabBarPage>
 </template>
 
 <script>
@@ -149,37 +151,9 @@ export default {
   onLoad() {},
   methods: {
     setItem() {
-      console.log('setItem')
-        let data = [
-            {
-              pagePath: "/pages/home/index/index",
-              iconPath: "home",
-              selectedIconPath: "home-fill",
-              text: "首页",
-              count: 2,
-              isDot: true,
-              customIcon: false,
-            },
-            {
-              pagePath: "/pages/customer/index/index",
-              iconPath: "photo",
-              selectedIconPath: "photo-fill",
-              text: "客户",
-              customIcon: false,
-            },
-
-            
-            {
-              pagePath: "/pages/personal/index/index",
-              iconPath: "account",
-              selectedIconPath: "account-fill",
-              text: "我的",
-              count: 25,
-              isDot: false,
-              customIcon: false,
-            },
-          ];
-          this.$store.commit("setTabBarList", data);
+      console.log("setItem");
+      this.$store.getters.tabBarList[1].count += 1;
+      this.$store.commit("setTabBarList", this.$store.getters.tabBarList);
     },
   },
 };

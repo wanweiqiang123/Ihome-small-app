@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-09 14:38:31
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-30 11:42:44
+ * @LastEditTime: 2020-11-02 15:17:11
 -->
 <template>
   <view class="page">
@@ -102,7 +102,7 @@ export default {
       }
     },
     goto(item){
-      uni.redirectTo({
+      uni.navigateTo({
         url:'/pages/customer/info/index'
       })
 

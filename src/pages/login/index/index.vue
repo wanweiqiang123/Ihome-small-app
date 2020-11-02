@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-29 15:58:19
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-30 11:50:32
+ * @LastEditTime: 2020-11-02 17:31:54
 -->
 <template>
   <view class="page">
@@ -53,6 +53,7 @@ export default {
   },
   methods: {
     submitUser() {
+      const that=this;
       this.$refs.uForm.validate((valid) => {
         if (valid) {
           console.log("验证通过");
@@ -77,8 +78,8 @@ export default {
               customIcon: false,
             },
           ];
-          this.$store.commit("setTabBarList", data);
-          uni.redirectTo({
+          that.$store.commit("setTabBarList", data);
+          uni.navigateTo({
             url: "/pages/home/index/index",
           });
         } else {
@@ -126,8 +127,8 @@ export default {
               customIcon: false,
             },
           ];
-          this.$store.commit("setTabBarList", data);
-          uni.redirectTo({
+          that.$store.commit("setTabBarList", data);
+          uni.navigateTo({
             url: "/pages/home/index/index",
           });
         } else {

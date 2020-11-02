@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-09 15:20:30
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-30 11:40:07
+ * @LastEditTime: 2020-11-02 17:40:27
 -->
 <template>
   <view>
@@ -26,17 +26,17 @@ export default {
   created() {
     console.log(this.$store.getters.tabBarList);
   },
-  data() {
-    return {
-      list: this.$store.getters.tabBarList,
-      current: 0,
-    };
+  computed: {
+    list() {
+      return this.$store.getters.tabBarList;
+    },
   },
+
   methods: {
     beforeSwitch(index) {
       console.log(index);
       let item = this.$store.getters.tabBarList[index];
-      uni.redirectTo({
+      uni.navigateTo({
         url: item.pagePath,
       });
     },
