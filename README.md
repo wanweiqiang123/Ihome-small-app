@@ -1,19 +1,7 @@
 # sales-small-app
 
-## Project setup
-```
-npm install
-```
+uni.redirectTo   跳转后左上角会出现首页图标
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+uni.navigateTo   跳转后左上角会出现返回图标
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+TabBarPage   需要自定义tabBar的，在页面的最外层加上此组件

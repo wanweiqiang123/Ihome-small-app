@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-09 15:20:30
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-02 17:40:27
+ * @LastEditTime: 2020-11-10 17:06:09
 -->
 <template>
   <view>
@@ -36,7 +36,7 @@ export default {
     beforeSwitch(index) {
       console.log(index);
       let item = this.$store.getters.tabBarList[index];
-      uni.navigateTo({
+      uni.redirectTo({
         url: item.pagePath,
       });
     },

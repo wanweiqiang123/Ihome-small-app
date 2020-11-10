@@ -4,117 +4,78 @@
  * @Author: zyc
  * @Date: 2020-10-30 14:22:01
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-02 17:32:51
+ * @LastEditTime: 2020-11-10 17:15:03
 -->
 <template>
   <view style="padding-top: 100px">
-    <view style="padding: 20px">
-      <!-- <button class='testbutton' open-type="getUserInfo" @getuserinfo="getuserinfo" withCredentials="true">
+    <view v-if="false">
+      <view style="padding: 20px">
+        <!-- <button class='testbutton' open-type="getUserInfo" @getuserinfo="getuserinfo" withCredentials="true">
         微信用户信息
       </button> -->
-      <button open-type="getUserInfo" lang="zh_CN" @getuserinfo="onGotUserInfo">
-        获取用户信息
-      </button>
-    </view>
-    <view style="padding: 20px">
-      <button
-        type="default"
-        open-type="getPhoneNumber"
-        @getphonenumber="getPhoneNumber"
-      >
-        微信手机号码
-      </button>
-    </view>
-    <view style="padding: 20px">
-      <u-button @click="login">账号密码登录</u-button>
+        <button
+          open-type="getUserInfo"
+          lang="zh_CN"
+          @getuserinfo="onGotUserInfo"
+        >
+          获取用户信息
+        </button>
+      </view>
+      <view style="padding: 20px">
+        <button
+          type="default"
+          open-type="getPhoneNumber"
+          @getphonenumber="getPhoneNumber"
+        >
+          微信手机号码
+        </button>
+      </view>
+      <view style="padding: 20px">
+        <u-button @click="login">账号密码登录</u-button>
+      </view>
     </view>
   </view>
 </template>
 
 <script>
+import storageTool from "../common/storageTool";
+import { getUserInfoApi } from "../api/index";
 export default {
   data() {
-    return {};
+    return {
+      token: null,
+    };
   },
-  onLoad: function () {
-    const that=this;
+  async onLoad() {
+    const that = this;
+    const token = storageTool.getToken();
+    uni.showLoading({
+      title: "加载中...",
+      mask: true,
+    });
+    try {
+      const userInfo = await getUserInfoApi({ hideMsg: true });
+      storageTool.setUserInfo(userInfo);
+    } catch (error) {
+      uni.redirectTo({
+        url: "/pages/login/index/index",
+      });
+    }
+
     uni.login({
       success: function (res) {
         console.log(res);
-        uni.getStorage({
-          key: "userType",
-          success(e) {
-            if (e.data) {
-              if (e.data == "1") {
-                let data = [
-                  {
-                    pagePath: "/pages/home/index/index",
-                    iconPath: "home",
-                    selectedIconPath: "home-fill",
-                    text: "首页",
-                    count: 2,
-                    isDot: true,
-                    customIcon: false,
-                  },
-
-                  {
-                    pagePath: "/pages/personal/index/index",
-                    iconPath: "account",
-                    selectedIconPath: "account-fill",
-                    text: "我的",
-                    count: 23,
-                    isDot: false,
-                    customIcon: false,
-                  },
-                ];
-                that.$store.commit("setTabBarList", data);
-                uni.redirectTo({
-                  url: "/pages/home/index/index",
-                });
-              } else if (e.data == "2") {
-                let data = [
-                  {
-                    pagePath: "/pages/home/index/index",
-                    iconPath: "home",
-                    selectedIconPath: "home-fill",
-                    text: "首页",
-                    count: 2,
-                    isDot: true,
-                    customIcon: false,
-                  },
-                  {
-                    pagePath: "/pages/customer/index/index",
-                    iconPath: "photo",
-                    selectedIconPath: "photo-fill",
-                    text: "客户",
-                    customIcon: false,
-                  },
-
-                  {
-                    pagePath: "/pages/message/index/index",
-                    iconPath: "play-right",
-                    selectedIconPath: "play-right-fill",
-                    text: "消息",
-                    customIcon: false,
-                  },
-                  {
-                    pagePath: "/pages/personal/index/index",
-                    iconPath: "account",
-                    selectedIconPath: "account-fill",
-                    text: "我的",
-                    count: 23,
-                    isDot: false,
-                    customIcon: false,
-                  },
-                ];
-                that.$store.commit("setTabBarList", data);
-                uni.redirectTo({
-                  url: "/pages/home/index/index",
-                });
-              }
-            }
-          },
-        });
+        if (token) {
+          
+          that.$store.commit("setTabBarList", that.$store.getters.tabBarList);
+          uni.redirectTo({
+            url: "/pages/home/index/index",
+          });
+        } else {
+          uni.redirectTo({
+            url: "/pages/login/index/index",
+          });
+        }
       },
     });
   },

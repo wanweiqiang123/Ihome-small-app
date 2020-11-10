@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-29 15:58:19
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-02 17:31:54
+ * @LastEditTime: 2020-11-10 17:16:15
 -->
 <template>
   <view class="page">
@@ -17,21 +17,24 @@
       </u-form-item>
     </u-form>
     <view style="padding: 20px">
-      <u-button type="primary" @click="submitUser">登录用户</u-button>
+      <u-button type="primary" @click="submitUser">登录</u-button>
     </view>
-    <view style="padding: 20px">
+    <!-- <view style="padding: 20px">
       <u-button type="success" @click="submitOther">登录案场</u-button>
-    </view>
+    </view> -->
   </view>
 </template>
 
 <script>
+import { loginApi, getUserInfoApi } from "../../../api/index";
+import storageTool from "../../../common/storageTool";
+
 export default {
   data() {
     return {
       form: {
-        account: "",
-        password: "",
+        account: "admin",
+        password: "123456",
       },
       rules: {
         account: [
@@ -51,35 +54,22 @@ export default {
       },
     };
   },
+
   methods: {
-    submitUser() {
-      const that=this;
-      this.$refs.uForm.validate((valid) => {
+    async submitUser() {
+      const that = this;
+      this.$refs.uForm.validate(async (valid) => {
         if (valid) {
-          console.log("验证通过");
-          let data = [
-            {
-              pagePath: "/pages/home/index/index",
-              iconPath: "home",
-              selectedIconPath: "home-fill",
-              text: "首页",
-              count: 2,
-              isDot: true,
-              customIcon: false,
-            },
+          const res = await loginApi({
+            username: that.form.account,
+            password: that.form.password,
+          });
+          storageTool.setToken(res.access_token);
+          const userInfo = await getUserInfoApi();
+          storageTool.setUserInfo(userInfo);
 
-            {
-              pagePath: "/pages/personal/index/index",
-              iconPath: "account",
-              selectedIconPath: "account-fill",
-              text: "我的",
-              count: 23,
-              isDot: false,
-              customIcon: false,
-            },
-          ];
-          that.$store.commit("setTabBarList", data);
-          uni.navigateTo({
+          that.$store.commit("setTabBarList", that.$store.getters.tabBarList);
+          uni.redirectTo({
             url: "/pages/home/index/index",
           });
         } else {
@@ -87,55 +77,21 @@ export default {
         }
       });
     },
-    submitOther() {
-      this.$refs.uForm.validate((valid) => {
-        if (valid) {
-          console.log("验证通过");
+    // submitOther() {
+    //   const that = this;
+    //   this.$refs.uForm.validate((valid) => {
+    //     if (valid) {
+    //       console.log("验证通过");
 
-          let data = [
-            {
-              pagePath: "/pages/home/index/index",
-              iconPath: "home",
-              selectedIconPath: "home-fill",
-              text: "首页",
-              count: 2,
-              isDot: true,
-              customIcon: false,
-            },
-            {
-              pagePath: "/pages/customer/index/index",
-              iconPath: "photo",
-              selectedIconPath: "photo-fill",
-              text: "客户",
-              customIcon: false,
-            },
-
-            {
-              pagePath: "/pages/message/index/index",
-              iconPath: "play-right",
-              selectedIconPath: "play-right-fill",
-              text: "消息",
-              customIcon: false,
-            },
-            {
-              pagePath: "/pages/personal/index/index",
-              iconPath: "account",
-              selectedIconPath: "account-fill",
-              text: "我的",
-              count: 23,
-              isDot: false,
-              customIcon: false,
-            },
-          ];
-          that.$store.commit("setTabBarList", data);
-          uni.navigateTo({
-            url: "/pages/home/index/index",
-          });
-        } else {
-          console.log("验证失败");
-        }
-      });
-    },
+    //       that.$store.commit("setTabBarList", data);
+    //       uni.redirectTo({
+    //         url: "/pages/home/index/index",
+    //       });
+    //     } else {
+    //       console.log("验证失败");
+    //     }
+    //   });
+    // },
   },
   // 必须要在onReady生命周期，因为onLoad生命周期组件可能尚未创建完毕
   onReady() {
