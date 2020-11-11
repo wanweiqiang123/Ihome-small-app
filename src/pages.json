@@ -30,7 +30,8 @@
 		{
 			"path": "pages/customer/index/index",
 			"style": {
-				"navigationBarTitleText": "客户"
+				"navigationBarTitleText": "客户",
+				"enablePullDownRefresh": true
 			}
 		},
 		{

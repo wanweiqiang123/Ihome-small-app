@@ -4,56 +4,59 @@
  * @Author: zyc
  * @Date: 2020-10-09 14:38:31
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-02 15:17:11
+ * @LastEditTime: 2020-11-11 16:50:16
 -->
 <template>
-  <view class="page">
-    <view class="top">
-      <u-input
-        class="top-search"
-        v-model="queryPageParameters.keyword"
-        type="text"
-        :border="true"
-        placeholder="客户姓名/手机"
-      />
-    </view>
-    <view class="wrap">
-      <view
-        class="wrap-item"
-        v-for="(item, index) in resPageInfo.list"
-        :key="index"
-        @click="goto()"
-      >
-        <view class="wrap-item-left">
-          <u-image
-            width="160rpx"
-            height="160rpx"
-            src="/static/img/head.jpg"
-          ></u-image>
-        </view>
-        <view class="wrap-item-right">
-          <view class="wrap-item-right-name">
-            {{ item.name }}{{ item.id }}
-          </view>
-          <view class="wrap-item-right-phone">
-            {{ item.phone }}
-          </view>
-          <view class="wrap-item-right-time">
-            {{ item.time }}
-          </view>
-        </view>
+  <TabBarPage>
+    <view class="page">
+      <view class="top">
+        <u-input
+          class="top-search"
+          v-model="queryPageParameters.keyword"
+          type="text"
+          :border="true"
+          placeholder="客户姓名/手机"
+        />
       </view>
-      <u-loadmore :status="status" />
+      <view class="wrap">
+        <view
+          class="wrap-item"
+          v-for="(item, index) in resPageInfo.list"
+          :key="index"
+          @click="goto()"
+        >
+          <view class="wrap-item-left">
+            <u-image
+              width="160rpx"
+              height="160rpx"
+              src="/static/img/head.jpg"
+            ></u-image>
+          </view>
+          <view class="wrap-item-right">
+            <view class="wrap-item-right-name">
+              {{ item.name }}{{ item.id }}
+            </view>
+            <view class="wrap-item-right-phone">
+              {{ item.phone }}
+            </view>
+            <view class="wrap-item-right-time">
+              {{ item.time }}
+            </view>
+          </view>
+        </view>
+        <u-loadmore :status="status" />
+      </view>
     </view>
-  </view>
+  </TabBarPage>
 </template>
 
 <script>
+import pagination from "../../../mixins/pagination";
 export default {
+  mixins: [pagination],
   data() {
     return {
       title: "这是客户页",
-
       status: "loadmore",
       list: [],
       page: 0,
@@ -70,6 +73,7 @@ export default {
     };
   },
   onReachBottom() {
+    console.log("上拉加载");
     if (this.total <= this.resPageInfo.list.length) return;
     this.status = "loading";
     this.queryPageParameters.pageNum = this.queryPageParameters.pageNum++;
@@ -83,30 +87,44 @@ export default {
       }
     }, 500);
   },
+  onPullDownRefresh() {
+    console.log("下拉刷新");
+    setTimeout(() => {
+      uni.stopPullDownRefresh();
+      this.resPageInfo.total = 0;
+      this.resPageInfo.list = [];
+      this.getData();
+    }, 500);
+  },
   onLoad() {
+    console.log(this.message);
     this.getData();
   },
   methods: {
-    getData() {
-      let count = this.resPageInfo.list.length + 20;
-      for (let index = 0; index < count; index++) {
-        const element = {
-          id: 1 + index,
-          title: "xxx" + index + this.resPageInfo.list.length + 1,
-          src: "/static/img/head.jpg",
-          name: "张大大",
-          phone: "15511111111",
-          time: "2020-10-12 16:54:21",
-        };
-        this.resPageInfo.list.push(element);
-      }
+    getListMixin() {
+      console.log("getListMixin");
     },
-    goto(item){
+    getData() {
+      setTimeout(() => {
+        let count = this.resPageInfo.list.length + 20;
+        for (let index = 0; index < count; index++) {
+          const element = {
+            id: 1 + index,
+            title: "xxx" + index + this.resPageInfo.list.length + 1,
+            src: "/static/img/head.jpg",
+            name: "张大大",
+            phone: "15511111111",
+            time: "2020-10-12 16:54:21",
+          };
+          this.resPageInfo.list.push(element);
+        }
+      }, 500);
+    },
+    goto(item) {
       uni.navigateTo({
-        url:'/pages/customer/info/index'
-      })
-
-    }
+        url: "/pages/customer/info/index",
+      });
+    },
   },
 };
 </script>

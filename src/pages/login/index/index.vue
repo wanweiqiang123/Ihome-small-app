@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-29 15:58:19
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-10 17:16:15
+ * @LastEditTime: 2020-11-11 16:04:55
 -->
 <template>
   <view class="page">
@@ -64,7 +64,7 @@ export default {
             username: that.form.account,
             password: that.form.password,
           });
-          storageTool.setToken(res.access_token);
+          storageTool.setToken(res.access_token,res.expires_in);
           const userInfo = await getUserInfoApi();
           storageTool.setUserInfo(userInfo);
 

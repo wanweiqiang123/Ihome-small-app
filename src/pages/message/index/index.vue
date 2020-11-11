@@ -4,41 +4,43 @@
  * @Author: zyc
  * @Date: 2020-10-12 16:23:34
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-12 17:52:36
+ * @LastEditTime: 2020-11-11 09:55:02
 -->
 <template>
-  <view class="page">
-    <view class="item">
-      <view class="item-left">
-        <u-image
-          width="80rpx"
-          height="80rpx"
-          src="/static/img/msg.jpg"
-        ></u-image>
+  <TabBarPage>
+    <view class="page">
+      <view class="item">
+        <view class="item-left">
+          <u-image
+            width="80rpx"
+            height="80rpx"
+            src="/static/img/msg.jpg"
+          ></u-image>
+        </view>
+        <view class="item-right"> 项目通知</view>
       </view>
-      <view class="item-right"> 项目通知</view>
-    </view>
-    <view class="item">
-      <view class="item-left">
-        <u-image
-          width="80rpx"
-          height="80rpx"
-          src="/static/img/msg2.jpg"
-        ></u-image>
+      <view class="item">
+        <view class="item-left">
+          <u-image
+            width="80rpx"
+            height="80rpx"
+            src="/static/img/msg2.jpg"
+          ></u-image>
+        </view>
+        <view class="item-right"> 报备带看提醒</view>
       </view>
-      <view class="item-right"> 报备带看提醒</view>
-    </view>
-    <view class="item">
-      <view class="item-left">
-        <u-image
-          width="80rpx"
-          height="80rpx"
-          src="/static/img/msg3.jpg"
-        ></u-image>
+      <view class="item">
+        <view class="item-left">
+          <u-image
+            width="80rpx"
+            height="80rpx"
+            src="/static/img/msg3.jpg"
+          ></u-image>
+        </view>
+        <view class="item-right"> 结佣提醒</view>
       </view>
-      <view class="item-right"> 结佣提醒</view>
     </view>
-  </view>
+  </TabBarPage>
 </template>
 
 <script>
