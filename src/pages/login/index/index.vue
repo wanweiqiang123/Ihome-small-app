@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-29 15:58:19
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-12 11:16:37
+ * @LastEditTime: 2020-11-12 14:51:48
 -->
 <template>
   <view class="page">
@@ -18,6 +18,9 @@
     </u-form>
     <view style="padding: 20px">
       <u-button type="primary" @click="submitUser">登录</u-button>
+    </view>
+      <view style="padding: 20px">
+      <u-button type="primary" @click="go('0')">列表</u-button>
     </view>
     <view style="padding: 20px">
       <u-button type="success" @click="go('1')">客户首页</u-button>
@@ -85,6 +88,11 @@ export default {
     },
     go(t) {
       switch (t) {
+         case "0":
+          uni.redirectTo({
+            url: "/pages/customer/index/index",
+          });
+          break;
         case "1":
           uni.redirectTo({
             url: "/customerPackage/homeTab/index",

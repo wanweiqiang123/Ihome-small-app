@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:53:18
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-12 11:01:36
+ * @LastEditTime: 2020-11-12 15:34:12
 -->
 <template>
   <view>
@@ -14,7 +14,7 @@
     <!-- 与包裹页面所有内容的元素u-page同级，且在它的下方 -->
     <u-tabbar
       v-model="current"
-      :list="list"
+      :list="tablePage"
       :before-switch="beforeSwitch"
     ></u-tabbar>
   </view>
@@ -24,9 +24,9 @@
 export default {
   name: "CustomerTabBar",
   created() {},
-  computed: {
-    list() {
-      let data = [
+  data() {
+    return {
+      tablePage: [
         {
           pagePath: "/customerPackage/homeTab/index",
           iconPath: "home",
@@ -43,14 +43,13 @@ export default {
           text: "个人中心",
           customIcon: false,
         },
-      ];
-      return data;
-    },
+      ],
+    };
   },
 
   methods: {
     beforeSwitch(index) {
-      let item = this.$store.getters.tabBarList[index];
+      let item = this.tablePage[index];
       uni.redirectTo({
         url: item.pagePath,
       });

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-09 15:20:30
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-10 17:06:09
+ * @LastEditTime: 2020-11-12 15:14:54
 -->
 <template>
   <view>
@@ -24,7 +24,7 @@
 export default {
   name: "TabBarPage",
   created() {
-    console.log(this.$store.getters.tabBarList);
+    // console.log(this.$store.getters.tabBarList);
   },
   computed: {
     list() {
@@ -34,7 +34,7 @@ export default {
 
   methods: {
     beforeSwitch(index) {
-      console.log(index);
+      // console.log(index);
       let item = this.$store.getters.tabBarList[index];
       uni.redirectTo({
         url: item.pagePath,
