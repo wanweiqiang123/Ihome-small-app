@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:53:18
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-12 15:35:58
+ * @LastEditTime: 2020-11-12 15:45:56
 -->
 <template>
   <view>
@@ -21,43 +21,47 @@
 </template>
 
 <script>
+let tablePage = [
+  {
+    pagePath: "/staffPackage/homeTab/index",
+    iconPath: "home",
+    selectedIconPath: "home-fill",
+    text: "主页",
+    count: 2,
+    isDot: true,
+    customIcon: false,
+  },
+  {
+    pagePath: "/staffPackage/homeTab/index",
+    iconPath: "photo",
+    selectedIconPath: "photo-fill",
+    text: "报备汇总",
+    customIcon: false,
+  },
+  {
+    pagePath: "/staffPackage/homeTab/index",
+    iconPath: "account",
+    selectedIconPath: "account-fill",
+    text: "个人中心",
+    count: 23,
+    isDot: false,
+    customIcon: false,
+  },
+];
 export default {
   name: "StaffTabBar",
+  computed: {
+    tablePage() {
+      return tablePage;
+    },
+  },
   data() {
-    return {
-      tablePage: [
-        {
-          pagePath: "/staffPackage/homeTab/index",
-          iconPath: "home",
-          selectedIconPath: "home-fill",
-          text: "主页",
-          count: 2,
-          isDot: true,
-          customIcon: false,
-        },
-        {
-          pagePath: "/staffPackage/homeTab/index",
-          iconPath: "photo",
-          selectedIconPath: "photo-fill",
-          text: "报备汇总",
-          customIcon: false,
-        },
-        {
-          pagePath: "/staffPackage/homeTab/index",
-          iconPath: "account",
-          selectedIconPath: "account-fill",
-          text: "个人中心",
-          count: 23,
-          isDot: false,
-          customIcon: false,
-        },
-      ],
-    };
+    return {};
   },
   created() {},
   methods: {
     beforeSwitch(index) {
-      let item = this.tablePage[index];
+      let item = tablePage[index];
       uni.redirectTo({
         url: item.pagePath,
       });

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:53:18
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-12 15:34:12
+ * @LastEditTime: 2020-11-12 15:44:39
 -->
 <template>
   <view>
@@ -21,35 +21,36 @@
 </template>
 
 <script>
+let tablePage = [
+  {
+    pagePath: "/customerPackage/homeTab/index",
+    iconPath: "home",
+    selectedIconPath: "home-fill",
+    text: "我的购房优惠",
+    count: 2,
+    isDot: true,
+    customIcon: false,
+  },
+  {
+    pagePath: "/customerPackage/personalTab/index",
+    iconPath: "photo",
+    selectedIconPath: "photo-fill",
+    text: "个人中心",
+    customIcon: false,
+  },
+];
 export default {
   name: "CustomerTabBar",
   created() {},
-  data() {
-    return {
-      tablePage: [
-        {
-          pagePath: "/customerPackage/homeTab/index",
-          iconPath: "home",
-          selectedIconPath: "home-fill",
-          text: "我的购房优惠",
-          count: 2,
-          isDot: true,
-          customIcon: false,
-        },
-        {
-          pagePath: "/customerPackage/personalTab/index",
-          iconPath: "photo",
-          selectedIconPath: "photo-fill",
-          text: "个人中心",
-          customIcon: false,
-        },
-      ],
-    };
+  computed: {
+    tablePage() {
+      return tablePage;
+    },
   },
 
   methods: {
     beforeSwitch(index) {
-      let item = this.tablePage[index];
+      let item = tablePage[index];
       uni.redirectTo({
         url: item.pagePath,
       });
