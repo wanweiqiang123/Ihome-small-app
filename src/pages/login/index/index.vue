@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-29 15:58:19
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-11 16:04:55
+ * @LastEditTime: 2020-11-12 11:16:37
 -->
 <template>
   <view class="page">
@@ -19,9 +19,15 @@
     <view style="padding: 20px">
       <u-button type="primary" @click="submitUser">登录</u-button>
     </view>
-    <!-- <view style="padding: 20px">
-      <u-button type="success" @click="submitOther">登录案场</u-button>
-    </view> -->
+    <view style="padding: 20px">
+      <u-button type="success" @click="go('1')">客户首页</u-button>
+    </view>
+    <view style="padding: 20px">
+      <u-button type="success" @click="go('2')">中介首页</u-button>
+    </view>
+    <view style="padding: 20px">
+      <u-button type="success" @click="go('3')">员工首页</u-button>
+    </view>
   </view>
 </template>
 
@@ -64,34 +70,41 @@ export default {
             username: that.form.account,
             password: that.form.password,
           });
-          storageTool.setToken(res.access_token,res.expires_in);
+          storageTool.setToken(res.access_token, res.expires_in);
           const userInfo = await getUserInfoApi();
           storageTool.setUserInfo(userInfo);
 
-          that.$store.commit("setTabBarList", that.$store.getters.tabBarList);
-          uni.redirectTo({
-            url: "/pages/home/index/index",
-          });
+          // that.$store.commit("setTabBarList", that.$store.getters.tabBarList);
+          // uni.redirectTo({
+          //   url: "/pages/home/index/index",
+          // });
         } else {
           console.log("验证失败");
         }
       });
     },
-    // submitOther() {
-    //   const that = this;
-    //   this.$refs.uForm.validate((valid) => {
-    //     if (valid) {
-    //       console.log("验证通过");
+    go(t) {
+      switch (t) {
+        case "1":
+          uni.redirectTo({
+            url: "/customerPackage/homeTab/index",
+          });
+          break;
+        case "2":
+          uni.redirectTo({
+            url: "/intermediaryPackage/homeTab/index",
+          });
+          break;
+        case "3":
+          uni.redirectTo({
+            url: "/staffPackage/homeTab/index",
+          });
+          break;
 
-    //       that.$store.commit("setTabBarList", data);
-    //       uni.redirectTo({
-    //         url: "/pages/home/index/index",
-    //       });
-    //     } else {
-    //       console.log("验证失败");
-    //     }
-    //   });
-    // },
+        default:
+          break;
+      }
+    },
   },
   // 必须要在onReady生命周期，因为onLoad生命周期组件可能尚未创建完毕
   onReady() {

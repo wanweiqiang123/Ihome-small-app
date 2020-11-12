@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-30 11:22:08
+ * @LastEditTime: 2020-11-12 11:10:21
  */
 import Vue from 'vue'
 import App from './App'
@@ -23,9 +23,14 @@ App.mpType = 'app'
 //   console.log(err.message, err.stack);
 //   console.log(err, vm, info);
 // }
-import TabBarPage from './components/TabBarPage.vue'
-
-Vue.component('TabBarPage',TabBarPage)
+import TabBarPage from './components/TabBar/TabBarPage.vue'
+import CustomerTabBar from './components/TabBar/CustomerTabBar.vue'
+import IntermediaryTabBar from './components/TabBar/IntermediaryTabBar.vue'
+import StaffTabBar from './components/TabBar/StaffTabBar.vue'
+Vue.component('TabBarPage', TabBarPage);
+Vue.component('CustomerTabBar', CustomerTabBar);
+Vue.component('IntermediaryTabBar', IntermediaryTabBar);
+Vue.component('StaffTabBar', StaffTabBar);
 
 const app = new Vue({
   ...App,

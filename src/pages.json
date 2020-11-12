@@ -47,6 +47,47 @@
 			}
 		}
 	],
+	"subPackages": [
+		{
+			"root": "customerPackage",
+			"pages": [
+				{
+					"path": "homeTab/index",
+					"style": {
+						"navigationBarTitleText": "客户首页"
+					}
+				},
+				{
+					"path": "personalTab/index",
+					"style": {
+						"navigationBarTitleText": "客户个人中心"
+					}
+				}
+			]
+		},
+		{
+			"root": "intermediaryPackage",
+			"pages": [
+				{
+					"path": "homeTab/index",
+					"style": {
+						"navigationBarTitleText": "中介渠道首页"
+					}
+				}
+			]
+		},
+		{
+			"root": "staffPackage",
+			"pages": [
+				{
+					"path": "homeTab/index",
+					"style": {
+						"navigationBarTitleText": "员工案场首页"
+					}
+				}
+			]
+		}
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",

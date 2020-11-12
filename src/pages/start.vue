@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-30 14:22:01
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-10 17:15:03
+ * @LastEditTime: 2020-11-12 11:17:25
 -->
 <template>
   <view style="padding-top: 100px">
@@ -65,17 +65,20 @@ export default {
     uni.login({
       success: function (res) {
         console.log(res);
-        if (token) {
-          
-          that.$store.commit("setTabBarList", that.$store.getters.tabBarList);
-          uni.redirectTo({
-            url: "/pages/home/index/index",
-          });
-        } else {
-          uni.redirectTo({
-            url: "/pages/login/index/index",
-          });
-        }
+        uni.redirectTo({
+          url: "/pages/login/index/index",
+        });
+        // if (token) {
+
+        //   that.$store.commit("setTabBarList", that.$store.getters.tabBarList);
+        //   uni.redirectTo({
+        //     url: "/pages/home/index/index",
+        //   });
+        // } else {
+        //   uni.redirectTo({
+        //     url: "/pages/login/index/index",
+        //   });
+        // }
       },
     });
   },
