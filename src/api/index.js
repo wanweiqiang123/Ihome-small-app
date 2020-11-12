@@ -4,22 +4,10 @@
  * @Author: zyc
  * @Date: 2020-11-10 10:09:50
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-12 15:13:43
+ * @LastEditTime: 2020-11-12 17:01:25
  */
 
 import { getApi, postApi } from '../common/http.js';
-
-/**登录接口*/
-export async function loginApi(data = {}, option = {}) {
-    let url = '/sales-api/sales-oauth2/oauth/token?grant_type=password&client_id=sales-client-dev&client_secret=sales-dev&username=' + data.username + '&password=' + data.password;
-    return await postApi(url, data, option);
-}
-
-/**查询登录用户信息*/
-export async function getUserInfoApi(data = {}, option = {}) {
-    return await postApi('/sales-api/system/sessionUser/getUserInfo', data, option);
-}
-
 
 /**模拟分页数据*/
 export async function testPageApi(data = {
@@ -28,9 +16,18 @@ export async function testPageApi(data = {
 }, option = {}) {
     return await new Promise((resolve, reject) => {
         setTimeout(() => {
-            let total = 55;
+            let total = 25;
             let list = [];
-            for (let index = 0; index < data.pageSize; index++) {
+            let len;
+            let num = parseInt(total / data.pageSize + 0.99);
+            if (data.pageNum == num) {
+                len = 5;
+            } else if (data.pageNum > num) {
+                len = 0;
+            } else {
+                len = data.pageSize;
+            }
+            for (let index = 0; index < len; index++) {
                 const item = {
                     id: index - 9 + data.pageNum * data.pageSize,
                     name: '名称',
@@ -49,6 +46,22 @@ export async function testPageApi(data = {
 
     })
 }
+
+/**登录接口*/
+export async function loginApi(data = {}, option = {}) {
+    let url = '/sales-api/sales-oauth2/oauth/token?grant_type=password&client_id=sales-client-dev&client_secret=sales-dev&username=' + data.username + '&password=' + data.password;
+    return await postApi(url, data, option);
+}
+
+/**查询登录用户信息*/
+export async function getUserInfoApi(data = {}, option = {}) {
+    return await postApi('/sales-api/system/sessionUser/getUserInfo', data, option);
+}
+
+
+
+
+
 
 
 

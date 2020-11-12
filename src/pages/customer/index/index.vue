@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-09 14:38:31
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-12 15:38:50
+ * @LastEditTime: 2020-11-12 16:56:47
 -->
 <template>
   <TabBarPage>
@@ -44,7 +44,7 @@
             </view>
           </view>
         </view>
-        <u-loadmore :status="status" />
+        <u-loadmore :status="loadingStatus" />
       </view>
     </view>
   </TabBarPage>
@@ -57,44 +57,16 @@ export default {
   mixins: [pagination],
   data() {
     return {
-      title: "这是客户页",
-      status: "loadmore",
+      // loadingStatus: "loadmore",
+      // tableTotal: null,
+      // tablePage: [],
       queryPageParameters: {
-        pageNum: 1,
-        pageSize: 10,
-        keyword: null,
+        // pageNum: 1,
+        // pageSize: 10,
       },
-      tableTotal: null,
-      tablePage: [],
     };
   },
 
-  onReachBottom() {
-    console.log("上拉加载");
-    this.queryPageParameters.pageNum++;
-    this.getListMixin();
-    // if (this.total <= this.resPageInfo.list.length) return;
-    // this.status = "loading";
-    // this.queryPageParameters.pageNum = this.queryPageParameters.pageNum++;
-    // setTimeout(() => {
-    //   this.getData();
-
-    //   if (this.total <= this.resPageInfo.list.length) {
-    //     this.status = "nomore";
-    //   } else {
-    //     this.status = "loading";
-    //   }
-    // }, 500);
-  },
-  onPullDownRefresh() {
-    console.log("下拉刷新");
-    // setTimeout(() => {
-    //   uni.stopPullDownRefresh();
-    //   this.resPageInfo.total = 0;
-    //   this.resPageInfo.list = [];
-    //   this.getData();
-    // }, 500);
-  },
   onLoad() {},
   async created() {
     this.getListMixin();
@@ -102,14 +74,8 @@ export default {
 
   methods: {
     async getListMixin() {
-      let { total, list } = await testPageApi(this.queryPageParameters);
-      this.tableTotal = total;
-      list.forEach((element) => {
-        this.tablePage.push(element);
-      });
-      console.log(this.tableTotal, this.tablePage);
+      this.setPageDataMixin(await testPageApi(this.queryPageParameters));
     },
-
     goto(item) {
       uni.navigateTo({
         url: "/pages/customer/info/index",
