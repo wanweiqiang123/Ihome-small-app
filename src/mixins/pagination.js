@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-11 16:41:45
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-12 17:00:00
+ * @LastEditTime: 2020-11-13 15:06:13
  */
 export default {
     data() {
@@ -38,6 +38,17 @@ export default {
             } else {
                 this.loadingStatus = "loading";
             }
+        },
+        /**初始化数据，重置初始化数据
+         * @param {*}
+         * @return {*}
+         */
+        initMIxin() {
+            this.queryPageParameters.pageNum = 1;
+            this.status = "loading";
+            this.tableTotal = null;
+            this.tablePage = [];
+            this.getListMixin();
         }
     },
     /**上拉加载
@@ -55,10 +66,37 @@ export default {
      * @return {*}
      */
     onPullDownRefresh() {
-        this.queryPageParameters.pageNum = 1;
-        this.status = "loading";
-        this.tableTotal = null;
-        this.tablePage = [];
-        this.getListMixin();
+        this.initMIxin();
+    },
+    onShow() {
+        // console.log("onShow-mixin");
+        let refreshListData = getApp().globalData.refreshListData;
+        if (!refreshListData) {
+            return;
+        }
+        let { type, data } = refreshListData;
+        if (type == 'add') {
+            this.tablePage.unshift(data);
+        } else if (type == 'update') {
+            let i = null;
+            for (let index = 0; index < this.tablePage.length; index++) {
+                const element = this.tablePage[index];
+                if (element.id == data.id) {
+                    i = index;
+                    break;
+                }
+            }
+            if (i !== null) {
+                Object.assign(this.tablePage[i], data);//更新数据
+                // this.$set(this.tablePage, i, resetData);
+            }
+
+        } else if (type == 'init') {
+            this.initMIxin();
+        }
+        else {
+            console.error('未指定type值')
+        }
+        getApp().globalData.refreshListData = null;
     },
 }
