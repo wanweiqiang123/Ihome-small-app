@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-13 14:38:41
+ * @LastEditTime: 2020-11-13 17:10:43
 -->
 <template>
   <StaffTabBar>
@@ -21,8 +21,9 @@
             >
               <u-grid-item
                 v-for="(item, index) in gridItem"
-                :index="index"
+                :index="item.path"
                 :key="index"
+                @click="handleGoto()"
               >
                 <u-icon
                   :name="item.icon"
@@ -79,7 +80,7 @@ export default {
       gridList: [
         {
           icon: "integral",
-          path: "",
+          path: "/staffPackage/reportConfirm/index",
           item: "报备确认",
         },
         {
@@ -141,8 +142,12 @@ export default {
       return newList;
     },
     handleChangeSwiper(e) {
-      console.log(e);
       this.current = e.detail.current;
+    },
+    handleGoto(url) {
+      uni.navigateTo({
+        url: url,
+      });
     },
   },
 };

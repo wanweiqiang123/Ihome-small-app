@@ -84,6 +84,12 @@
 					"style": {
 						"navigationBarTitleText": "员工案场首页"
 					}
+				},
+				{
+					"path": "reportConfirm/index",
+					"style": {
+						"navigationBarTitleText": "报备确认页"
+					}
 				}
 			]
 		}
