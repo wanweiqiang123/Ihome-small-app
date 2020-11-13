@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-12 11:10:21
+ * @LastEditTime: 2020-11-13 11:47:05
  */
 import Vue from 'vue'
 import App from './App'
@@ -12,8 +12,12 @@ import uView from "uview-ui";
 Vue.use(uView);
 Vue.config.productionTip = false
 import store from './store'
+import tool from './common/tool'
+import storageTool from './common/storageTool'
 //把vuex定义成全局组件
 Vue.prototype.$store = store;
+Vue.prototype.$tool = tool;
+Vue.prototype.$storageTool = storageTool;
 App.mpType = 'app'
 
 

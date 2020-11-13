@@ -4,12 +4,13 @@
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-30 09:38:11
+ * @LastEditTime: 2020-11-13 14:41:37
 -->
 <script>
 export default {
   globalData: {
-    userType:null,
+    refreshListData: null,//列表缓存页面刷新存放数据
+    userType: null,
     tabList: [
       {
         pagePath: "/pages/home/index/index",

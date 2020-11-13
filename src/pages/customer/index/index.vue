@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-09 14:38:31
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-12 16:56:47
+ * @LastEditTime: 2020-11-13 15:05:08
 -->
 <template>
   <TabBarPage>
@@ -23,7 +23,7 @@
           class="wrap-item"
           v-for="(item, index) in tablePage"
           :key="index"
-          @click="goto()"
+          @click="goto(item)"
         >
           <view class="wrap-item-left">
             <u-image
@@ -67,9 +67,16 @@ export default {
     };
   },
 
-  onLoad() {},
   async created() {
     this.getListMixin();
+  },
+
+  onLoad(option) {
+    console.log("onLoad");
+    console.log(option);
+  },
+  onShow(option) {
+    console.log("onShow");
   },
 
   methods: {
@@ -78,7 +85,7 @@ export default {
     },
     goto(item) {
       uni.navigateTo({
-        url: "/pages/customer/info/index",
+        url: "/pages/customer/info/index?id=" + item.id,
       });
     },
   },
