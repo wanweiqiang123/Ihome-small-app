@@ -62,6 +62,12 @@
 					"style": {
 						"navigationBarTitleText": "客户个人中心"
 					}
+				},
+				{
+					"path": "discountsInfo/index",
+					"style": {
+						"navigationBarTitleText": "购房优惠详情"
+					}
 				}
 			]
 		},

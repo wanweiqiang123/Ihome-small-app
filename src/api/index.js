@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-10 10:09:50
- * @LastEditors: zyc
- * @LastEditTime: 2020-11-12 17:01:25
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-11-16 10:48:24
  */
 
 import { getApi, postApi } from '../common/http.js';
@@ -58,6 +58,10 @@ export async function getUserInfoApi(data = {}, option = {}) {
     return await postApi('/sales-api/system/sessionUser/getUserInfo', data, option);
 }
 
+/**查询省市区信息*/
+export async function getAreaApi(data = {}, option = {}) {
+    return await getApi('/sales-api/system/area/getAll', data, option);
+}
 
 
 
