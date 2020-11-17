@@ -114,6 +114,12 @@
 					"style": {
 						"navigationBarTitleText": "报备确认页"
 					}
+				},
+				{
+					"path": "visitConfirm/index",
+					"style": {
+						"navigationBarTitleText": "报备确认页"
+					}
 				}
 			]
 		}

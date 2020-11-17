@@ -4,13 +4,16 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-13 17:10:43
+ * @LastEditTime: 2020-11-17 11:05:20
 -->
 <template>
   <StaffTabBar>
     <view>
       <view class="nav-grid">
-        <swiper @change="handleChangeSwiper">
+        <swiper
+          @change="handleChangeSwiper"
+          class="ih-grid-swiper"
+        >
           <swiper-item
             v-for="(gridItem, i) in handleFilterList(8, gridList)"
             :key="i"
@@ -27,7 +30,7 @@
               >
                 <u-icon
                   :name="item.icon"
-                  :size="46"
+                  :size="98"
                 ></u-icon>
                 <text class="grid-text">{{ item.item }}</text>
               </u-grid-item>
@@ -84,9 +87,9 @@ export default {
           item: "报备确认",
         },
         {
-          icon: "integral",
-          path: "",
-          item: "报备确认",
+          icon: "man-add",
+          path: "/staffPackage/visitConfirm/index",
+          item: "到访确认",
         },
         {
           icon: "integral",
@@ -157,16 +160,19 @@ export default {
 .nav-grid {
   padding: 0 20rpx;
   padding-bottom: 10rpx;
+  .ih-grid-swiper {
+    height: 370rpx;
+  }
   .indicator-dots {
     display: flex;
     justify-content: center;
     align-items: center;
     .indicator-dots-item {
       background-color: $u-tips-color;
-      height: 6px;
-      width: 6px;
-      border-radius: 10px;
-      margin: 0 3px;
+      height: 12rpx;
+      width: 12rpx;
+      border-radius: 20rpx;
+      margin: 0 6rpx;
       &.indicator-dots-active {
         background-color: $u-type-primary;
       }
