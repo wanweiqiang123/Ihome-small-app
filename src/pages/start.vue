@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-30 14:22:01
- * @LastEditors: zyc
- * @LastEditTime: 2020-11-12 11:17:25
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-11-16 11:11:06
 -->
 <template>
   <view style="padding-top: 100px">
@@ -69,7 +69,6 @@ export default {
           url: "/pages/login/index/index",
         });
         // if (token) {
-
         //   that.$store.commit("setTabBarList", that.$store.getters.tabBarList);
         //   uni.redirectTo({
         //     url: "/pages/home/index/index",
