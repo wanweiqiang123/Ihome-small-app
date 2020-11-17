@@ -4,13 +4,13 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-16 16:23:40
+ * @LastEditTime: 2020-11-17 09:24:52
 -->
 <template>
   <view>
     <CustomerTabBar>
       <u-card
-        v-for="item in data"
+        v-for="(item) in data"
         :key="item.id"
         class="cardMsg"
         :title="item.title"
@@ -33,7 +33,7 @@
             type="primary"
             size="default"
             @click="routerTo(item)"
-          >查看</u-button>
+          >{{item.button}}</u-button>
         </view>
       </u-card>
     </CustomerTabBar>
@@ -56,24 +56,28 @@ export default {
           subTitle: "五万抵十万优惠折扣",
           msg: "住宅-3栋-1904号",
           id: 1,
+          button: "分页组件",
         },
         {
           title: "保利紫山",
           subTitle: "五万抵十万优惠折扣",
           msg: "住宅-2栋-1998号",
           id: 2,
+          button: "生成优惠告知书",
         },
         {
           title: "保利天汇",
           subTitle: "五万抵十万优惠折扣",
           msg: "住宅-1栋-1xxx号",
           id: 3,
+          button: "生成退款申请书",
         },
         {
           title: "保利天汇",
           subTitle: "五万抵十万优惠折扣",
           msg: "住宅-1栋-1xxx号",
-          id: 3,
+          id: 4,
+          button: "购房优惠详情",
         },
       ],
       show: false,
@@ -82,10 +86,26 @@ export default {
   onLoad() {},
   methods: {
     routerTo(val) {
-      // uni.navigateTo({
-      //   url: `/customerPackage/discountsInfo/index?id=${val.id}`,
-      // });
-      this.$refs.search.open();
+      switch (val.id) {
+        case 1:
+          this.$refs.search.open();
+          break;
+        case 2:
+          uni.navigateTo({
+            url: `/customerPackage/createDiscounts/index?id=${val.id}`,
+          });
+          break;
+        case 3:
+          uni.navigateTo({
+            url: `/customerPackage/createRefund/index?id=${val.id}`,
+          });
+          break;
+        case 4:
+          uni.navigateTo({
+            url: `/customerPackage/discountsInfo/index?id=${val.id}`,
+          });
+          break;
+      }
     },
   },
 };

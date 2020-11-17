@@ -3,13 +3,13 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
- * @LastEditors: zyc
- * @LastEditTime: 2020-11-13 14:41:37
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-11-17 18:08:32
 -->
 <script>
 export default {
   globalData: {
-    refreshListData: null,//列表缓存页面刷新存放数据
+    refreshListData: null, //列表缓存页面刷新存放数据
     userType: null,
     tabList: [
       {
@@ -41,6 +41,11 @@ export default {
 
 <style>
 /*每个页面公共css */
+
+/* 下拉框隐藏默认图标 */
+.hide-icon >>> .u-input__right-icon {
+  display: none;
+}
 </style>
 <style lang="scss">
 /* 注意要写在第一行，同时给style标签加入lang="scss"属性 */

@@ -68,6 +68,18 @@
 					"style": {
 						"navigationBarTitleText": "购房优惠详情"
 					}
+				},
+				{
+					"path": "createDiscounts/index",
+					"style": {
+						"navigationBarTitleText": "优惠告知书"
+					}
+				},
+				{
+					"path": "createRefund/index",
+					"style": {
+						"navigationBarTitleText": "退款申请书"
+					}
 				}
 			]
 		},
