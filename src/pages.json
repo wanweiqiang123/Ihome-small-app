@@ -77,7 +77,25 @@
 				{
 					"path": "homeTab/index",
 					"style": {
-						"navigationBarTitleText": "中介渠道首页"
+						"navigationBarTitleText": "首页"
+					}
+				},
+				{
+					"path": "clientTab/index",
+					"style": {
+						"navigationBarTitleText": "我的客户"
+					}
+				},
+				{
+					"path": "messageTab/index",
+					"style": {
+						"navigationBarTitleText": "消息中心"
+					}
+				},
+				{
+					"path": "myTab/index",
+					"style": {
+						"navigationBarTitleText": "个人中心"
 					}
 				}
 			]

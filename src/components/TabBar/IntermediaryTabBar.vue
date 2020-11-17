@@ -32,22 +32,21 @@ let tablePage = [
     customIcon: false,
   },
   {
-    pagePath: "/intermediaryPackage/homeTab/index",
+    pagePath: "/intermediaryPackage/clientTab/index",
     iconPath: "photo",
     selectedIconPath: "photo-fill",
     text: "客户",
     customIcon: false,
   },
-
   {
-    pagePath: "/intermediaryPackage/homeTab/index",
+    pagePath: "/intermediaryPackage/messageTab/index",
     iconPath: "play-right",
     selectedIconPath: "play-right-fill",
     text: "消息",
     customIcon: false,
   },
   {
-    pagePath: "/intermediaryPackage/homeTab/index",
+    pagePath: "/intermediaryPackage/myTab/index",
     iconPath: "account",
     selectedIconPath: "account-fill",
     text: "我的",
