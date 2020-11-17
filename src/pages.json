@@ -118,13 +118,13 @@
 				{
 					"path": "visitConfirm/index",
 					"style": {
-						"navigationBarTitleText": "报备确认页"
+						"navigationBarTitleText": "到访确认页"
 					}
 				},
 				{
 					"path": "dealConfirm/index",
 					"style": {
-						"navigationBarTitleText": "报备确认页"
+						"navigationBarTitleText": "成交确认页"
 					}
 				}
 			]

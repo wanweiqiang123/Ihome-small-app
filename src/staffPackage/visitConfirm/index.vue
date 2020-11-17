@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-17 10:54:41
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-17 15:31:13
+ * @LastEditTime: 2020-11-17 17:56:33
 -->
 <template>
   <view>
@@ -128,22 +128,34 @@
         :border-bottom="false"
       >
         <u-form-item
-          label="姓名"
+          label="项目名称"
           prop="name"
           :border-bottom="false"
         >
           <u-input
             v-model="form.name"
             border
+            type="select"
           />
         </u-form-item>
         <u-form-item
-          label="简介"
+          label="项目周期"
           prop="intro"
           :border-bottom="false"
         >
           <u-input
             v-model="form.intro"
+            border
+          />
+        </u-form-item>
+        <u-form-item
+          label="渠道公司名称"
+          prop="intro"
+          :border-bottom="false"
+        >
+          <u-input
+            v-model="form.intro"
+            placeholder="渠道公司名称"
             border
           />
         </u-form-item>
