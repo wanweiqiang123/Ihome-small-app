@@ -65,9 +65,10 @@ export default {
     uni.login({
       success: function (res) {
         console.log(res);
-        uni.redirectTo({
-          url: "/pages/login/index/index",
-        });
+        // uni.redirectTo({
+        //   url: "/pages/login/index/index",
+        // });
+        storageTool.goHome();
         // if (token) {
         //   that.$store.commit("setTabBarList", that.$store.getters.tabBarList);
         //   uni.redirectTo({

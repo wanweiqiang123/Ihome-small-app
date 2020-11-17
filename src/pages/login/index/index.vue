@@ -4,11 +4,19 @@
  * @Author: zyc
  * @Date: 2020-10-29 15:58:19
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-12 14:51:48
+ * @LastEditTime: 2020-11-17 11:02:32
 -->
 <template>
   <view class="page">
+    <u-tabs
+      :list="list"
+      :is-scroll="false"
+      :current="current"
+      @change="change"
+    ></u-tabs>
+    <view style="margin: 40rpx"></view>
     <u-form :model="form" ref="uForm">
+      
       <u-form-item label="账号" prop="account">
         <u-input v-model="form.account" placeholder="账号" />
       </u-form-item>
@@ -16,21 +24,21 @@
         <u-input type="password" v-model="form.password" placeholder="密码" />
       </u-form-item>
     </u-form>
-    <view style="padding: 20px">
+    <view style="padding: 40rpx">
       <u-button type="primary" @click="submitUser">登录</u-button>
     </view>
-      <view style="padding: 20px">
-      <u-button type="primary" @click="go('0')">列表</u-button>
+    <view style="padding: 40rpx">
+      <u-button type="success" @click="go(-1)">列表demo</u-button>
+    </view>
+    <!-- <view style="padding: 20px">
+      <u-button type="success" @click="go(0)">客户首页</u-button>
     </view>
     <view style="padding: 20px">
-      <u-button type="success" @click="go('1')">客户首页</u-button>
+      <u-button type="success" @click="go(1)">中介首页</u-button>
     </view>
     <view style="padding: 20px">
-      <u-button type="success" @click="go('2')">中介首页</u-button>
-    </view>
-    <view style="padding: 20px">
-      <u-button type="success" @click="go('3')">员工首页</u-button>
-    </view>
+      <u-button type="success" @click="go(2)">员工首页</u-button>
+    </view> -->
   </view>
 </template>
 
@@ -45,6 +53,19 @@ export default {
         account: "admin",
         password: "123456",
       },
+      list: [
+        {
+          name: "客户登录",
+        },
+        {
+          name: "中介渠道",
+        },
+        {
+          name: "员工案场",
+          count: 5,
+        },
+      ],
+      current: storageTool.getLoginUserTypeLog() || 0,
       rules: {
         account: [
           {
@@ -65,6 +86,10 @@ export default {
   },
 
   methods: {
+    change(index) {
+      this.current = index;
+      storageTool.setLoginUserTypeLog(this.current);
+    },
     async submitUser() {
       const that = this;
       this.$refs.uForm.validate(async (valid) => {
@@ -76,6 +101,9 @@ export default {
           storageTool.setToken(res.access_token, res.expires_in);
           const userInfo = await getUserInfoApi();
           storageTool.setUserInfo(userInfo);
+          storageTool.goHome();
+
+          // this.go(this.current);
 
           // that.$store.commit("setTabBarList", that.$store.getters.tabBarList);
           // uni.redirectTo({
@@ -88,22 +116,22 @@ export default {
     },
     go(t) {
       switch (t) {
-         case "0":
+        case -1:
           uni.redirectTo({
             url: "/pages/customer/index/index",
           });
           break;
-        case "1":
+        case 0:
           uni.redirectTo({
             url: "/customerPackage/homeTab/index",
           });
           break;
-        case "2":
+        case 1:
           uni.redirectTo({
             url: "/intermediaryPackage/homeTab/index",
           });
           break;
-        case "3":
+        case 2:
           uni.redirectTo({
             url: "/staffPackage/homeTab/index",
           });

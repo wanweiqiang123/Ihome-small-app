@@ -4,11 +4,12 @@
  * @Author: zyc
  * @Date: 2020-11-10 15:30:00
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-11 16:15:12
+ * @LastEditTime: 2020-11-17 10:57:30
  */
 const tokenKey = 'token';//token的key
 const expiresInKey = 'expires_in';//token的key的过期时间
 const userInfoKey = 'userInfo';//用户信息的key
+const loginUserTypeLogKey = 'loginUserTypeLog';//登录类别记录
 
 const storageTool = {
     /**设置token*/
@@ -61,6 +62,46 @@ const storageTool = {
         let m = (date.getMinutes() < 10 ? '0' + (date.getMinutes()) : date.getMinutes());
         let s = (date.getSeconds() < 10 ? '0' + (date.getSeconds()) : date.getSeconds());
         return Y + '-' + M + '-' + D + ' ' + h + ':' + m + ':' + s
+    },
+    setLoginUserTypeLog(type) {
+        uni.setStorageSync(loginUserTypeLogKey, type);
+    },
+    getLoginUserTypeLog() {
+        return uni.getStorageSync(loginUserTypeLogKey);
+    },
+    removeLoginUserTypeLog() {
+        uni.removeStorageSync(loginUserTypeLogKey);
+    },
+    goHome() {
+        const token = this.getToken();
+        if (token) {
+            const loginUserTypeLog = this.getLoginUserTypeLog() || 0;
+            switch (loginUserTypeLog) {
+                case 0:
+                    uni.redirectTo({
+                        url: "/customerPackage/homeTab/index",
+                    });
+                    break;
+                case 1:
+                    uni.redirectTo({
+                        url: "/intermediaryPackage/homeTab/index",
+                    });
+                    break;
+                case 2:
+                    uni.redirectTo({
+                        url: "/staffPackage/homeTab/index",
+                    });
+                    break;
+
+                default:
+                    break;
+            }
+        } else {
+            uni.redirectTo({
+                url: "/pages/login/index/index",
+            });
+        }
+
     }
 }
 export default storageTool;
