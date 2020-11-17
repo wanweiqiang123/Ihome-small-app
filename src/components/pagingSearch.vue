@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 16:47:03
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-16 17:43:55
+ * @LastEditTime: 2020-11-17 17:35:28
 -->
 <template>
   <u-popup
@@ -13,6 +13,7 @@
     mode="top"
     height="100%"
     class="safe-area-inset-bottom"
+    duration="100"
   >
     <view class="box">
       <view class="search-title">
