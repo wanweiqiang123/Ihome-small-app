@@ -1,10 +1,10 @@
 <!--
  * @Descripttion: 
  * @version: 
- * @Author: zyc
+ * @Author: lsj
  * @Date: 2020-11-12 10:16:57
- * @LastEditors: zyc
- * @LastEditTime: 2020-11-12 11:11:37
+ * @LastEditors: lsj
+ * @LastEditTime: 2020-11-17 10:20:37
 -->
 <template>
   <IntermediaryTabBar>
