@@ -62,6 +62,12 @@
 					"style": {
 						"navigationBarTitleText": "客户个人中心"
 					}
+				},
+				{
+					"path": "discountsInfo/index",
+					"style": {
+						"navigationBarTitleText": "购房优惠详情"
+					}
 				}
 			]
 		},
@@ -71,7 +77,25 @@
 				{
 					"path": "homeTab/index",
 					"style": {
-						"navigationBarTitleText": "中介渠道首页"
+						"navigationBarTitleText": "首页"
+					}
+				},
+				{
+					"path": "clientTab/index",
+					"style": {
+						"navigationBarTitleText": "我的客户"
+					}
+				},
+				{
+					"path": "messageTab/index",
+					"style": {
+						"navigationBarTitleText": "消息中心"
+					}
+				},
+				{
+					"path": "myTab/index",
+					"style": {
+						"navigationBarTitleText": "个人中心"
 					}
 				}
 			]
@@ -83,6 +107,12 @@
 					"path": "homeTab/index",
 					"style": {
 						"navigationBarTitleText": "员工案场首页"
+					}
+				},
+				{
+					"path": "reportConfirm/index",
+					"style": {
+						"navigationBarTitleText": "报备确认页"
 					}
 				}
 			]
