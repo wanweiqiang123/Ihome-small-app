@@ -120,6 +120,12 @@
 					"style": {
 						"navigationBarTitleText": "报备确认页"
 					}
+				},
+				{
+					"path": "dealConfirm/index",
+					"style": {
+						"navigationBarTitleText": "报备确认页"
+					}
 				}
 			]
 		}

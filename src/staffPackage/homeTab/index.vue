@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-17 11:05:20
+ * @LastEditTime: 2020-11-17 15:45:01
 -->
 <template>
   <StaffTabBar>
@@ -92,9 +92,9 @@ export default {
           item: "到访确认",
         },
         {
-          icon: "integral",
-          path: "",
-          item: "报备确认",
+          icon: "rmb-circle",
+          path: "/staffPackage/dealConfirm/index",
+          item: "成交确认",
         },
         {
           icon: "integral",

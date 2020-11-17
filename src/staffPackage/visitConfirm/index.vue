@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-17 10:54:41
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-17 11:12:06
+ * @LastEditTime: 2020-11-17 15:31:13
 -->
 <template>
   <view>
@@ -119,62 +119,45 @@
         </view>
       </u-card>
     </view>
-    <!-- 弹出层 -->
-    <u-popup
-      v-model="show"
-      mode="right"
-      width="80%"
-      close-icon-pos="top-left"
-      closeable
-      safe-area-inset-bottom
-    >
-      <view class="popup-bady">
-        <u-form
-          :model="form"
-          ref="uForm"
-          label-position="top"
+    <!-- 弹出 -->
+    <PopupSearch v-model="show">
+      <u-form
+        :model="form"
+        ref="uForm"
+        label-position="top"
+        :border-bottom="false"
+      >
+        <u-form-item
+          label="姓名"
+          prop="name"
           :border-bottom="false"
         >
-          <u-form-item
-            label="姓名"
-            prop="name"
-            :border-bottom="false"
-          >
-            <u-input
-              v-model="form.name"
-              border
-            />
-          </u-form-item>
-          <u-form-item
-            label="简介"
-            prop="intro"
-            :border-bottom="false"
-          >
-            <u-input
-              v-model="form.intro"
-              border
-            />
-          </u-form-item>
-        </u-form>
-        <view class="popup-button">
-          <u-button
-            size="medium"
-            shape="circle"
-          >重置</u-button>
-          <u-button
-            size="medium"
-            type="primary"
-            shape="circle"
-          >确定</u-button>
-        </view>
-      </view>
-    </u-popup>
+          <u-input
+            v-model="form.name"
+            border
+          />
+        </u-form-item>
+        <u-form-item
+          label="简介"
+          prop="intro"
+          :border-bottom="false"
+        >
+          <u-input
+            v-model="form.intro"
+            border
+          />
+        </u-form-item>
+      </u-form>
+    </PopupSearch>
   </view>
 </template>
 
 <script>
+import PopupSearch from "../../components/PopupSearch/index.vue";
+
 export default {
   name: "report",
+  components: { PopupSearch },
   data() {
     return {
       keyword: null,
@@ -226,15 +209,6 @@ export default {
     display: flex;
     align-items: center;
     padding: 10rpx 12rpx;
-  }
-}
-.popup-bady {
-  padding: 0 30rpx;
-  padding-top: 80rpx;
-  .popup-button {
-    padding: 0 40rpx;
-    display: flex;
-    justify-content: space-between;
   }
 }
 </style>

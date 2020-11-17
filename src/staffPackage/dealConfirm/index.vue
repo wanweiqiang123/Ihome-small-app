@@ -1,10 +1,10 @@
 <!--
- * @Description: 报备确认页面
+ * @Description: 成交确认页面
  * @version: 
  * @Author: ywl
  * @Date: 2020-11-13 15:13:13
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-17 15:36:41
+ * @LastEditTime: 2020-11-17 15:43:19
 -->
 <template>
   <view>
@@ -52,12 +52,23 @@
             报备人电话：18761234521
             公司门店：广州居家房地产有限公司(居家置业店)
             报备时间：2020-08-25 16:40:12
+            报备确认时间：2020-08-25 16:40:12
+            是否有到访附件：是
+            是否有成交附件：是
+            认购楼盘：亚运村天成
+            认购栋座：19栋
+            认购房号：1902号
           </text>
         </view>
         <view
           slot="foot"
           class="ih-card-foot"
         >
+          <u-button
+            class="foot-btn"
+            size="mini"
+            type="primary"
+          >上传附件</u-button>
           <u-button
             size="mini"
             class="foot-btn"
@@ -66,7 +77,7 @@
             class="foot-btn"
             size="mini"
             type="success"
-          >有效</u-button>
+          >成交确认</u-button>
         </view>
       </u-card>
       <u-card
@@ -87,12 +98,23 @@
             报备人电话：18761234521
             公司门店：广州居家房地产有限公司(居家置业店)
             报备时间：2020-08-25 16:40:12
+            报备确认时间：2020-08-25 16:40:12
+            是否有到访附件：是
+            是否有成交附件：是
+            认购楼盘：亚运村天成
+            认购栋座：19栋
+            认购房号：1902号
           </text>
         </view>
         <view
           slot="foot"
           class="ih-card-foot"
         >
+          <u-button
+            class="foot-btn"
+            size="mini"
+            type="primary"
+          >上传附件</u-button>
           <u-button
             size="mini"
             class="foot-btn"
@@ -101,7 +123,7 @@
             class="foot-btn"
             size="mini"
             type="success"
-          >有效</u-button>
+          >成交确认</u-button>
         </view>
       </u-card>
     </view>
@@ -153,11 +175,7 @@ export default {
     return {
       keyword: null,
       list: [{ name: "市场化项目" }, { name: "非市场化项目" }],
-      tabList: [
-        { name: "报备未确认" },
-        { name: "报备有效" },
-        { name: "报备无效" },
-      ],
+      tabList: [{ name: "成交未确认" }, { name: "已成交" }, { name: "未成交" }],
       current: 0,
       show: false,
       form: {
