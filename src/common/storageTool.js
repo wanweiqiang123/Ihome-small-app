@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 15:30:00
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-20 14:55:55
+ * @LastEditTime: 2020-11-20 15:01:04
  */
 const tokenKey = 'token';//token的key
 const expiresInKey = 'expires_in';//token的key的过期时间
@@ -65,7 +65,6 @@ const storageTool = {
     },
     /**退出登陆*/
     loginOut() {
-        debugger
         this.removeToken();
         this.removeUserInfo();
         this.removeLoginUserTypeLog();
