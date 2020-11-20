@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 15:30:00
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-17 10:57:30
+ * @LastEditTime: 2020-11-20 14:55:55
  */
 const tokenKey = 'token';//token的key
 const expiresInKey = 'expires_in';//token的key的过期时间
@@ -63,6 +63,14 @@ const storageTool = {
         let s = (date.getSeconds() < 10 ? '0' + (date.getSeconds()) : date.getSeconds());
         return Y + '-' + M + '-' + D + ' ' + h + ':' + m + ':' + s
     },
+    /**退出登陆*/
+    loginOut() {
+        debugger
+        this.removeToken();
+        this.removeUserInfo();
+        this.removeLoginUserTypeLog();
+        this.goHome();
+    },
     setLoginUserTypeLog(type) {
         uni.setStorageSync(loginUserTypeLogKey, type);
     },
@@ -72,10 +80,11 @@ const storageTool = {
     removeLoginUserTypeLog() {
         uni.removeStorageSync(loginUserTypeLogKey);
     },
+    /**根据用户类别跳转首页，未登录情况跳转登录页面*/
     goHome() {
         const token = this.getToken();
         if (token) {
-            const loginUserTypeLog = this.getLoginUserTypeLog() || 0;
+            const loginUserTypeLog = this.getLoginUserTypeLog();
             switch (loginUserTypeLog) {
                 case 0:
                     uni.redirectTo({
@@ -94,6 +103,9 @@ const storageTool = {
                     break;
 
                 default:
+                    uni.redirectTo({
+                        url: "/pages/login/index/index",
+                    });
                     break;
             }
         } else {

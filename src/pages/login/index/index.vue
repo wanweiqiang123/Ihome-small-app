@@ -4,19 +4,12 @@
  * @Author: zyc
  * @Date: 2020-10-29 15:58:19
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-17 11:02:32
+ * @LastEditTime: 2020-11-20 14:55:07
 -->
 <template>
   <view class="page">
-    <u-tabs
-      :list="list"
-      :is-scroll="false"
-      :current="current"
-      @change="change"
-    ></u-tabs>
     <view style="margin: 40rpx"></view>
     <u-form :model="form" ref="uForm">
-      
       <u-form-item label="账号" prop="account">
         <u-input v-model="form.account" placeholder="账号" />
       </u-form-item>
@@ -28,17 +21,21 @@
       <u-button type="primary" @click="submitUser">登录</u-button>
     </view>
     <view style="padding: 40rpx">
-      <u-button type="success" @click="go(-1)">列表demo</u-button>
+      <u-button type="success" @click="go()">列表demo</u-button>
     </view>
-    <!-- <view style="padding: 20px">
-      <u-button type="success" @click="go(0)">客户首页</u-button>
-    </view>
-    <view style="padding: 20px">
-      <u-button type="success" @click="go(1)">中介首页</u-button>
-    </view>
-    <view style="padding: 20px">
-      <u-button type="success" @click="go(2)">员工首页</u-button>
-    </view> -->
+    <u-popup width="80%" v-model="show" mode="center">
+      <view class="login-select-select login-select-select-title">
+        请选择登陆用户</view
+      >
+      <view
+        class="login-select-select"
+        v-for="(item, index) in list"
+        :key="index"
+        @click="gotoPage(item, index)"
+      >
+        {{ item.name }}</view
+      >
+    </u-popup>
   </view>
 </template>
 
@@ -49,6 +46,7 @@ import storageTool from "../../../common/storageTool";
 export default {
   data() {
     return {
+      show: false,
       form: {
         account: "admin",
         password: "123456",
@@ -65,20 +63,20 @@ export default {
           count: 5,
         },
       ],
-      current: storageTool.getLoginUserTypeLog() || 0,
+
       rules: {
         account: [
           {
             required: true,
             message: "请输入账号",
-            trigger: ["blur", "change"],
+            trigger: ["change"],
           },
         ],
         password: [
           {
             required: true,
             message: "请输入密码",
-            trigger: ["blur", "change"],
+            trigger: ["change"],
           },
         ],
       },
@@ -101,45 +99,23 @@ export default {
           storageTool.setToken(res.access_token, res.expires_in);
           const userInfo = await getUserInfoApi();
           storageTool.setUserInfo(userInfo);
-          storageTool.goHome();
-
-          // this.go(this.current);
-
-          // that.$store.commit("setTabBarList", that.$store.getters.tabBarList);
-          // uni.redirectTo({
-          //   url: "/pages/home/index/index",
-          // });
+          this.show = true;
+          // if (this.list.length == 1) {
+          //   storageTool.goHome();
+          // }
         } else {
           console.log("验证失败");
         }
       });
     },
-    go(t) {
-      switch (t) {
-        case -1:
-          uni.redirectTo({
-            url: "/pages/customer/index/index",
-          });
-          break;
-        case 0:
-          uni.redirectTo({
-            url: "/customerPackage/homeTab/index",
-          });
-          break;
-        case 1:
-          uni.redirectTo({
-            url: "/intermediaryPackage/homeTab/index",
-          });
-          break;
-        case 2:
-          uni.redirectTo({
-            url: "/staffPackage/homeTab/index",
-          });
-          break;
-
-        default:
-          break;
-      }
+    gotoPage(item, index) {
+      storageTool.setLoginUserTypeLog(index);
+      storageTool.goHome();
+    },
+    go() {
+      uni.redirectTo({
+        url: "/pages/customer/index/index",
+      });
     },
   },
   // 必须要在onReady生命周期，因为onLoad生命周期组件可能尚未创建完毕
@@ -155,5 +131,17 @@ export default {
 <style lang="scss">
 .page {
   padding: 0 20rpx 20rpx 20rpx;
+}
+
+.login-select-select {
+  line-height: 100rpx;
+  border-bottom: 1px solid #eeeeee;
+  text-align: center;
+  font-weight: 500;
+}
+.login-select-select-title {
+  font-weight: 600 !important;
+  background: #409eff;
+  color: #fff;
 }
 </style>
