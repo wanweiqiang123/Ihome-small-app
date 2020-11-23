@@ -35,8 +35,8 @@
         <u-swiper :list="list" height="290rpx"></u-swiper>
       </view>
       <view>
-        <u-grid :col="4" :border="false">
-          <u-grid-item>
+        <u-grid :col="4" :border="false" @click="goToItem">
+          <u-grid-item index="projectList">
             <u-icon name="hourglass" :size="66"></u-icon>
             <view class="grid-text">新房楼盘</view>
           </u-grid-item>
@@ -57,17 +57,19 @@
       <u-gap height="20" bg-color="#f2f2f2"></u-gap>
       <view class="content-wrapper">
         <view class="title">推荐房源</view>
-        <view class="content" v-for="item in [1, 2, 3, 4]" :key="item">
+        <view class="content" v-for="item in [1, 2, 3, 4, 5, 6, 7, 8, 9]" :key="item">
           <view class="content-left">
             <u-image width="200rpx" height="200rpx" src="https://cdn.uviewui.com/uview/swiper/1.jpg"></u-image>
           </view>
           <view class="content-right">
             <view class="title-wrapper">远洋招商保利东湾经纪渠道</view>
-            <u-tag
-              text="天河区"
-              size="mini"
-              :closeable="false"
-              type="info" />
+            <view>
+              <u-tag
+                text="天河区"
+                size="mini"
+                :closeable="false"
+                type="info" />
+            </view>
             <view class="price-wrapper">
               <span class="price">均价23000</span>
               <span class="unit">元/m<span class="two">2</span></span>
@@ -127,12 +129,19 @@
     methods: {
       locationCallback(index) {
         this.queryPageParameters.location = this.locationList[index].text;
+      },
+
+      goToItem(index) {
+        // console.log(index);
+        uni.navigateTo({
+          url: `/intermediaryPackage/homeTab/pages/${index}`,
+        })
       }
     },
   };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   .home-page-wrapper {
     width: 100%;
     box-sizing: border-box;

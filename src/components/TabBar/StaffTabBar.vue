@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:53:18
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-13 15:15:38
+ * @LastEditTime: 2020-11-23 14:05:48
 -->
 <template>
   <view>
@@ -39,7 +39,7 @@ let tablePage = [
     customIcon: false,
   },
   {
-    pagePath: "/staffPackage/homeTab/index",
+    pagePath: "/staffPackage/personalTab/index",
     iconPath: "account",
     selectedIconPath: "account-fill",
     text: "个人中心",
