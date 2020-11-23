@@ -4,10 +4,10 @@
  * @Author: ywl
  * @Date: 2020-11-13 15:13:13
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-17 18:01:07
+ * @LastEditTime: 2020-11-23 11:09:45
 -->
 <template>
-  <view>
+  <view class="container safe-area-inset-bottom">
     <view class="report-head">
       <u-subsection
         :list="list"
@@ -30,6 +30,7 @@
         :is-scroll="false"
         :current="current"
         :bold="false"
+        duration="0.2"
         @change="tabChange"
       ></u-tabs>
     </view>
@@ -179,7 +180,7 @@
 import PopupSearch from "../../components/PopupSearch/index.vue";
 
 export default {
-  name: "report",
+  name: "deal",
   components: {
     PopupSearch,
   },
@@ -211,6 +212,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.container {
+  background: $u-bg-color;
+}
 .card-list {
   padding-top: 220rpx;
   padding-bottom: 10rpx;
@@ -245,6 +249,15 @@ export default {
     padding: 0 40rpx;
     display: flex;
     justify-content: space-between;
+  }
+}
+</style>
+<style lang="scss">
+.ih-card {
+  &:last-child {
+    .u-card {
+      margin-bottom: 0 !important;
+    }
   }
 }
 </style>

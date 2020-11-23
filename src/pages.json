@@ -93,6 +93,12 @@
 					}
 				},
 				{
+					"path": "homeTab/pages/projectList",
+					"style": {
+						"navigationBarTitleText": "楼盘列表"
+					}
+				},
+				{
 					"path": "clientTab/index",
 					"style": {
 						"navigationBarTitleText": "我的客户"
@@ -137,6 +143,12 @@
 					"path": "dealConfirm/index",
 					"style": {
 						"navigationBarTitleText": "成交确认页"
+					}
+				},
+				{
+					"path": "clientReport/index",
+					"style": {
+						"navigationBarTitleText": "帮录报备"
 					}
 				}
 			]

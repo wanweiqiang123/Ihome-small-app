@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-17 15:45:01
+ * @LastEditTime: 2020-11-18 14:04:42
 -->
 <template>
   <StaffTabBar>
@@ -87,7 +87,7 @@ export default {
           item: "报备确认",
         },
         {
-          icon: "man-add",
+          icon: "account-fill",
           path: "/staffPackage/visitConfirm/index",
           item: "到访确认",
         },
@@ -102,9 +102,9 @@ export default {
           item: "报备确认",
         },
         {
-          icon: "integral",
-          path: "",
-          item: "报备确认",
+          icon: "scan",
+          path: "/staffPackage/clientReport/index",
+          item: "帮录报备",
         },
         {
           icon: "integral",

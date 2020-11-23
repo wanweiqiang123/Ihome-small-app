@@ -44,9 +44,23 @@
         </view>
       </view>
       <view class="my-btn">
-        <u-button shape="circle">退出登录</u-button>
+        <u-button shape="circle" @click="handleLoginOut">退出登录</u-button>
       </view>
     </view>
+    <u-popup
+      v-model="showPopup"
+      mode="center"
+      width="70%"
+      height="auto"
+      border-radius="14"
+      :closeable="false">
+      <view class="popup-tips">提示</view>
+      <view class="popup-info">确定要退出登录？</view>
+      <view class="popup-btn-wrapper">
+        <view @click="showPopup = false">取消</view>
+        <view @click="handleSubmit">确定</view>
+      </view>
+    </u-popup>
   </IntermediaryTabBar>
 </template>
 
@@ -94,18 +108,29 @@ export default {
           name: '分销协议列表'
         },
       ],
+      showPopup: false
     };
   },
   onLoad() {},
-  methods: {},
+  methods: {
+    // 退出登录
+    handleLoginOut() {
+      this.showPopup = true;
+    },
+    // 确定退出登录
+    handleSubmit() {
+      this.showPopup = false;
+      this.$storageTool.loginOut();
+    }
+  },
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   .my-page-wrapper {
     width: 100%;
     height: 100%;
-    background-color: lightgray;
+    background-color: #F1F1F1;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -190,6 +215,37 @@ export default {
         background-color: #2b85e4;
         color: white;
       }
+    }
+  }
+
+  .popup-tips, .popup-info {
+    width: 100%;
+    height: 90rpx;
+    line-height: 90rpx;
+    text-align: center;
+  }
+
+  .popup-tips {
+    font-size: 30rpx;
+    font-weight: 600;
+  }
+
+  .popup-btn-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    margin-top: 20rpx;
+
+    view {
+      flex: 1;
+      text-align: center;
+      height: 90rpx;
+      line-height: 90rpx;
+      font-size: 32rpx;
+      border: 1rpx solid #f1f1f1;
     }
   }
 </style>
