@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-17 09:24:52
+ * @LastEditTime: 2020-11-23 15:33:44
 -->
 <template>
   <view>
@@ -37,17 +37,13 @@
         </view>
       </u-card>
     </CustomerTabBar>
-    <PageingSearch ref="search" />
   </view>
 </template>
 
 <script>
-import PageingSearch from "../../components/pagingSearch.vue";
 export default {
   name: "PageingSearch",
-  components: {
-    PageingSearch,
-  },
+  components: {},
   data() {
     return {
       data: [
@@ -88,7 +84,9 @@ export default {
     routerTo(val) {
       switch (val.id) {
         case 1:
-          this.$refs.search.open();
+          uni.navigateTo({
+            url: `/pages/search/index/index?api=postdevepolersApi`,
+          });
           break;
         case 2:
           uni.navigateTo({

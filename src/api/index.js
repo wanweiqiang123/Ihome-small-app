@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 10:09:50
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-16 10:48:24
+ * @LastEditTime: 2020-11-23 14:11:15
  */
 
 import { getApi, postApi } from '../common/http.js';
@@ -63,7 +63,15 @@ export async function getAreaApi(data = {}, option = {}) {
     return await getApi('/sales-api/system/area/getAll', data, option);
 }
 
+/**查询用户列表*/
+export async function postUsersApi(data = {}, option = {}) {
+    return await postApi('/sales-api/system/user/getList', data, option);
+}
 
+/**查询开发商列表*/
+export async function postdevepolersApi(data = {}, option = {}) {
+    return await postApi('/sales-api/developer/company/getList', data, option);
+}
 
 
 
