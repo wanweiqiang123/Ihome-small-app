@@ -12,7 +12,13 @@
 		{
 			"path": "pages/login/index/index",
 			"style": {
-				"navigationBarTitleText": "登录"
+				"navigationBarTitleText": "登录",
+				"app-plus":{
+					"titleNView":false   
+				},
+				"navigationBarBackgroundColor":"#4881f9",
+				"navigationBarTextStyle":"white"   
+
 			}
 		},
 		{
