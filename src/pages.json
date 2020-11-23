@@ -51,6 +51,12 @@
 			"style": {
 				"navigationBarTitleText": "首页"
 			}
+		},
+		{
+			"path": "pages/search/index/index",
+			"style": {
+				"navigationBarTitleText": "搜索"
+			}
 		}
 	],
 	"subPackages": [
@@ -131,6 +137,12 @@
 					"path": "homeTab/index",
 					"style": {
 						"navigationBarTitleText": "员工案场首页"
+					}
+				},
+				{
+					"path": "personalTab/index",
+					"style": {
+						"navigationBarTitleText": "案场个人中心"
 					}
 				},
 				{

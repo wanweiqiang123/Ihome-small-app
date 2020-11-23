@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-30 09:06:57
- * @LastEditors: zyc
- * @LastEditTime: 2020-11-10 17:15:30
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-11-23 11:23:14
  */
 import Vue from 'vue'
 import Vuex from 'vuex'
@@ -45,16 +45,21 @@ const store = new Vuex.Store({
 				isDot: false,
 				customIcon: false,
 			},
-		]
+		],
+		areaList: [],
 	},
 	mutations: {
 		setTabBarList(state, data) {
 			state.tabBarList = data;
 		},
+		setAreaList(state, data) {
+			state.areaList = data;
+		}
 	},
 	actions: {},
 	getters: {
 		tabBarList: (state) => state.tabBarList,
+		areaList: (state) => state.areaList,
 	},
 })
 export default store

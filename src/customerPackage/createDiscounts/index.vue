@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-17 14:47:43
+ * @LastEditTime: 2020-11-20 15:16:39
 -->
 <template>
   <view>
@@ -108,41 +108,49 @@
           class="owner-layout"
           :key="i"
         >
-          <view class="owner-msg">
-            <view class="owner-msg-item">
-              <view class="">业主姓名</view>
-              <view class="owner-input">
-                <u-input
-                  v-model="item.name"
-                  :auto-height="autoHeight"
-                  placeholder="请输入姓名"
-                  clearable
-                />
-              </view>
-            </view>
-            <view class="owner-msg-item">
-              <view class="">手机号码</view>
-              <view class="owner-input">
-                <u-input
-                  v-model="item.phone"
-                  :auto-height="autoHeight"
-                  placeholder="请输入手机号码"
-                  clearable
-                />
-              </view>
-            </view>
-            <view class="owner-msg-item">
-              <view class="">身份证号</view>
-              <view class="owner-input">
-                <u-input
-                  v-model="item.identity"
-                  :auto-height="autoHeight"
-                  placeholder="请输入身份证号"
-                  clearable
-                />
-              </view>
-            </view>
-          </view>
+          <u-form
+            :model="item"
+            :ref="`uForm`"
+            class="owner-msg"
+            label-width="150"
+          >
+            <u-form-item
+              class="owner-msg-item"
+              label="业主姓名"
+              prop="name"
+            >
+              <u-input
+                v-model="item.name"
+                :auto-height="autoHeight"
+                placeholder="请输入姓名"
+                clearable
+              />
+            </u-form-item>
+            <u-form-item
+              class="owner-msg-item"
+              label="手机号码"
+              prop="phone"
+            >
+              <u-input
+                v-model="item.phone"
+                :auto-height="autoHeight"
+                placeholder="请输入手机号码"
+                clearable
+              />
+            </u-form-item>
+            <u-form-item
+              class="owner-msg-item"
+              label="身份证号"
+              prop="identity"
+            >
+              <u-input
+                v-model="item.identity"
+                :auto-height="autoHeight"
+                placeholder="请输入身份证号"
+                clearable
+              />
+            </u-form-item>
+          </u-form>
           <view
             v-if="i === 0"
             class="owner-icon"
@@ -184,6 +192,7 @@
 </template>
 
 <script>
+import { phoneValidator, validIdentityCard } from "../../common/validate.js";
 export default {
   data() {
     return {
@@ -276,9 +285,38 @@ export default {
           identity: "",
         },
       ],
+      arr: [],
+      rules: {
+        name: [
+          {
+            required: true,
+            message: "请输入姓名",
+            trigger: "change",
+          },
+        ],
+        phone: [
+          {
+            required: true,
+            message: "请输入手机号码",
+            trigger: "change",
+          },
+          { validator: phoneValidator, trigger: "change" },
+        ],
+        identity: [
+          {
+            required: true,
+            message: "请输入身份证号",
+            trigger: "change",
+          },
+          { validator: validIdentityCard, trigger: "change" },
+        ],
+      },
     };
   },
   onLoad() {},
+  onReady() {
+    this.$refs.uForm[0].setRules(this.rules);
+  },
   methods: {
     buildingBlockClick(v) {
       this.buildingBlock = v[0].label;
@@ -292,12 +330,37 @@ export default {
         phone: "",
         identity: "",
       });
+      this.$nextTick(() => {
+        this.$refs.uForm[this.ownerInfo.length - 1].setRules(this.rules);
+      });
     },
     subtractOwner(i) {
       this.ownerInfo.splice(i, 1);
     },
+    refForm(index, err) {
+      let res = new Promise((resolve, reject) => {
+        this.$refs.uForm[index].validate((valid) => {
+          if (valid) {
+            resolve();
+          } else {
+            reject(err);
+          }
+        });
+      });
+      this.arr.push(res);
+    },
     submit() {
-      console.log(this.ownerInfo);
+      this.arr = [];
+      this.ownerInfo.forEach((v, i) => {
+        this.refForm(i, this.ownerInfo[i]);
+      });
+      Promise.all(this.arr)
+        .then(() => {
+          console.log("全部通过");
+        })
+        .catch(() => {
+          console.log("不通过");
+        });
     },
   },
 };
@@ -352,7 +415,7 @@ export default {
     display: flex;
     justify-content: space-between;
     &-right {
-      color: #D9001B;
+      color: #d9001b;
     }
   }
   &-layout {
@@ -370,12 +433,10 @@ export default {
       align-items: center;
     }
   }
-  &-input {
-    margin-left: 30rpx;
-  }
   &-icon {
-    width: 5%;
+    width: 80rpx;
     line-height: 300rpx;
+    text-align: right;
   }
 }
 
