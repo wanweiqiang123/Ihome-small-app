@@ -107,7 +107,13 @@
 				{
 					"path": "homeTab/pages/projectList",
 					"style": {
-						"navigationBarTitleText": "楼盘列表"
+						"navigationBarTitleText": "项目列表"
+					}
+				},
+				{
+					"path": "homeTab/pages/projectDetail",
+					"style": {
+						"navigationBarTitleText": "项目详情"
 					}
 				},
 				{
