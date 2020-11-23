@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-18 14:04:42
+ * @LastEditTime: 2020-11-23 16:30:12
 -->
 <template>
   <StaffTabBar>
@@ -97,9 +97,9 @@ export default {
           item: "成交确认",
         },
         {
-          icon: "integral",
-          path: "",
-          item: "报备确认",
+          icon: "photo",
+          path: "/staffPackage/noticeList/index",
+          item: "优惠告知书",
         },
         {
           icon: "scan",

@@ -158,6 +158,12 @@
 					}
 				},
 				{
+					"path": "noticeList/index",
+					"style": {
+						"navigationBarTitleText": "优惠告知书"
+					}
+				},
+				{
 					"path": "clientReport/index",
 					"style": {
 						"navigationBarTitleText": "帮录报备"
