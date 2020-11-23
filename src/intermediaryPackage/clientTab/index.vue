@@ -52,7 +52,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   .client-page-wrapper {
     width: 100%;
     box-sizing: border-box;
