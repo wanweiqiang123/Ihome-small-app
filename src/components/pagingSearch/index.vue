@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 16:47:03
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-23 15:35:41
+ * @LastEditTime: 2020-11-23 18:09:25
 -->
 <template>
   <view class="box">
@@ -90,11 +90,15 @@ export default {
   props: {
     searchApi: {
       type: String,
+      default: "",
+    },
+    value: {
+      type: String,
       default: () => "",
     },
-    focus: {
-      type: Boolean,
-      default: () => false,
+    paramsKey: {
+      type: String,
+      default: "",
     },
   },
   data() {
@@ -104,7 +108,7 @@ export default {
       province: "选择省",
       city: "选择市",
       area: "选择区",
-      searchOptions: [],
+      searchOptions: {},
       pageInfo: {
         pageNum: 1,
         pageSize: 10,
@@ -115,9 +119,11 @@ export default {
     areaList() {
       return this.$store.getters.areaList;
     },
+    key() {
+      return this.paramsKey ? this.paramsKey : "name";
+    },
   },
   created() {
-    console.log(this.searchApi, "api");
     if (!this.areaList?.length) {
       this.getAreaOption();
     }
@@ -158,18 +164,17 @@ export default {
     },
     // 返回到上一页
     goBackPage(v) {
-      console.log(v);
+      this.$tool.back(null, { type: "init", data: v });
     },
     async getSelectList() {
-      this.searchOptions = await apiList[this.searchApi]({
-        ...this.pageInfo,
-        name: this.keyword,
-      });
+      let params = { ...this.pageInfo };
+      params[this.key] = this.keyword;
+      this.searchOptions = await apiList[this.searchApi](params);
     },
   },
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .box {
   height: 100%;
   display: flex;

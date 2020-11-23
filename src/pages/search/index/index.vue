@@ -4,20 +4,20 @@
  * @Author: wwq
  * @Date: 2020-11-20 17:03:55
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-23 15:31:32
+ * @LastEditTime: 2020-11-23 18:09:52
 -->
 <template>
   <PageingSearch
     ref="search"
     :search-api="searchApi"
+    :params-key="paramsKey"
   >
     <template #searchlist="{ data }">
       <view
         class="list-item"
         :key="data.id"
         @click="goBackPage(data)"
-      >{{data.name}}
-        {{data.id}}
+      >{{data.name}} {{data.id}}
       </view>
     </template>
   </PageingSearch>
@@ -29,6 +29,7 @@ export default {
   data() {
     return {
       searchApi: "",
+      paramsKey: "aaa",
     };
   },
   onLoad(option) {
@@ -37,12 +38,12 @@ export default {
   mounted() {},
   methods: {
     goBackPage(data) {
-      console.log(data);
+      this.$tool.back(null, { type: "init", data });
     },
   },
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .list-item {
   text-align: left;
   padding-left: 20rpx;

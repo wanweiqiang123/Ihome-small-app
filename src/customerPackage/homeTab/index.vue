@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-23 15:33:44
+ * @LastEditTime: 2020-11-23 17:09:24
 -->
 <template>
   <view>
@@ -80,12 +80,17 @@ export default {
     };
   },
   onLoad() {},
+  onShow() {
+    let refreshListData = getApp().globalData.refreshListData;
+    console.log(refreshListData, "show");
+  },
   methods: {
     routerTo(val) {
       switch (val.id) {
         case 1:
           uni.navigateTo({
-            url: `/pages/search/index/index?api=postdevepolersApi`,
+            // url: `/pages/search/index/index?api=postdevepolersApi`,
+            url: `/pages/search/index/index?api=postUsersApi`,
           });
           break;
         case 2:
