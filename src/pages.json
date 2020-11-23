@@ -138,6 +138,12 @@
 					"style": {
 						"navigationBarTitleText": "成交确认页"
 					}
+				},
+				{
+					"path": "clientReport/index",
+					"style": {
+						"navigationBarTitleText": "帮录报备"
+					}
 				}
 			]
 		}
