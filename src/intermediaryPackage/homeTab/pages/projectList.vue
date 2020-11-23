@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-17 15:26:33
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-17 15:26:33
+ * @LastEditTime: 2020-11-23 17:20:21
 -->
 <template>
   <view class="project-list-wrapper">
@@ -133,7 +133,7 @@
       </view>
     </view>
     <view class="project-list">
-      <view class="content" v-for="item in [1, 2, 3, 4, 5, 6, 7, 8, 9]" :key="item">
+      <view class="content" v-for="item in [1, 2, 3, 4, 5, 6, 7, 8, 9]" :key="item" @click="viewProjectDetail">
         <view class="content-left">
           <u-image width="200rpx" height="200rpx" src="https://cdn.uviewui.com/uview/swiper/1.jpg"></u-image>
         </view>
@@ -585,6 +585,12 @@
             this.dropDownList[item.index][item.type] = '';
             break;
         }
+      },
+      // 查看项目详情
+      viewProjectDetail() {
+        uni.navigateTo({
+          url: `/intermediaryPackage/homeTab/pages/projectDetail`,
+        })
       }
     }
   };
@@ -819,11 +825,11 @@
 
           .price-wrapper {
             width: 100%;
-            color: red;
+            color: #FD4918;
 
             .price {
               font-size: 32rpx;
-              color: red;
+              color: #FD4918;
               font-weight: 600;
             }
 
@@ -836,6 +842,7 @@
 
             .two {
               vertical-align: super;
+              font-size: 18rpx;
             }
           }
 

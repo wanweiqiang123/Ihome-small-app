@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-29 15:58:19
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-20 14:55:07
+ * @LastEditTime: 2020-11-23 16:25:50
 -->
 <template>
   <view class="page">
@@ -141,7 +141,7 @@ export default {
 }
 .login-select-select-title {
   font-weight: 600 !important;
-  background: #409eff;
+  background: $u-type-primary;
   color: #fff;
 }
 </style>

@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-17 10:20:37
+ * @LastEditTime: 2020-11-23 17:20:21
 -->
 <template>
   <IntermediaryTabBar>
@@ -244,11 +244,11 @@
 
           .price-wrapper {
             width: 100%;
-            color: red;
+            color: #FD4918;
 
             .price {
               font-size: 32rpx;
-              color: red;
+              color: #FD4918;
               font-weight: 600;
             }
 
@@ -261,6 +261,7 @@
 
             .two {
               vertical-align: super;
+              font-size: 18rpx;
             }
           }
 

@@ -144,7 +144,7 @@ export default {
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      background-color: #2b85e4;
+      background-color: $uni-color-primary;
       color: white;
 
       view {
@@ -212,7 +212,7 @@ export default {
       margin-bottom: 30rpx;
 
       /deep/.u-btn {
-        background-color: #2b85e4;
+        background-color: $uni-color-primary;
         color: white;
       }
     }
