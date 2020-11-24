@@ -134,8 +134,8 @@
     </view>
     <view class="project-list">
       <view class="content" v-for="item in [1, 2, 3, 4, 5, 6, 7, 8, 9]" :key="item" @click="viewProjectDetail">
-        <view class="content-left">
-          <u-image width="200rpx" height="200rpx" src="https://cdn.uviewui.com/uview/swiper/1.jpg"></u-image>
+        <view>
+          <u-image width="242rpx" height="186rpx" src="https://cdn.uviewui.com/uview/swiper/1.jpg"></u-image>
         </view>
         <view class="content-right">
           <view class="title-wrapper">远洋招商保利东湾经纪渠道</view>
@@ -805,10 +805,6 @@
         flex-direction: row;
         border-bottom: 1px solid #f2f2f2;
 
-        .content-left {
-          width: 200rpx;
-        }
-
         .content-right {
           flex: 1;
           box-sizing: border-box;
@@ -821,15 +817,18 @@
 
           .title-wrapper {
             font-size: 32rpx;
+            font-family: PingFang SC;
+            font-weight: 400;
+            color: #1C1C1C;
           }
 
           .price-wrapper {
             width: 100%;
             color: #FD4918;
+            font-family: PingFang SC;
 
             .price {
               font-size: 32rpx;
-              color: #FD4918;
               font-weight: 600;
             }
 

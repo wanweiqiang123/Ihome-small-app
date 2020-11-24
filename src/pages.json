@@ -116,6 +116,18 @@
 					}
 				},
 				{
+					"path": "homeTab/pages/unitDetail",
+					"style": {
+						"navigationBarTitleText": "户型详情"
+					}
+				},
+				{
+					"path": "homeTab/pages/reportClient",
+					"style": {
+						"navigationBarTitleText": "报备客户"
+					}
+				},
+				{
 					"path": "clientTab/index",
 					"style": {
 						"navigationBarTitleText": "我的客户"
