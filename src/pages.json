@@ -211,6 +211,12 @@
 					}
 				},
 				{
+					"path": "payment/index",
+					"style": {
+						"navigationBarTitleText": "结佣付款列表"
+					}
+				},
+				{
 					"path": "receipt/index",
 					"style": {
 						"navigationBarTitleText": "购房优惠收款"
