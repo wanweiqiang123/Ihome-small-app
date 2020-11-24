@@ -13,12 +13,11 @@
 			"path": "pages/login/index/index",
 			"style": {
 				"navigationBarTitleText": "登录",
-				"app-plus":{
-					"titleNView":false   
+				"app-plus": {
+					"titleNView": false
 				},
-				"navigationBarBackgroundColor":"#4881f9",
-				"navigationBarTextStyle":"white"   
-
+				"navigationBarBackgroundColor": "#4881f9",
+				"navigationBarTextStyle": "white"
 			}
 		},
 		{
@@ -173,6 +172,12 @@
 					"path": "noticeList/index",
 					"style": {
 						"navigationBarTitleText": "优惠告知书"
+					}
+				},
+				{
+					"path": "noticeConfirm/index",
+					"style": {
+						"navigationBarTitleText": "确认优惠告知书"
 					}
 				},
 				{

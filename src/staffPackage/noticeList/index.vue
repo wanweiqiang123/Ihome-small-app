@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-23 17:14:40
+ * @LastEditTime: 2020-11-23 17:44:04
 -->
 <template>
   <view class="notice safe-area-inset-bottom">
@@ -16,6 +16,7 @@
         class="notice-item"
         v-for="(i) in 10"
         :key="i"
+        @click="handleGo()"
       >
         <view class="notice-info">
           <view class="notice-title">优惠告知书(1238755544645)</view>
@@ -40,6 +41,13 @@
 <script>
 export default {
   name: "notice-list",
+  methods: {
+    handleGo() {
+      uni.navigateTo({
+        url: "/staffPackage/noticeConfirm/index",
+      });
+    },
+  },
 };
 </script>
 

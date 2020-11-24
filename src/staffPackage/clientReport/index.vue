@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-17 18:10:07
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-23 10:41:57
+ * @LastEditTime: 2020-11-24 09:26:34
 -->
 <template>
   <view class="client-container safe-area-inset-bottom">
@@ -50,6 +50,8 @@
             <u-input
               v-model="form.sex"
               type="select"
+              input-align="right"
+              placeholder="请选择渠道公司"
             />
           </u-form-item>
           <u-form-item label="经纪人姓名">
@@ -132,7 +134,7 @@ export default {
 
 <style lang="scss" scoped>
 .client-container {
-  background-color: #f1f1f1;
+  background-color: $u-bg-color;
 }
 .report-houses {
   padding: 10rpx 26rpx 6rpx;
