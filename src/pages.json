@@ -193,6 +193,12 @@
 					}
 				},
 				{
+					"path": "performance/index",
+					"style": {
+						"navigationBarTitleText": "业绩申报列表"
+					}
+				},
+				{
 					"path": "receipt/index",
 					"style": {
 						"navigationBarTitleText": "购房优惠收款"

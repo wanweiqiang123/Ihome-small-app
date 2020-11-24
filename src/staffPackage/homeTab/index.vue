@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-24 14:13:45
+ * @LastEditTime: 2020-11-24 14:58:07
 -->
 <template>
   <StaffTabBar>
@@ -107,9 +107,9 @@ export default {
           item: "帮录报备",
         },
         {
-          icon: "integral",
-          path: "",
-          item: "报备确认",
+          icon: "file-text",
+          path: "/staffPackage/performance/index",
+          item: "业绩申报",
         },
         {
           icon: "integral",
