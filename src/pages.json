@@ -181,6 +181,12 @@
 					}
 				},
 				{
+					"path": "noticeCreate/index",
+					"style": {
+						"navigationBarTitleText": "生成优惠告知书"
+					}
+				},
+				{
 					"path": "clientReport/index",
 					"style": {
 						"navigationBarTitleText": "帮录报备"
