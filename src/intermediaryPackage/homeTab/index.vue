@@ -42,7 +42,7 @@
           </u-grid-item>
           <u-grid-item>
             <u-icon name="star" :size="66"></u-icon>
-            <view class="grid-text">我的客户</view>
+            <view class="grid-text">我的报备</view>
           </u-grid-item>
           <u-grid-item>
             <u-icon name="account" :size="66"></u-icon>
@@ -50,16 +50,16 @@
           </u-grid-item>
           <u-grid-item>
             <u-icon name="bag" :size="66"></u-icon>
-            <view class="grid-text">我的报备</view>
+            <view class="grid-text">成交记录</view>
           </u-grid-item>
         </u-grid>
       </view>
       <u-gap height="20" bg-color="#f2f2f2"></u-gap>
       <view class="content-wrapper">
         <view class="title">推荐房源</view>
-        <view class="content" v-for="item in [1, 2, 3, 4, 5, 6, 7, 8, 9]" :key="item">
-          <view class="content-left">
-            <u-image width="200rpx" height="200rpx" src="https://cdn.uviewui.com/uview/swiper/1.jpg"></u-image>
+        <view class="content" v-for="item in [1, 2, 3, 4, 5, 6, 7, 8, 9]" :key="item" @click="viewProjectDetail">
+          <view>
+            <u-image width="242rpx" height="186rpx" src="https://cdn.uviewui.com/uview/swiper/1.jpg"></u-image>
           </view>
           <view class="content-right">
             <view class="title-wrapper">远洋招商保利东湾经纪渠道</view>
@@ -130,11 +130,16 @@
       locationCallback(index) {
         this.queryPageParameters.location = this.locationList[index].text;
       },
-
       goToItem(index) {
         // console.log(index);
         uni.navigateTo({
           url: `/intermediaryPackage/homeTab/pages/${index}`,
+        })
+      },
+      // 查看项目详情
+      viewProjectDetail() {
+        uni.navigateTo({
+          url: `/intermediaryPackage/homeTab/pages/projectDetail`,
         })
       }
     },
@@ -223,10 +228,6 @@
         display: flex;
         flex-direction: row;
         border-bottom: 1px solid #f2f2f2;
-
-        .content-left {
-          width: 200rpx;
-        }
 
         .content-right {
           flex: 1;

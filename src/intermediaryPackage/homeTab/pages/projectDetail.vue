@@ -43,7 +43,7 @@
         <view class="home-info-wrapper">
           <view class="home-info-title">户型信息</view>
           <view class="home-info">
-            <view class="info-item">
+            <view class="info-item" @click="viewHomeDetail">
               <view>
                 <u-image width="100%" height="130rpx" src="https://cdn.uviewui.com/uview/swiper/1.jpg"></u-image>
               </view>
@@ -52,7 +52,7 @@
               </view>
               <view class="price-color">160万起</view>
             </view>
-            <view class="info-item">
+            <view class="info-item" @click="viewHomeDetail">
               <view>
                 <u-image width="100%" height="130rpx" src="https://cdn.uviewui.com/uview/swiper/1.jpg"></u-image>
               </view>
@@ -61,7 +61,7 @@
               </view>
               <view class="price-color">160万起</view>
             </view>
-            <view class="info-item">
+            <view class="info-item" @click="viewHomeDetail">
               <view>
                 <u-image width="100%" height="130rpx" src="https://cdn.uviewui.com/uview/swiper/1.jpg"></u-image>
               </view>
@@ -139,7 +139,7 @@
         <view class="keep">收藏</view>
       </view>
       <view class="btn-right">
-        <u-button type="primary" shape="circle">报备</u-button>
+        <u-button type="primary" shape="circle" @click="handleReport">报备</u-button>
       </view>
     </view>
   </view>
@@ -191,6 +191,18 @@
       // 收藏
       isKeep() {
         this.keepFlag = !this.keepFlag;
+      },
+      // 查看户型详情
+      viewHomeDetail() {
+        uni.navigateTo({
+          url: `/intermediaryPackage/homeTab/pages/unitDetail`,
+        })
+      },
+      // 报备
+      handleReport() {
+        uni.navigateTo({
+          url: `/intermediaryPackage/homeTab/pages/reportClient`,
+        })
       }
     }
   };
