@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-13 15:13:13
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-23 11:09:45
+ * @LastEditTime: 2020-11-24 14:30:20
 -->
 <template>
   <view class="container safe-area-inset-bottom">
@@ -240,15 +240,6 @@ export default {
     display: flex;
     align-items: center;
     padding: 10rpx 12rpx;
-  }
-}
-.popup-bady {
-  padding: 0 30rpx;
-  padding-top: 80rpx;
-  .popup-button {
-    padding: 0 40rpx;
-    display: flex;
-    justify-content: space-between;
   }
 }
 </style>
