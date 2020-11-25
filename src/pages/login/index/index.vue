@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-29 15:58:19
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-23 16:25:50
+ * @LastEditTime: 2020-11-25 11:43:13
 -->
 <template>
   <view class="page">
@@ -22,6 +22,9 @@
     </view>
     <view style="padding: 40rpx">
       <u-button type="success" @click="go()">列表demo</u-button>
+    </view>
+     <view style="padding: 40rpx">
+      <u-button type="success" open-type="getUserInfo" @getuserinfo	="getWxInfo()">获取微信用户信息</u-button>
     </view>
     <u-popup width="80%" v-model="show" mode="center">
       <view class="login-select-select login-select-select-title">
@@ -117,6 +120,9 @@ export default {
         url: "/pages/customer/index/index",
       });
     },
+    getWxInfo(res){
+        console.log(res.detail.userInfo.nickName)
+    }
   },
   // 必须要在onReady生命周期，因为onLoad生命周期组件可能尚未创建完毕
   onReady() {
