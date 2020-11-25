@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-13 15:13:13
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-23 11:02:16
+ * @LastEditTime: 2020-11-25 11:52:09
 -->
 <template>
   <view class="container safe-area-inset-bottom">
@@ -21,7 +21,7 @@
           v-model="keyword"
           :clearabled="true"
         ></u-search>
-        <view>
+        <view class="filter-btn">
           <span @click="show = true">筛选</span>
         </view>
       </view>
@@ -196,11 +196,11 @@ export default {
 <style lang="scss" scoped>
 .container {
   background: $u-bg-color;
+  min-height: 100vh;
 }
 .card-list {
   padding-top: 220rpx;
   padding-bottom: 10rpx;
-  min-height: 100vh;
 }
 .ih-card {
   .ih-card-foot {
@@ -222,14 +222,8 @@ export default {
     align-items: center;
     padding: 10rpx 12rpx;
   }
-}
-.popup-bady {
-  padding: 0 30rpx;
-  padding-top: 80rpx;
-  .popup-button {
-    padding: 0 40rpx;
-    display: flex;
-    justify-content: space-between;
+  .filter-btn {
+    padding: 0 10rpx;
   }
 }
 </style>

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-17 11:22:20
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-17 15:28:02
+ * @LastEditTime: 2020-11-25 15:26:00
 -->
 <template>
   <u-popup
@@ -78,13 +78,13 @@ export default {
   padding-top: 80rpx;
   height: 100%;
   .ih-popup-cantainer {
-    height: calc(100% - 100rpx);
+    height: calc(100% - 114rpx);
     .popup-content {
       padding: 0 50rpx;
     }
   }
   .popup-button {
-    padding: 0 50rpx 20rpx;
+    padding: 14rpx 50rpx 20rpx;
     display: flex;
     justify-content: space-between;
     background: #fff;

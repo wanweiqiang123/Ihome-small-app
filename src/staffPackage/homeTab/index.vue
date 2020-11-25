@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-25 09:11:41
+ * @LastEditTime: 2020-11-25 14:55:56
 -->
 <template>
   <StaffTabBar>
@@ -193,14 +193,22 @@ export default {
   }
   .info-data {
     display: flex;
-    border: 1px solid $u-border-color;
-    border-radius: 10rpx;
+    flex-flow: wrap;
     .item {
-      width: 25%;
+      width: 50%;
       text-align: center;
-      line-height: 46rpx;
-      p {
-        font-weight: bold;
+      font-size: 40rpx;
+      height: 200rpx;
+      padding-top: 50rpx;
+      &:nth-child(1) {
+        border-bottom: 1rpx solid $u-border-color;
+        border-right: 1rpx solid $u-border-color;
+      }
+      &:nth-child(2) {
+        border-bottom: 1rpx solid $u-border-color;
+      }
+      &:nth-child(3) {
+        border-right: 1rpx solid $u-border-color;
       }
     }
   }

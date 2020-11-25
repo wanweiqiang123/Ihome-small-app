@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 14:54:27
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-24 16:07:23
+ * @LastEditTime: 2020-11-25 15:48:45
 -->
 <template>
   <view class="performance safe-area-inset-bottom">
@@ -69,15 +69,94 @@
         type="primary"
       >业绩申报</u-button>
     </view>
+    <!-- 筛选弹出 -->
+    <PopupSearch
+      v-model="isShow"
+      @reset="handleReset()"
+    >
+      <u-form
+        :model="form"
+        ref="form"
+        label-position="top"
+        :border-bottom="false"
+      >
+        <u-form-item
+          label="项目名称"
+          prop="name"
+          :border-bottom="false"
+        >
+          <u-input
+            v-model="form.name"
+            border
+            placeholder="请选择项目"
+            type="select"
+          />
+        </u-form-item>
+        <u-form-item
+          label="项目周期"
+          prop="intro"
+          :border-bottom="false"
+        >
+          <u-input
+            v-model="form.intro"
+            border
+            placeholder="请选择周期"
+            type="select"
+          />
+        </u-form-item>
+        <u-form-item
+          label="合同类型"
+          prop="intro"
+          :border-bottom="false"
+        >
+          <u-input
+            v-model="form.intro"
+            border
+            placeholder="请选择合同类型"
+            type="select"
+          />
+        </u-form-item>
+        <u-form-item
+          label="成交阶段"
+          prop="intro"
+          :border-bottom="false"
+        >
+          <u-input
+            v-model="form.intro"
+            border
+            placeholder="请选择成交阶段"
+            type="select"
+          />
+        </u-form-item>
+        <u-form-item
+          label="成交状态"
+          :border-bottom="false"
+        >
+          <u-input
+            v-model="form.intro"
+            border
+            placeholder="请选择成交状态"
+            type="select"
+          />
+        </u-form-item>
+      </u-form>
+    </PopupSearch>
   </view>
 </template>
 
 <script>
+import PopupSearch from "../../components/PopupSearch/index.vue";
 export default {
   name: "performance",
+  components: {
+    PopupSearch,
+  },
   data() {
     return {
       isShow: false,
+      form: {
+        name: null,
+      },
     };
   },
 };

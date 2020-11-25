@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 17:10:39
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-25 08:52:22
+ * @LastEditTime: 2020-11-25 17:03:20
 -->
 <template>
   <view class="notice">
@@ -54,7 +54,13 @@
     >
       <view>
         <view class="head">优惠二维码</view>
-        <view class="code"></view>
+        <view class="code">
+          <u-image
+            width="100%"
+            height="100%"
+            src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3101623223,11353193&fm=26&gp=0.jpg"
+          ></u-image>
+        </view>
         <view class="btn">
           <u-button type="primary">下载二维码</u-button>
         </view>

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 11:22:52
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-23 15:31:27
+ * @LastEditTime: 2020-11-25 15:31:59
 -->
 <template>
   <StaffTabBar>
@@ -22,21 +22,13 @@
         <view>18600002222</view>
       </view>
       <view class="person-item-wrapper">
-        <view class="item">
-          <view class="item-icon">
-            <u-icon
-              name="rmb-circle"
-              size="46"
-            ></u-icon>
-          </view>
-          <view class="item-name">我的购房信息</view>
-          <view class="item-arrow">
-            <u-icon
-              name="arrow-right"
-              size="40"
-            ></u-icon>
-          </view>
-        </view>
+        <u-cell-group>
+          <u-cell-item
+            icon="rmb-circle"
+            title="我的购房信息"
+            :arrow="true"
+          ></u-cell-item>
+        </u-cell-group>
       </view>
       <view class="btn-container">
         <u-button
@@ -121,22 +113,12 @@ export default {
     width: 90%;
     box-sizing: border-box;
     margin-top: -50rpx;
-    padding: 20rpx;
     background: #fff;
-    .item {
-      width: 100%;
-      display: flex;
-      align-items: center;
-    }
-    .item-name {
-      margin-left: 10rpx;
-      flex: 1;
-    }
   }
 
   .btn-container {
     width: 90%;
-    margin-top: 50rpx;
+    margin-top: 100rpx;
   }
 }
 </style>
