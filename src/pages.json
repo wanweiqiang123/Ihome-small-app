@@ -91,6 +91,54 @@
 					"style": {
 						"navigationBarTitleText": "退款申请书"
 					}
+				},
+				{
+					"path": "paymentMethod/index",
+					"style": {
+						"navigationBarTitleText": "付款"
+					}
+				},
+				{
+					"path": "paymentMethod/weChatPay",
+					"style": {
+						"navigationBarTitleText": "微信付款"
+					}
+				},
+				{
+					"path": "paymentMethod/POS",
+					"style": {
+						"navigationBarTitleText": "POS机扫码"
+					}
+				},
+				{
+					"path": "paymentMethod/friendPay",
+					"style": {
+						"navigationBarTitleText": "好友代付"
+					}
+				},
+				{
+					"path": "paymentMethod/bankTransfer",
+					"style": {
+						"navigationBarTitleText": "银行转账"
+					}
+				},
+				{
+					"path": "paymentMethod/zhifubaoPay",
+					"style": {
+						"navigationBarTitleText": "付款"
+					}
+				},
+				{
+					"path": "payHistory/index",
+					"style": {
+						"navigationBarTitleText": "付款记录"
+					}
+				},
+				{
+					"path": "payAuditing/index",
+					"style": {
+						"navigationBarTitleText": "付款待审核"
+					}
 				}
 			]
 		},
@@ -137,6 +185,12 @@
 					"path": "messageTab/index",
 					"style": {
 						"navigationBarTitleText": "消息中心"
+					}
+				},
+				{
+					"path": "messageTab/pages/messageIndex",
+					"style": {
+						"navigationBarTitleText": "项目通知"
 					}
 				},
 				{

@@ -44,7 +44,7 @@
             <u-icon name="star" :size="66"></u-icon>
             <view class="grid-text">我的报备</view>
           </u-grid-item>
-          <u-grid-item>
+          <u-grid-item index="homeTab/pages/reportClient">
             <u-icon name="account" :size="66"></u-icon>
             <view class="grid-text">报备客户</view>
           </u-grid-item>

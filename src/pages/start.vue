@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-30 14:22:01
- * @LastEditors: wwq
- * @LastEditTime: 2020-11-16 11:11:06
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-11-25 11:37:01
 -->
 <template>
   <view style="padding-top: 100px">
@@ -68,7 +68,19 @@ export default {
         // uni.redirectTo({
         //   url: "/pages/login/index/index",
         // });
-        storageTool.goHome();
+        // 获取用户信息
+        uni.getUserInfo({
+          provider: "weixin",
+          success: function (infoRes) {
+            console.log("用户昵称为：" + infoRes.userInfo.nickName);
+            storageTool.goHome();
+          },
+          fail: function (err) {
+            console.log(err)
+            storageTool.goHome();
+          },
+        });
+
         // if (token) {
         //   that.$store.commit("setTabBarList", that.$store.getters.tabBarList);
         //   uni.redirectTo({
