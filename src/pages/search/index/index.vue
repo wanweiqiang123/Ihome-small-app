@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-20 17:03:55
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-23 18:09:52
+ * @LastEditTime: 2020-11-24 10:35:54
 -->
 <template>
   <PageingSearch
@@ -17,7 +17,8 @@
         class="list-item"
         :key="data.id"
         @click="goBackPage(data)"
-      >{{data.name}} {{data.id}}
+      >
+        {{data.name}} {{data.id}}
       </view>
     </template>
   </PageingSearch>
@@ -29,7 +30,7 @@ export default {
   data() {
     return {
       searchApi: "",
-      paramsKey: "aaa",
+      paramsKey: "",
     };
   },
   onLoad(option) {

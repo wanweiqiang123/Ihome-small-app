@@ -4,97 +4,106 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:17:34
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-13 14:16:47
+ * @LastEditTime: 2020-11-24 10:39:15
 -->
 <template>
   <CustomerTabBar>
-    <view class="box">
-      <view class="msg">
-        <u-avatar
-          :src="src"
-          :size="120"
-          @click="headClick"
-        ></u-avatar>
-        <view style="margin-left:20rpx">
-          <view>皮小强</view>
-          <view>15119337612</view>
+    <view class="person-page-wrapper">
+      <view class="person-avatar-wrapper">
+        <view>
+          <u-image
+            width="150rpx"
+            height="150rpx"
+            shape="circle"
+            src="https://cdn.uviewui.com/uview/swiper/2.jpg"
+          ></u-image>
         </view>
+        <view>张小凡</view>
+        <view>18600002222</view>
       </view>
-      <view>
-        <u-icon
-          name="setting-fill"
-          size="40"
-        ></u-icon>
+      <view class="btn-container">
+        <u-button
+          shape="circle"
+          type="primary"
+          @click="handleLoginOut"
+        >退出账号</u-button>
       </view>
     </view>
-    <view class="logout">
-      <u-action-sheet
-        :list="list"
-        :tips="tips"
-        v-model="show"
-        @click="logout"
-      ></u-action-sheet>
-      <u-button
-        type="primary"
-        @click="show = true"
-      >退出登录</u-button>
-    </view>
+    <u-action-sheet
+      v-model="isShow"
+      :list="list"
+      :tips="tips"
+      @click="submit"
+      safe-area-inset-bottom
+    ></u-action-sheet>
   </CustomerTabBar>
 </template>
 
 <script>
-import storageTool from "../../common/storageTool";
 export default {
+  name: "personal-tab",
   data() {
     return {
-      title: "",
-      src: "http://pic2.sc.chinaz.com/Files/pic/pic9/202002/hpic2119_s.jpg",
-      show: false,
-      list: [
-        {
-          text: "退出登录",
-          color: "#F95E5A",
-        },
-      ],
+      isShow: false,
       tips: {
         text: "确定要退出当前账号？",
         color: "#909399",
-        fontSize: 24,
       },
+      list: [
+        {
+          text: "退出登录",
+          color: "#fa3534",
+          fontSize: 28,
+        },
+      ],
     };
   },
-  onLoad() {},
   methods: {
-    headClick() {
-      console.log(123);
+    // 退出登录
+    handleLoginOut() {
+      this.isShow = true;
     },
-    logout() {
-      storageTool.removeToken();
-      storageTool.removeUserInfo();
-      uni.redirectTo({
-        url: "/pages/login/index/index",
-      });
+    submit(index) {
+      switch (index) {
+        case 0:
+          this.$storageTool.loginOut();
+          break;
+      }
     },
   },
 };
 </script>
 
-<style lang="scss">
-.box {
+<style lang="scss" scoped>
+.person-page-wrapper {
+  position: fixed;
   width: 100%;
-  height: 200rpx;
+  height: 100%;
+  background-color: $u-bg-color;
   display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-around;
+  flex-direction: column;
   align-items: center;
-}
-.msg {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: flex-start;
-  align-items: center;
-}
-.logout {
-  padding: 0 40rpx;
+  .person-avatar-wrapper {
+    width: 100%;
+    height: 380rpx;
+    box-sizing: border-box;
+    padding-bottom: 38rpx;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: $u-type-primary;
+    color: white;
+
+    view {
+      box-sizing: border-box;
+      margin-bottom: 8rpx;
+    }
+  }
+
+  .btn-container {
+    width: 90%;
+    margin-top: 50rpx;
+  }
 }
 </style>

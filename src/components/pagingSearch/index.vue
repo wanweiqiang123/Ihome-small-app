@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 16:47:03
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-23 18:09:25
+ * @LastEditTime: 2020-11-25 17:14:50
 -->
 <template>
   <view class="box">
@@ -19,7 +19,6 @@
           :focus="focus"
           @search="searchSomething"
           @custom="searchSomething"
-          @change="searchSomething"
         ></u-search>
       </view>
       <view class="district">
@@ -57,12 +56,14 @@
       </view>
     </view>
     <view class="search-content">
-      <scroll-view
-        @scrolltolower="lower"
-        scroll-y="true"
-      >
-        <view>
-          <template v-for="(item, i) in searchOptions.list">
+      <view class="scrollView">
+        <scroll-view
+          @scrolltolower="lower"
+          scroll-y="true"
+          lower-threshold="100"
+          v-if="tablePage.length"
+        >
+          <template v-for="(item, i) in tablePage">
             <view
               v-if="Object.keys($scopedSlots).length"
               :key="i"
@@ -74,19 +75,39 @@
             </view>
             <view
               v-else
-              class="list-item"
               :key="i"
+              class="list-item"
               @click="goBackPage(item)"
             >{{item.name}}</view>
           </template>
-        </view>
-      </scroll-view>
+        </scroll-view>
+      </view>
+      <!-- <u-loadmore :status="loadingStatus" /> -->
+      <view
+        v-if="searchNull"
+        class="searchNull"
+      >
+        <u-empty
+          :key="i"
+          text="没有搜索结果"
+          mode="search"
+        ></u-empty>
+      </view>
     </view>
   </view>
 </template>
 <script>
 import * as apiList from "../../api/index";
+import pagination from "../../mixins/pagination";
+const debounce = (function () {
+  let timer;
+  return function (fn, interval) {
+    clearTimeout(timer);
+    timer = setTimeout(fn, interval || 200);
+  };
+})();
 export default {
+  mixins: [pagination],
   props: {
     searchApi: {
       type: String,
@@ -108,11 +129,14 @@ export default {
       province: "选择省",
       city: "选择市",
       area: "选择区",
-      searchOptions: {},
-      pageInfo: {
-        pageNum: 1,
-        pageSize: 10,
+      searchOptions: {
+        list: [],
       },
+      queryPageParameters: {
+        pageNum: 1,
+        pageSize: 20,
+      },
+      searchNull: false,
     };
   },
   computed: {
@@ -121,6 +145,22 @@ export default {
     },
     key() {
       return this.paramsKey ? this.paramsKey : "name";
+    },
+  },
+  watch: {
+    keyword(v) {
+      if (!v) {
+        this.tablePage = [];
+      } else {
+        debounce(this.getListMixin, 500);
+      }
+    },
+    tablePage(v) {
+      if (v.length) {
+        this.searchNull = false;
+      } else {
+        this.searchNull = true;
+      }
     },
   },
   created() {
@@ -159,27 +199,26 @@ export default {
     },
     searchSomething(e) {
       if (e) {
-        this.getSelectList();
+        this.getListMixin();
       }
     },
     // 返回到上一页
     goBackPage(v) {
       this.$tool.back(null, { type: "init", data: v });
     },
-    async getSelectList() {
-      let params = { ...this.pageInfo };
+    async getListMixin() {
+      let params = { ...this.queryPageParameters };
       params[this.key] = this.keyword;
-      this.searchOptions = await apiList[this.searchApi](params);
+      let item = await apiList[this.searchApi](params);
+      this.tablePage = item.list;
     },
   },
 };
 </script>
 <style lang="scss" scoped>
 .box {
-  height: 100%;
   display: flex;
   flex-flow: column nowrap;
-  position: relative;
 }
 .search-title {
   padding: 20rpx 20rpx 0 20rpx;
@@ -210,6 +249,9 @@ export default {
   padding: 0 24rpx 24rpx 24rpx;
   text-align: center;
   flex: 1;
+  .scrollView {
+    padding-top: 10rpx;
+  }
 }
 .list-item {
   text-align: left;
@@ -217,5 +259,11 @@ export default {
   height: 80rpx;
   line-height: 80rpx;
   border-bottom: 1px solid #e4e7ed;
+}
+.searchNull {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%);
 }
 </style>
