@@ -144,6 +144,18 @@
 					"style": {
 						"navigationBarTitleText": "个人中心"
 					}
+				},
+				{
+					"path": "myTab/pages/myReport",
+					"style": {
+						"navigationBarTitleText": "我的报备"
+					}
+				},
+				{
+					"path": "myTab/pages/reportDetails",
+					"style": {
+						"navigationBarTitleText": "报备详情"
+					}
 				}
 			]
 		},

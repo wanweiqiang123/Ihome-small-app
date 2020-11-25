@@ -206,15 +206,6 @@
     padding-bottom: 10rpx;
     background-color: #F1F1F1;
 
-    .square {
-      vertical-align: super;
-      font-size: 18rpx;
-    }
-
-    .price-color {
-      color: #FD4918;
-    }
-
     .top-wrapper {
       width: 100%;
       box-sizing: border-box;
@@ -315,7 +306,7 @@
           align-items: center;
           box-sizing: border-box;
           padding: 0rpx 30rpx;
-          border: 2rpx solid #F1F1F1;
+          border-bottom: 1rpx solid #F1F1F1;
 
           .title {
             flex: 1;
