@@ -36,11 +36,11 @@
       </view>
       <view>
         <u-grid :col="4" :border="false" @click="goToItem">
-          <u-grid-item index="projectList">
+          <u-grid-item index="homeTab/pages/projectList">
             <u-icon name="hourglass" :size="66"></u-icon>
             <view class="grid-text">新房楼盘</view>
           </u-grid-item>
-          <u-grid-item>
+          <u-grid-item index="myTab/pages/myReport">
             <u-icon name="star" :size="66"></u-icon>
             <view class="grid-text">我的报备</view>
           </u-grid-item>
@@ -131,9 +131,9 @@
         this.queryPageParameters.location = this.locationList[index].text;
       },
       goToItem(index) {
-        // console.log(index);
+        console.log(index);
         uni.navigateTo({
-          url: `/intermediaryPackage/homeTab/pages/${index}`,
+          url: `/intermediaryPackage/${index}`,
         })
       },
       // 查看项目详情
