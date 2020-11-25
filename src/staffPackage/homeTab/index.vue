@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-24 16:15:27
+ * @LastEditTime: 2020-11-25 09:11:41
 -->
 <template>
   <StaffTabBar>
@@ -122,14 +122,14 @@ export default {
           item: "收款管理",
         },
         {
-          icon: "integral",
-          path: "",
-          item: "报备确认",
+          icon: "fingerprint",
+          path: "/staffPackage/noticeCode/index",
+          item: "查询优惠码",
         },
         {
-          icon: "integral",
-          path: "",
-          item: "报备确认",
+          icon: "order",
+          path: "/staffPackage/channelAccount/index",
+          item: "渠道结佣情况",
         },
       ],
     };

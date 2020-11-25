@@ -221,6 +221,24 @@
 					"style": {
 						"navigationBarTitleText": "购房优惠收款"
 					}
+				},
+				{
+					"path": "noticeCode/index",
+					"style": {
+						"navigationBarTitleText": "查询购房优惠码"
+					}
+				},
+				{
+					"path": "channelAccount/index",
+					"style": {
+						"navigationBarTitleText": "渠道结佣情况"
+					}
+				},
+				{
+					"path": "cycleAccount/index",
+					"style": {
+						"navigationBarTitleText": "联动周期结佣情况"
+					}
 				}
 			]
 		}
