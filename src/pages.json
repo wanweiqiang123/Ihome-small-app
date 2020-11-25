@@ -140,6 +140,12 @@
 					}
 				},
 				{
+					"path": "messageTab/pages/messageIndex",
+					"style": {
+						"navigationBarTitleText": "项目通知"
+					}
+				},
+				{
 					"path": "myTab/index",
 					"style": {
 						"navigationBarTitleText": "个人中心"
