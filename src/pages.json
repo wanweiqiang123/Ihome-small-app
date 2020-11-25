@@ -152,6 +152,12 @@
 					}
 				},
 				{
+					"path": "myTab/pages/uploadAttachment",
+					"style": {
+						"navigationBarTitleText": "上传附件"
+					}
+				},
+				{
 					"path": "myTab/pages/reportDetails",
 					"style": {
 						"navigationBarTitleText": "报备详情"

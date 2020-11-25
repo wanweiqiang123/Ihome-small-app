@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-24 09:58:09
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-24 15:12:36
+ * @LastEditTime: 2020-11-25 10:55:55
 -->
 <template>
   <view class="report-client-wrapper">
@@ -67,7 +67,7 @@
           </u-form>
         </view>
       </view>
-      <view class="card margin-top-20">
+      <view class="card margin-top-20" v-if="!pageType">
         <view class="client-info">
           <view class="title">报备信息</view>
         </view>
@@ -89,9 +89,37 @@
           </u-form>
         </view>
       </view>
+      <view class="card margin-top-20" v-else>
+        <view class="client-info">
+          <view class="title">房产信息</view>
+        </view>
+        <view class="form-wrapper">
+          <u-form :model="estateForm" ref="estateForm" :label-width="190">
+            <u-form-item label="楼盘名称" right-icon="arrow-right">
+              <u-input
+                v-model="estateForm.estateName"
+                placeholder="楼盘名称" disabled :clearable="false" input-align="right" />
+            </u-form-item>
+            <u-form-item label="认购栋座" right-icon="arrow-right" class="hide-icon">
+              <u-input
+                @click="selectEstate('roof')"
+                v-model="estateForm.roof" type="select"
+                placeholder="认购栋座" :clearable="false" input-align="right" />
+            </u-form-item>
+            <u-form-item label="认购房号" right-icon="arrow-right" class="hide-icon">
+              <u-input
+                @click="selectEstate('room')"
+                v-model="estateForm.room" type="select"
+                placeholder="认购房号" :clearable="false" input-align="right" />
+            </u-form-item>
+          </u-form>
+        </view>
+      </view>
     </view>
     <view class="report-bottom-btn">
-      <u-button type="primary" shape="circle" @click="handleReport">报备</u-button>
+      <u-button type="primary" shape="circle" @click="handleReport">
+        {{pageType ? '登记' : '报备'}}
+      </u-button>
     </view>
     <u-picker v-model="showTime" mode="time" :params="timeParams" @confirm="handleConfirm"></u-picker>
     <u-popup v-model="showClient" mode="right" length="100%">
@@ -111,6 +139,7 @@
         <view class="client-phone">{{item.phone}}</view>
       </view>
     </u-popup>
+    <u-select v-model="selectEstateWin" :list="estateList" @confirm="confirmEstate"></u-select>
   </view>
 </template>
 
@@ -118,6 +147,7 @@
   export default {
     data() {
       return {
+        pageType: '',
         queryPageParameters: {
           projectName: ''
         },
@@ -162,10 +192,27 @@
             sex: 'female',
             phone: '13222222222'
           }
-        ]
+        ],
+        estateForm: {
+          estateName: '',
+          roof: '',
+          room: ''
+        },
+        currentSelectType: '',
+        selectEstateWin: false,
+        estateList: [],
       };
     },
-    onLoad() {
+    onLoad(option) {
+      console.log(option);
+      if (option.type && option.type === 'dealReg') {
+        uni.setNavigationBarTitle({
+          title: '成交登记'
+        })
+        this.pageType = 'dealReg';
+      } else {
+        this.pageType = '';
+      }
     },
     methods: {
       // 导入客户
@@ -187,11 +234,64 @@
         // console.log(value);
         this.visitForm.time = `${value.year}-${value.month}-${value.day}  ${value.hour}:${value.minute}:${value.second}`
       },
-      // 报备
+      // 成交登记-选择栋座和房号
+      selectEstate(type) {
+        if (type === 'roof') {
+          // 选择栋座
+          this.currentSelectType = 'roof';
+          this.estateList = [
+            {
+              value: '1',
+              label: '1栋'
+            },
+            {
+              value: '2',
+              label: '2栋'
+            },
+            {
+              value: '3',
+              label: '3栋'
+            }
+          ]
+        } else {
+          // 选择房号
+          this.currentSelectType = 'room';
+          this.estateList = [
+            {
+              value: '1',
+              label: '101'
+            },
+            {
+              value: '2',
+              label: '201'
+            },
+            {
+              value: '3',
+              label: '301'
+            }
+          ]
+        }
+        this.selectEstateWin = true
+      },
+      // 确认选择栋座/房号
+      confirmEstate(e) {
+        if (this.currentSelectType === 'roof') {
+          this.estateForm.roof = e.label;
+        } else if (this.currentSelectType === 'room') {
+          this.estateForm.room = e.label;
+        }
+      },
+      // 成交登记/报备客户
       handleReport() {
-        uni.redirectTo({
-          url: `/intermediaryPackage/homeTab/index`,
-        })
+        if (this.pageType === 'dealReg') {
+          uni.redirectTo({
+            url: `/intermediaryPackage/myTab/pages/myReport`,
+          })
+        } else {
+          uni.redirectTo({
+            url: `/intermediaryPackage/homeTab/index`,
+          })
+        }
       }
     }
   };

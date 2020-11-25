@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-24 15:22:09
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-24 16:22:09
+ * @LastEditTime: 2020-11-25 10:55:55
 -->
 <template>
   <view class="my-report-wrapper">
@@ -36,8 +36,8 @@
           <view class="time">2020-08-27 19:12:20</view>
         </view>
         <view class="item-btn">
-          <u-button size="mini" shape="circle" type="error" v-show="current === 1">成交登记</u-button>
-          <u-button size="mini" shape="circle" type="warning">上传附件</u-button>
+          <u-button size="mini" shape="circle" type="error" @click="handleDealRegister" v-show="current === 1">成交登记</u-button>
+          <u-button size="mini" shape="circle" type="warning" @click="uploadAttachment">上传附件</u-button>
           <u-button size="mini" shape="circle" type="primary" @click="viewDetails">查看详情</u-button>
         </view>
       </view>
@@ -75,6 +75,18 @@
       // 切换tabs
       changeTabs(index) {
         this.current = index;
+      },
+      // 成交登记
+      handleDealRegister() {
+        uni.navigateTo({
+          url: `/intermediaryPackage/homeTab/pages/reportClient?type=dealReg`,
+        })
+      },
+      // 上传附件
+      uploadAttachment() {
+        uni.navigateTo({
+          url: `/intermediaryPackage/myTab/pages/uploadAttachment`,
+        })
       },
       // 查看详情
       viewDetails() {
