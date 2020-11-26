@@ -21,7 +21,7 @@
         <view>18600002222</view>
       </view>
       <view class="my-item-wrapper">
-        <view class="my-item" v-for="item in itemList" :key="item.iconName">
+        <view class="my-item" v-for="item in itemList" :key="item.iconName" @click="goToItem(item)">
           <view class="item-icon">
             <u-icon :name="item.iconName" size="46"></u-icon>
           </view>
@@ -71,19 +71,23 @@ export default {
       itemList: [
         {
           iconName: 'setting-fill',
-          name: '修改密码'
+          name: '修改密码',
+          url: ''
         },
         {
           iconName: 'list',
-          name: '结佣列表'
+          name: '结佣列表',
+          url: '/intermediaryPackage/myTab/pages/commissionList'
         },
         {
           iconName: 'star-fill',
-          name: '我的收藏'
+          name: '我的收藏',
+          url: ''
         },
         {
           iconName: 'clock-fill',
-          name: '报备成交记录'
+          name: '报备成交记录',
+          url: ''
         }
       ],
       manageList: [
@@ -121,6 +125,15 @@ export default {
     handleSubmit() {
       this.showPopup = false;
       this.$storageTool.loginOut();
+    },
+    // 跳转到具体页面
+    goToItem(item) {
+      if (!item.url) {
+        return
+      }
+      uni.navigateTo({
+        url: item.url
+      });
     }
   },
 };

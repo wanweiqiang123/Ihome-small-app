@@ -182,6 +182,24 @@
 					}
 				},
 				{
+					"path": "clientTab/pages/enterClient",
+					"style": {
+						"navigationBarTitleText": "录入客户"
+					}
+				},
+				{
+					"path": "clientTab/pages/clientDetails",
+					"style": {
+						"navigationBarTitleText": "客户详情"
+					}
+				},
+				{
+					"path": "clientTab/pages/followUp",
+					"style": {
+						"navigationBarTitleText": "写跟进"
+					}
+				},
+				{
 					"path": "messageTab/index",
 					"style": {
 						"navigationBarTitleText": "消息中心"
@@ -215,6 +233,12 @@
 					"path": "myTab/pages/reportDetails",
 					"style": {
 						"navigationBarTitleText": "报备详情"
+					}
+				},
+				{
+					"path": "myTab/pages/commissionList",
+					"style": {
+						"navigationBarTitleText": "结佣列表"
 					}
 				}
 			]
