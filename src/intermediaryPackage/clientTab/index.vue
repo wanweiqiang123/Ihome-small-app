@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-17 10:08:05
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-17 11:11:55
+ * @LastEditTime: 2020-11-25 14:26:33
 -->
 <template>
   <IntermediaryTabBar>
@@ -18,9 +18,9 @@
           :show-action="false"
           placeholder="请输入客户姓名/电话"
           v-model="queryPageParameters.projectName"></u-search>
-        <u-icon name="plus" size="45"></u-icon>
+        <u-icon name="plus" size="45" @click="showAddWin = true"></u-icon>
       </view>
-      <view class="client-content" v-for="item in [1, 2, 3, 4, 5, 6]" :key="item">
+      <view class="client-content" v-for="item in [1, 2, 3, 4, 5, 6]" :key="item" @click="viewClientDetails">
         <view class="client-avatar">
           <u-image
             width="150rpx"
@@ -34,6 +34,15 @@
           <view class="client-time">录入时间：2020-08-16 10:00</view>
         </view>
       </view>
+      <u-mask
+        @click="showAddWin = false"
+        :show="showAddWin"
+        :duration="400"
+        :zoom="true" :custom-style="{background: 'rgba(255, 255, 255, 0.1)'}"></u-mask>
+      <view class="client-add-wrapper" v-if="showAddWin">
+        <view class="item border-bottom" @click="handleAdd('report')">客户报备</view>
+        <view class="item" @click="handleAdd('enter')">录入客户</view>
+      </view>
     </view>
   </IntermediaryTabBar>
 </template>
@@ -45,10 +54,31 @@ export default {
       queryPageParameters: {
         projectName: ''
       },
+      showAddWin: false
     };
   },
   onLoad() {},
-  methods: {},
+  methods: {
+    // 录入客户/报备客户
+    handleAdd(type) {
+      if (type === 'report') {
+        uni.navigateTo({
+          url: `/intermediaryPackage/clientTab/pages/enterClient`
+        });
+      } else if (type === 'enter') {
+        uni.navigateTo({
+          url: `/intermediaryPackage/clientTab/pages/enterClient`
+        });
+      }
+      this.showAddWin = false;
+    },
+    // 查看客户详情
+    viewClientDetails() {
+      uni.navigateTo({
+        url: `/intermediaryPackage/clientTab/pages/clientDetails`
+      });
+    }
+  },
 };
 </script>
 
@@ -102,6 +132,28 @@ export default {
           font-size: 38rpx;
           font-weight: 600;
         }
+      }
+    }
+
+    .client-add-wrapper {
+      width: 250rpx;
+      background-color: #FFFFFF;
+      box-shadow: 8rpx 8rpx 6rpx #A9A9A9;
+      box-sizing: border-box;
+      position: fixed;
+      top: 75rpx;
+      right: 45rpx;
+      z-index: 11177;
+
+      .item {
+        height: 80rpx;
+        line-height: 80rpx;
+        box-sizing: border-box;
+        text-align: center;
+      }
+
+      .border-bottom {
+        border-bottom: 2rpx solid #797979;
       }
     }
   }
