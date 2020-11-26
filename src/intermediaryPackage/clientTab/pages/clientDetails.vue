@@ -83,7 +83,7 @@
         </u-time-line>
       </view>
       <view class="time-btn">
-        <u-button type="primary" size="medium">写跟进</u-button>
+        <u-button type="primary" size="medium" @click="handleFollow">写跟进</u-button>
       </view>
     </view>
     <view class="details-content-wrapper" v-show="current === 3">
@@ -165,6 +165,12 @@ export default {
     viewDetails() {
       uni.navigateTo({
         url: `/intermediaryPackage/myTab/pages/reportDetails`
+      });
+    },
+    // 写跟进
+    handleFollow() {
+      uni.navigateTo({
+        url: `/intermediaryPackage/clientTab/pages/followUp`
       });
     }
   },
@@ -258,7 +264,7 @@ export default {
 
       .details-report-wrapper {
         width: 100%;
-        padding-bottom: 20rpx;
+        padding: 20rpx 5rpx;
         border-bottom: 2rpx solid #F2F2F2;
 
         .report-title {

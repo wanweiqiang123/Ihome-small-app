@@ -51,11 +51,11 @@
         uni.setNavigationBarTitle({
           title: '项目通知'
         })
-      } else if (this.typeId === '1') {
+      } else if (this.typeId === '2') {
         uni.setNavigationBarTitle({
           title: '报备带看提醒'
         })
-      } else if (this.typeId === '1') {
+      } else if (this.typeId === '3') {
         uni.setNavigationBarTitle({
           title: '结佣提醒'
         })
