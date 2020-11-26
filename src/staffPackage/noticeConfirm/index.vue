@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 17:32:25
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-24 09:25:09
+ * @LastEditTime: 2020-11-26 10:37:45
 -->
 <template>
   <view class="notice">
@@ -133,17 +133,19 @@ export default {
   }
 }
 .form-content {
-  padding: 20rpx 30rpx 0;
+  padding: 20rpx 30rpx 106rpx;
   .form-color {
     background: #fff;
   }
 }
 .btn-container {
   position: fixed;
-  bottom: 6rpx;
+  bottom: 0;
   left: 0;
   right: 0;
   z-index: 10;
+  height: 90rpx;
+  box-sizing: content-box;
   padding-top: 10rpx;
   padding-left: 30rpx;
   padding-right: 30rpx;

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-17 18:10:07
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-24 09:26:34
+ * @LastEditTime: 2020-11-26 10:41:35
 -->
 <template>
   <view class="client-container safe-area-inset-bottom">
@@ -187,7 +187,7 @@ export default {
   }
 }
 .form-content {
-  padding: 20rpx 30rpx 102rpx;
+  padding: 20rpx 30rpx 110rpx;
 }
 .bg-color {
   background: #fff;
@@ -200,15 +200,18 @@ export default {
     justify-content: space-between;
     align-items: center;
     height: 92rpx;
-    padding: 0 34rpx;
+    padding: 0 20rpx;
+    color: $u-type-primary;
   }
 }
 .btn-container {
   position: fixed;
-  bottom: 6rpx;
+  bottom: 0;
   left: 0;
   right: 0;
   z-index: 10;
+  height: 90rpx;
+  box-sizing: content-box;
   padding-top: 10rpx;
   padding-left: 30rpx;
   padding-right: 30rpx;

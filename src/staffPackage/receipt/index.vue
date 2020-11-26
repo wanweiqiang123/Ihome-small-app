@@ -4,11 +4,11 @@
  * @Author: ywl
  * @Date: 2020-11-24 14:10:55
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-24 14:48:08
+ * @LastEditTime: 2020-11-26 09:21:38
 -->
 <template>
   <view class="receipt safe-area-inset-bottom">
-    <view class="fliter-container">
+    <view class="fliter">
       <view class="fliter-btn">筛选</view>
     </view>
     <view class="item-list">
@@ -56,17 +56,17 @@ export default {
   background: $u-bg-color;
   min-height: 100vh;
 }
-.fliter-container {
+.fliter {
   display: flex;
   justify-content: flex-end;
-  background: #fff;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 100;
+  background: #fff;
   .fliter-btn {
-    padding: 12rpx 16rpx;
+    padding: 16rpx 20rpx;
   }
 }
 .item-list {

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-24 11:26:19
+ * @LastEditTime: 2020-11-26 10:40:50
 -->
 <template>
   <view class="notice safe-area-inset-bottom">
@@ -334,7 +334,7 @@ export default {
   }
 }
 .form-content {
-  padding: 20rpx 30rpx 102rpx;
+  padding: 20rpx 30rpx 110rpx;
   .form-color {
     background: #fff;
     &:nth-child(2),
@@ -367,9 +367,11 @@ export default {
 }
 .notice-btn {
   position: fixed;
-  bottom: 6rpx;
+  bottom: 0;
   left: 0;
   right: 0;
+  height: 90rpx;
+  box-sizing: content-box;
   padding-top: 10rpx;
   padding-left: 30rpx;
   padding-right: 30rpx;

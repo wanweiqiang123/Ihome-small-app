@@ -283,6 +283,12 @@
 					}
 				},
 				{
+					"path": "performanceEdit/index",
+					"style": {
+						"navigationBarTitleText": "业绩申报"
+					}
+				},
+				{
 					"path": "payment/index",
 					"style": {
 						"navigationBarTitleText": "结佣付款列表"

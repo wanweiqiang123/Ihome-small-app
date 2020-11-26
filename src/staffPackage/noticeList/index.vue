@@ -4,16 +4,10 @@
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-25 17:31:27
+ * @LastEditTime: 2020-11-26 16:26:08
 -->
 <template>
   <view class="notice safe-area-inset-bottom">
-    <view class="fliter-container">
-      <view
-        class="fliter-btn"
-        @click="isShow = true"
-      >筛选</view>
-    </view>
     <view class="item-container">
       <view
         class="notice-item"
@@ -38,6 +32,13 @@
         type="primary"
         @click="handleGoCreate()"
       >生成优惠告知书</u-button>
+    </view>
+    <!-- 筛选按钮 -->
+    <view
+      class="fliter"
+      @click="isShow = true"
+    >
+      <view class="fliter-btn">筛选</view>
     </view>
     <!-- 筛选弹出 -->
     <PopupSearch
@@ -187,23 +188,21 @@ export default {
   background: $u-bg-color;
   min-height: 100vh;
 }
-.fliter-container {
-  display: flex;
-  justify-content: flex-end;
-  background: #fff;
+.fliter {
   position: fixed;
-  padding: 0 8rpx;
-  top: 0;
-  left: 0;
+  top: 30rpx;
   right: 0;
   z-index: 100;
+  color: #fff;
+  background: #f6d45b;
+  border-radius: 50rpx 0 0 50rpx;
   .fliter-btn {
-    padding: 16rpx;
-    font-size: 28rpx;
+    padding: 20rpx 30rpx;
+    font-size: 30rpx;
   }
 }
 .item-container {
-  padding: 90rpx 30rpx 102rpx;
+  padding: 20rpx 30rpx 116rpx;
   .notice-item {
     display: flex;
     justify-content: space-between;
@@ -226,12 +225,15 @@ export default {
 }
 .notice-btn {
   position: fixed;
-  bottom: 6rpx;
+  bottom: 0;
   left: 0;
   right: 0;
+  box-sizing: content-box;
+  height: 90rpx;
   padding-top: 10rpx;
   padding-left: 30rpx;
   padding-right: 30rpx;
   background: #fff;
+  z-index: 10;
 }
 </style>

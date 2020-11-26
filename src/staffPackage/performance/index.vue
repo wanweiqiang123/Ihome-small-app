@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 14:54:27
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-25 15:48:45
+ * @LastEditTime: 2020-11-26 11:30:40
 -->
 <template>
   <view class="performance safe-area-inset-bottom">
@@ -67,6 +67,7 @@
       <u-button
         shape="circle"
         type="primary"
+        @click="handleGo()"
       >业绩申报</u-button>
     </view>
     <!-- 筛选弹出 -->
@@ -159,6 +160,13 @@ export default {
       },
     };
   },
+  methods: {
+    handleGo() {
+      uni.navigateTo({
+        url: "/staffPackage/performanceEdit/index",
+      });
+    },
+  },
 };
 </script>
 
@@ -182,9 +190,11 @@ export default {
   }
   &-btn {
     position: fixed;
-    bottom: 6rpx;
+    bottom: 0;
     left: 0;
     right: 0;
+    box-sizing: content-box;
+    height: 90rpx;
     padding-top: 10rpx;
     padding-left: 30rpx;
     padding-right: 30rpx;
@@ -194,7 +204,7 @@ export default {
 }
 .performance-list {
   padding-top: 80rpx;
-  padding-bottom: 102rpx;
+  padding-bottom: 90rpx;
 }
 .ih-card {
   &-content {

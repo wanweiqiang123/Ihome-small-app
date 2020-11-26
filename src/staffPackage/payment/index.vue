@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 16:09:28
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-25 18:03:13
+ * @LastEditTime: 2020-11-26 10:40:29
 -->
 <template>
   <view class="payment safe-area-inset-bottom">
@@ -147,13 +147,15 @@ export default {
   }
   &-list {
     padding-top: 80rpx;
-    padding-bottom: 102rpx;
+    padding-bottom: 90rpx;
   }
   &-btn {
     position: fixed;
-    bottom: 6rpx;
+    bottom: 0;
     left: 0;
     right: 0;
+    height: 90rpx;
+    box-sizing: content-box;
     padding-top: 10rpx;
     padding-left: 30rpx;
     padding-right: 30rpx;
