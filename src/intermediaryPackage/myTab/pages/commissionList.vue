@@ -85,7 +85,7 @@ export default {
     // 发起结佣申请
     sponsorCommission() {
       uni.navigateTo({
-        url: ``
+        url: `/intermediaryPackage/myTab/pages/initiateCommission`
       });
     },
     // 选择

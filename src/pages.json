@@ -240,6 +240,12 @@
 					"style": {
 						"navigationBarTitleText": "结佣列表"
 					}
+				},
+				{
+					"path": "myTab/pages/initiateCommission",
+					"style": {
+						"navigationBarTitleText": "发起结佣申请"
+					}
 				}
 			]
 		},
