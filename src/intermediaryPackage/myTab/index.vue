@@ -104,12 +104,12 @@ export default {
         {
           iconName: 'account-fill',
           name: '经纪人管理',
-          url: ''
+          url: '/intermediaryPackage/myTab/channelPage/brokerList'
         },
         {
           iconName: 'rmb-circle-fill',
           name: '项目结佣情况',
-          url: ''
+          url: '/intermediaryPackage/myTab/pages/projectCommDetails'
         },
         {
           iconName: 'list-dot',

@@ -300,6 +300,18 @@
 					"style": {
 						"navigationBarTitleText": "新增/管理结佣帐号"
 					}
+				},
+				{
+					"path": "myTab/channelPage/brokerList",
+					"style": {
+						"navigationBarTitleText": "经纪人列表"
+					}
+				},
+				{
+					"path": "myTab/channelPage/addBroker",
+					"style": {
+						"navigationBarTitleText": "新增/管理经纪人"
+					}
 				}
 			]
 		},
