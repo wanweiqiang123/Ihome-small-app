@@ -82,7 +82,7 @@ export default {
         {
           iconName: 'star-fill',
           name: '我的收藏',
-          url: ''
+          url: '/intermediaryPackage/myTab/pages/favoritesList'
         },
         {
           iconName: 'clock-fill',

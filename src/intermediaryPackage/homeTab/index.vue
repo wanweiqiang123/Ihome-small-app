@@ -227,6 +227,7 @@
         padding: 20rpx 0rpx;
         display: flex;
         flex-direction: row;
+        align-items: center;
         border-bottom: 1px solid #f2f2f2;
 
         .content-right {

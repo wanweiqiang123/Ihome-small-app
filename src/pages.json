@@ -264,6 +264,12 @@
 					"style": {
 						"navigationBarTitleText": "项目结佣情况"
 					}
+				},
+				{
+					"path": "myTab/pages/favoritesList",
+					"style": {
+						"navigationBarTitleText": "我的收藏"
+					}
 				}
 			]
 		},
