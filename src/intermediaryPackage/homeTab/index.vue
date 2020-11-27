@@ -48,7 +48,7 @@
             <u-icon name="account" :size="66"></u-icon>
             <view class="grid-text">报备客户</view>
           </u-grid-item>
-          <u-grid-item>
+          <u-grid-item index="myTab/pages/dealList">
             <u-icon name="bag" :size="66"></u-icon>
             <view class="grid-text">成交记录</view>
           </u-grid-item>
@@ -227,6 +227,7 @@
         padding: 20rpx 0rpx;
         display: flex;
         flex-direction: row;
+        align-items: center;
         border-bottom: 1px solid #f2f2f2;
 
         .content-right {

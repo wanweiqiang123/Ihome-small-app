@@ -264,6 +264,42 @@
 					"style": {
 						"navigationBarTitleText": "项目结佣情况"
 					}
+				},
+				{
+					"path": "myTab/pages/favoritesList",
+					"style": {
+						"navigationBarTitleText": "我的收藏"
+					}
+				},
+				{
+					"path": "myTab/pages/dealList",
+					"style": {
+						"navigationBarTitleText": "报备成交列表"
+					}
+				},
+				{
+					"path": "myTab/channelPage/companyInfo",
+					"style": {
+						"navigationBarTitleText": "公司信息"
+					}
+				},
+				{
+					"path": "myTab/channelPage/editCompany",
+					"style": {
+						"navigationBarTitleText": "修改公司信息"
+					}
+				},
+				{
+					"path": "myTab/channelPage/commissionAccount",
+					"style": {
+						"navigationBarTitleText": "结佣帐号列表"
+					}
+				},
+				{
+					"path": "myTab/channelPage/addAccount",
+					"style": {
+						"navigationBarTitleText": "新增/管理结佣帐号"
+					}
 				}
 			]
 		},

@@ -4,38 +4,47 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-24 18:03:00
+ * @LastEditTime: 2020-11-27 16:33:52
 -->
 <template>
   <view>
     <CustomerTabBar>
-      <u-card
-        v-for="(item) in data"
-        :key="item.id"
-        class="cardMsg"
-        :title="item.title"
-        :sub-title="item.subTitle"
-        :thumb="thumb"
-      >
-        <view slot="body">
-          <view class="u-body-item u-flex u-border-bottom u-col-between u-p-t-0">
-            <view>{{item.msg}}</view>
-          </view>
-        </view>
-        <view
-          class="cardfoot"
-          slot="foot"
+      <view class="box">
+        <u-card
+          :border="false"
+          v-for="item in data"
+          :key="item.id"
+          class="ih-card"
+          :show-head="false"
+          :foot-border-top="false"
+          :foot-style="{
+            padding: '10rpx 30rpx'
+          }"
         >
-          <span class="hint">您有一份协议待签署，请尽快处理</span>
-          <u-button
-            throttle-time="500"
-            shape="circle"
-            type="primary"
-            size="default"
-            @click="routerTo(item)"
-          >{{item.button}}</u-button>
-        </view>
-      </u-card>
+          <view slot="body">
+            <view class="ih-card-content">
+              <view>
+                <view class="receipt-title">{{item.title}}</view>
+                <view>{{item.msg}}</view>
+              </view>
+              <view>{{item.subTitle}}</view>
+            </view>
+          </view>
+          <view
+            class="ih-card-foot"
+            slot="foot"
+          >
+            <span class="font-text">您有一份协议待签署，请尽快处理</span>
+            <u-button
+              throttle-time="500"
+              shape="circle"
+              type="primary"
+              size="mini"
+              @click="routerTo(item)"
+            >{{item.button}}</u-button>
+          </view>
+        </u-card>
+      </view>
     </CustomerTabBar>
   </view>
 </template>
@@ -113,22 +122,29 @@ export default {
 };
 </script>
 
-<style lang="scss">
-.cardMsg {
-  /deep/ .u-card__head--left__title {
-    font-weight: bold;
-    font-size: 18px !important;
-  }
-  .cardfoot {
+<style lang="scss" scoped>
+.box {
+  overflow: hidden;
+  min-height: 100vh;
+  background-color: #f1f1f1;
+}
+.ih-card {
+  &-content {
     display: flex;
     justify-content: space-between;
-    /deep/ .u-btn {
-      font-size: 28rpx !important;
-      height: 50rpx !important;
-    }
-    .hint {
-      color: $u-type-error-dark;
-    }
+  }
+  .receipt-title {
+    font-weight: bold;
+    font-size: 40rpx;
+    margin-bottom: 10rpx;
+  }
+  &-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .font-text {
+    color: $u-type-error;
   }
 }
 </style>

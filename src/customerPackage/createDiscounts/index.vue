@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-20 15:16:39
+ * @LastEditTime: 2020-11-26 17:46:45
 -->
 <template>
   <view>
@@ -112,7 +112,7 @@
             :model="item"
             :ref="`uForm`"
             class="owner-msg"
-            label-width="150"
+            label-width="300"
           >
             <u-form-item
               class="owner-msg-item"
@@ -427,7 +427,6 @@ export default {
   &-msg {
     width: 95%;
     &-item {
-      height: 100rpx;
       display: flex;
       justify-content: flex-start;
       align-items: center;
