@@ -288,6 +288,18 @@
 					"style": {
 						"navigationBarTitleText": "修改公司信息"
 					}
+				},
+				{
+					"path": "myTab/channelPage/commissionAccount",
+					"style": {
+						"navigationBarTitleText": "结佣帐号列表"
+					}
+				},
+				{
+					"path": "myTab/channelPage/addAccount",
+					"style": {
+						"navigationBarTitleText": "新增/管理结佣帐号"
+					}
 				}
 			]
 		},

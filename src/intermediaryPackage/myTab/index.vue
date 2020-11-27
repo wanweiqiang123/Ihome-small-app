@@ -99,7 +99,7 @@ export default {
         {
           iconName: 'tags-fill',
           name: '结佣账号管理',
-          url: ''
+          url: '/intermediaryPackage/myTab/channelPage/commissionAccount'
         },
         {
           iconName: 'account-fill',
