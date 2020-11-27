@@ -246,6 +246,12 @@
 					"style": {
 						"navigationBarTitleText": "发起结佣申请"
 					}
+				},
+				{
+					"path": "myTab/pages/commissionDetails",
+					"style": {
+						"navigationBarTitleText": "结佣详情"
+					}
 				}
 			]
 		},

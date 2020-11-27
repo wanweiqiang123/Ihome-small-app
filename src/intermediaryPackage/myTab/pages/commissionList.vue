@@ -21,7 +21,7 @@
       <u-icon name="grid-fill" color="#3478F7" size="38" @click="showSearchWin = true"></u-icon>
     </view>
     <view class="list-wrapper">
-      <view class="list-item" v-for="item in [1,2,3,4,5,6,7,8,9,10]" :key="item">
+      <view class="list-item" v-for="item in [1,2,3,4,5,6,7,8,9,10]" :key="item" @click="viewCommissionDetails">
         <view class="item-code u-padding-bottom-20">
           <view class="code">结佣申请单号：CJ38135843321</view>
           <u-button type="primary" size="mini">审核中</u-button>
@@ -91,6 +91,12 @@ export default {
     // 选择
     selectType(item) {
       item.checked = !item.checked;
+    },
+    // 结佣详情
+    viewCommissionDetails() {
+      uni.navigateTo({
+        url: `/intermediaryPackage/myTab/pages/commissionDetails`
+      });
     }
   },
 };
