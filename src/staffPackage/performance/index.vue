@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 14:54:27
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-26 11:30:40
+ * @LastEditTime: 2020-11-26 17:28:59
 -->
 <template>
   <view class="performance safe-area-inset-bottom">
@@ -12,30 +12,37 @@
       <u-search
         style="flex: 1"
         :show-action="false"
+        bg-color="#fff"
         placeholder="日照香炉生紫烟"
         v-model="keyword"
         :clearabled="true"
       ></u-search>
-      <view class="filter-btn">
-        <span @click="isShow = true">筛选</span>
+      <view
+        class="filter-btn"
+        @click="isShow = true"
+      >
+        <span>筛选</span>
       </view>
     </view>
     <view class="performance-list">
       <u-card
         :border="false"
-        :show-head="false"
         class="ih-card"
+        padding="15"
+        margin="20rpx 30rpx"
         v-for="i in 8"
         :key="i"
       >
-        <view
-          slot="body"
-          class="ih-card-content"
-        >
+        <view slot="head">
           <view class="item-title">
             <text class="title-text">成交报告编号：CJ38135843321</text>
             <text class="title-icon">待确认</text>
           </view>
+        </view>
+        <view
+          slot="body"
+          class="ih-card-content"
+        >
           <view>项目周期：保利20200120-20200220</view>
           <view>合同类型：分销成交</view>
           <view>客户名称：陈先生</view>
@@ -178,15 +185,22 @@ export default {
     position: fixed;
     display: flex;
     align-items: center;
-    padding: 10rpx 12rpx;
-    background: #fff;
+    padding: 10rpx 0 8rpx 30rpx;
+    background: $u-bg-color;
     top: 0;
     left: 0;
     right: 0;
     z-index: 100;
   }
   .filter-btn {
-    padding: 0 10rpx;
+    padding: 0 44rpx 0 47rpx;
+    margin-left: 16rpx;
+    width: 150rpx;
+    line-height: 71rpx;
+    background: #fcd639;
+    color: #fff;
+    border-radius: 50rpx 0 0 50rpx;
+    font-size: 30rpx;
   }
   &-btn {
     position: fixed;
@@ -203,12 +217,14 @@ export default {
   }
 }
 .performance-list {
-  padding-top: 80rpx;
+  padding-top: 70rpx;
   padding-bottom: 90rpx;
 }
 .ih-card {
   &-content {
-    line-height: 50rpx;
+    line-height: 42rpx;
+    color: #606266;
+    font-size: 26rpx;
   }
   &-foot {
     text-align: right;
@@ -221,8 +237,8 @@ export default {
     align-items: center;
     justify-content: space-between;
     .title-icon {
-      padding: 6rpx;
-      border-radius: 10rpx;
+      padding: 5rpx 10rpx;
+      border-radius: 4rpx;
       color: #fff;
       white-space: nowrap;
       background: $u-type-success;
@@ -231,9 +247,11 @@ export default {
       line-height: 1;
     }
     .title-text {
+      white-space: nowrap;
       font-weight: bold;
-      font-size: 32rpx;
-      flex: 1;
+      font-size: 30rpx;
+      font-weight: 600;
+      line-height: 48rpx;
     }
   }
 }

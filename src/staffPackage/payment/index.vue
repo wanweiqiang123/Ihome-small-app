@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 16:09:28
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-26 10:40:29
+ * @LastEditTime: 2020-11-26 17:27:13
 -->
 <template>
   <view class="payment safe-area-inset-bottom">
@@ -12,48 +12,57 @@
       <u-search
         style="flex: 1"
         :show-action="false"
+        bg-color="#fff"
         placeholder="日照香炉生紫烟"
         v-model="keyword"
         :clearabled="true"
       ></u-search>
-      <view class="filter-btn">
-        <span @click="isShow = true">筛选</span>
+      <view
+        class="filter-btn"
+        @click="isShow = true"
+      >
+        <text>筛选</text>
       </view>
     </view>
     <view class="payment-list">
       <u-card
         :border="false"
-        :show-head="false"
+        :foot-border-top="false"
+        padding="15"
+        margin="20rpx 30rpx"
+        :foot-style="{paddingTop: '0'}"
         class="ih-card"
         v-for="i in 8"
         :key="i"
       >
-        <view
-          slot="body"
-          class="ih-card-content"
-        >
+        <view slot="head">
           <view class="item-title">
             <text class="title-text">付款申请单号：CJ38135843321</text>
             <text class="title-icon">已通过</text>
             <!-- <text class="title-icon bg-warning">已通过</text> -->
-            <view>详情
-              <u-icon
-                name="arrow-right"
-                size="28"
-              ></u-icon>
-            </view>
           </view>
+        </view>
+        <view
+          slot="body"
+          class="ih-card-content"
+        >
           <view>渠道公司：XXX公司</view>
           <view>申请佣金：1000.00</view>
           <view>扣除金额：100.00</view>
           <view>实结佣金：900.00</view>
+          <view>发起人：陈案场(员工)</view>
+          <view>申请时间：2020-11-24 16:09:28</view>
         </view>
         <view
           slot="foot"
           class="ih-card-foot"
         >
-          <view>发起人：陈案场(员工)</view>
-          <view>申请时间：2020-11-24 16:09:28</view>
+          <view>详情
+            <u-icon
+              name="arrow-right"
+              size="28"
+            ></u-icon>
+          </view>
         </view>
       </u-card>
     </view>
@@ -135,18 +144,25 @@ export default {
     position: fixed;
     display: flex;
     align-items: center;
-    padding: 10rpx 12rpx;
-    background: #fff;
+    padding: 10rpx 0 8rpx 30rpx;
+    background: $u-bg-color;
     top: 0;
     left: 0;
     right: 0;
     z-index: 100;
   }
   .filter-btn {
-    padding: 0 10rpx;
+    padding: 0 44rpx 0 47rpx;
+    margin-left: 16rpx;
+    width: 150rpx;
+    line-height: 71rpx;
+    background: #fcd639;
+    color: #fff;
+    border-radius: 50rpx 0 0 50rpx;
+    font-size: 30rpx;
   }
   &-list {
-    padding-top: 80rpx;
+    padding-top: 70rpx;
     padding-bottom: 90rpx;
   }
   &-btn {
@@ -165,7 +181,9 @@ export default {
 }
 .ih-card {
   &-content {
-    line-height: 40rpx;
+    line-height: 42rpx;
+    color: #606266;
+    font-size: 26rpx;
   }
   &-foot {
     text-align: right;
@@ -176,8 +194,8 @@ export default {
     align-items: center;
     justify-content: space-between;
     .title-icon {
-      padding: 6rpx;
-      border-radius: 10rpx;
+      padding: 5rpx 10rpx;
+      border-radius: 4rpx;
       color: #fff;
       white-space: nowrap;
       background: $u-type-success;
@@ -191,6 +209,9 @@ export default {
     .title-text {
       white-space: nowrap;
       font-weight: bold;
+      font-size: 30rpx;
+      font-weight: 600;
+      line-height: 48rpx;
     }
   }
 }

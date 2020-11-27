@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-26 16:26:08
+ * @LastEditTime: 2020-11-27 09:59:55
 -->
 <template>
   <view class="notice safe-area-inset-bottom">
@@ -21,7 +21,7 @@
           <view>刘伟</view>
         </view>
         <view>
-          <text>信息待确认</text>
+          <text class="notice-color">信息待确认</text>
           <u-icon name="arrow-right"></u-icon>
         </view>
       </view>
@@ -38,7 +38,7 @@
       class="fliter"
       @click="isShow = true"
     >
-      <view class="fliter-btn">筛选</view>
+      <view>筛选</view>
     </view>
     <!-- 筛选弹出 -->
     <PopupSearch
@@ -190,16 +190,19 @@ export default {
 }
 .fliter {
   position: fixed;
-  top: 30rpx;
+  top: 20rpx;
   right: 0;
   z-index: 100;
   color: #fff;
   background: #f6d45b;
+  width: 150rpx;
+  line-height: 71rpx;
   border-radius: 50rpx 0 0 50rpx;
-  .fliter-btn {
-    padding: 20rpx 30rpx;
-    font-size: 30rpx;
-  }
+  padding: 0 44rpx 0 47rpx;
+  font-size: 30rpx;
+  // .fliter-btn {
+  //   padding: 20rpx 30rpx;
+  // }
 }
 .item-container {
   padding: 20rpx 30rpx 116rpx;
@@ -207,16 +210,23 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 14rpx 20rpx;
+    padding: 20rpx 20rpx;
     background: #fff;
     .notice-info {
-      font-size: 24rpx;
-      color: $u-tips-color;
-      line-height: 40rpx;
+      color: #ccc;
+      line-height: 42rpx;
+      font-size: 26rpx;
+      font-family: Source Han Sans CN;
     }
     .notice-title {
       font-size: 30rpx;
-      color: #000;
+      font-family: "Source Han Sans CN";
+      font-weight: bold;
+      color: #333333;
+      // margin-bottom: 19rpx;
+    }
+    .notice-color {
+      color: #0099ff;
     }
   }
   .notice-item + .notice-item {
