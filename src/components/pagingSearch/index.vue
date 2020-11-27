@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 16:47:03
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-25 17:14:50
+ * @LastEditTime: 2020-11-27 16:44:36
 -->
 <template>
   <view class="box">
@@ -21,7 +21,10 @@
           @custom="searchSomething"
         ></u-search>
       </view>
-      <view class="district">
+      <view
+        class="district"
+        v-if="isArea"
+      >
         <view
           class="district-item"
           @click="areaShow=true"
@@ -56,33 +59,37 @@
       </view>
     </view>
     <view class="search-content">
-      <view class="scrollView">
-        <scroll-view
-          @scrolltolower="lower"
-          scroll-y="true"
-          lower-threshold="100"
-          v-if="tablePage.length"
-        >
-          <template v-for="(item, i) in tablePage">
-            <view
-              v-if="Object.keys($scopedSlots).length"
-              :key="i"
-            >
-              <slot
-                name="searchlist"
-                :data="item"
-              ></slot>
-            </view>
-            <view
-              v-else
-              :key="i"
-              class="list-item"
-              @click="goBackPage(item)"
-            >{{item.name}}</view>
-          </template>
-        </scroll-view>
-      </view>
-      <!-- <u-loadmore :status="loadingStatus" /> -->
+      <scroll-view
+        :style="{ height: `calc(100vh - ${isArea? 212 : 102}rpx)`}"
+        @scrolltolower="lower"
+        scroll-y="true"
+        lower-threshold="50"
+        v-if="tablePage.length"
+      >
+        <template v-for="(item, i) in tablePage">
+          <view
+            v-if="Object.keys($scopedSlots).length"
+            :key="i"
+          >
+            <slot
+              name="searchlist"
+              :data="item"
+            ></slot>
+          </view>
+          <view
+            v-else
+            :key="i"
+            class="list-item"
+            @click="goBackPage(item)"
+          >{{item.name}}</view>
+        </template>
+        <view style="padding: 20rpx 0 10rpx 0">
+          <u-loadmore
+            :status="loadingStatus"
+            v-if="isShow"
+          />
+        </view>
+      </scroll-view>
       <view
         v-if="searchNull"
         class="searchNull"
@@ -121,6 +128,10 @@ export default {
       type: String,
       default: "",
     },
+    isArea: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
@@ -129,14 +140,15 @@ export default {
       province: "选择省",
       city: "选择市",
       area: "选择区",
-      searchOptions: {
-        list: [],
-      },
       queryPageParameters: {
         pageNum: 1,
         pageSize: 20,
       },
       searchNull: false,
+      loadingStatus: "loading",
+      isShow: false,
+      total: 0,
+      tablePage: [],
     };
   },
   computed: {
@@ -149,10 +161,14 @@ export default {
   },
   watch: {
     keyword(v) {
-      if (!v) {
-        this.tablePage = [];
-      } else {
+      if (v) {
         debounce(this.getListMixin, 500);
+      } else {
+        this.queryPageParameters = {
+          pageNum: 1,
+          pageSize: 20,
+        };
+        this.tablePage = [];
       }
     },
     tablePage(v) {
@@ -164,7 +180,7 @@ export default {
     },
   },
   created() {
-    if (!this.areaList?.length) {
+    if (this.isArea && !this.areaList?.length) {
       this.getAreaOption();
     }
   },
@@ -195,7 +211,11 @@ export default {
       }
     },
     lower(e) {
-      console.log(e, "xxxx");
+      this.isShow = true;
+      if (this.total <= this.tablePage.length) return;
+      this.loadingStatus = "loading";
+      this.queryPageParameters.pageNum++;
+      this.getListMixin();
     },
     searchSomething(e) {
       if (e) {
@@ -210,7 +230,13 @@ export default {
       let params = { ...this.queryPageParameters };
       params[this.key] = this.keyword;
       let item = await apiList[this.searchApi](params);
-      this.tablePage = item.list;
+      this.setPageDataMixin(item);
+      this.total = item.total;
+      if (this.tablePage.length) {
+        this.searchNull = false;
+      } else {
+        this.searchNull = true;
+      }
     },
   },
 };
@@ -230,6 +256,7 @@ export default {
 .search {
   display: flex;
   width: 100%;
+  padding-bottom: 10rpx;
 }
 .district {
   padding-top: 20rpx;
@@ -246,12 +273,9 @@ export default {
 }
 .search-content {
   border-top: 1px solid #e4e7ed;
-  padding: 0 24rpx 24rpx 24rpx;
+  padding: 0 10rpx 24rpx 24rpx;
   text-align: center;
   flex: 1;
-  .scrollView {
-    padding-top: 10rpx;
-  }
 }
 .list-item {
   text-align: left;
