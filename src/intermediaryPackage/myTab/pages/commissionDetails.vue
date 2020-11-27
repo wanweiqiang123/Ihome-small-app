@@ -26,7 +26,7 @@
           <view>实结总额：360.00</view>
         </view>
       </view>
-      <view class="item-code-list u-padding-15" v-for="list in [1,2,3,4]" :key="list" @click="viewDealDetail(list)">
+      <view class="item-code-list u-padding-15" v-for="list in [1,2,3,4]" :key="list" @click="viewDealDetail">
         <view class="list-left">
           <view>成交报告编号：CJ138979352876</view>
           <view class="price">
@@ -140,10 +140,9 @@ export default {
   onLoad() {},
   methods: {
     // 查看结佣成交详情
-    viewDealDetail(item) {
-      console.log(item);
+    viewDealDetail() {
       uni.navigateTo({
-        url: `/intermediaryPackage/myTab/pages/commissionDetails`
+        url: `/intermediaryPackage/myTab/pages/dealDetails`
       });
     }
   },
@@ -282,13 +281,6 @@ export default {
           }
         }
       }
-    }
-
-    .btn-wrapper {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 20rpx 50rpx;
-      margin-bottom: 30rpx;
     }
   }
 </style>

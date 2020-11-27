@@ -19,7 +19,7 @@
         <view>爱特城(20200101~20200130)</view>
         <view>结佣总额：600.00</view>
       </view>
-      <view class="item-code-list u-padding-15" v-for="list in [1,2,3,4]" :key="item">
+      <view class="item-code-list u-padding-15" v-for="list in [1,2,3,4]" :key="list" @click="viewDealDetail">
         <view class="list-left">
           <view>成交报告编号：CJ138979352876</view>
           <view class="price">本单佣金：200.00</view>
@@ -310,6 +310,13 @@ export default {
     // 选择发票税率
     confirmInvoiceTaxRate(e) {
       this.paymentForm.invoiceTaxRate = e[0].label;
+    },
+    // 查看结佣成交详情
+    viewDealDetail(item) {
+      console.log(item);
+      uni.navigateTo({
+        url: `/intermediaryPackage/myTab/pages/dealDetails`
+      });
     },
     // 提交
     handleSubmit() {
