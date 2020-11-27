@@ -14,6 +14,7 @@ Vue.config.productionTip = false
 import store from './store'
 import tool from './common/tool'
 import storageTool from './common/storageTool'
+import './common/css/public.scss'
 //把vuex定义成全局组件
 Vue.prototype.$store = store;
 Vue.prototype.$tool = tool;
