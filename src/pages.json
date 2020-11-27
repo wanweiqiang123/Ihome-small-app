@@ -343,6 +343,18 @@
 					}
 				},
 				{
+					"path": "paymentAdd/index",
+					"style": {
+						"navigationBarTitleText": "创建付款申请单"
+					}
+				},
+				{
+					"path": "paymentInfo/index",
+					"style": {
+						"navigationBarTitleText": "付款单详情"
+					}
+				},
+				{
 					"path": "receipt/index",
 					"style": {
 						"navigationBarTitleText": "购房优惠收款"

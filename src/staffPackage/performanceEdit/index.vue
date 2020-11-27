@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-26 09:38:11
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-26 16:27:06
+ * @LastEditTime: 2020-11-27 14:57:24
 -->
 <template>
   <view class="performance">
@@ -355,6 +355,7 @@ export default {
       height: 92rpx;
       padding: 0 24rpx;
       color: $u-type-primary;
+      font-family: "Source Han Sans CN";
     }
     & + & {
       margin-top: 20rpx;
@@ -373,6 +374,7 @@ export default {
     align-items: center;
     padding: 0 24rpx;
     color: $u-type-primary;
+    font-family: "Source Han Sans CN";
   }
   &-btn {
     position: fixed;
@@ -393,13 +395,5 @@ export default {
 }
 .form-upload {
   padding: 10rpx 12rpx;
-}
-</style>
-<style lang="scss">
-.performance-form {
-  .u-form-item {
-    padding-left: 23rpx !important;
-    padding-right: 23rpx !important;
-  }
 }
 </style>

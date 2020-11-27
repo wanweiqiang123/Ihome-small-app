@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-25 14:55:56
+ * @LastEditTime: 2020-11-27 11:56:10
 -->
 <template>
   <StaffTabBar>
@@ -46,7 +46,7 @@
           </template>
         </view>
       </view>
-      <u-gap bg-color="#f3f4f6"></u-gap>
+      <u-gap bg-color="#f1f1f1"></u-gap>
       <view class="info-container">
         <view class="info-title">今日业务数据</view>
         <u-line />
@@ -160,6 +160,7 @@ export default {
 .nav-grid {
   padding: 0 20rpx;
   padding-bottom: 10rpx;
+  font-size: 28rpx;
   .ih-grid-swiper {
     height: 370rpx;
   }

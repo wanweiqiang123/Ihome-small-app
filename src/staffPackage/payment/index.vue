@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 16:09:28
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-27 10:40:58
+ * @LastEditTime: 2020-11-27 17:40:16
 -->
 <template>
   <view class="payment safe-area-inset-bottom">
@@ -35,6 +35,7 @@
         border-radius="4"
         v-for="i in 8"
         :key="i"
+        @click="handleGoInfo()"
       >
         <view slot="head">
           <view class="item-title">
@@ -71,6 +72,7 @@
       <u-button
         shape="circle"
         type="primary"
+        @click="handleGoto()"
       >发起付款申请</u-button>
     </view>
     <!-- 筛选弹出 -->
@@ -133,6 +135,18 @@ export default {
       keyword: null,
       isShow: false,
     };
+  },
+  methods: {
+    handleGoto() {
+      uni.navigateTo({
+        url: "/staffPackage/paymentAdd/index",
+      });
+    },
+    handleGoInfo() {
+      uni.navigateTo({
+        url: "/staffPackage/paymentInfo/index",
+      });
+    },
   },
 };
 </script>
