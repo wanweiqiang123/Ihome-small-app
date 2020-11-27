@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-27 14:33:47
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-27 18:54:34
+ * @LastEditTime: 2020-11-27 18:57:29
 -->
 <template>
   <view class="payment safe-area-inset-bottom">
@@ -74,7 +74,7 @@
             <view class="top-title">爱特城（20200101～202002001）</view>
             <view class="icon-container">
               <view class="icon">不垫佣</view>
-              <view class="icon">总包</view>
+              <view class="icon total">总包</view>
             </view>
           </view>
           <view class="top-money">
@@ -111,8 +111,8 @@
           <view class="top-container u-border-bottom">
             <view class="top-title">爱特城（20200101～202002001）</view>
             <view class="icon-container">
-              <view class="icon">不垫佣</view>
-              <view class="icon">总包</view>
+              <view class="icon warning">垫佣</view>
+              <view class="icon total">总包</view>
             </view>
           </view>
           <view class="top-money">
@@ -298,6 +298,12 @@ export default {
           border-radius: 4rpx;
           color: #fff;
           font-size: 24rpx;
+          &.warning {
+            background: #fcd639;
+          }
+          &.total {
+            background: #b29ff3;
+          }
         }
         .icon + .icon {
           margin-left: 10rpx;
