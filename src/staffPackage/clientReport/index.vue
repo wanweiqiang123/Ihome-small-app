@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-17 18:10:07
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-26 10:41:35
+ * @LastEditTime: 2020-11-27 11:31:32
 -->
 <template>
   <view class="client-container safe-area-inset-bottom">
@@ -40,7 +40,7 @@
         <u-form
           :model="form"
           ref="uForm"
-          label-width="150"
+          label-width="170"
         >
           <u-form-item
             label="渠道公司"
@@ -50,7 +50,6 @@
             <u-input
               v-model="form.sex"
               type="select"
-              input-align="right"
               placeholder="请选择渠道公司"
             />
           </u-form-item>
@@ -67,7 +66,7 @@
         <u-form
           :model="form"
           ref="uForm"
-          label-width="120"
+          label-width="150"
         >
           <u-form-item label="姓名">
             <u-input v-model="form.sex" />
@@ -216,13 +215,5 @@ export default {
   padding-left: 30rpx;
   padding-right: 30rpx;
   background: #fff;
-}
-</style>
-<style lang="scss">
-.bg-color {
-  .u-form-item {
-    padding-left: 20rpx !important;
-    padding-right: 20rpx !important;
-  }
 }
 </style>

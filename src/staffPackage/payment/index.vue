@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 16:09:28
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-26 17:27:13
+ * @LastEditTime: 2020-11-27 10:40:58
 -->
 <template>
   <view class="payment safe-area-inset-bottom">
@@ -32,13 +32,14 @@
         margin="20rpx 30rpx"
         :foot-style="{paddingTop: '0'}"
         class="ih-card"
+        border-radius="4"
         v-for="i in 8"
         :key="i"
       >
         <view slot="head">
           <view class="item-title">
             <text class="title-text">付款申请单号：CJ38135843321</text>
-            <text class="title-icon">已通过</text>
+            <text :class="['title-icon', {'bg-warning': i == 1}]">已通过</text>
             <!-- <text class="title-icon bg-warning">已通过</text> -->
           </view>
         </view>
@@ -198,12 +199,12 @@ export default {
       border-radius: 4rpx;
       color: #fff;
       white-space: nowrap;
-      background: $u-type-success;
+      background: #18b566;
       box-sizing: border-box;
       font-size: 26rpx;
       line-height: 1;
       &.bg-warning {
-        background: $u-type-warning;
+        background: #eb7734;
       }
     }
     .title-text {

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-27 09:59:55
+ * @LastEditTime: 2020-11-27 10:23:09
 -->
 <template>
   <view class="notice safe-area-inset-bottom">
@@ -21,8 +21,11 @@
           <view>刘伟</view>
         </view>
         <view>
-          <text class="notice-color">信息待确认</text>
-          <u-icon name="arrow-right"></u-icon>
+          <text :class="['notice-color', {'success': i == 1, 'error': i == 3}]">信息待确认</text>
+          <u-icon
+            name="arrow-right"
+            color="#888"
+          ></u-icon>
         </view>
       </view>
     </view>
@@ -216,17 +219,22 @@ export default {
       color: #ccc;
       line-height: 42rpx;
       font-size: 26rpx;
-      font-family: Source Han Sans CN;
+      font-family: "Source Han Sans CN";
     }
     .notice-title {
       font-size: 30rpx;
-      font-family: "Source Han Sans CN";
       font-weight: bold;
       color: #333333;
       // margin-bottom: 19rpx;
     }
     .notice-color {
       color: #0099ff;
+      &.error {
+        color: #f91c11;
+      }
+      &.success {
+        color: #18b566;
+      }
     }
   }
   .notice-item + .notice-item {

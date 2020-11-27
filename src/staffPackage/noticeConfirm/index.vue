@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 17:32:25
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-26 10:37:45
+ * @LastEditTime: 2020-11-27 11:32:50
 -->
 <template>
   <view class="notice">
@@ -46,7 +46,6 @@
             <u-input
               v-model="form.sex"
               type="select"
-              input-align="right"
               placeholder="请选择栋座"
             />
           </u-form-item>
@@ -58,7 +57,6 @@
             <u-input
               v-model="form.sex"
               type="select"
-              input-align="right"
               placeholder="请选择房号"
             />
           </u-form-item>

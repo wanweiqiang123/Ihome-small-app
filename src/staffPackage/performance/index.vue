@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 14:54:27
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-26 17:28:59
+ * @LastEditTime: 2020-11-27 10:33:09
 -->
 <template>
   <view class="performance safe-area-inset-bottom">
@@ -30,6 +30,7 @@
         class="ih-card"
         padding="15"
         margin="20rpx 30rpx"
+        border-radius="4"
         v-for="i in 8"
         :key="i"
       >

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-26 10:40:50
+ * @LastEditTime: 2020-11-27 11:34:30
 -->
 <template>
   <view class="notice safe-area-inset-bottom">
@@ -23,7 +23,7 @@
       <view class="form-color">
         <u-form
           :model="form"
-          label-width="180"
+          label-width="190"
         >
           <u-form-item
             label="项目联动周期"
@@ -33,7 +33,6 @@
             <u-input
               v-model="form.sex"
               type="select"
-              input-align="right"
               placeholder="请选择项目联动周期"
             />
           </u-form-item>
@@ -45,7 +44,6 @@
             <u-input
               v-model="form.sex"
               type="select"
-              input-align="right"
               placeholder="请选择优惠折扣方式"
             />
           </u-form-item>
@@ -54,7 +52,7 @@
       <view class="form-color">
         <u-form
           :model="form"
-          label-width="150"
+          label-width="190"
         >
           <u-form-item
             label="选择栋座"
@@ -64,7 +62,6 @@
             <u-input
               v-model="form.sex"
               type="select"
-              input-align="right"
               placeholder="请选择栋座"
             />
           </u-form-item>
@@ -76,15 +73,11 @@
             <u-input
               v-model="form.sex"
               type="select"
-              input-align="right"
               placeholder="请选择房号"
             />
           </u-form-item>
           <u-form-item label="业主类型">
-            <u-radio-group
-              v-model="form.ownerType"
-              width="50%"
-            >
+            <u-radio-group v-model="form.ownerType">
               <u-radio name="1">个人</u-radio>
               <u-radio name="0">企业</u-radio>
             </u-radio-group>
