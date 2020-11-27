@@ -258,6 +258,12 @@
 					"style": {
 						"navigationBarTitleText": "成交详情"
 					}
+				},
+				{
+					"path": "myTab/pages/projectCommDetails",
+					"style": {
+						"navigationBarTitleText": "项目结佣情况"
+					}
 				}
 			]
 		},

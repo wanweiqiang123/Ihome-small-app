@@ -127,7 +127,7 @@
           <view class="item-select">
             <u-checkbox shape="circle"></u-checkbox>
           </view>
-          <view class="item-info">
+          <view class="item-info" @click="viewProjectCommDetails">
             <view class="item-code u-padding-bottom-15">
               <view>CJ18919873</view>
               <view class="u-text-right">可结佣金：200.00</view>
@@ -310,6 +310,12 @@ export default {
     // 选择发票税率
     confirmInvoiceTaxRate(e) {
       this.paymentForm.invoiceTaxRate = e[0].label;
+    },
+    // 查看项目结佣情况
+    viewProjectCommDetails() {
+      uni.navigateTo({
+        url: `/intermediaryPackage/myTab/pages/projectCommDetails`
+      });
     },
     // 查看结佣成交详情
     viewDealDetail(item) {
