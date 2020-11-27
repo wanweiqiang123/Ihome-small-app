@@ -33,7 +33,7 @@
       </view>
       <view class="my-item-wrapper margin-top">
         <view class="my-manage">渠道管理</view>
-        <view class="my-item" v-for="item in manageList" :key="item.iconName">
+        <view class="my-item" v-for="item in manageList" :key="item.iconName" @click="goToItem(item)">
           <view class="item-icon">
             <u-icon :name="item.iconName" size="46"></u-icon>
           </view>
@@ -93,23 +93,28 @@ export default {
       manageList: [
         {
           iconName: 'info-circle-fill',
-          name: '公司信息'
+          name: '公司信息',
+          url: '/intermediaryPackage/myTab/channelPage/companyInfo'
         },
         {
           iconName: 'tags-fill',
-          name: '结佣账号管理'
+          name: '结佣账号管理',
+          url: ''
         },
         {
           iconName: 'account-fill',
-          name: '经纪人管理'
+          name: '经纪人管理',
+          url: ''
         },
         {
           iconName: 'rmb-circle-fill',
-          name: '项目结佣情况'
+          name: '项目结佣情况',
+          url: ''
         },
         {
           iconName: 'list-dot',
-          name: '分销协议列表'
+          name: '分销协议列表',
+          url: ''
         },
       ],
       showPopup: false

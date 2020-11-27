@@ -276,6 +276,18 @@
 					"style": {
 						"navigationBarTitleText": "报备成交列表"
 					}
+				},
+				{
+					"path": "myTab/channelPage/companyInfo",
+					"style": {
+						"navigationBarTitleText": "公司信息"
+					}
+				},
+				{
+					"path": "myTab/channelPage/editCompany",
+					"style": {
+						"navigationBarTitleText": "修改公司信息"
+					}
 				}
 			]
 		},
