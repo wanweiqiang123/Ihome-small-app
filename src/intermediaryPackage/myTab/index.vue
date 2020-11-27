@@ -87,7 +87,7 @@ export default {
         {
           iconName: 'clock-fill',
           name: '报备成交记录',
-          url: ''
+          url: '/intermediaryPackage/myTab/pages/dealList'
         }
       ],
       manageList: [

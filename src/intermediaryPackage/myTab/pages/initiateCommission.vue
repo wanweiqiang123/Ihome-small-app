@@ -409,13 +409,15 @@ export default {
       .form-img {
         display: flex;
         flex-direction: row;
+        flex-wrap: wrap;
         align-items: center;
-        justify-content: space-between;
+        //justify-content: space-between;
 
         .img-item {
-          width: 30%;
+          //width: 30%;
           display: flex;
           flex-direction: column;
+          margin-right: 10rpx;
 
           .img-upload,.img-type {
             flex: 1;

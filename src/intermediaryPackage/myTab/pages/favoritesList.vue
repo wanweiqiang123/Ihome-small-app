@@ -20,7 +20,7 @@
       <view class="filter-wrapper" @click="currentClick = !currentClick">{{currentClick ? '完成' : '管理'}}</view>
     </view>
     <view :class="currentClick ? 'list-wrapper list-height' : 'list-wrapper'">
-      <view class="item" v-for="item in [1, 2, 3, 4, 5, 6, 7, 8, 9]" :key="item">
+      <view class="item" v-for="item in [1, 2, 3, 4, 5, 6, 7, 8, 9]" :key="item" @click="viewProjectDetail">
         <view>
           <u-image width="242rpx" height="186rpx" src="https://cdn.uviewui.com/uview/swiper/1.jpg"></u-image>
         </view>
@@ -66,6 +66,12 @@ export default {
   },
   onLoad() {},
   methods: {
+    // 查看项目详情
+    viewProjectDetail() {
+      uni.navigateTo({
+        url: `/intermediaryPackage/homeTab/pages/projectDetail`,
+      })
+    }
   },
 };
 </script>

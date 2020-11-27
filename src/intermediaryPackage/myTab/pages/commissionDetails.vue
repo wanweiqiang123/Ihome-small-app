@@ -142,7 +142,7 @@ export default {
     // 查看结佣成交详情
     viewDealDetail() {
       uni.navigateTo({
-        url: `/intermediaryPackage/myTab/pages/dealDetails`
+        url: `/intermediaryPackage/myTab/pages/dealDetails?type=commission`
       });
     }
   },

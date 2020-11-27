@@ -270,6 +270,12 @@
 					"style": {
 						"navigationBarTitleText": "我的收藏"
 					}
+				},
+				{
+					"path": "myTab/pages/dealList",
+					"style": {
+						"navigationBarTitleText": "报备成交列表"
+					}
 				}
 			]
 		},
