@@ -143,7 +143,7 @@ export default {
     },
     // 编辑经纪人
     handleEditor() {
-      uni.redirectTo({
+      uni.navigateTo({
         url: `/intermediaryPackage/myTab/channelPage/addBroker`
       });
     },
@@ -152,7 +152,7 @@ export default {
       if (!this.isManager) {
         // true---添加
         console.log('添加');
-        uni.redirectTo({
+        uni.navigateTo({
           url: `/intermediaryPackage/myTab/channelPage/addBroker`
         });
       } else {

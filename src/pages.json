@@ -312,6 +312,18 @@
 					"style": {
 						"navigationBarTitleText": "新增/管理经纪人"
 					}
+				},
+				{
+					"path": "myTab/channelPage/protocolList",
+					"style": {
+						"navigationBarTitleText": "分销协议列表"
+					}
+				},
+				{
+					"path": "myTab/channelPage/protocolDetails",
+					"style": {
+						"navigationBarTitleText": "协议详情"
+					}
 				}
 			]
 		},
