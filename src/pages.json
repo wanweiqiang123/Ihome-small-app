@@ -240,6 +240,24 @@
 					"style": {
 						"navigationBarTitleText": "结佣列表"
 					}
+				},
+				{
+					"path": "myTab/pages/initiateCommission",
+					"style": {
+						"navigationBarTitleText": "发起结佣申请"
+					}
+				},
+				{
+					"path": "myTab/pages/commissionDetails",
+					"style": {
+						"navigationBarTitleText": "结佣详情"
+					}
+				},
+				{
+					"path": "myTab/pages/dealDetails",
+					"style": {
+						"navigationBarTitleText": "成交详情"
+					}
 				}
 			]
 		},
