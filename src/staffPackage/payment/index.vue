@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 16:09:28
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-27 17:40:16
+ * @LastEditTime: 2020-11-30 09:04:29
 -->
 <template>
   <view class="payment safe-area-inset-bottom">
@@ -16,6 +16,8 @@
         placeholder="日照香炉生紫烟"
         v-model="keyword"
         :clearabled="true"
+        height="71"
+        border-color="#DCDCDC"
       ></u-search>
       <view
         class="filter-btn"

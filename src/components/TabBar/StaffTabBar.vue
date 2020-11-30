@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:53:18
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-23 14:05:48
+ * @LastEditTime: 2020-11-30 09:14:05
 -->
 <template>
   <view>
@@ -32,7 +32,7 @@ let tablePage = [
     customIcon: false,
   },
   {
-    pagePath: "/staffPackage/reportConfirm/index",
+    pagePath: "/staffPackage/reportTab/index",
     iconPath: "photo",
     selectedIconPath: "photo-fill",
     text: "报备汇总",
