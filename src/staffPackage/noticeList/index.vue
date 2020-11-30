@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-27 10:23:09
+ * @LastEditTime: 2020-11-30 14:41:46
 -->
 <template>
   <view class="notice safe-area-inset-bottom">
@@ -47,6 +47,7 @@
     <PopupSearch
       v-model="isShow"
       @reset="handleReset()"
+      @confirm="handleConfirm()"
     >
       <u-form
         :model="form"
@@ -111,14 +112,10 @@
           label="优惠告知书类型"
           :border-bottom="false"
         >
-          <u-checkbox-group @change="handleCheckbox">
-            <u-checkbox
-              v-for="(item, i) in checkbox"
-              :key="i"
-              :name="item.name"
-              v-model="item.check"
-            >{{item.name}}</u-checkbox>
-          </u-checkbox-group>
+          <IhCheckbox
+            :data="checkbox"
+            v-model="form.value"
+          ></IhCheckbox>
         </u-form-item>
         <u-form-item
           label="状态"
@@ -140,29 +137,31 @@
 
 <script>
 import PopupSearch from "../../components/PopupSearch/index.vue";
+import IhCheckbox from "../../components/IhCheckbox/index.vue";
 export default {
   name: "notice-list",
   components: {
     PopupSearch,
+    IhCheckbox,
   },
   data() {
     return {
       isShow: false,
       form: {
         name: null,
-        value: [],
+        value: ["1"],
       },
       checkbox: [
         {
-          check: false,
+          value: "1",
           name: "优惠告知书",
         },
         {
-          check: false,
+          value: "2",
           name: "补充协议",
         },
         {
-          check: false,
+          value: "3",
           name: "终止协议",
         },
       ],
@@ -179,8 +178,8 @@ export default {
         url: "/staffPackage/noticeCreate/index",
       });
     },
-    handleCheckbox(item) {
-      console.log(item);
+    handleConfirm() {
+      console.log(this.form);
     },
   },
 };

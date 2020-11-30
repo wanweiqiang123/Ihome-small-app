@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-17 11:22:20
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-25 15:26:00
+ * @LastEditTime: 2020-11-30 14:05:19
 -->
 <template>
   <u-popup
@@ -49,14 +49,6 @@ export default {
     value: {
       type: Boolean,
     },
-  },
-  data() {
-    return {
-      form: {
-        name: null,
-        intro: null,
-      },
-    };
   },
   methods: {
     close() {
