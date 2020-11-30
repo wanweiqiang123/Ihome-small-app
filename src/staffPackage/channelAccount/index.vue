@@ -4,16 +4,19 @@
  * @Author: ywl
  * @Date: 2020-11-25 09:08:06
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-25 10:49:19
+ * @LastEditTime: 2020-11-30 09:35:02
 -->
 <template>
   <view class="account">
     <view class="account-search">
       <u-search
         :show-action="false"
+        bg-color="#fff"
         placeholder="日照香炉生紫烟"
         v-model="keyword"
         :clearabled="true"
+        height="71"
+        border-color="#DCDCDC"
       ></u-search>
     </view>
     <view class="account-list">
@@ -22,6 +25,7 @@
         :show-foot="false"
         padding="20"
         class="ih-card"
+        border-radius="4"
         v-for="i in 3"
         :key="i"
         @click="handleClick()"
@@ -85,8 +89,8 @@ export default {
   min-height: 100vh;
   &-search {
     position: fixed;
-    padding: 10rpx 12rpx;
-    background: #fff;
+    padding: 10rpx 30rpx;
+    background: $u-bg-color;
     top: 0;
     left: 0;
     right: 0;
