@@ -4,12 +4,12 @@
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-30 11:36:16
+ * @LastEditTime: 2020-11-30 16:35:47
  */
 import Vue from 'vue'
 import App from './App'
 import uView from "uview-ui";
-import share from './common/share';
+import share from './mixins/share';
 Vue.mixin(share);
 Vue.use(uView);
 Vue.config.productionTip = false

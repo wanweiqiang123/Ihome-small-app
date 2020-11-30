@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-29 15:58:19
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-30 11:54:13
+ * @LastEditTime: 2020-11-30 16:36:31
 -->
 <template>
   <view class="page">
@@ -32,9 +32,7 @@
       >
     </view>
     <view style="padding: 40rpx">
-      <u-button type="success" open-type="share" @getuserinfo="share()"
-        >转发</u-button
-      >
+      <u-button type="success" open-type="share">转发</u-button>
     </view>
     <u-popup width="80%" v-model="show" mode="center">
       <view class="login-select-select login-select-select-title">
@@ -134,9 +132,7 @@ export default {
       console.log(res.detail.userInfo.nickName);
     },
   },
-  share() {
-    console.log("share");
-  },
+
   // 必须要在onReady生命周期，因为onLoad生命周期组件可能尚未创建完毕
   onReady() {
     this.$refs.uForm.setRules(this.rules);

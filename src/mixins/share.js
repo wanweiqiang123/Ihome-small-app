@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-30 11:31:55
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-30 11:53:21
+ * @LastEditTime: 2020-11-30 16:36:54
  */
 export default {
     data() {
@@ -23,7 +23,6 @@ export default {
     onShareAppMessage(res) {//分享到朋友
         if (res.from === "button") {
             // 来自页面内分享按钮
-            console.log(res.target);
         } else if (res.from === "menu") {
             // 来自右上角分享按钮
         }
