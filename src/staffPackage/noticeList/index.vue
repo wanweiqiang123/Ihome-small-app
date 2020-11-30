@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-30 14:41:46
+ * @LastEditTime: 2020-11-30 15:04:57
 -->
 <template>
   <view class="notice safe-area-inset-bottom">
@@ -121,14 +121,10 @@
           label="状态"
           :border-bottom="false"
         >
-          <u-radio-group v-model="form.xx">
-            <u-radio name="1">信息待确认</u-radio>
-            <u-radio name="2">客户待签署</u-radio>
-            <u-radio name="3">客户已签署</u-radio>
-            <u-radio name="4">待支付</u-radio>
-            <u-radio name="5">分公司业管待审核</u-radio>
-            <u-radio name="6">已生效</u-radio>
-          </u-radio-group>
+          <IhCheckbox
+            :data="checkbox2"
+            v-model="form.value2"
+          ></IhCheckbox>
         </u-form-item>
       </u-form>
     </PopupSearch>
@@ -150,6 +146,7 @@ export default {
       form: {
         name: null,
         value: ["1"],
+        value2: [],
       },
       checkbox: [
         {
@@ -163,6 +160,32 @@ export default {
         {
           value: "3",
           name: "终止协议",
+        },
+      ],
+      checkbox2: [
+        {
+          value: "1",
+          name: "信息待确认",
+        },
+        {
+          value: "2",
+          name: "客户待签署",
+        },
+        {
+          value: "3",
+          name: "客户已签署",
+        },
+        {
+          value: "4",
+          name: "待支付",
+        },
+        {
+          value: "5",
+          name: "分公司业管待审核",
+        },
+        {
+          value: "6",
+          name: "已生效",
         },
       ],
     };

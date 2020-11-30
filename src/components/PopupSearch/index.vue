@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-17 11:22:20
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-30 14:05:19
+ * @LastEditTime: 2020-11-30 15:20:16
 -->
 <template>
   <u-popup
@@ -72,7 +72,7 @@ export default {
   .ih-popup-cantainer {
     height: calc(100% - 114rpx);
     .popup-content {
-      padding: 0 50rpx;
+      padding: 0 30rpx;
     }
   }
   .popup-button {

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 16:09:28
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-30 09:04:29
+ * @LastEditTime: 2020-11-30 15:16:32
 -->
 <template>
   <view class="payment safe-area-inset-bottom">
@@ -116,9 +116,10 @@
           prop="intro"
           :border-bottom="false"
         >
-          <u-checkbox-group>
-            <u-checkbox name="item">平台文员审核中</u-checkbox>
-          </u-checkbox-group>
+          <IhCheckbox
+            :data="checkList"
+            v-model="form.value"
+          ></IhCheckbox>
         </u-form-item>
       </u-form>
     </PopupSearch>
@@ -127,15 +128,32 @@
 
 <script>
 import PopupSearch from "../../components/PopupSearch/index.vue";
+import IhCheckbox from "../../components/IhCheckbox/index.vue";
 export default {
   name: "payment",
   components: {
     PopupSearch,
+    IhCheckbox,
   },
   data() {
     return {
       keyword: null,
       isShow: false,
+      form: {},
+      checkList: [
+        {
+          name: "平台文员审核中",
+          value: 1,
+        },
+        {
+          name: "一线审核中",
+          value: 2,
+        },
+        {
+          name: "业管审核中",
+          value: 3,
+        },
+      ],
     };
   },
   methods: {

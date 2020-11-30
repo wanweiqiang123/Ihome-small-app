@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-30 10:48:38
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-30 14:44:19
+ * @LastEditTime: 2020-11-30 15:17:21
 -->
 <template>
   <view class="check-container">
@@ -107,7 +107,7 @@ export default {
     color: #666666;
     background: #f8f8f8;
     margin-right: 12rpx;
-    margin-bottom: 8rpx;
+    margin-bottom: 10rpx;
     line-height: normal;
     &.active {
       position: relative;
