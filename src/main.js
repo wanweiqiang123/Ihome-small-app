@@ -4,11 +4,13 @@
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-13 11:47:05
+ * @LastEditTime: 2020-11-30 11:36:16
  */
 import Vue from 'vue'
 import App from './App'
 import uView from "uview-ui";
+import share from './common/share';
+Vue.mixin(share);
 Vue.use(uView);
 Vue.config.productionTip = false
 import store from './store'

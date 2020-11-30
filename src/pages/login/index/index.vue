@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-29 15:58:19
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-25 11:43:13
+ * @LastEditTime: 2020-11-30 11:54:13
 -->
 <template>
   <view class="page">
@@ -23,8 +23,18 @@
     <view style="padding: 40rpx">
       <u-button type="success" @click="go()">列表demo</u-button>
     </view>
-     <view style="padding: 40rpx">
-      <u-button type="success" open-type="getUserInfo" @getuserinfo	="getWxInfo()">获取微信用户信息</u-button>
+    <view style="padding: 40rpx">
+      <u-button
+        type="success"
+        open-type="getUserInfo"
+        @getuserinfo="getWxInfo()"
+        >获取微信用户信息</u-button
+      >
+    </view>
+    <view style="padding: 40rpx">
+      <u-button type="success" open-type="share" @getuserinfo="share()"
+        >转发</u-button
+      >
     </view>
     <u-popup width="80%" v-model="show" mode="center">
       <view class="login-select-select login-select-select-title">
@@ -120,9 +130,12 @@ export default {
         url: "/pages/customer/index/index",
       });
     },
-    getWxInfo(res){
-        console.log(res.detail.userInfo.nickName)
-    }
+    getWxInfo(res) {
+      console.log(res.detail.userInfo.nickName);
+    },
+  },
+  share() {
+    console.log("share");
   },
   // 必须要在onReady生命周期，因为onLoad生命周期组件可能尚未创建完毕
   onReady() {
@@ -130,7 +143,26 @@ export default {
   },
   created() {
     console.log(getApp().globalData.tabList);
+    uni.showShareMenu({
+      withShareTicket: true,
+      menus: ["shareAppMessage", "shareTimeline"],
+    });
   },
+  // onShareAppMessage(res) {
+  //   console.log(res);
+  //   //res.from   menu   button
+  //   if (res.from === "button") {
+  //     // 来自页面内分享按钮
+  //     console.log(res.target);
+  //   } else if (res.from === "menu") {
+  //     // 来自右上角分享按钮
+  //   }
+  //   return {
+  //     title: "自定义分享标题",
+  //     path: "/pages/customer/index/index?id=123",
+  //     imageUrl: "/static/logo.png",
+  //   };
+  // },
 };
 </script>
 
