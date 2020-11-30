@@ -300,6 +300,30 @@
 					"style": {
 						"navigationBarTitleText": "新增/管理结佣帐号"
 					}
+				},
+				{
+					"path": "myTab/channelPage/brokerList",
+					"style": {
+						"navigationBarTitleText": "经纪人列表"
+					}
+				},
+				{
+					"path": "myTab/channelPage/addBroker",
+					"style": {
+						"navigationBarTitleText": "新增/管理经纪人"
+					}
+				},
+				{
+					"path": "myTab/channelPage/protocolList",
+					"style": {
+						"navigationBarTitleText": "分销协议列表"
+					}
+				},
+				{
+					"path": "myTab/channelPage/protocolDetails",
+					"style": {
+						"navigationBarTitleText": "协议详情"
+					}
 				}
 			]
 		},

@@ -38,7 +38,7 @@
       <u-button type="primary" @click="sponsorCommission">发起结佣申请</u-button>
     </view>
     <u-popup v-model="showSearchWin" mode="right" length="80%">
-      <view class="popup-wrapper">
+      <view class="commission-popup-wrapper">
         <view class="status u-padding-20">状态</view>
         <view class="search-item-wrapper u-padding-20">
           <view
@@ -182,7 +182,7 @@ export default {
     }
   }
 
-  .popup-wrapper {
+  .commission-popup-wrapper {
     width: 100%;
     height: 100vh;
     position: relative;

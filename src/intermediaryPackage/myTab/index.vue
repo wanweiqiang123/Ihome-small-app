@@ -104,17 +104,17 @@ export default {
         {
           iconName: 'account-fill',
           name: '经纪人管理',
-          url: ''
+          url: '/intermediaryPackage/myTab/channelPage/brokerList'
         },
         {
           iconName: 'rmb-circle-fill',
           name: '项目结佣情况',
-          url: ''
+          url: '/intermediaryPackage/myTab/pages/projectCommDetails'
         },
         {
           iconName: 'list-dot',
           name: '分销协议列表',
-          url: ''
+          url: '/intermediaryPackage/myTab/channelPage/protocolList'
         },
       ],
       showPopup: false
@@ -187,7 +187,7 @@ export default {
 
         view {
           box-sizing: border-box;
-          padding: 10rpx 0rpx;
+          padding: 15rpx 0rpx;
         }
 
         .item-icon {

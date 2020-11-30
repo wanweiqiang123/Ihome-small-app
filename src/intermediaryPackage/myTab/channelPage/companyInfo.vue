@@ -39,7 +39,7 @@
       <view class="annex-list">
         <view class="item" v-for="(item, index) in annexInfo" :key="index">
           <view class="type">{{item.type}}</view>
-          <view v-for="(imgItem, index) in item.imgUrl" :key="index" class="img">
+          <view v-for="(imgItem, imgIndex) in item.imgUrl" :key="imgIndex" class="img">
             <u-image width="100rpx" height="100rpx" :src="imgItem"></u-image>
           </view>
         </view>
