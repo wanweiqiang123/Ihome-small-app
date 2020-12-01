@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-30 16:35:47
+ * @LastEditTime: 2020-12-01 11:51:10
  */
 import Vue from 'vue'
 import App from './App'
@@ -39,8 +39,37 @@ Vue.component('CustomerTabBar', CustomerTabBar);
 Vue.component('IntermediaryTabBar', IntermediaryTabBar);
 Vue.component('StaffTabBar', StaffTabBar);
 
+//是否有资源权限的方法
+Vue.prototype.$has = function (key) {
+  let list = ['xx', 'yy'];//权限列表（从用户信息中读取）
+  let result = false;//是否有权限
+  if (key instanceof Array) {
+    //数组类型
+    let set1 = new Set(key);
+    let set2 = new Set(list);
+    //交集
+    let intersect = [...new Set([...set1].filter(x => set2.has(x)))];
+    if (intersect.length == 0) {
+      result = false;
+    } else {
+      result = true;
+    }
+  } else if (typeof key == 'string') {
+    //字符串类型
+    result = list.includes(key);
+  } else {
+    result = false;
+    console.error('只支持数组或字符串:' + typeof key)
+  }
+  console.log(result, key, list)
+  return result;
+}
+
+
+
 const app = new Vue({
   ...App,
-  store
+  store,
+
 })
 app.$mount()

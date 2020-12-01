@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-29 15:58:19
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-30 16:36:31
+ * @LastEditTime: 2020-12-01 17:25:41
 -->
 <template>
   <view class="page">
@@ -138,6 +138,7 @@ export default {
     this.$refs.uForm.setRules(this.rules);
   },
   created() {
+    // this.$has('xx')
     console.log(getApp().globalData.tabList);
     uni.showShareMenu({
       withShareTicket: true,
