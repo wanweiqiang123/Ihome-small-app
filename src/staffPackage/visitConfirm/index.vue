@@ -4,25 +4,25 @@
  * @Author: ywl
  * @Date: 2020-11-17 10:54:41
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-25 11:52:18
+ * @LastEditTime: 2020-12-01 09:05:09
 -->
 <template>
   <view class="container safe-area-inset-bottom">
     <view class="report-head">
-      <u-subsection
-        :list="list"
-        :current="0"
-      ></u-subsection>
       <view class="report-search">
         <u-search
           style="flex: 1"
           :show-action="false"
-          placeholder="日照香炉生紫烟"
+          placeholder="请输入客户名称和手机号"
           v-model="keyword"
+          height="72"
           :clearabled="true"
         ></u-search>
-        <view class="filter-btn">
-          <span @click="show = true">筛选</span>
+        <view
+          class="filter-btn"
+          @click="show = true"
+        >
+          <span>筛选</span>
         </view>
       </view>
       <u-tabs
@@ -38,51 +38,18 @@
       <u-card
         :border="false"
         :show-head="false"
+        border-radius="4"
+        padding="15"
+        :body-style="{padding: '0'}"
+        margin="30rpx 30rpx 0"
         class="ih-card"
+        v-for="i in 2"
+        :key="i"
       >
-        <view slot="body">
-          <text>
-            客户姓名：陈家家(先生)
-            客户电话：1389998444
-            预计到访时间：2020-08-25 16:30
-            预计到访人数：2
-            报备项目：保利十方舟
-            项目周期：20200310~20200410
-            所属渠道：中介
-            报备人：艾佳佳
-            报备人电话：18761234521
-            公司门店：广州居家房地产有限公司(居家置业店)
-            报备时间：2020-08-25 16:40:12
-            报备确认时间：2020-08-25 16:40:12
-            是否有到访附件：是
-          </text>
-        </view>
         <view
-          slot="foot"
-          class="ih-card-foot"
+          slot="body"
+          class="ih-card-content"
         >
-          <u-button
-            class="foot-btn"
-            size="mini"
-            type="primary"
-          >上传附件</u-button>
-          <u-button
-            size="mini"
-            class="foot-btn"
-          >无效</u-button>
-          <u-button
-            class="foot-btn"
-            size="mini"
-            type="success"
-          >有效</u-button>
-        </view>
-      </u-card>
-      <u-card
-        :border="false"
-        :show-head="false"
-        class="ih-card"
-      >
-        <view slot="body">
           <text>
             客户姓名：陈家家(先生)
             客户电话：1389998444
@@ -96,8 +63,9 @@
             公司门店：广州居家房地产有限公司(居家置业店)
             报备时间：2020-08-25 16:40:12
             报备确认时间：2020-08-25 16:40:12
-            是否有到访附件：是
+            是否有到访附件：是 <text class="link">查看附件</text>
           </text>
+          <view class="ih-card-tag">市场化</view>
         </view>
         <view
           slot="foot"
@@ -174,7 +142,6 @@ export default {
   data() {
     return {
       keyword: null,
-      list: [{ name: "市场化项目" }, { name: "非市场化项目" }],
       tabList: [
         { name: "到访未确认" },
         { name: "到访有效" },
@@ -202,15 +169,37 @@ export default {
   min-height: 100vh;
 }
 .card-list {
-  padding-top: 220rpx;
+  padding-top: 170rpx;
   padding-bottom: 10rpx;
 }
 .ih-card {
-  .ih-card-foot {
+  &-content {
+    position: relative;
+    padding: 15rpx;
+    overflow: hidden;
+  }
+  &-tag {
+    position: absolute;
+    right: -40rpx;
+    top: 22rpx;
+    background: $u-type-primary;
+    color: #fff;
+    transform: rotate(42deg);
+    width: 200rpx;
+    padding: 4rpx 40rpx;
+    box-sizing: border-box;
+    text-align: center;
+    box-shadow: 10rpx 4rpx 15rpx #888888;
+  }
+  &-foot {
     text-align: right;
     .foot-btn + .foot-btn {
       margin-left: 30rpx;
     }
+  }
+  .link {
+    color: $u-type-primary;
+    margin-left: 20rpx;
   }
 }
 .report-head {
@@ -223,19 +212,11 @@ export default {
   .report-search {
     display: flex;
     align-items: center;
-    padding: 10rpx 12rpx;
+    padding: 10rpx 5rpx 10rpx 30rpx;
   }
   .filter-btn {
-    padding: 0 10rpx;
-  }
-}
-</style>
-<style lang="scss">
-.ih-card {
-  &:last-child {
-    .u-card {
-      margin-bottom: 0 !important;
-    }
+    padding: 10rpx 14rpx;
+    color: $u-type-primary;
   }
 }
 </style>
