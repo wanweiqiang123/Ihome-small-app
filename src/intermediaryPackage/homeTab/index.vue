@@ -168,7 +168,6 @@
         box-sizing: border-box;
         display: flex;
         align-items: center;
-        box-sizing: border-box;
         margin-right: 32rpx;
 
         .icon {

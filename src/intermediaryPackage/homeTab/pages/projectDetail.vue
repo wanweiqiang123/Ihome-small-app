@@ -14,7 +14,8 @@
         <u-tabs
           :list="tabList"
           :current="tabCurrent"
-          :font-size="35"
+          bar-width="170"
+          :font-size="32"
           bg-color=""
           inactive-color="#FFFFFF"
           active-color="#FFFFFF"
@@ -22,57 +23,35 @@
           :is-scroll="false"></u-tabs>
       </view>
       <view class="content-wrapper" v-show="tabCurrent === 0">
-        <u-card :show-head="false" margin="0rpx" padding="20">
-          <view class="" slot="body">
-            <u-image width="100%" height="320rpx" src="https://cdn.uviewui.com/uview/swiper/1.jpg"></u-image>
-            <view class="title">远洋招商保利东湾经纪渠道</view>
-            <view class="price-wrapper">
-              <span class="price">均价23000</span>
-              <span class="unit">元/m<span class="square">2</span></span>
-            </view>
-            <view class="address-wrapper">
-              <u-icon name="map-fill" size="40rpx"></u-icon>
-              <view>广州市增城区增城大道</view>
-            </view>
-            <view class="rule-color">
-              <view>佣金规则：</view>
-              <view>保利国际广场位于成都市高新区金融城模板，是成都市2018年重点规划的城市CBD中心，丰富的配套等资源。</view>
-            </view>
+        <view>
+          <u-image width="100%" height="324rpx" border-radius="4" src="@/static/swiper/4.png"></u-image>
+          <view class="title">远洋招商保利东湾经纪渠道</view>
+          <view class="price-wrapper">
+            <span class="price">均价23000</span>
+            <span class="unit">元/m²</span>
           </view>
-        </u-card>
-        <view class="home-info-wrapper">
+          <view class="address-wrapper">
+            <u-icon name="map-fill" size="40rpx" class="icon"></u-icon>
+            <view class="text">广州市增城区增城大道</view>
+          </view>
+          <view class="rule-color">
+            <view>佣金规则：</view>
+            <view>保利国际广场位于成都市高新区金融城模板，是成都市2018年重点规划的城市CBD中心，丰富的配套等资源。</view>
+          </view>
+        </view>
+        <view class="home-info-wrapper u-margin-top-80">
           <view class="home-info-title">户型信息</view>
           <view class="home-info">
-            <view class="info-item" @click="viewHomeDetail">
+            <view class="info-item" @click="viewHomeDetail" v-for="item in [1, 2, 3]" :key="item">
               <view>
-                <u-image width="100%" height="130rpx" src="https://cdn.uviewui.com/uview/swiper/1.jpg"></u-image>
+                <u-image width="100%" height="160rpx" src="@/static/img/house.jpg"></u-image>
               </view>
-              <view>
-                底层2房68m<span class="square">2</span>
-              </view>
-              <view class="price-color">160万起</view>
-            </view>
-            <view class="info-item" @click="viewHomeDetail">
-              <view>
-                <u-image width="100%" height="130rpx" src="https://cdn.uviewui.com/uview/swiper/1.jpg"></u-image>
-              </view>
-              <view>
-                底层2房68m<span class="square">2</span>
-              </view>
-              <view class="price-color">160万起</view>
-            </view>
-            <view class="info-item" @click="viewHomeDetail">
-              <view>
-                <u-image width="100%" height="130rpx" src="https://cdn.uviewui.com/uview/swiper/1.jpg"></u-image>
-              </view>
-              <view>
-                底层2房68m<span class="square">2</span>
-              </view>
+              <view class="title-tip">底层2房68m²</view>
               <view class="price-color">160万起</view>
             </view>
           </view>
         </view>
-        <view class="home-info-wrapper padding-top-none">
+        <view class="home-info-wrapper u-margin-top-80">
           <view class="home-info-title">楼盘卖点</view>
           <view>
             <view>
@@ -84,51 +63,47 @@
                 :is-scroll="false"></u-tabs>
             </view>
             <view>
-              <view v-show="sellingPointCurrent === 0">18888元/m<span class="square">2</span>起</view>
+              <view v-show="sellingPointCurrent === 0">18888元/m²起</view>
               <view v-show="sellingPointCurrent === 1">98-128方二至四房</view>
               <view v-show="sellingPointCurrent === 2">社区委员会、居民健身房、医科大学</view>
-              <view v-show="sellingPointCurrent === 3">复合物业管理 2.8元/m<span class="square">2</span>/月</view>
+              <view v-show="sellingPointCurrent === 3">复合物业管理 2.8元/m²/月</view>
             </view>
           </view>
         </view>
       </view>
       <view class="content-wrapper" v-show="tabCurrent === 1">
-        <u-card :show-head="false" margin="0rpx" padding="40">
-          <view class="" slot="body">
-            <view>
-              <view class="home-info-title">报备规则</view>
-              <view class="content-time">报备保护期: 3天</view>
-              <view class="content-type">报备类型: 前三后四</view>
-            </view>
-            <view>
-              <view class="home-info-title">到访规则</view>
-              <view class="content-time">到访保护期: 3天</view>
-              <view class="content-type">是否到访为王: 是</view>
-            </view>
-            <view>
-              <view class="home-info-title">开发商界定规则</view>
-              <view class="content-time">开发商界定规则详情说明....</view>
-            </view>
+        <view class="">
+          <view>
+            <view class="home-info-title">报备规则</view>
+            <view class="content-time">报备保护期: 3天</view>
+            <view class="content-type">报备类型: 前三后四</view>
           </view>
-        </u-card>
+          <view>
+            <view class="home-info-title">到访规则</view>
+            <view class="content-time">到访保护期: 3天</view>
+            <view class="content-type">是否到访为王: 是</view>
+          </view>
+          <view>
+            <view class="home-info-title">开发商界定规则</view>
+            <view class="content-time">开发商界定规则详情说明....</view>
+          </view>
+        </view>
       </view>
       <view class="content-wrapper" v-show="tabCurrent === 2">
-        <u-card :show-head="false" margin="0rpx" padding="40">
-          <view class="" slot="body">
-            <view>
-              <view class="home-info-title">客户年龄</view>
-              <view class="content-type">26-35岁</view>
-            </view>
-            <view>
-              <view class="home-info-title">购房目的</view>
-              <view class="content-type">自住、投资</view>
-            </view>
-            <view>
-              <view class="home-info-title">开发商界定规则</view>
-              <view class="content-time">200-300万</view>
-            </view>
+        <view class="">
+          <view>
+            <view class="home-info-title">客户年龄</view>
+            <view class="content-type">26-35岁</view>
           </view>
-        </u-card>
+          <view>
+            <view class="home-info-title">购房目的</view>
+            <view class="content-type">自住、投资</view>
+          </view>
+          <view>
+            <view class="home-info-title">开发商界定规则</view>
+            <view class="content-time">200-300万</view>
+          </view>
+        </view>
       </view>
     </view>
     <view class="project-btn">
@@ -213,33 +188,29 @@
     width: 100%;
     box-sizing: border-box;
     position: relative;
-
-    .square {
-      vertical-align: super;
-      font-size: 18rpx;
-    }
+    font-family: PingFang SC;
 
     .home-info-title {
       height: 30rpx;
       line-height: 30rpx;
       text-align: left;
-      border-left: 10rpx solid $uni-color-primary;
-      padding-left: 15rpx;
+      border-left: 6rpx solid #4881F9;
+      padding-left: 20rpx;
       font-size: 30rpx;
-      font-weight: 600;
-      color: #333333;
       box-sizing: border-box;
-      margin: 10rpx 0rpx;
+      font-family: PingFang SC;
+      font-weight: 400;
+      color: #1C1C1C;
     }
 
     .bg-wrapper {
       width: 100%;
-      height: 380rpx;
+      height: 338rpx;
       position: absolute;
       left: 0rpx;
       top: 0rpx;
       z-index: -1;
-      background-color: $uni-color-primary;
+      background-color: #4881F9;
     }
 
     .detail-content-wrapper {
@@ -249,34 +220,39 @@
       top: 0rpx;
       z-index: 500;
       box-sizing: border-box;
-      padding: 20rpx 20rpx 0rpx 20rpx;
+      padding: 18rpx 30rpx 0rpx 30rpx;
 
       .tab-wrapper {
-        background-color: $uni-color-primary;
+        /deep/.u-tab-item {
+          font-size: 32rpx !important;
+          font-family: PingFang SC !important;
+          color: #FFFFFF !important;
+        }
       }
 
       .content-wrapper {
         width: 100%;
-        height: calc(100vh - 170rpx);
+        height: calc(100vh - 200rpx);
         overflow-y: auto;
+        background-color: #FFFFFF;
 
         .title {
           box-sizing: border-box;
-          margin: 18rpx 0rpx;
-          font-size: 34rpx;
-          font-weight: 600;
+          font-size: 36rpx;
+          font-weight: 500;
           color: #1C1C1C;
+          margin-top: 24rpx;
+          margin-bottom: 22rpx;
         }
 
         .price-wrapper {
           width: 100%;
           color: #FD4918;
           box-sizing: border-box;
-          margin: 10rpx 0rpx;
+          margin-bottom: 16rpx;
 
           .price {
             font-size: 32rpx;
-            color: #FD4918;
             font-weight: 600;
           }
 
@@ -285,25 +261,43 @@
             box-sizing: border-box;
             display: inline-block;
             margin-left: 8rpx;
+            font-weight: 400;
           }
         }
 
         .address-wrapper {
           width: 100%;
-          height: 40rpx;
-          line-height: 40rpx;
           box-sizing: border-box;
-          margin-bottom: 15rpx;
+          margin-bottom: 16rpx;
           display: flex;
           align-items: center;
+
+          .icon {
+            /deep/.u-icon__icon {
+              filter: opacity(0.5);
+            }
+          }
+
+          .text {
+            margin-left: 10rpx;
+            font-size: 24rpx;
+            font-family: PingFang SC;
+            font-weight: 400;
+            color: #666666;
+          }
         }
 
         .rule-color {
+          line-height: 36rpx;
           box-sizing: border-box;
-          padding: 20rpx 30rpx;
-          background-color: #FDEBEB;
+          padding: 20rpx 25rpx 20rpx 38rpx;
           white-space: normal;
           word-break: break-all;
+          background: rgba(254,235,235,0.9);
+          font-size: 24rpx;
+          font-family: PingFang SC;
+          font-weight: 500;
+          color: #303133;
         }
 
         .content-time {
@@ -320,12 +314,11 @@
       .home-info-wrapper {
         width: 100%;
         box-sizing: border-box;
-        padding: 20rpx;
 
         .home-info {
           width: 100%;
           box-sizing: border-box;
-          margin-top: 20rpx;
+          margin-top: 30rpx;
           display: flex;
           flex-direction: row;
           flex-wrap: wrap;
@@ -336,15 +329,25 @@
             box-sizing: border-box;
 
             &:not(:last-child) {
-              margin-right: 30rpx;
+              margin-right: 34rpx;
             }
 
             view {
-              margin-bottom: 10rpx;
+              margin-bottom: 16rpx;
             }
           }
 
+          .title-tip {
+            font-size: 24rpx;
+            font-family: PingFang SC;
+            font-weight: 400;
+            color: #666666;
+          }
+
           .price-color {
+            font-size: 24rpx;
+            font-family: PingFang SC;
+            font-weight: 600;
             color: #FD4918;
           }
         }
