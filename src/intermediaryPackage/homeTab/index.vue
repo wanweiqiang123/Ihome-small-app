@@ -11,72 +11,65 @@
     <view class="home-page-wrapper">
       <view class="top-wrapper">
         <view class="top-location">
-          <u-icon name="map-fill" size="50rpx"></u-icon>
+          <u-icon name="map-fill" size="50rpx" class="icon"></u-icon>
           <view>广州市</view>
         </view>
-        <!--        <u-input-->
-        <!--          class="select"-->
-        <!--          type="select"-->
-        <!--          v-model="queryPageParameters.location"-->
-        <!--          :type="type"-->
-        <!--          placeholder="请选择"-->
-        <!--          @click="showLocation = true"-->
-        <!--          :border="false"/>-->
         <u-search
           class="search"
           shape="round"
-          bg-color="white"
-          border-color="#f2f2f2"
+          color="#BDBDBD"
+          bg-color="#FFFFFF"
+          border-color="#DCDCDC"
           :show-action="false"
           placeholder="请输入项目名称"
           v-model="queryPageParameters.projectName"></u-search>
       </view>
       <view class="swiper-wrapper">
-        <u-swiper :list="list" height="290rpx"></u-swiper>
+        <u-swiper :list="list" indicator-pos="bottomLeft" height="286rpx"></u-swiper>
       </view>
       <view>
         <u-grid :col="4" :border="false" @click="goToItem">
           <u-grid-item index="homeTab/pages/projectList">
-            <u-icon name="hourglass" :size="66"></u-icon>
+            <u-image width="98rpx" height="98rpx" :src="icon_1"></u-image>
             <view class="grid-text">新房楼盘</view>
           </u-grid-item>
           <u-grid-item index="myTab/pages/myReport">
-            <u-icon name="star" :size="66"></u-icon>
+            <u-image width="98rpx" height="98rpx" :src="icon_2"></u-image>
             <view class="grid-text">我的报备</view>
           </u-grid-item>
           <u-grid-item index="homeTab/pages/reportClient">
-            <u-icon name="account" :size="66"></u-icon>
+            <u-image width="98rpx" height="98rpx" :src="icon_3"></u-image>
             <view class="grid-text">报备客户</view>
           </u-grid-item>
           <u-grid-item index="myTab/pages/dealList">
-            <u-icon name="bag" :size="66"></u-icon>
+            <u-image width="98rpx" height="98rpx" :src="icon_4"></u-image>
             <view class="grid-text">成交记录</view>
           </u-grid-item>
         </u-grid>
       </view>
-      <u-gap height="20" bg-color="#f2f2f2"></u-gap>
+      <u-gap height="20" bg-color="#F1F1F1"></u-gap>
+      <view class="title">
+        <u-image width="100%" height="54rpx" :src="icon_5"></u-image>
+      </view>
       <view class="content-wrapper">
-        <view class="title">推荐房源</view>
         <view class="content" v-for="item in [1, 2, 3, 4, 5, 6, 7, 8, 9]" :key="item" @click="viewProjectDetail">
           <view>
-            <u-image width="242rpx" height="186rpx" src="https://cdn.uviewui.com/uview/swiper/1.jpg"></u-image>
+            <u-image width="242rpx" height="186rpx" :src="houseImg"></u-image>
           </view>
           <view class="content-right">
             <view class="title-wrapper">远洋招商保利东湾经纪渠道</view>
-            <view>
-              <u-tag
-                text="天河区"
-                size="mini"
-                :closeable="false"
-                type="info" />
+            <view class="tag-wrapper">
+              <view class="tag">
+                <text>天河区</text>
+              </view>
             </view>
             <view class="price-wrapper">
               <span class="price">均价23000</span>
-              <span class="unit">元/m<span class="two">2</span></span>
+              <span class="unit">元/m²</span>
             </view>
             <view class="rule">
               <span class="rule-tap">佣</span>
-              <span>佣金规则</span>
+              <span class="rule-text">佣金规则</span>
             </view>
           </view>
         </view>
@@ -110,18 +103,24 @@
         ],
         list: [
           {
-            image: 'https://cdn.uviewui.com/uview/swiper/1.jpg',
+            image: require('@/static/swiper/4.png'),
             title: '昨夜星辰昨夜风，画楼西畔桂堂东'
           },
           {
-            image: 'https://cdn.uviewui.com/uview/swiper/2.jpg',
+            image: require('@/static/swiper/5.jpeg'),
             title: '身无彩凤双飞翼，心有灵犀一点通'
           },
           {
-            image: 'https://cdn.uviewui.com/uview/swiper/3.jpg',
+            image: require('@/static/swiper/6.jpg'),
             title: '谁念西风独自凉，萧萧黄叶闭疏窗，沉思往事立残阳'
           }
-        ]
+        ],
+        houseImg: require('@/static/img/house.jpg'),
+        icon_1: require('@/static/ico/1-1.png'),
+        icon_2: require('@/static/ico/2-1.png'),
+        icon_3: require('@/static/ico/3-1.png'),
+        icon_4: require('@/static/ico/4-1.png'),
+        icon_5: require('@/static/ico/5.png'),
       };
     },
     onLoad() {
@@ -153,42 +152,29 @@
 
     .top-wrapper {
       width: 100%;
-      height: 72rpx;
+      height: 92rpx;
       box-sizing: border-box;
-      padding: 0rpx 20rpx;
-      margin-top: 10rpx;
+      padding: 10rpx 24rpx 10rpx 18rpx;
       display: flex;
-      /*background-color: #f2f2f2;*/
+      align-items: center;
+      background-color: #F1F1F1;
 
       .top-location {
-        width: 160rpx;
+        //width: 160rpx;
+        font-size: 30rpx;
+        font-family: PingFang SC;
+        font-weight: 400;
+        color: #626262;
         box-sizing: border-box;
         display: flex;
         align-items: center;
-
-        view {
-          font-size: 30rpx;
-        }
-      }
-
-      .select {
-        width: 150rpx;
-        height: 72rpx;
-        background: #eee;
         box-sizing: border-box;
-        padding-left: 8px;
-        border-bottom-left-radius: 8rpx;
-        border-top-left-radius: 8rpx;
-        position: relative;
+        margin-right: 32rpx;
 
-        &:before { /* | 效果*/
-          content: "";
-          width: 1px;
-          position: absolute;
-          height: 65%;
-          top: 15%;
-          right: 0;
-          background: black;
+        .icon {
+          /deep/.u-icon__icon {
+            filter: opacity(0.5);
+          }
         }
       }
 
@@ -205,21 +191,35 @@
     .swiper-wrapper {
       width: 100%;
       box-sizing: border-box;
-      padding: 0rpx 20rpx;
-      margin: 8rpx 0rpx;
+
+      /deep/.u-list-image-wrap {
+        //border-radius: inherit !important;
+        border-radius: 0rpx !important;
+      }
+    }
+
+    .grid-text {
+      //width: 118rpx;
+      //height: 29rpx;
+      font-size: 30rpx;
+      font-family: PingFang SC;
+      font-weight: 400;
+      color: #626262;
+      box-sizing: border-box;
+      margin-top: 30rpx;
+    }
+
+    .title {
+      height: 102rpx;
+      text-align: center;
+      box-sizing: border-box;
+      padding: 23rpx 29rpx 25rpx 29rpx;
     }
 
     .content-wrapper {
       width: 100%;
       box-sizing: border-box;
       padding: 20rpx 20rpx 0rpx 20rpx;
-
-      .title {
-        text-align: center;
-        font-size: 32rpx;
-        box-sizing: border-box;
-        margin-bottom: 20rpx;
-      }
 
       .content {
         width: 100%;
@@ -233,24 +233,45 @@
         .content-right {
           flex: 1;
           box-sizing: border-box;
-          margin-left: 25rpx;
-
-          view {
-            box-sizing: border-box;
-            margin-bottom: 10rpx;
-          }
+          margin-left: 32rpx;
 
           .title-wrapper {
-            font-size: 32rpx;
+            height: 32rpx;
+            font-size: 30rpx;
+            font-family: PingFang SC;
+            font-weight: 400;
+            color: #1C1C1C;
+            margin-bottom: 14rpx;
+          }
+
+          .tag-wrapper {
+            margin-bottom: 18rpx;
+
+            .tag {
+              width: 84rpx;
+              height: 32rpx;
+              line-height: 32rpx;
+              text-align: center;
+              background: rgba(241, 241, 241, 1);
+
+              text {
+                font-size: 24rpx;
+                font-family: PingFang SC;
+                font-weight: 400;
+                color: #666666;
+              }
+            }
           }
 
           .price-wrapper {
             width: 100%;
             color: #FD4918;
+            margin-bottom: 16rpx;
+            font-family: PingFang SC;
 
             .price {
               font-size: 32rpx;
-              color: #FD4918;
+              height: 32rpx;
               font-weight: 600;
             }
 
@@ -259,6 +280,7 @@
               box-sizing: border-box;
               display: inline-block;
               margin-left: 8rpx;
+              font-weight: 400;
             }
 
             .two {
@@ -269,18 +291,27 @@
 
           .rule {
             width: 100%;
+            font-family: PingFang SC;
 
             .rule-tap {
-              width: 40rpx;
-              height: 40rpx;
-              line-height: 40rpx;
+              width: 32rpx;
+              height: 32rpx;
+              line-height: 32rpx;
               text-align: center;
               display: inline-block;
-              background-color: orange;
-              color: white;
               box-sizing: border-box;
-              margin-right: 8rpx;
-              border-radius: 17%;
+              margin-right: 10rpx;
+              background: #FC9C05;
+              border-radius: 4rpx;
+              font-size: 24rpx;
+              font-weight: 600;
+              color: #FFFFFF;
+            }
+
+            .rule-text {
+              font-size: 24rpx;
+              font-weight: 400;
+              color: #666666;
             }
           }
         }
