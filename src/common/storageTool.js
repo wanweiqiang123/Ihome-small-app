@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 15:30:00
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-07 11:11:04
+ * @LastEditTime: 2020-12-07 14:13:17
  */
 const tokenKey = 'token';//token的key
 const expiresInKey = 'expires_in';//token的key的过期时间
@@ -82,7 +82,7 @@ const storageTool = {
     /**前往启动页*/
     goStart() {
         uni.redirectTo({
-            url: "/page/start",
+            url: "/pages/start",
         });
     },
     /**根据用户类别跳转首页，未登录情况跳转登录页面*/

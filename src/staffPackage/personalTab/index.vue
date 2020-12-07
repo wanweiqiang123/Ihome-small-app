@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 11:22:52
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-07 11:30:27
+ * @LastEditTime: 2020-12-07 14:24:40
 -->
 <template>
   <StaffTabBar>
@@ -60,7 +60,7 @@
           background: #f2f3ff;
         "
       >
-        请选择切换的用户</view
+        请选择切换的用户（未完成）</view
       >
       <view
         style="padding: 10px; border-bottom: 1px solid #eee"
@@ -127,7 +127,9 @@ export default {
       uni.showToast({
         title: "切换成功",
       });
-      storageTool.goStart();
+      setTimeout(() => {
+        storageTool.goStart();
+      }, 500);
     },
   },
 };
