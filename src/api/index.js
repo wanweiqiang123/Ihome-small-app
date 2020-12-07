@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-10 10:09:50
- * @LastEditors: wwq
- * @LastEditTime: 2020-11-23 14:11:15
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-12-07 11:16:47
  */
 
 import { getApi, postApi } from '../common/http.js';
@@ -49,8 +49,17 @@ export async function testPageApi(data = {
 
 /**登录接口*/
 export async function loginApi(data = {}, option = {}) {
-    let url = '/sales-api/sales-oauth2/oauth/token?grant_type=password&client_id=sales-client-dev&client_secret=sales-dev&username=' + data.username + '&password=' + data.password;
+    //let url = '/sales-api/sales-oauth2/oauth/token?grant_type=password&client_id=sales-client-dev&client_secret=sales-dev&username=' + data.username + '&password=' + data.password;
+    let url = '/sales-api/sales-oauth2/oauth/token?grant_type=password&username=' + data.username + '&password=' + data.password + '&auth_client=V2VjaGF0QXBwOnNhbGVzITIwMjA='
     return await postApi(url, data, option);
+}
+
+/**用户切换*/
+export async function userSwitchApi(data = {}, option = {}) {
+    let access_token = 'bearer ' + data.access_token;
+    let auth_client = 'V2VjaGF0QXBwOnNhbGVzITIwMjA='
+    let url = '/sales-api/sales-oauth2/oauth/token?grant_type=change&access_token=' + access_token + '&change_type=' + data.change_type + '&auth_client=' + auth_client;
+    return await postApi(url, {}, option);
 }
 
 /**查询登录用户信息*/

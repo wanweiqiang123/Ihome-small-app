@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 10:17:55
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-10 15:54:20
+ * @LastEditTime: 2020-12-07 11:25:42
  */
 
 import storageTool from './storageTool'
@@ -36,9 +36,12 @@ const api = (url, data = {}, option = {}) => {
     }
     let header = {};
     if (token) {
-        header = {
-            'Authorization': 'bearer ' + token
+        if (!url.startsWith('/sales-api/sales-oauth2/oauth/token?grant_type=change')) {
+            header = {
+                'Authorization': 'bearer ' + token
+            }
         }
+
     }
     return new Promise((resolve, reject) => {
         uni.request({
@@ -51,10 +54,10 @@ const api = (url, data = {}, option = {}) => {
                 if (!hideLoading) uni.hideLoading();
                 if (res.statusCode === 200) {
                     let result = res.data;
-                    if (url.startsWith('/sales-api/sales-oauth2/oauth/token') || url.startsWith('/sales-oauth2/oauth/token')) {
-                        resolve(result)
-                        return;
-                    }
+                    // if (url.startsWith('/sales-api/sales-oauth2/oauth/token') || url.startsWith('/sales-oauth2/oauth/token')) {
+                    //     resolve(result)
+                    //     return;
+                    // }
                     if (result.code === 'Success') {
                         resolve(result.data)
                         return

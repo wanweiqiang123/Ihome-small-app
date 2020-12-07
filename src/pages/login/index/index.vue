@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-29 15:58:19
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-01 17:25:41
+ * @LastEditTime: 2020-12-07 10:53:58
 -->
 <template>
   <view class="page">
@@ -110,7 +110,17 @@ export default {
           storageTool.setToken(res.access_token, res.expires_in);
           const userInfo = await getUserInfoApi();
           storageTool.setUserInfo(userInfo);
-          this.show = true;
+          storageTool.goHome();
+          //userType用户类别(Staff-员工、Channel-渠道、Customer-客户)
+          // switch (userInfo.userType) {
+          //   case 'Staff':
+              
+          //     break;
+          
+          //   default:
+          //     break;
+          // }
+          // this.show = true;
           // if (this.list.length == 1) {
           //   storageTool.goHome();
           // }
@@ -163,7 +173,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .page {
   padding: 0 20rpx 20rpx 20rpx;
 }

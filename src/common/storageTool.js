@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 15:30:00
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-20 15:01:04
+ * @LastEditTime: 2020-12-07 11:11:04
  */
 const tokenKey = 'token';//token的key
 const expiresInKey = 'expires_in';//token的key的过期时间
@@ -79,28 +79,35 @@ const storageTool = {
     removeLoginUserTypeLog() {
         uni.removeStorageSync(loginUserTypeLogKey);
     },
+    /**前往启动页*/
+    goStart() {
+        uni.redirectTo({
+            url: "/page/start",
+        });
+    },
     /**根据用户类别跳转首页，未登录情况跳转登录页面*/
     goHome() {
         const token = this.getToken();
         if (token) {
-            const loginUserTypeLog = this.getLoginUserTypeLog();
-            switch (loginUserTypeLog) {
-                case 0:
+            const userInfo = this.getUserInfo();
+            let userType = userInfo?.userType;
+            //userType用户类别(Staff-员工、Channel-渠道、Customer-客户)
+            switch (userType) {
+                case 'Customer':
                     uni.redirectTo({
                         url: "/customerPackage/homeTab/index",
                     });
                     break;
-                case 1:
+                case 'Channel':
                     uni.redirectTo({
                         url: "/intermediaryPackage/homeTab/index",
                     });
                     break;
-                case 2:
+                case 'Staff':
                     uni.redirectTo({
                         url: "/staffPackage/homeTab/index",
                     });
                     break;
-
                 default:
                     uni.redirectTo({
                         url: "/pages/login/index/index",

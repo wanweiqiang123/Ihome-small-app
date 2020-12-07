@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-11-23 11:22:52
- * @LastEditors: ywl
- * @LastEditTime: 2020-11-25 15:31:59
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-12-07 11:30:27
 -->
 <template>
   <StaffTabBar>
@@ -28,14 +28,20 @@
             title="我的购房信息"
             :arrow="true"
           ></u-cell-item>
+
+          <u-cell-item
+            @click="userSwitchClick()"
+            icon="account"
+            title="切换用户"
+            :arrow="true"
+          ></u-cell-item>
         </u-cell-group>
       </view>
+
       <view class="btn-container">
-        <u-button
-          shape="circle"
-          type="primary"
-          @click="handleLoginOut"
-        >退出账号</u-button>
+        <u-button shape="circle" type="primary" @click="handleLoginOut"
+          >退出账号</u-button
+        >
       </view>
     </view>
     <u-action-sheet
@@ -45,14 +51,38 @@
       @click="submit"
       safe-area-inset-bottom
     ></u-action-sheet>
+    <u-popup width="80%" v-model="userSwitchShow" mode="center">
+      <view
+        style="
+          padding: 10px;
+          border-bottom: 1px solid #eee;
+          font-weight: 600;
+          background: #f2f3ff;
+        "
+      >
+        请选择切换的用户</view
+      >
+      <view
+        style="padding: 10px; border-bottom: 1px solid #eee"
+        v-for="(item, index) in userTypeList"
+        :key="index"
+        @click="userSwitch(item, index)"
+      >
+        {{ item }}</view
+      >
+    </u-popup>
   </StaffTabBar>
 </template>
 
 <script>
+import storageTool from "../../common/storageTool";
+import { userSwitchApi } from "../../api/index";
 export default {
   name: "personal-tab",
   data() {
     return {
+      userSwitchShow: false,
+      userTypeList: [],
       isShow: false,
       tips: {
         text: "确定要退出当前账号？",
@@ -75,9 +105,29 @@ export default {
     submit(index) {
       switch (index) {
         case 0:
-          this.$storageTool.loginOut();
+          storageTool.loginOut();
           break;
       }
+    },
+    userSwitchClick() {
+      //切换用户
+      console.log("切换用户");
+      let userInfo = storageTool.getUserInfo();
+      this.userTypeList = userInfo?.userTypeList || [];
+      this.userTypeList = ["Staff", "Channel", "Customer"];
+      this.userSwitchShow = true;
+    },
+    async userSwitch(item, index) {
+      console.log(item, index);
+      const res = await userSwitchApi({
+        change_type: item,
+        access_token: storageTool.getToken(),
+      });
+      console.log(res);
+      uni.showToast({
+        title: "切换成功",
+      });
+      storageTool.goStart();
     },
   },
 };
@@ -119,6 +169,17 @@ export default {
   .btn-container {
     width: 90%;
     margin-top: 100rpx;
+  }
+  .login-select-select {
+    line-height: 100rpx;
+    border-bottom: 1px solid #eeeeee;
+    text-align: center;
+    font-weight: 500;
+  }
+  .login-select-select-title {
+    font-weight: 600 !important;
+    background: $u-type-primary;
+    color: #fff;
   }
 }
 </style>
