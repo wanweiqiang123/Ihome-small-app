@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-13 15:13:13
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-01 09:21:19
+ * @LastEditTime: 2020-12-07 16:47:27
 -->
 <template>
   <view class="container safe-area-inset-bottom">
@@ -108,8 +108,8 @@
         >
           <u-input
             v-model="form.name"
+            placeholder="请输入项目名称"
             border
-            type="select"
           />
         </u-form-item>
         <u-form-item
@@ -119,6 +119,7 @@
         >
           <u-input
             v-model="form.intro"
+            placeholder="请输入项目周期"
             border
           />
         </u-form-item>
@@ -129,9 +130,19 @@
         >
           <u-input
             v-model="form.intro"
-            placeholder="渠道公司名称"
+            placeholder="请输入渠道公司名称"
             border
           />
+        </u-form-item>
+        <u-form-item
+          label="项目类型"
+          prop="intro"
+          :border-bottom="false"
+        >
+          <IhCheckbox
+            v-model="form.value"
+            :data="checkList"
+          ></IhCheckbox>
         </u-form-item>
       </u-form>
     </PopupSearch>
@@ -140,11 +151,13 @@
 
 <script>
 import PopupSearch from "../../components/PopupSearch/index.vue";
+import IhCheckbox from "../../components/IhCheckbox/index.vue";
 
 export default {
   name: "deal",
   components: {
     PopupSearch,
+    IhCheckbox,
   },
   data() {
     return {
@@ -155,7 +168,18 @@ export default {
       form: {
         name: null,
         intro: null,
+        value: [],
       },
+      checkList: [
+        {
+          value: 1,
+          name: "市场化项目",
+        },
+        {
+          value: 2,
+          name: "非市场化项目",
+        },
+      ],
     };
   },
   methods: {

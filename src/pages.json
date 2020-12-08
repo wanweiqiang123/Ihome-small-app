@@ -339,7 +339,7 @@
 				{
 					"path": "reportTab/index",
 					"style": {
-						"navigationBarTitleText": "联动周期数据情况"
+						"navigationBarTitleText": "报备数据情况"
 					}
 				},
 				{

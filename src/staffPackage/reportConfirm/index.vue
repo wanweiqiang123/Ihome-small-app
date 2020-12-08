@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-13 15:13:13
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-01 08:56:13
+ * @LastEditTime: 2020-12-07 17:05:00
 -->
 <template>
   <view class="container safe-area-inset-bottom">
@@ -50,7 +50,7 @@
           slot="body"
           class="ih-card-content"
         >
-          <text>
+          <text ref="text">
             客户姓名：陈家家(先生)
             客户电话：1389998444
             预计到访时间：2020-08-25 16:30
@@ -69,6 +69,12 @@
           slot="foot"
           class="ih-card-foot"
         >
+          <u-button
+            size="mini"
+            type="primary"
+            class="foot-btn"
+            @click="handleCopy()"
+          >一键复制</u-button>
           <u-button
             size="mini"
             class="foot-btn"
@@ -99,8 +105,8 @@
         >
           <u-input
             v-model="form.name"
+            placeholder="请输入项目名称"
             border
-            type="select"
           />
         </u-form-item>
         <u-form-item
@@ -110,6 +116,7 @@
         >
           <u-input
             v-model="form.intro"
+            placeholder="请输入项目周期"
             border
           />
         </u-form-item>
@@ -120,9 +127,19 @@
         >
           <u-input
             v-model="form.intro"
-            placeholder="渠道公司名称"
+            placeholder="请输入渠道公司名称"
             border
           />
+        </u-form-item>
+        <u-form-item
+          label="项目类型"
+          prop="intro"
+          :border-bottom="false"
+        >
+          <IhCheckbox
+            v-model="form.value"
+            :data="checkList"
+          ></IhCheckbox>
         </u-form-item>
       </u-form>
     </PopupSearch>
@@ -131,11 +148,13 @@
 
 <script>
 import PopupSearch from "../../components/PopupSearch/index.vue";
+import IhCheckbox from "../../components/IhCheckbox/index.vue";
 
 export default {
   name: "report",
   components: {
     PopupSearch,
+    IhCheckbox,
   },
   data() {
     return {
@@ -150,7 +169,18 @@ export default {
       form: {
         name: null,
         intro: null,
+        value: [],
       },
+      checkList: [
+        {
+          value: 1,
+          name: "市场化项目",
+        },
+        {
+          value: 2,
+          name: "非市场化项目",
+        },
+      ],
     };
   },
   methods: {
@@ -161,6 +191,24 @@ export default {
       Object.assign(this.form, {
         name: null,
         intro: null,
+      });
+    },
+    handleCopy(str) {
+      uni.setClipboardData({
+        data: `客户姓名：陈家家(先生)
+客户电话：1389998444
+预计到访时间：2020-08-25 16:30
+预计到访人数：2
+报备项目：保利十方舟
+项目周期：20200310~20200410
+所属渠道：中介
+报备人：艾佳佳
+报备人电话：18761234521
+公司门店：广州居家房地产有限公司(居家置业店)
+报备时间：2020-08-25 16:40:12`,
+        success: function () {
+          console.log("success");
+        },
       });
     },
   },
