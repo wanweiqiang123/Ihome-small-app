@@ -4,47 +4,60 @@
  * @Author: lsj
  * @Date: 2020-11-16 15:34:28
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-17 15:07:50
+ * @LastEditTime: 2020-12-08 16:25:50
 -->
 <template>
   <IntermediaryTabBar>
     <view class="my-page-wrapper">
-      <view class="my-avatar-wrapper">
-        <view>
-          <u-image
-            width="150rpx"
-            height="150rpx"
-            shape="circle"
-            src="https://cdn.uviewui.com/uview/swiper/2.jpg"></u-image>
+      <view class="my-page-bg"></view>
+      <view class="my-page-content">
+        <view class="my-avatar-wrapper">
+          <view class="avatar">
+            <u-image
+              width="150rpx"
+              height="150rpx"
+              shape="circle"
+              src="https://cdn.uviewui.com/uview/swiper/2.jpg"></u-image>
+          </view>
+          <view class="name">张小凡</view>
+          <view class="phone">18600002222</view>
         </view>
-        <view>张小凡</view>
-        <view>18600002222</view>
-      </view>
-      <view class="my-item-wrapper">
-        <view class="my-item" v-for="item in itemList" :key="item.iconName" @click="goToItem(item)">
-          <view class="item-icon">
-            <u-icon :name="item.iconName" size="46"></u-icon>
-          </view>
-          <view class="item-name">{{item.name}}</view>
-          <view class="item-arrow">
-            <u-icon name="arrow-right" size="40"></u-icon>
+        <view class="my-item-wrapper u-padding-right-14">
+          <u-grid :col="4" :border="false" @click="goToGrid">
+            <u-grid-item v-for="item in gridList" :key="item.id" :index="item.url">
+              <u-image width="64rpx" height="64rpx" :src="item.icon"></u-image>
+              <view class="grid-text">{{item.name}}</view>
+            </u-grid-item>
+          </u-grid>
+        </view>
+        <u-gap height="20" bg-color="#F1F1F1"></u-gap>
+        <view class="my-item-wrapper">
+          <view class="my-manage">渠道管理</view>
+          <view class="my-item" v-for="item in manageList" :key="item.id" @click="goToItem(item)">
+            <view class="item-icon">
+              <u-image width="40rpx" height="40rpx" :src="item.icon"></u-image>
+            </view>
+            <view class="item-name">{{item.name}}</view>
+            <view class="item-arrow">
+              <u-icon name="arrow-right" color="#888888" size="40"></u-icon>
+            </view>
           </view>
         </view>
-      </view>
-      <view class="my-item-wrapper margin-top">
-        <view class="my-manage">渠道管理</view>
-        <view class="my-item" v-for="item in manageList" :key="item.iconName" @click="goToItem(item)">
-          <view class="item-icon">
-            <u-icon :name="item.iconName" size="46"></u-icon>
-          </view>
-          <view class="item-name">{{item.name}}</view>
-          <view class="item-arrow">
-            <u-icon name="arrow-right" size="40"></u-icon>
+        <u-gap height="20" bg-color="#F1F1F1"></u-gap>
+        <view class="my-item-wrapper">
+          <view class="my-item" v-for="item in myBuyList" :key="item.id" @click="goToItem(item)">
+            <view class="item-icon">
+              <u-image width="40rpx" height="40rpx" :src="item.icon"></u-image>
+            </view>
+            <view class="item-name">{{item.name}}</view>
+            <view class="item-arrow">
+              <u-icon name="arrow-right" color="#888888" size="40"></u-icon>
+            </view>
           </view>
         </view>
-      </view>
-      <view class="my-btn">
-        <u-button shape="circle" @click="handleLoginOut">退出登录</u-button>
+        <view class="my-btn">
+          <u-button shape="circle" @click="handleLoginOut">退出登录</u-button>
+        </view>
       </view>
     </view>
     <u-popup
@@ -68,60 +81,84 @@
 export default {
   data() {
     return {
-      itemList: [
+      gridList: [
         {
-          iconName: 'setting-fill',
+          id: 1,
+          icon: require('@/static/ico/password.png'),
           name: '修改密码',
           url: ''
         },
         {
-          iconName: 'list',
+          id: 2,
+          icon: require('@/static/ico/money.png'),
           name: '结佣列表',
           url: '/intermediaryPackage/myTab/pages/commissionList'
         },
         {
-          iconName: 'star-fill',
+          id: 3,
+          icon: require('@/static/ico/star.png'),
           name: '我的收藏',
           url: '/intermediaryPackage/myTab/pages/favoritesList'
         },
         {
-          iconName: 'clock-fill',
+          id: 4,
+          icon: require('@/static/ico/record.png'),
           name: '报备成交记录',
           url: '/intermediaryPackage/myTab/pages/dealList'
         }
       ],
       manageList: [
         {
-          iconName: 'info-circle-fill',
+          id: 1,
+          icon: require('@/static/ico/5-1.png'),
           name: '公司信息',
           url: '/intermediaryPackage/myTab/channelPage/companyInfo'
         },
         {
-          iconName: 'tags-fill',
+          id: 2,
+          icon: require('@/static/ico/5-2.png'),
           name: '结佣账号管理',
           url: '/intermediaryPackage/myTab/channelPage/commissionAccount'
         },
         {
-          iconName: 'account-fill',
+          id: 3,
+          icon: require('@/static/ico/5-3.png'),
           name: '经纪人管理',
           url: '/intermediaryPackage/myTab/channelPage/brokerList'
         },
         {
-          iconName: 'rmb-circle-fill',
+          id: 4,
+          icon: require('@/static/ico/5-4.png'),
           name: '项目结佣情况',
           url: '/intermediaryPackage/myTab/pages/projectCommDetails'
         },
         {
-          iconName: 'list-dot',
+          id: 5,
+          icon: require('@/static/ico/5-5.png'),
           name: '分销协议列表',
           url: '/intermediaryPackage/myTab/channelPage/protocolList'
         },
+      ],
+      myBuyList: [
+        {
+          id: 1,
+          icon: require('@/static/ico/5-6.png'),
+          name: '我的购房信息',
+          url: ''
+        }
       ],
       showPopup: false
     };
   },
   onLoad() {},
   methods: {
+    // 跳转
+    goToGrid(index) {
+      // console.log(index);
+      uni.navigateTo({
+        url: index,
+      })
+    },
     // 退出登录
     handleLoginOut() {
       this.showPopup = true;
@@ -149,89 +186,133 @@ export default {
     width: 100%;
     height: 100%;
     background-color: #F1F1F1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    position: relative;
 
-    .my-avatar-wrapper {
+    .my-page-bg {
       width: 100%;
-      height: 380rpx;
-      box-sizing: border-box;
-      padding-bottom: 38rpx;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      background-color: $uni-color-primary;
-      color: white;
-
-      view {
-        box-sizing: border-box;
-        margin-bottom: 8rpx;
-      }
+      height: 346rpx;
+      background-color: #4881F9;
+      position: absolute;
+      top: 0rpx;
+      left: 0rpx;
+      right: 0rpx;
+      bottom: 0rpx;
+      z-index: 0;
     }
 
-    .my-item-wrapper {
-      width: 90%;
-      box-sizing: border-box;
-      margin-top: -50rpx;
-      margin-bottom: 30rpx;
-      padding: 20rpx;
-      background-color: white;
+    .my-page-content {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      top: 0rpx;
+      left: 0rpx;
+      right: 0rpx;
+      bottom: 0rpx;
+      z-index: 100;
+      padding: 0rpx 30rpx;
 
-
-      .my-item {
+      .my-avatar-wrapper {
         width: 100%;
+        height: 278rpx;
+        box-sizing: border-box;
         display: flex;
+        flex-direction: column;
+        justify-content: center;
         align-items: center;
+        color: #FFFFFF;
 
         view {
           box-sizing: border-box;
-          padding: 15rpx 0rpx;
+          color: #FFFFFF;
+          font-family: PingFang SC;
         }
 
-        .item-icon {
-          width: 80rpx;
+        .avatar {
+          margin-bottom: 12rpx;
         }
 
-        .item-name {
-          flex: 1;
-          font-size: 32rpx;
+        .name {
+          font-size: 30rpx;
+          font-weight: 500;
+          margin-bottom: 10rpx;
         }
 
-        .item-arrow {
-          width: 80rpx;
-          text-align: right;
+        .phone {
+          font-size: 24rpx;
+          font-weight: 400;
         }
       }
 
-      .my-manage {
+      .my-item-wrapper {
         width: 100%;
-        font-size: 34rpx;
-        box-sizing: border-box;
-        font-weight: 600;
-        padding: 15rpx 0rpx;
-        border-bottom: 1px solid #f2f2f2;
+        background-color: #FFFFFF;
+
+        .grid-text {
+          font-size: 24rpx;
+          font-family: PingFang SC;
+          font-weight: bold;
+          color: #333333;
+          box-sizing: border-box;
+          margin-top: 20rpx;
+        }
+
+        .my-manage {
+          width: 100%;
+          height: 88rpx;
+          line-height: 42rpx;
+          font-size: 24rpx;
+          box-sizing: border-box;
+          padding: 28rpx 0rpx 36rpx 30rpx;
+          font-weight: bold;
+          background: #FFFFFF;
+          font-family: Source Han Sans CN;
+          color: #666666;
+          border-bottom: 2rpx solid #F1F1F1;
+        }
+
+        .my-item {
+          width: 100%;
+          height: 88rpx;
+          padding: 28rpx 16rpx 22rpx 20rpx;
+          display: flex;
+          align-items: center;
+
+          &:not(:last-child) {
+            border-bottom: 2rpx solid #F1F1F1;
+          }
+
+          view {
+            box-sizing: border-box;
+            padding: 15rpx 0rpx;
+          }
+
+          .item-icon {
+            box-sizing: border-box;
+            margin-right: 20rpx;
+          }
+
+          .item-name {
+            flex: 1;
+            font-size: 32rpx;
+          }
+
+          .item-arrow {
+            width: 80rpx;
+            text-align: right;
+          }
+        }
       }
-    }
 
-    .margin-top {
-      width: 90%;
-      /*height: 550rpx;*/
-      box-sizing: border-box;
-      margin-top: 20rpx;
-    }
+      .my-btn {
+        width: 100%;
+        box-sizing: border-box;
+        margin: 32rpx 0rpx;
 
-    .my-btn {
-      width: 90%;
-      box-sizing: border-box;
-      /*padding: 20rpx;*/
-      /*background-color: white;*/
-      margin-bottom: 30rpx;
-
-      /deep/.u-btn {
-        background-color: $uni-color-primary;
-        color: white;
+        /deep/.u-btn {
+          height: 92rpx;
+          background-color: #4881F9;
+          color: white;
+        }
       }
     }
   }

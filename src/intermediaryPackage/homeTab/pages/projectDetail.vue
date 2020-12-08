@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-23 11:15:50
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-23 17:20:21
+ * @LastEditTime: 2020-12-02 14:18:20
 -->
 <template>
   <view class="project-detail-wrapper">
@@ -53,35 +53,29 @@
         </view>
         <view class="home-info-wrapper u-margin-top-80">
           <view class="home-info-title">楼盘卖点</view>
-          <view>
-            <view>
-              <u-tabs
-                :list="sellingPointList"
-                :current="sellingPointCurrent"
-                active-color="#D9001B"
-                @change="changeSelling"
-                :is-scroll="false"></u-tabs>
+          <view class="u-margin-top-42">
+            <view class="selling-point-tabs">
+              <view v-for="(item, index) in sellingPointList" :key="index" @click="showPoints(item, index)">
+                <text :class="sellingPointCurrent === index ? 'tabs-item' : ''">{{item.name}}</text>
+              </view>
             </view>
-            <view>
-              <view v-show="sellingPointCurrent === 0">18888元/m²起</view>
-              <view v-show="sellingPointCurrent === 1">98-128方二至四房</view>
-              <view v-show="sellingPointCurrent === 2">社区委员会、居民健身房、医科大学</view>
-              <view v-show="sellingPointCurrent === 3">复合物业管理 2.8元/m²/月</view>
+            <view class="u-margin-top-36">
+              <u-parse :html="content"></u-parse>
             </view>
           </view>
         </view>
       </view>
       <view class="content-wrapper" v-show="tabCurrent === 1">
-        <view class="">
-          <view>
+        <view class="u-padding-30">
+          <view class="u-margin-bottom-50">
             <view class="home-info-title">报备规则</view>
             <view class="content-time">报备保护期: 3天</view>
-            <view class="content-type">报备类型: 前三后四</view>
+            <view class="content-time">报备类型: 前三后四</view>
           </view>
-          <view>
+          <view class="u-margin-bottom-50">
             <view class="home-info-title">到访规则</view>
             <view class="content-time">到访保护期: 3天</view>
-            <view class="content-type">是否到访为王: 是</view>
+            <view class="content-time">是否到访为王: 是</view>
           </view>
           <view>
             <view class="home-info-title">开发商界定规则</view>
@@ -90,14 +84,14 @@
         </view>
       </view>
       <view class="content-wrapper" v-show="tabCurrent === 2">
-        <view class="">
-          <view>
+        <view class="u-padding-30">
+          <view class="u-margin-bottom-50">
             <view class="home-info-title">客户年龄</view>
-            <view class="content-type">26-35岁</view>
+            <view class="content-time">26-35岁</view>
           </view>
-          <view>
+          <view class="u-margin-bottom-50">
             <view class="home-info-title">购房目的</view>
-            <view class="content-type">自住、投资</view>
+            <view class="content-time">自住、投资</view>
           </view>
           <view>
             <view class="home-info-title">开发商界定规则</view>
@@ -138,19 +132,24 @@
         tabCurrent: 0,
         sellingPointList: [
           {
-            name: '价格优势'
+            name: '价格优势',
+            content: '18888元/m²起18888元/m²起18888元/m²起'
           },
           {
-            name: '户型面积'
+            name: '户型面积',
+            content: '98-128方二至四房98-128方二至四房98-128方二至四房'
           },
           {
-            name: '生活配套'
+            name: '生活配套',
+            content: '社区委员会、居民健身房、医科大学社区委员会、居民健身房、医科大学'
           },
           {
-            name: '物业管理'
+            name: '物业管理',
+            content: '复合物业管理 2.8元/m²/月复合物业管理 2.8元/m²/月'
           }
         ],
         sellingPointCurrent: 0,
+        content: '18888元/m²起',
         keepFlag: false
       };
     },
@@ -162,6 +161,10 @@
       },
       changeSelling(index) {
         this.sellingPointCurrent = index;
+      },
+      showPoints(item, index) {
+        this.sellingPointCurrent = index;
+        this.content = item.content;
       },
       // 收藏
       isKeep() {
@@ -304,11 +307,6 @@
           box-sizing: border-box;
           margin: 20rpx 0rpx;
         }
-
-        .content-type {
-          box-sizing: border-box;
-          margin-bottom: 60rpx;
-        }
       }
 
       .home-info-wrapper {
@@ -349,6 +347,34 @@
             font-family: PingFang SC;
             font-weight: 600;
             color: #FD4918;
+          }
+        }
+
+        .selling-point-tabs {
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+
+          view {
+            height: 42rpx;
+            font-size: 30rpx;
+            text-align: center;
+            font-family: PingFang SC;
+            font-weight: 400;
+            color: #626262;
+            box-sizing: border-box;
+            flex: 1;
+          }
+
+          .tabs-item {
+            width: 153rpx;
+            height: 42rpx;
+            display: inline-block;
+            background: #4881F9;
+            border-radius: 21rpx;
+            color: #FFFFFF;
+            transition-duration: 0.5s;
           }
         }
       }
