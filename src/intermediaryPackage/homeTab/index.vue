@@ -17,7 +17,9 @@
         <u-search
           class="search"
           shape="round"
-          color="#BDBDBD"
+          height="72"
+          placeholder-color="#BDBDBD"
+          search-icon-color="#BDBDBD"
           bg-color="#FFFFFF"
           border-color="#DCDCDC"
           :show-action="false"
@@ -180,10 +182,6 @@
       .search {
         flex: 1;
         height: 72rpx;
-
-        /deep/ .u-content {
-          height: 72rpx !important;
-        }
       }
     }
 

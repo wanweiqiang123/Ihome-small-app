@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-17 10:08:05
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-25 14:26:33
+ * @LastEditTime: 2020-12-08 18:43:10
 -->
 <template>
   <IntermediaryTabBar>
@@ -13,25 +13,26 @@
         <u-search
           class="search"
           shape="round"
-          bg-color="white"
-          border-color="#f2f2f2"
+          height="72"
+          placeholder-color="#BDBDBD"
+          search-icon-color="#BDBDBD"
+          bg-color="#FFFFFF"
+          border-color="#FFFFFF"
           :show-action="false"
           placeholder="请输入客户姓名/电话"
           v-model="queryPageParameters.projectName"></u-search>
-        <u-icon name="plus" size="45" @click="showAddWin = true"></u-icon>
-      </view>
-      <view class="client-content" v-for="item in [1, 2, 3, 4, 5, 6]" :key="item" @click="viewClientDetails">
-        <view class="client-avatar">
-          <u-image
-            width="150rpx"
-            height="150rpx"
-            shape="circle"
-            src="https://cdn.uviewui.com/uview/swiper/2.jpg"></u-image>
+        <view class="icon" @click="showAddWin = true">
+          <u-icon name="plus" color="#888888" size="30"></u-icon>
         </view>
-        <view class="client-info">
-          <view class="client-name">陈经纪</view>
-          <view class="client-phone">13455556666</view>
-          <view class="client-time">录入时间：2020-08-16 10:00</view>
+      </view>
+      <view class="client-content-wrapper">
+        <view class="client-content" v-for="item in [1, 2, 3, 4, 5, 6, 7, 8, 9]" :key="item" @click="viewClientDetails">
+          <view class="client-avatar">王</view>
+          <view class="client-info">
+            <view class="client-name">陈经纪</view>
+            <view class="client-phone">13455556666</view>
+            <view class="client-time">录入时间：2020-08-16 10:00</view>
+          </view>
         </view>
       </view>
       <u-mask
@@ -89,48 +90,95 @@ export default {
 
     .top-wrapper {
       width: 100%;
-      height: 85rpx;
+      height: 88rpx;
       box-sizing: border-box;
-      padding: 0rpx 20rpx;
-      margin-top: 10rpx;
+      padding: 0rpx 30rpx;
       display: flex;
       align-items: center;
-      background-color: #f2f2f2;
+      background-color: #F1F1F1;
 
       .search {
         flex: 1;
         box-sizing: border-box;
         margin-right: 20rpx;
+      }
 
-        /deep/ .u-content {
-          height: 62rpx !important;
-        }
+      .icon {
+        width: 72rpx;
+        height: 72rpx;
+        line-height: 68rpx;
+        text-align: center;
+        background: #FFFFFF;
+        border: 1rpx solid #DCDCDC;
+        border-radius: 36rpx;
       }
     }
 
-    .client-content {
-      /*width: 100%;*/
+    .client-content-wrapper {
+      width: 100%;
       box-sizing: border-box;
-      margin: 0rpx 20rpx;
-      padding: 20rpx 0rpx;
-      border-bottom: 1px solid #f2f2f2;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
+      padding: 0rpx 30rpx;
 
-      .client-info {
-        flex: 1;
+      .client-content {
+        width: 100%;
+        height: 164rpx;
         box-sizing: border-box;
-        margin-left: 20rpx;
+        //padding: 0rpx 30rpx;
+        border-bottom: 1px solid #f2f2f2;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
 
-        view {
-          box-sizing: border-box;
-          margin-bottom: 10rpx;
+        .client-avatar {
+          width: 100rpx;
+          height: 100rpx;
+          line-height: 100rpx;
+          text-align: center;
+          background: #4881F9;
+          border-radius: 50%;
+          font-size: 48rpx;
+          font-family: PingFang SC;
+          font-weight: 600;
+          color: #FFFFFF;
         }
 
-        .client-name {
-          font-size: 38rpx;
-          font-weight: 600;
+        .color-blur {
+          background: #4881F9;
+        }
+
+        .color-yellow {
+          background: #FCD639;
+        }
+
+        .color-orange {
+          background: #EB7734;
+        }
+
+        .color-green {
+          background: #8ED334;
+        }
+
+        .client-info {
+          flex: 1;
+          box-sizing: border-box;
+          margin-left: 32rpx;
+
+          view {
+            box-sizing: border-box;
+            margin-bottom: 5rpx;
+            font-size: 24rpx;
+            font-family: PingFang SC;
+            font-weight: 400;
+            color: #666666;
+            line-height: 36rpx;
+          }
+
+          .client-name {
+            font-size: 30rpx;
+            font-family: PingFang SC;
+            font-weight: 400;
+            color: #1C1C1C;
+          }
         }
       }
     }
@@ -141,9 +189,9 @@ export default {
       box-shadow: 8rpx 8rpx 6rpx #A9A9A9;
       box-sizing: border-box;
       position: fixed;
-      top: 75rpx;
-      right: 45rpx;
-      z-index: 11177;
+      top: 82rpx;
+      right: 40rpx;
+      z-index: 12222;
 
       .item {
         height: 80rpx;
