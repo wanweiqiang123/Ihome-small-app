@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-27 17:30:05
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-27 19:34:30
+ * @LastEditTime: 2020-12-09 15:57:30
 -->
 <template>
   <view class="broker-list-wrapper">
@@ -12,8 +12,11 @@
       <u-search
         class="search"
         shape="round"
-        bg-color="#F1F1F2"
-        border-color="#f2f2f2"
+        height="72"
+        placeholder-color="#BDBDBD"
+        search-icon-color="#BDBDBD"
+        bg-color="#FFFFFF"
+        border-color="#DCDCDC"
         :show-action="false"
         placeholder="请输入经纪人姓名或手机号码"
         v-model="queryPageParameters.projectName"></u-search>
@@ -170,10 +173,9 @@ export default {
 
     .top-wrapper {
       width: 100%;
-      height: 85rpx;
+      height: 92rpx;
       box-sizing: border-box;
-      padding: 0rpx 20rpx;
-      margin-top: 10rpx;
+      padding: 10rpx 24rpx 10rpx 18rpx;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -183,14 +185,10 @@ export default {
         flex: 1;
         box-sizing: border-box;
         margin-right: 20rpx;
-
-        /deep/ .u-content {
-          height: 62rpx !important;
-        }
       }
 
       .filter-wrapper {
-        color: #3478F7;
+        color: $u-type-primary;
         font-size: 30rpx;
       }
 
@@ -211,7 +209,7 @@ export default {
         display: flex;
         flex-direction: row;
         align-items: center;
-        border: 1rpx solid #409EFF;
+        border: 1rpx solid $u-type-primary;
         border-radius: 10rpx;
         margin-bottom: 20rpx;
         padding-left: 10rpx;
@@ -243,7 +241,7 @@ export default {
               display: inline-block;
               padding: 10rpx;
               color: #FFFFFF;
-              background-color: #409EFF;
+              background-color: $u-type-primary;
             }
           }
 
@@ -256,7 +254,7 @@ export default {
 
           .item-btn {
             height: 44rpx;
-            color: #66B1FF;
+            color: $u-type-primary;
             text-align: right;
             padding-right: 20rpx;
             //padding-bottom: 10rpx;
@@ -301,8 +299,8 @@ export default {
       }
 
       .selected {
-        border: 1rpx solid #278DFE;
-        color: #278DFE;
+        border: 1rpx solid $u-type-primary;
+        color: $u-type-primary;
       }
     }
 
@@ -325,11 +323,11 @@ export default {
       .reset {
         border-top: 1rpx solid #E4E4E4;
         background-color: #FFFFFF;
-        color: #0079FE;
+        color: $u-type-primary;
       }
 
       .submit {
-        background-color: #0079FE;
+        background-color: $u-type-primary;
         color: #FFFFFF;
       }
     }

@@ -4,11 +4,12 @@
  * @Author: lsj
  * @Date: 2020-11-27 15:36:22
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-27 16:36:22
+ * @LastEditTime: 2020-12-09 13:50:20
 -->
 <template>
   <view class="edit-company-wrapper">
-    <view class="form">
+    <view class="info-item">
+      <view class="form-title u-border-bottom">公司基本信息</view>
       <u-form :model="paymentForm" ref="paymentForm" :label-width="210">
         <u-form-item label="公司简称">
           <u-input
@@ -58,42 +59,36 @@
             placeholder="住所" :clearable="false" input-align="right"/>
         </u-form-item>
       </u-form>
-      <view class="company-annex-wrapper u-margin-top-20">
-        <view class="title">公司附件</view>
-        <view class="annex-list-wrapper" v-for="(item, index) in annexList" :key="index">
-          <view class="type">{{item.type}}</view>
-          <view v-for="(imgItem, imgIndex) in item.imgUrl" :key="imgIndex" class="img">
-            <u-image width="100rpx" height="100rpx" :src="imgItem"></u-image>
-          </view>
-          <view>
-            <u-upload
-              width="100rpx"
-              height="100rpx"
-              :action="action" :file-list="fileList" ></u-upload>
-          </view>
+    </view>
+    <view class="info-item">
+      <view class="form-title u-border-bottom">公司附件</view>
+      <view class="annex-list-wrapper" v-for="item in annexList" :key="item.id">
+        <view class="annex-type">{{item.type}}</view>
+        <view>
+          <u-upload :action="action" :file-list="fileList" ></u-upload>
         </view>
       </view>
-      <view class="company-annex-wrapper u-margin-top-20">
-        <view class="title">基本存款信息</view>
-        <u-form :model="paymentForm" ref="paymentForm" :label-width="210">
-          <u-form-item label="账户名称">
-            <u-input
-              v-model="paymentForm.account"
-              placeholder="账户名称" :clearable="false" input-align="right" />
-          </u-form-item>
-          <u-form-item label="开户银行" right-icon="arrow-right" class="hide-icon">
-            <u-input
-              @click="showBank = true"
-              v-model="paymentForm.account" type="select"
-              placeholder="开户银行" disabled :clearable="false" input-align="right" />
-          </u-form-item>
-          <u-form-item label="银行卡号">
-            <u-input
-              v-model="paymentForm.account"
-              placeholder="银行卡号" :clearable="false" input-align="right"/>
-          </u-form-item>
-        </u-form>
-      </view>
+    </view>
+    <view class="info-item">
+      <view class="form-title u-border-bottom">基本存款信息</view>
+      <u-form :model="paymentForm" ref="paymentForm" :label-width="210">
+        <u-form-item label="账户名称">
+          <u-input
+            v-model="paymentForm.account"
+            placeholder="账户名称" :clearable="false" input-align="right" />
+        </u-form-item>
+        <u-form-item label="开户银行" right-icon="arrow-right" class="hide-icon">
+          <u-input
+            @click="showBank = true"
+            v-model="paymentForm.account" type="select"
+            placeholder="开户银行" disabled :clearable="false" input-align="right" />
+        </u-form-item>
+        <u-form-item label="银行卡号">
+          <u-input
+            v-model="paymentForm.account"
+            placeholder="银行卡号" :clearable="false" input-align="right"/>
+        </u-form-item>
+      </u-form>
     </view>
     <view class="btn">
       <u-button type="primary">保存</u-button>
@@ -106,11 +101,14 @@
           <u-search
             class="search"
             shape="round"
+            height="72"
+            placeholder-color="#BDBDBD"
+            search-icon-color="#BDBDBD"
             bg-color="#FFFFFF"
-            border-color="#FFFFFF"
+            border-color="#DCDCDC"
             :show-action="false"
             placeholder="请输入开户银行名搜索"
-            v-model="queryPageParameters.bankName"></u-search>
+            v-model="queryPageParameters.projectName"></u-search>
         </view>
         <view
           class="bank-item"
@@ -191,43 +189,44 @@ export default {
 <style lang="scss" scoped>
   .edit-company-wrapper {
     width: 100%;
-    background-color: #F5F5F5;
+    background-color: #F1F1F1;
     padding: 30rpx;
 
-    .form {
+    .info-item {
       background-color: #FFFFFF;
+
+      &:not(:last-child) {
+        margin-bottom: 30rpx;
+      }
+
+      .form-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 92rpx;
+        padding: 0 20rpx;
+        color: $u-type-primary;
+      }
+
+      .annex-list-wrapper {
+        width: 100%;
+        padding: 0rpx 20rpx 20rpx 20rpx;
+
+        &:not(:last-child) {
+          border-bottom: 1rpx solid #F1F1F1;
+        }
+
+        .annex-type {
+          font-size: 30rpx;
+          padding: 20rpx 0rpx 10rpx 0rpx;
+        }
+      }
     }
 
     .btn {
       width: 100%;
       padding: 30rpx 50rpx;
       text-align: center;
-    }
-
-    .company-annex-wrapper {
-      width: 100%;
-
-      .title {
-        font-size: 32rpx;
-        padding: 30rpx 0rpx;
-        background-color: #F5F5F5;
-      }
-
-      .annex-list-wrapper {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        padding: 10rpx 20rpx;
-        font-size: 22rpx;
-
-        .type {
-          flex: 1;
-        }
-
-        .img {
-          margin-right: 5rpx;
-        }
-      }
     }
   }
 
@@ -236,25 +235,19 @@ export default {
 
     .top-wrapper {
       width: 100%;
-      //height: 72rpx;
+      height: 92rpx;
       box-sizing: border-box;
-      padding: 20rpx 20rpx;
-      margin-top: 10rpx;
-      display: flex;
-      background-color: #EFEFF4;
+      padding: 10rpx 24rpx 10rpx 18rpx;
+      background-color: #F1F1F1;
 
       .search {
         flex: 1;
         height: 72rpx;
-
-        /deep/ .u-content {
-          height: 72rpx !important;
-        }
       }
     }
 
     .bank-item {
-      padding: 30rpx 10rpx;
+      padding: 30rpx 20rpx;
       text-align: left;
       border-bottom: 1rpx solid #CCCCCC;
     }

@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-27 13:05:22
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-27 14:05:22
+ * @LastEditTime: 2020-12-09 15:55:10
 -->
 <template>
   <view class="deal-list-wrapper">
@@ -12,8 +12,11 @@
       <u-search
         class="search"
         shape="round"
-        bg-color="#F1F1F2"
-        border-color="#f2f2f2"
+        height="72"
+        placeholder-color="#BDBDBD"
+        search-icon-color="#BDBDBD"
+        bg-color="#FFFFFF"
+        border-color="#DCDCDC"
         :show-action="false"
         placeholder="请输入客户姓名或手机号码"
         v-model="queryPageParameters.projectName"></u-search>
@@ -164,10 +167,9 @@ export default {
 
     .top-wrapper {
       width: 100%;
-      height: 85rpx;
+      height: 92rpx;
       box-sizing: border-box;
-      padding: 0rpx 20rpx;
-      margin-top: 10rpx;
+      padding: 10rpx 24rpx 10rpx 18rpx;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -177,14 +179,10 @@ export default {
         flex: 1;
         box-sizing: border-box;
         margin-right: 20rpx;
-
-        /deep/ .u-content {
-          height: 62rpx !important;
-        }
       }
 
       .filter-wrapper {
-        color: #3478F7;
+        color: $u-type-primary;
         font-size: 30rpx;
       }
     }
@@ -306,7 +304,7 @@ export default {
 
       .right {
         color: #FFFFFF;
-        background-color: #0079FE;
+        background-color: $u-type-primary;
       }
     }
   }

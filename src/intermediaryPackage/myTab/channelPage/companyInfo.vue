@@ -4,67 +4,138 @@
  * @Author: lsj
  * @Date: 2020-11-27 14:02:13
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-27 15:36:22
+ * @LastEditTime: 2020-12-09 11:16:20
 -->
 <template>
   <view class="company-information-wrapper">
     <view class="company-name">
-      <view class="code-wrapper">
-        <view class="code">信用代码  91440101MA5D6ETP8X</view>
-        <view @click="editCompanyInfo">
-          <u-icon name="edit-pen" size="30"></u-icon>编辑
-        </view>
+      <view class="name">
+        <view class="code">信用代码 1234567890DE</view>
+        <view>广州市星星电子商务有限责任公司</view>
+        <view>（广州星星）</view>
       </view>
-      <view class="name-wrapper u-padding-top-10 u-padding-bottom-10">
-        <view class="name">广州市择食电子商务有限责任公司</view>
-        <view>(广州择食)</view>
+      <view class="btn-wrapper" @click="editCompanyInfo">
+        <u-icon name="edit-pen" color="$u-type-primary" size="30"></u-icon>编辑
       </view>
     </view>
-    <view class="info-wrapper">
-      <view class="title">公司基本信息</view>
-      <view class="info-list">
-        <view class="item" v-for="(item, index) in info" :key="index" :class="item.className">
-          <view>{{item.type}}</view>
-          <view>{{item.value}}</view>
-        </view>
+    <view class="info-content-wrapper">
+      <view class="info-item">
+        <view class="form-title u-border-bottom">公司基本信息</view>
+        <u-form
+          :model="form"
+          ref="uForm"
+          label-width="210">
+          <u-form-item label="公司类型" class="hide-icon" right-icon="arrow-right">
+            <u-input
+              v-model="form.companyType"
+              type="select"
+              placeholder="请选择公司类型"/>
+          </u-form-item>
+          <u-form-item label="注册资本">
+            <u-input v-model="form.companySignMoney" placeholder="请输入注册资本" />
+          </u-form-item>
+          <u-form-item label="营业期限" class="hide-icon" right-icon="arrow-right">
+            <u-input
+              v-model="form.companyTime"
+              type="select"
+              placeholder="请选择营业期限"/>
+          </u-form-item>
+          <u-form-item label="成立时间" class="hide-icon" right-icon="arrow-right">
+            <u-input
+              v-model="form.companyTime"
+              type="select"
+              placeholder="请选择成立时间"/>
+          </u-form-item>
+          <u-form-item label="法人身份证号码">
+            <u-input v-model="form.companySignMoney" placeholder="请输入法人身份证号码" />
+          </u-form-item>
+          <u-form-item label="法定代表人">
+            <u-input v-model="form.companySignMoney" placeholder="请输入法定代表人" />
+          </u-form-item>
+          <u-form-item label="地区" class="hide-icon" right-icon="arrow-right">
+            <u-input
+              v-model="form.companyTime"
+              type="select"
+              placeholder="请选择地区"/>
+          </u-form-item>
+          <u-form-item label="住所" class="hide-icon" right-icon="arrow-right">
+            <u-input
+              v-model="form.companyTime"
+              type="select"
+              placeholder="请选择住所"/>
+          </u-form-item>
+        </u-form>
       </view>
-      <view class="title">负责人信息</view>
-      <view class="info-list">
-        <view class="item" v-for="(item, index) in chargeInfo" :key="index" :class="item.className">
-          <view>{{item.type}}</view>
-          <view>{{item.value}}</view>
-        </view>
+      <view class="info-item">
+        <view class="form-title u-border-bottom">负责人信息</view>
+        <u-form
+          :model="form"
+          ref="uForm"
+          label-width="210">
+          <u-form-item label="负责人姓名">
+            <u-input v-model="form.companySignMoney" placeholder="请输入负责人姓名" />
+          </u-form-item>
+          <u-form-item label="负责人手机号">
+            <u-input v-model="form.companySignMoney" placeholder="请输入负责人手机号" />
+          </u-form-item>
+          <u-form-item label="身份证号码">
+            <u-input v-model="form.companySignMoney" placeholder="请输入身份证号码" />
+          </u-form-item>
+          <u-form-item label="邮箱">
+            <u-input v-model="form.companySignMoney" placeholder="请输入邮箱" />
+          </u-form-item>
+        </u-form>
       </view>
-      <view class="title">公司附件</view>
-      <view class="annex-list">
-        <view class="item" v-for="(item, index) in annexInfo" :key="index">
-          <view class="type">{{item.type}}</view>
-          <view v-for="(imgItem, imgIndex) in item.imgUrl" :key="imgIndex" class="img">
-            <u-image width="100rpx" height="100rpx" :src="imgItem"></u-image>
+      <view class="info-item">
+        <view class="form-title u-border-bottom">公司附件</view>
+        <view class="annex-list-wrapper" v-for="item in annexInfo" :key="item.id">
+          <view class="annex-type">{{item.type}}</view>
+          <view>
+            <u-upload :action="action" :file-list="fileList" ></u-upload>
           </view>
         </view>
       </view>
-      <view class="title">公司备注</view>
-      <view class="remark">盼望着，盼望着，东风来了，春天的脚步近了。</view>
-    </view>
-    <view class="company-name bg-color-no">
-      <view class="account">
-        <view class="title">公司结佣帐号</view>
-        <view>全部(3)</view>
+      <view class="info-item">
+        <view class="form-title u-border-bottom">公司备注</view>
+        <view class="remark">盼望着，盼望着，东风来了，春天的脚步近了。</view>
       </view>
-      <view class="swiper-wrapper">
-        <swiper :indicator-dots="true" :autoplay="false" :interval="2000" :duration="500">
-          <swiper-item v-for="(item, index) in bankCodeList" :key="index">
-            <view class="account-wrapper">
-              <view class="name">{{item.name}}</view>
-              <view class="local">{{item.local}}</view>
-              <view class="code">{{item.code}}</view>
+      <view class="info-item">
+        <view class="form-title u-border-bottom form-count">
+          <view>公司结佣帐号</view>
+          <view class="count" @click="goToCountList">全部({{bankCodeList.length}})</view>
+        </view>
+        <view class="swiper-wrapper">
+          <swiper
+            class="swiper"
+            :autoplay="false"
+            circular
+            title
+            @change="changeCount">
+            <swiper-item
+              class="swiper-item"
+              v-for="(item, index) in bankCodeList"
+              :key="index">
+              <view class="swiper-item-msg" v-if="!!item.name">
+                <view class="name">{{item.name}}</view>
+                <view class="local">{{item.local}}</view>
+                <view class="code">{{item.code}}</view>
+              </view>
+              <view class="swiper-item-msg" v-else>
+                <view class="more" @click="goToCountList">
+                  查看更多<u-icon name="more-circle-fill" color="$u-type-primary" size="32"></u-icon>
+                </view>
+              </view>
+            </swiper-item>
+          </swiper>
+          <view class="indicator-dots">
+            <view
+              v-for="(item, index) in bankCodeList"
+              :key="index"
+              class="indicator-dots-item"
+              :class="[currentDots === index ? 'indicator-dots-active' : '']">
             </view>
-          </swiper-item>
-          <swiper-item class="more-wrapper">
-            <view class="more">查看更多</view>
-          </swiper-item>
-        </swiper>
+          </view>
+        </view>
       </view>
     </view>
   </view>
@@ -74,92 +145,41 @@
   export default {
     data() {
       return {
-        info: [
-          {
-            type: '公司类型',
-            value: '有限责任公司（自然人投资或控股）',
-            className: 'with-70',
-          },
-          {
-            type: '注册资本',
-            value: '100万元人民币',
-            className: 'with-30',
-          },
-          {
-            type: '营业期限',
-            value: '2020-03-31 至 2026-03-31',
-            className: 'with-70',
-          },
-          {
-            type: '成立时间',
-            value: '2020-03-01',
-            className: 'with-20',
-          },
-          {
-            type: '法人身份证号码',
-            value: '440111198710031817',
-            className: 'with-70',
-          },
-          {
-            type: '法定代表人',
-            value: '谭星科',
-            className: 'with-30',
-          },
-          {
-            type: '地区',
-            value: '广东省广州市天河区',
-            className: 'with-100',
-          },
-          {
-            type: '住所',
-            value: '广州市荔湾区信义路24号4幢自编217房',
-            className: 'with-100',
-          }
-        ],
-        chargeInfo: [
-          {
-            type: '负责人姓名',
-            value: '李四',
-            className: 'with-70',
-          },
-          {
-            type: '负责人手机号',
-            value: '13589888888',
-            className: 'with-30',
-          },
-          {
-            type: '身份证号码',
-            value: '440111198710031817',
-            className: 'with-70',
-          },
-          {
-            type: '邮箱',
-            value: 'liswer@163.com',
-            className: 'with-30',
-          },
-        ],
+        form: {
+          companyType: null,
+          companySignMoney: null,
+          companyTime: null,
+        },
+        action: '',
+        fileList: [],
         annexInfo: [
           {
+            id: 1,
             type: '营业执照',
             imgUrl: ['https://cdn.uviewui.com/uview/example/fade.jpg', 'https://cdn.uviewui.com/uview/example/fade.jpg']
           },
           {
+            id: 2,
             type: '开户许可证',
             imgUrl: ['https://cdn.uviewui.com/uview/example/fade.jpg', 'https://cdn.uviewui.com/uview/example/fade.jpg']
           },
           {
+            id: 3,
             type: '法人身份证正反面复印件',
             imgUrl: ['https://cdn.uviewui.com/uview/example/fade.jpg', 'https://cdn.uviewui.com/uview/example/fade.jpg']
           },
           {
+            id: 4,
             type: '签约授权确认函',
             imgUrl: ['https://cdn.uviewui.com/uview/example/fade.jpg', 'https://cdn.uviewui.com/uview/example/fade.jpg']
           },
           {
+            id: 5,
             type: '被委托人身份证复印件',
             imgUrl: ['https://cdn.uviewui.com/uview/example/fade.jpg', 'https://cdn.uviewui.com/uview/example/fade.jpg']
           },
           {
+            id: 6,
             type: '综合查询被执行人查询结果',
             imgUrl: ['https://cdn.uviewui.com/uview/example/fade.jpg', 'https://cdn.uviewui.com/uview/example/fade.jpg']
           }
@@ -174,8 +194,14 @@
             name: '广州择食电子商务有限责任公司',
             local: '中国银行独山县支行',
             code: '4431-3465-4687-3100-12445'
+          },
+          {
+            name: '',
+            local: '',
+            code: ''
           }
-        ]
+        ],
+        currentDots: 0
       };
     },
     onLoad() {
@@ -186,7 +212,17 @@
         uni.navigateTo({
           url: `/intermediaryPackage/myTab/channelPage/editCompany`
         });
-      }
+      },
+      // 公司结佣账号切换
+      changeCount(e) {
+        this.currentDots = e.detail.current;
+      },
+      // 跳转到结佣账号列表
+      goToCountList() {
+        uni.navigateTo({
+          url: `/intermediaryPackage/myTab/channelPage/commissionAccount`
+        });
+      },
     }
   };
 </script>
@@ -194,166 +230,159 @@
 <style lang="scss" scoped>
   .company-information-wrapper {
     width: 100%;
-    padding: 10rpx 20rpx;
+    background-color: #F1F1F1;
 
     .company-name {
       width: 100%;
-      background-color: #02A7F0;
-      color: #FFFFFF;
-      padding: 10rpx 20rpx;
+      height: 162rpx;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      background-color: #FFFFFF;
+      box-sizing: border-box;
+      padding: 20rpx 30rpx 20rpx 30rpx;
 
-      .code-wrapper {
-        display: flex;
-        flex-direction: row;
-        align-items: flex-start;
-
-        .code {
-          flex: 1;
-          font-size: 26rpx;
-        }
-      }
-
-      .name-wrapper {
-        width: 100%;
+      .name {
+        flex: 1;
         display: flex;
         flex-direction: column;
-        font-weight: 600;
+        justify-content: center;
 
         view {
-          flex: 1;
-          text-align: center;
+          font-size: 32rpx;
+          font-family: PingFang SC;
+          font-weight: 500;
+          color: #333333;
         }
 
-        .name {
-          font-size: 36rpx;
-        }
-      }
-
-      .account {
-        font-weight: 600;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        padding: 10rpx 10rpx;
-        background-color: #02A7F0;
-
-        .title {
-          flex: 1;
-          font-size: 36rpx;
+        .code {
+          font-size: 26rpx;
+          font-weight: 400;
+          color: #666666;
+          padding-bottom: 10rpx;
         }
       }
 
-      .swiper-wrapper {
-        width: 100%;
-        background-color: #F3FBFE;
+      .btn-wrapper {
+        color: $u-type-primary;
 
-        .account-wrapper {
-          width: 100%;
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          padding: 30rpx;
-
-          .name {
-            color: #333333;
-            font-size: 32rpx;
-          }
-
-          .local, .code {
-            color: #666666;
-            font-size: 28rpx;
-          }
-        }
-
-        .more-wrapper {
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-
-          .more {
-            color: #666666;
-            font-size: 36rpx;
-            text-align: center;
-          }
+        /deep/.u-icon {
+          box-sizing: border-box;
+          margin-right: 12rpx;
         }
       }
     }
 
-    .bg-color-no {
-      background-color: #F9F9F9;
-    }
-
-    .info-wrapper {
+    .info-content-wrapper {
       width: 100%;
-      font-size: 24rpx;
-      padding: 20rpx;
+      box-sizing: border-box;
+      padding: 30rpx;
 
-      .title {
-        font-size: 36rpx;
-        font-weight: 600;
-        padding: 10rpx 0rpx;
-        color: #666666;
-      }
+      .info-item {
+        background-color: #FFFFFF;
 
-      .info-list {
-        width: 100%;
-        display: flex;
-        flex-direction: row;
-        align-items: flex-start;
-        flex-wrap: wrap;
+        &:not(:last-child) {
+          margin-bottom: 30rpx;
+        }
 
-        .item {
-          margin-right: 10rpx;
+        .form-title {
           display: flex;
-          flex-direction: column;
-          padding: 10rpx 0rpx;
-
-          view {
-            padding: 5rpx 0rpx;
-          }
-        }
-
-        .with-70 {
-          width: 58%;
-        }
-
-        .with-30 {
-          width: 39%;
-        }
-
-        .with-100 {
-          width: 99%;
-        }
-      }
-
-      .annex-list {
-        display: flex;
-        flex-direction: column;
-
-        .item {
-          width: 100%;
-          display: flex;
-          flex-direction: row;
+          justify-content: space-between;
           align-items: center;
-          padding: 10rpx 0rpx;
+          height: 92rpx;
+          padding: 0 20rpx;
+          color: $u-type-primary;
+        }
 
-          .type {
-            flex: 1;
+        .annex-list-wrapper {
+          width: 100%;
+          padding: 0rpx 20rpx 20rpx 20rpx;
+
+          &:not(:last-child) {
+            border-bottom: 1rpx solid #F1F1F1;
           }
 
-          .img {
-            &:not(:last-child) {
-              margin-right: 5rpx;
+          .annex-type {
+            font-size: 30rpx;
+            padding: 20rpx 0rpx 10rpx 0rpx;
+          }
+        }
+
+        .remark {
+          padding: 10rpx 20rpx;
+        }
+
+        .swiper-wrapper {
+          width: 100%;
+
+          .swiper {
+            padding: 0 21rpx;
+            height: 278rpx;
+
+            .swiper-item {
+              padding-right: 5rpx;
+              box-sizing: border-box;
+
+              .swiper-item-msg {
+                height: 100%;
+                background-color: #e6f1fc;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                border-radius: 14rpx;
+                box-sizing: border-box;
+                padding: 30rpx;
+
+                view {
+                  font-family: PingFang SC;
+                }
+
+                .name {
+                  flex: 1;
+                  font-size: 32rpx;
+                  font-weight: bold;
+                  color: #333333;
+                }
+
+                .local, .code {
+                  flex: 1;
+                  font-size: 30rpx;
+                  color: #666666;
+                }
+
+                .more {
+                  text-align: center;
+                  font-size: 32rpx;
+                  font-weight: bold;
+                  color: #666666;
+
+                  /deep/.u-icon {
+                    margin-left: 10rpx;
+                  }
+                }
+              }
             }
           }
-        }
-      }
 
-      .remark {
-        padding: 10rpx 0rpx;
+          .indicator-dots {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30rpx 0rpx;
+          }
+
+          .indicator-dots-item {
+            background-color: $u-tips-color;
+            height: 16rpx;
+            width: 16rpx;
+            border-radius: 10px;
+            margin: 0 3px;
+          }
+
+          .indicator-dots-active {
+            background-color: $u-type-primary;
+          }
+        }
       }
     }
   }

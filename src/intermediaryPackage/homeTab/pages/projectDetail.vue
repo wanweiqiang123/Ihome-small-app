@@ -197,7 +197,7 @@
       height: 30rpx;
       line-height: 30rpx;
       text-align: left;
-      border-left: 6rpx solid #4881F9;
+      border-left: 6rpx solid $u-type-primary;
       padding-left: 20rpx;
       font-size: 30rpx;
       box-sizing: border-box;
@@ -213,7 +213,7 @@
       left: 0rpx;
       top: 0rpx;
       z-index: -1;
-      background-color: #4881F9;
+      background-color: $u-type-primary;
     }
 
     .detail-content-wrapper {
@@ -371,7 +371,7 @@
             width: 153rpx;
             height: 42rpx;
             display: inline-block;
-            background: #4881F9;
+            background: $u-type-primary;
             border-radius: 21rpx;
             color: #FFFFFF;
             transition-duration: 0.5s;

@@ -139,7 +139,7 @@ export default {
         background-color: #F5F5F5;
 
         .add {
-          font-size: 46rpx;
+          font-size: 38rpx;
           font-weight: 600;
           color: #666666;
           margin-top: 10rpx;

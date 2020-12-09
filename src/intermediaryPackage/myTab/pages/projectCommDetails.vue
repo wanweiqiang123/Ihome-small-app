@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-27 08:42:30
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-27 09:42:10
+ * @LastEditTime: 2020-12-09 15:58:50
 -->
 <template>
   <view class="project-comm-detail-wrapper">
@@ -12,8 +12,11 @@
       <u-search
         class="search"
         shape="round"
+        height="72"
+        placeholder-color="#BDBDBD"
+        search-icon-color="#BDBDBD"
         bg-color="#FFFFFF"
-        border-color="#FFFFFF"
+        border-color="#DCDCDC"
         :show-action="false"
         placeholder="请输入联动周期搜索"
         v-model="queryPageParameters.projectName"></u-search>
@@ -63,10 +66,9 @@ export default {
 
     .top-wrapper {
       width: 100%;
-      height: 85rpx;
+      height: 92rpx;
       box-sizing: border-box;
-      padding: 0rpx 20rpx;
-      margin: 10rpx 0rpx;
+      padding: 10rpx 24rpx 10rpx 18rpx;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -76,10 +78,6 @@ export default {
         flex: 1;
         box-sizing: border-box;
         margin-right: 20rpx;
-
-        /deep/ .u-content {
-          height: 62rpx !important;
-        }
       }
     }
 
@@ -90,7 +88,7 @@ export default {
       .project-name {
         width: 100%;
         color: #FFFDFF;
-        background-color: #0079FE;
+        background-color: $u-type-primary;
         box-sizing: border-box;
         padding: 20rpx;
         font-weight: 600;

@@ -126,7 +126,7 @@ export default {
             height: 80rpx;
             line-height: 80rpx;
             font-size: 30rpx;
-            background-color: #409EFF;
+            background-color: $u-type-primary;
             color: #FFFFFF;
           }
         }

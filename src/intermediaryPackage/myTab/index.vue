@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-16 15:34:28
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-08 16:25:50
+ * @LastEditTime: 2020-12-09 15:46:30
 -->
 <template>
   <IntermediaryTabBar>
@@ -144,7 +144,7 @@ export default {
           id: 1,
           icon: require('@/static/ico/5-6.png'),
           name: '我的购房信息',
-          url: ''
+          url: '/customerPackage/homeTab/index'
         }
       ],
       showPopup: false
@@ -191,7 +191,7 @@ export default {
     .my-page-bg {
       width: 100%;
       height: 346rpx;
-      background-color: #4881F9;
+      background-color: $u-type-primary;
       position: absolute;
       top: 0rpx;
       left: 0rpx;
@@ -310,7 +310,7 @@ export default {
 
         /deep/.u-btn {
           height: 92rpx;
-          background-color: #4881F9;
+          background-color: $u-type-primary;
           color: white;
         }
       }

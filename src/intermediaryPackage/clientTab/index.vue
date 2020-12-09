@@ -134,7 +134,7 @@ export default {
           height: 100rpx;
           line-height: 100rpx;
           text-align: center;
-          background: #4881F9;
+          background: $u-type-primary;
           border-radius: 50%;
           font-size: 48rpx;
           font-family: PingFang SC;
@@ -143,7 +143,7 @@ export default {
         }
 
         .color-blur {
-          background: #4881F9;
+          background: $u-type-primary;
         }
 
         .color-yellow {

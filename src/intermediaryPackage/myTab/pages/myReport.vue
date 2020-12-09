@@ -147,7 +147,7 @@
 
       .activating {
         font-weight: bold;
-        background: #4881F9;
+        background: $u-type-primary;
         color: #FFFFFF;
         transition-duration: 0.5s;
       }
