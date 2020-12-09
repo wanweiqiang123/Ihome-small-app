@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-17 10:54:41
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-07 16:40:36
+ * @LastEditTime: 2020-12-09 08:51:22
 -->
 <template>
   <view class="container safe-area-inset-bottom">
@@ -136,7 +136,7 @@
         >
           <IhCheckbox
             v-model="form.value"
-            :data="checkList"
+            :arr="checkList"
           ></IhCheckbox>
         </u-form-item>
       </u-form>

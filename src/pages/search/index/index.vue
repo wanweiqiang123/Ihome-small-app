@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-20 17:03:55
- * @LastEditors: wwq
- * @LastEditTime: 2020-11-24 10:35:54
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-12-09 08:57:40
 -->
 <template>
   <PageingSearch
@@ -12,13 +12,13 @@
     :search-api="searchApi"
     :params-key="paramsKey"
   >
-    <template #searchlist="{ data }">
+    <template #searchlist="{ scrollData }">
       <view
         class="list-item"
-        :key="data.id"
-        @click="goBackPage(data)"
+        :key="scrollData.id"
+        @click="goBackPage(scrollData)"
       >
-        {{data.name}} {{data.id}}
+        {{scrollData.name}} {{scrollData.id}}
       </view>
     </template>
   </PageingSearch>

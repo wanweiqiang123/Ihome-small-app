@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-30 15:04:57
+ * @LastEditTime: 2020-12-09 08:51:59
 -->
 <template>
   <view class="notice safe-area-inset-bottom">
@@ -113,7 +113,7 @@
           :border-bottom="false"
         >
           <IhCheckbox
-            :data="checkbox"
+            :arr="checkbox"
             v-model="form.value"
           ></IhCheckbox>
         </u-form-item>
@@ -122,7 +122,7 @@
           :border-bottom="false"
         >
           <IhCheckbox
-            :data="checkbox2"
+            :arr="checkbox2"
             v-model="form.value2"
           ></IhCheckbox>
         </u-form-item>

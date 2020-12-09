@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-30 10:48:38
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-30 15:17:21
+ * @LastEditTime: 2020-12-09 08:50:13
 -->
 <template>
   <view class="check-container">
@@ -26,7 +26,7 @@ export default {
       type: Array,
       default: () => [],
     },
-    data: {
+    arr: {
       type: Array,
       defalut: () => [],
     },
@@ -45,7 +45,7 @@ export default {
     },
   },
   watch: {
-    data: {
+    arr: {
       deep: true,
       immediate: true,
       handler(newValue) {
@@ -88,7 +88,7 @@ export default {
       this.checkList.forEach((i, n) => {
         if (i.isCheck) {
           this.isObj
-            ? resArr.push(this.data[n])
+            ? resArr.push(this.arr[n])
             : resArr.push(i[this.valueProp]);
         }
       });

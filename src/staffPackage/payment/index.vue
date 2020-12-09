@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 16:09:28
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-30 19:28:11
+ * @LastEditTime: 2020-12-09 08:55:41
 -->
 <template>
   <view class="payment safe-area-inset-bottom">
@@ -117,7 +117,7 @@
           :border-bottom="false"
         >
           <IhCheckbox
-            :data="checkList"
+            :arr="checkList"
             v-model="form.value"
           ></IhCheckbox>
         </u-form-item>

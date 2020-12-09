@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-13 16:47:03
- * @LastEditors: wwq
- * @LastEditTime: 2020-11-27 16:44:36
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-12-09 08:57:30
 -->
 <template>
   <view class="box">
@@ -73,7 +73,7 @@
           >
             <slot
               name="searchlist"
-              :data="item"
+              :scrollData="item"
             ></slot>
           </view>
           <view

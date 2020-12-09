@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-30 08:53:45
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-08 11:08:49
+ * @LastEditTime: 2020-12-08 15:48:35
 -->
 <template>
   <StaffTabBar>
@@ -75,79 +75,10 @@
             <u-th width="10%">成交</u-th>
             <u-th width="10%">无效</u-th>
           </u-tr>
-          <u-tr>
-            <u-td>
-              <view style="width: 300rpx">保利天悦20200101~20200201</view>
-            </u-td>
-            <u-td>300</u-td>
-            <u-td>200</u-td>
-            <u-td>50</u-td>
-            <u-td>100</u-td>
-          </u-tr>
-          <u-tr>
-            <u-td>
-              <view style="width: 300rpx">保利天悦20200101~20200201</view>
-            </u-td>
-            <u-td>300</u-td>
-            <u-td>200</u-td>
-            <u-td>50</u-td>
-            <u-td>100</u-td>
-          </u-tr>
-          <u-tr>
-            <u-td>
-              <view style="width: 300rpx">保利天悦20200101~20200201</view>
-            </u-td>
-            <u-td>300</u-td>
-            <u-td>200</u-td>
-            <u-td>50</u-td>
-            <u-td>100</u-td>
-          </u-tr>
-          <u-tr>
-            <u-td>
-              <view style="width: 300rpx">保利天悦20200101~20200201</view>
-            </u-td>
-            <u-td>300</u-td>
-            <u-td>200</u-td>
-            <u-td>50</u-td>
-            <u-td>100</u-td>
-          </u-tr>
-          <u-tr>
-            <u-td>
-              <view style="width: 300rpx">保利天悦20200101~20200201</view>
-            </u-td>
-            <u-td>300</u-td>
-            <u-td>200</u-td>
-            <u-td>50</u-td>
-            <u-td>100</u-td>
-          </u-tr>
-          <u-tr>
-            <u-td>
-              <view style="width: 300rpx">保利天悦20200101~20200201</view>
-            </u-td>
-            <u-td>300</u-td>
-            <u-td>200</u-td>
-            <u-td>50</u-td>
-            <u-td>100</u-td>
-          </u-tr>
-          <u-tr>
-            <u-td>
-              <view style="width: 300rpx">保利天悦20200101~20200201</view>
-            </u-td>
-            <u-td>300</u-td>
-            <u-td>200</u-td>
-            <u-td>50</u-td>
-            <u-td>100</u-td>
-          </u-tr>
-          <u-tr>
-            <u-td>
-              <view style="width: 300rpx">保利天悦20200101~20200201</view>
-            </u-td>
-            <u-td>300</u-td>
-            <u-td>200</u-td>
-            <u-td>50</u-td>
-            <u-td>100</u-td>
-          </u-tr>
-          <u-tr>
+          <u-tr
+            v-for="i in 10"
+            :key="i"
+          >
             <u-td>
               <view style="width: 300rpx">保利天悦20200101~20200201</view>
             </u-td>
@@ -160,6 +91,13 @@
       </view>
       <!-- </view> -->
     </view>
+    <!-- 日历 -->
+    <u-calendar
+      v-model="isShow"
+      mode="range"
+      @change="change"
+      :safe-area-inset-bottom="true"
+    ></u-calendar>
   </StaffTabBar>
 </template>
 
@@ -177,11 +115,18 @@ export default {
       ],
       current: 0,
       keyword: null,
+      isShow: false,
     };
   },
   methods: {
     tabChange(index) {
       this.current = index;
+      if (this.current === 4) {
+        this.isShow = true;
+      }
+    },
+    change(val) {
+      console.log(val);
     },
   },
 };
