@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-13 16:47:03
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-09 08:57:30
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-09 16:41:57
 -->
 <template>
   <view class="box">
@@ -227,15 +227,19 @@ export default {
       this.$tool.back(null, { type: "init", data: v });
     },
     async getListMixin() {
-      let params = { ...this.queryPageParameters };
-      params[this.key] = this.keyword;
-      let item = await apiList[this.searchApi](params);
-      this.setPageDataMixin(item);
-      this.total = item.total;
-      if (this.tablePage.length) {
-        this.searchNull = false;
+      if (this.keyword) {
+        let params = { ...this.queryPageParameters };
+        params[this.key] = this.keyword;
+        let item = await apiList[this.searchApi](params);
+        this.setPageDataMixin(item);
+        this.total = item.total;
+        if (this.tablePage.length) {
+          this.searchNull = false;
+        } else {
+          this.searchNull = true;
+        }
       } else {
-        this.searchNull = true;
+        return;
       }
     },
   },
