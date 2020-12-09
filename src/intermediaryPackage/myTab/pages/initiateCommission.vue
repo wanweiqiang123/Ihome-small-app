@@ -4,112 +4,103 @@
  * @Author: lsj
  * @Date: 2020-11-26 14:24:10
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-26 15:18:36
+ * @LastEditTime: 2020-12-09 17:10:20
 -->
 <template>
   <view class="initiate-commission-wrapper">
-    <view class="initiate-title">
-      <view class="title">待结佣成交列表</view>
-      <view class="btn">
-        <u-button type="primary" size="mini" @click="showProject = true">添加</u-button>
+    <view class="initiate-title u-margin-bottom-20">
+      <text>待结佣成交列表</text>
+      <view @click="showProject = true">
+        <u-icon name="plus" /> 添加
       </view>
     </view>
-    <view class="commission-item-wrapper" v-for="item in [1,2]" :key="item">
-      <view class="item-project-name u-padding-15">
-        <view>爱特城(20200101~20200130)</view>
-        <view>结佣总额：600.00</view>
-      </view>
-      <view class="item-code-list u-padding-15" v-for="list in [1,2,3,4]" :key="list" @click="viewDealDetail">
-        <view class="list-left">
-          <view>成交报告编号：CJ138979352876</view>
-          <view class="price">本单佣金：200.00</view>
+    <view class="commission-item-wrapper">
+      <view class="top">
+        <view class="top-container u-border-bottom">
+          <view class="top-title">爱特城（20200101～202002001）</view>
         </view>
-        <view class="list-right">
-          <u-icon name="close-circle" size="45"></u-icon>
+        <view class="top-money">
+          <text>结佣总额：</text>
+          <text class="money-rad">600.00</text>
+          <text class="money-unit">元</text>
+        </view>
+      </view>
+      <view class="bottom u-border-bottom">
+        <view>
+          <view class="code">成交报告编号：DF836372822</view>
+          <view>本单佣金：200.00</view>
+        </view>
+        <u-icon name="close-circle-fill" color="#C0C4CC" size="50"></u-icon>
+      </view>
+      <view class="bottom u-border-bottom">
+        <view>
+          <view class="code">成交报告编号：DF836372822</view>
+          <view>本单佣金：200.00</view>
+        </view>
+        <u-icon name="close-circle-fill" color="#C0C4CC" size="50"></u-icon>
+      </view>
+    </view>
+    <view class="form-wrapper">
+      <view class="form-title u-border-bottom">收款信息</view>
+      <u-form :model="paymentForm" ref="paymentForm" :label-width="190">
+        <u-form-item label="收款帐号" right-icon="arrow-right" class="hide-icon">
+          <u-input
+            @click="showAccount = true"
+            v-model="paymentForm.account" type="select"
+            placeholder="收款帐号" :clearable="false" />
+        </u-form-item>
+        <u-form-item label="发票类型" right-icon="arrow-right" class="hide-icon">
+          <u-input
+            @click="showInvoiceType = true"
+            v-model="paymentForm.invoiceType" type="select"
+            placeholder="发票类型" :clearable="false" />
+        </u-form-item>
+        <u-form-item label="发票税率" right-icon="arrow-right" class="hide-icon">
+          <u-input
+            @click="showInvoiceTaxRate = true"
+            v-model="paymentForm.invoiceTaxRate" type="select"
+            placeholder="发票税率" :clearable="false" />
+        </u-form-item>
+      </u-form>
+    </view>
+    <view class="form-wrapper">
+      <view class="form-title u-border-bottom">佣金结算</view>
+      <u-form :model="paymentForm" ref="paymentForm" :label-width="190">
+        <u-form-item label="本单佣金" right-icon="arrow-right">
+          <u-input
+            v-model="paymentForm.estateName"
+            placeholder="本单佣金" disabled :clearable="false" />
+        </u-form-item>
+        <u-form-item label="不含税金额" right-icon="arrow-right">
+          <u-input
+            v-model="paymentForm.roof"
+            placeholder="不含税金额" disabled :clearable="false" />
+        </u-form-item>
+        <u-form-item label="税额" right-icon="arrow-right">
+          <u-input
+            v-model="paymentForm.room"
+            placeholder="税额" disabled :clearable="false" />
+        </u-form-item>
+      </u-form>
+    </view>
+    <view class="form-wrapper">
+      <view class="form-title u-border-bottom">附件信息</view>
+      <view class="annex-list-wrapper" v-for="item in annexList" :key="item.id">
+        <view class="annex-type">{{item.type}}</view>
+        <view>
+          <u-upload :action="action" :file-list="fileList" ></u-upload>
         </view>
       </view>
     </view>
     <view class="form-wrapper">
-      <view class="title">收款信息</view>
-      <view class="form">
-        <u-form :model="paymentForm" ref="paymentForm" :label-width="190">
-          <u-form-item label="收款帐号" right-icon="arrow-right" class="hide-icon">
-            <u-input
-              @click="showAccount = true"
-              v-model="paymentForm.account" type="select"
-              placeholder="收款帐号" :clearable="false" input-align="right" />
-          </u-form-item>
-          <u-form-item label="发票类型" right-icon="arrow-right" class="hide-icon">
-            <u-input
-              @click="showInvoiceType = true"
-              v-model="paymentForm.invoiceType" type="select"
-              placeholder="发票类型" :clearable="false" input-align="right" />
-          </u-form-item>
-          <u-form-item label="发票税率" right-icon="arrow-right" class="hide-icon">
-            <u-input
-              @click="showInvoiceTaxRate = true"
-              v-model="paymentForm.invoiceTaxRate" type="select"
-              placeholder="发票税率" :clearable="false" input-align="right" />
-          </u-form-item>
-        </u-form>
-      </view>
-    </view>
-    <view class="form-wrapper">
-      <view class="title">佣金结算</view>
-      <view class="form">
-        <u-form :model="paymentForm" ref="paymentForm" :label-width="190">
-          <u-form-item label="本单佣金" right-icon="arrow-right">
-            <u-input
-              v-model="paymentForm.estateName"
-              placeholder="本单佣金" disabled :clearable="false" input-align="right" />
-          </u-form-item>
-          <u-form-item label="不含税金额" right-icon="arrow-right">
-            <u-input
-              v-model="paymentForm.roof"
-              placeholder="不含税金额" disabled :clearable="false" input-align="right" />
-          </u-form-item>
-          <u-form-item label="税额" right-icon="arrow-right">
-            <u-input
-              v-model="paymentForm.room"
-              placeholder="税额" disabled :clearable="false" input-align="right" />
-          </u-form-item>
-        </u-form>
-      </view>
-    </view>
-    <view class="form-wrapper">
-      <view class="title">附件信息</view>
-      <view class="form-img">
-        <view class="img-item">
-          <view class="img-upload">
-            <u-upload :action="action" :file-list="fileList" ></u-upload>
-          </view>
-          <view class="img-type">发票</view>
-        </view>
-        <view class="img-item">
-          <view class="img-upload">
-            <u-upload :action="action" :file-list="fileList" ></u-upload>
-          </view>
-          <view class="img-type">请款单</view>
-        </view>
-        <view class="img-item">
-          <view class="img-upload">
-            <u-upload :action="action" :file-list="fileList" ></u-upload>
-          </view>
-          <view class="img-type">结算明细</view>
-        </view>
-      </view>
-    </view>
-    <view class="form-wrapper">
-      <view class="title">说明</view>
-      <view class="form">
-        <u-form :model="paymentForm" ref="paymentForm" :label-width="190">
-          <u-form-item label="申请说明" right-icon="arrow-right">
-            <u-input
-              v-model="paymentForm.estateName"
-              placeholder="申请说明" :clearable="false" input-align="right" />
-          </u-form-item>
-        </u-form>
-      </view>
+      <view class="form-title u-border-bottom">说明</view>
+      <u-form :model="paymentForm" ref="paymentForm" :label-width="190">
+        <u-form-item label="申请说明" right-icon="arrow-right">
+          <u-input
+            v-model="paymentForm.estateName"
+            placeholder="申请说明" :clearable="false" />
+        </u-form-item>
+      </u-form>
     </view>
     <view class="btn-wrapper">
       <u-button type="primary" shape="circle" @click="handleSubmit">提交</u-button>
@@ -150,18 +141,18 @@
               <u-input
                 @click="showProjectName = true"
                 v-model="projectCaseForm.name" type="select"
-                placeholder="项目名称" :clearable="false" input-align="right" />
+                placeholder="项目名称" :clearable="false" />
             </u-form-item>
             <u-form-item label="项目周期" right-icon="arrow-right" class="hide-icon">
               <u-input
                 @click="showProjectCycle = true"
                 v-model="projectCaseForm.cycle" type="select"
-                placeholder="项目周期" :clearable="false" input-align="right" />
+                placeholder="项目周期" :clearable="false" />
             </u-form-item>
             <u-form-item label="成交报告编号" right-icon="arrow-right">
               <u-input
                 v-model="projectCaseForm.code"
-                placeholder="成交报告编号" :clearable="false" input-align="right" />
+                placeholder="成交报告编号" :clearable="false" />
             </u-form-item>
           </u-form>
         </view>
@@ -284,6 +275,23 @@ export default {
           label: '13%'
         }
       ],
+      annexList: [
+        {
+          id: 1,
+          type: '发票',
+          imgUrl: ['https://cdn.uviewui.com/uview/example/fade.jpg', 'https://cdn.uviewui.com/uview/example/fade.jpg']
+        },
+        {
+          id: 1,
+          type: '请款单',
+          imgUrl: ['https://cdn.uviewui.com/uview/example/fade.jpg', 'https://cdn.uviewui.com/uview/example/fade.jpg']
+        },
+        {
+          id: 1,
+          type: '结算明细',
+          imgUrl: ['https://cdn.uviewui.com/uview/example/fade.jpg', 'https://cdn.uviewui.com/uview/example/fade.jpg']
+        },
+      ],
       action: 'http://www.example.com/upload',
       fileList: []
     };
@@ -337,69 +345,134 @@ export default {
 <style lang="scss" scoped>
   .initiate-commission-wrapper {
     width: 100%;
-    background-color: #F5F5F5;
+    padding: 40rpx 30rpx;
+    background-color: $u-bg-color;
 
     .initiate-title {
-      width: 100%;
+      height: 92rpx;
+      background: $uni-bg-color;
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      box-sizing: border-box;
-      padding: 30rpx;
-
-      .title {
-        flex: 1;
-      }
+      padding: 0 24rpx;
+      color: $u-type-primary;
+      font-family: "Source Han Sans CN";
     }
 
     .commission-item-wrapper {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 15rpx 15rpx 0rpx 15rpx;
+      background: #fff;
+      padding: 32rpx 0;
 
-      .item-project-name {
-        width: 100%;
-        box-sizing: border-box;
-        color: #FFFFFF;
-        background-color: #02A7F0;
+      .top {
+        position: relative;
+        padding: 0 20rpx;
+        border-bottom: 1px dashed $u-bg-color;
 
-        view {
-          padding: 10rpx;
+        &::before {
+          content: "";
+          position: absolute;
+          width: 25rpx;
+          height: 25rpx;
+          background: $u-bg-color;
+          bottom: 0;
+          left: 0;
+          border-radius: 50%;
+          transform: translate(-50%, 50%);
+        }
+
+        &::after {
+          content: "";
+          position: absolute;
+          width: 25rpx;
+          height: 25rpx;
+          background: $u-bg-color;
+          bottom: 0;
+          right: 0;
+          border-radius: 50%;
+          transform: translate(50%, 50%);
+        }
+
+        &-container {
+          padding-bottom: 17rpx;
+        }
+
+        &-title {
+          color: #1f1f1f;
           font-weight: 600;
+          margin-bottom: 10rpx;
+        }
+
+        &-money {
+          height: 98rpx;
+          font-size: 30rpx;
+          color: #333333;
+          line-height: 98rpx;
+
+          .money-rad {
+            font-size: 36rpx;
+            font-weight: 600;
+            color: #ff0000;
+          }
+
+          .money-unit {
+            color: #ff0000;
+            font-size: 22rpx;
+            vertical-align: bottom;
+            margin-left: 6rpx;
+          }
         }
       }
 
-      .item-code-list {
-        width: 100%;
+      .bottom {
         display: flex;
-        flex-direction: row;
-        align-items: center;
-        background-color: #FFFFFF;
+        justify-content: space-between;
+        padding: 24rpx 39rpx 24rpx 17rpx;
+        font-size: 25rpx;
+        color: #999999;
 
-        &:not(:last-child) {
-          border-bottom: 1rpx solid #CCCCCC;
+        .code {
+          color: #333333;
+          font-size: 30rpx;
         }
+      }
 
-        .list-left {
-          flex: 1;
-
-          view {
-            padding: 10rpx;
-          }
-
-          .price {
-            color: #999999;
-          }
-        }
+      & + & {
+        margin-top: 10rpx;
       }
     }
 
     .form-wrapper {
       width: 100%;
       box-sizing: border-box;
-      padding: 20rpx 30rpx 0rpx 30rpx;
+      margin: 20rpx 0rpx;
+      background: $uni-bg-color;
+
+      .form-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 92rpx;
+        padding: 0 24rpx;
+        color: $u-type-primary;
+        font-family: "Source Han Sans CN";
+      }
+
+      .annex-list-wrapper {
+        width: 100%;
+        padding: 0rpx 20rpx 20rpx 20rpx;
+
+        &:not(:last-child) {
+          border-bottom: 1rpx solid #F1F1F1;
+        }
+
+        .annex-type {
+          font-size: 30rpx;
+          padding: 20rpx 0rpx 10rpx 0rpx;
+        }
+      }
 
       .form {
-        background-color: #FFFFFF;
+        background-color: $uni-bg-color;
         border: 1rpx solid #E4E4E4;
         box-sizing: border-box;
         padding: 0rpx 30rpx;
@@ -411,7 +484,6 @@ export default {
         flex-direction: row;
         flex-wrap: wrap;
         align-items: center;
-        //justify-content: space-between;
 
         .img-item {
           //width: 30%;
@@ -426,7 +498,7 @@ export default {
           .img-type {
             height: 65rpx;
             line-height: 65rpx;
-            background-color: #FFFFFF;
+            background-color: $uni-bg-color;
             text-align: center;
           }
         }
@@ -445,7 +517,6 @@ export default {
     width: 100%;
     height: calc(100vh - 90rpx);
     overflow-y: auto;
-    //position: relative;
 
     .title {
       width: 100%;
@@ -460,7 +531,7 @@ export default {
       }
 
       .filter-wrapper {
-        color: #3478F7;
+        color: $u-type-primary;
         font-size: 30rpx;
       }
     }
@@ -507,12 +578,12 @@ export default {
 
       .left {
         color: #999999;
-        background-color: #FFFFFF;
+        background-color: $uni-bg-color;
       }
 
       .right {
-        color: #FFFFFF;
-        background-color: #0079FE;
+        color: $uni-bg-color;
+        background-color: $u-type-primary;
       }
     }
   }
@@ -523,7 +594,6 @@ export default {
 
     .add-btn-wrapper {
       width: 100%;
-      //position: absolute;
       position: fixed;
       left: 0rpx;
       bottom: 0rpx;
@@ -540,12 +610,12 @@ export default {
 
       .left {
         color: #999999;
-        background-color: #FFFFFF;
+        background-color: $uni-bg-color;
       }
 
       .right {
-        color: #FFFFFF;
-        background-color: #0079FE;
+        color: $uni-bg-color;
+        background-color: $u-type-primary;
       }
     }
   }
