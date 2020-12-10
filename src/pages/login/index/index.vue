@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-29 15:58:19
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-07 10:53:58
+ * @LastEditTime: 2020-12-10 11:07:04
 -->
 <template>
   <view class="page">
@@ -20,6 +20,9 @@
     <view style="padding: 40rpx">
       <u-button type="primary" @click="submitUser">登录</u-button>
     </view>
+     <view style="padding: 40rpx">
+      <u-button type="primary" @click="reg">渠道注册</u-button>
+    </view>
     <view style="padding: 40rpx">
       <u-button type="success" @click="go()">列表demo</u-button>
     </view>
@@ -34,6 +37,7 @@
     <view style="padding: 40rpx">
       <u-button type="success" open-type="share">转发</u-button>
     </view>
+
     <u-popup width="80%" v-model="show" mode="center">
       <view class="login-select-select login-select-select-title">
         请选择登陆用户</view
@@ -127,6 +131,11 @@ export default {
         } else {
           console.log("验证失败");
         }
+      });
+    },
+    reg(){
+        uni.redirectTo({
+        url: "/pages/register/channel?scene=123321",
       });
     },
     gotoPage(item, index) {
