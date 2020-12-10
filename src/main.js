@@ -32,11 +32,11 @@ App.mpType = 'app'
 // }
 import TabBarPage from './components/TabBar/TabBarPage.vue'
 import CustomerTabBar from './components/TabBar/CustomerTabBar.vue'
-import IntermediaryTabBar from './components/TabBar/IntermediaryTabBar.vue'
+import ChannelTabBar from './components/TabBar/ChannelTabBar.vue'
 import StaffTabBar from './components/TabBar/StaffTabBar.vue'
 Vue.component('TabBarPage', TabBarPage);
 Vue.component('CustomerTabBar', CustomerTabBar);
-Vue.component('IntermediaryTabBar', IntermediaryTabBar);
+Vue.component('ChannelTabBar', ChannelTabBar);
 Vue.component('StaffTabBar', StaffTabBar);
 
 //是否有资源权限的方法

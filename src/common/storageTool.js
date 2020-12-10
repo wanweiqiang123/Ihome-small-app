@@ -100,7 +100,7 @@ const storageTool = {
                     break;
                 case 'Channel':
                     uni.redirectTo({
-                        url: "/intermediaryPackage/homeTab/index",
+                        url: "/channelPackage/homeTab/index",
                     });
                     break;
                 case 'Staff':

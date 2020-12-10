@@ -150,7 +150,7 @@
 			]
 		},
 		{
-			"root": "intermediaryPackage",
+			"root": "channelPackage",
 			"pages": [
 				{
 					"path": "homeTab/index",

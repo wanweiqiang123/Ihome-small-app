@@ -16,7 +16,7 @@ uni.navigateTo   跳转后左上角会出现返回图标
 
 分包：
 customerPackage  客户
-intermediaryPackage   中介渠道
+channelPackage   中介渠道
 staffPackage  员工案场
 
 登录后根据用户类型跳转对应的模块

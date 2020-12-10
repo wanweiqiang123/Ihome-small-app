@@ -1,0 +1,350 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: lsj
+ * @Date: 2020-11-16 15:34:28
+ * @LastEditors: lsj
+ * @LastEditTime: 2020-12-09 15:46:30
+-->
+<template>
+  <ChannelTabBar>
+    <view class="my-page-wrapper">
+      <view class="my-page-bg"></view>
+      <view class="my-page-content">
+        <view class="my-avatar-wrapper">
+          <view class="avatar">
+            <u-image
+              width="150rpx"
+              height="150rpx"
+              shape="circle"
+              src="https://cdn.uviewui.com/uview/swiper/2.jpg"></u-image>
+          </view>
+          <view class="name">张小凡</view>
+          <view class="phone">18600002222</view>
+        </view>
+        <view class="my-item-wrapper u-padding-right-14">
+          <u-grid :col="4" :border="false" @click="goToGrid">
+            <u-grid-item v-for="item in gridList" :key="item.id" :index="item.url">
+              <u-image width="64rpx" height="64rpx" :src="item.icon"></u-image>
+              <view class="grid-text">{{item.name}}</view>
+            </u-grid-item>
+          </u-grid>
+        </view>
+        <u-gap height="20" bg-color="#F1F1F1"></u-gap>
+        <view class="my-item-wrapper">
+          <view class="my-manage">渠道管理</view>
+          <view class="my-item" v-for="item in manageList" :key="item.id" @click="goToItem(item)">
+            <view class="item-icon">
+              <u-image width="40rpx" height="40rpx" :src="item.icon"></u-image>
+            </view>
+            <view class="item-name">{{item.name}}</view>
+            <view class="item-arrow">
+              <u-icon name="arrow-right" color="#888888" size="40"></u-icon>
+            </view>
+          </view>
+        </view>
+        <u-gap height="20" bg-color="#F1F1F1"></u-gap>
+        <view class="my-item-wrapper">
+          <view class="my-item" v-for="item in myBuyList" :key="item.id" @click="goToItem(item)">
+            <view class="item-icon">
+              <u-image width="40rpx" height="40rpx" :src="item.icon"></u-image>
+            </view>
+            <view class="item-name">{{item.name}}</view>
+            <view class="item-arrow">
+              <u-icon name="arrow-right" color="#888888" size="40"></u-icon>
+            </view>
+          </view>
+        </view>
+        <view class="my-btn">
+          <u-button shape="circle" @click="handleLoginOut">退出登录</u-button>
+        </view>
+      </view>
+    </view>
+    <u-popup
+      v-model="showPopup"
+      mode="center"
+      width="70%"
+      height="auto"
+      border-radius="14"
+      :closeable="false">
+      <view class="popup-tips">提示</view>
+      <view class="popup-info">确定要退出登录？</view>
+      <view class="popup-btn-wrapper">
+        <view @click="showPopup = false">取消</view>
+        <view @click="handleSubmit">确定</view>
+      </view>
+    </u-popup>
+  </ChannelTabBar>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      gridList: [
+        {
+          id: 1,
+          icon: require('@/static/ico/password.png'),
+          name: '修改密码',
+          url: ''
+        },
+        {
+          id: 2,
+          icon: require('@/static/ico/money.png'),
+          name: '结佣列表',
+          url: '/channelPackage/myTab/pages/commissionList'
+        },
+        {
+          id: 3,
+          icon: require('@/static/ico/star.png'),
+          name: '我的收藏',
+          url: '/channelPackage/myTab/pages/favoritesList'
+        },
+        {
+          id: 4,
+          icon: require('@/static/ico/record.png'),
+          name: '报备成交记录',
+          url: '/channelPackage/myTab/pages/dealList'
+        }
+      ],
+      manageList: [
+        {
+          id: 1,
+          icon: require('@/static/ico/5-1.png'),
+          name: '公司信息',
+          url: '/channelPackage/myTab/channelPage/companyInfo'
+        },
+        {
+          id: 2,
+          icon: require('@/static/ico/5-2.png'),
+          name: '结佣账号管理',
+          url: '/channelPackage/myTab/channelPage/commissionAccount'
+        },
+        {
+          id: 3,
+          icon: require('@/static/ico/5-3.png'),
+          name: '经纪人管理',
+          url: '/channelPackage/myTab/channelPage/brokerList'
+        },
+        {
+          id: 4,
+          icon: require('@/static/ico/5-4.png'),
+          name: '项目结佣情况',
+          url: '/channelPackage/myTab/pages/projectCommDetails'
+        },
+        {
+          id: 5,
+          icon: require('@/static/ico/5-5.png'),
+          name: '分销协议列表',
+          url: '/channelPackage/myTab/channelPage/protocolList'
+        },
+      ],
+      myBuyList: [
+        {
+          id: 1,
+          icon: require('@/static/ico/5-6.png'),
+          name: '我的购房信息',
+          url: '/customerPackage/homeTab/index'
+        }
+      ],
+      showPopup: false
+    };
+  },
+  onLoad() {},
+  methods: {
+    // 跳转
+    goToGrid(index) {
+      // console.log(index);
+      uni.navigateTo({
+        url: index,
+      })
+    },
+    // 退出登录
+    handleLoginOut() {
+      this.showPopup = true;
+    },
+    // 确定退出登录
+    handleSubmit() {
+      this.showPopup = false;
+      this.$storageTool.loginOut();
+    },
+    // 跳转到具体页面
+    goToItem(item) {
+      if (!item.url) {
+        return
+      }
+      uni.navigateTo({
+        url: item.url
+      });
+    }
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+  .my-page-wrapper {
+    width: 100%;
+    height: 100%;
+    background-color: #F1F1F1;
+    position: relative;
+
+    .my-page-bg {
+      width: 100%;
+      height: 346rpx;
+      background-color: $u-type-primary;
+      position: absolute;
+      top: 0rpx;
+      left: 0rpx;
+      right: 0rpx;
+      bottom: 0rpx;
+      z-index: 0;
+    }
+
+    .my-page-content {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      top: 0rpx;
+      left: 0rpx;
+      right: 0rpx;
+      bottom: 0rpx;
+      z-index: 100;
+      padding: 0rpx 30rpx;
+
+      .my-avatar-wrapper {
+        width: 100%;
+        height: 278rpx;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: #FFFFFF;
+
+        view {
+          box-sizing: border-box;
+          color: #FFFFFF;
+          font-family: PingFang SC;
+        }
+
+        .avatar {
+          margin-bottom: 12rpx;
+        }
+
+        .name {
+          font-size: 30rpx;
+          font-weight: 500;
+          margin-bottom: 10rpx;
+        }
+
+        .phone {
+          font-size: 24rpx;
+          font-weight: 400;
+        }
+      }
+
+      .my-item-wrapper {
+        width: 100%;
+        background-color: #FFFFFF;
+
+        .grid-text {
+          font-size: 24rpx;
+          font-family: PingFang SC;
+          font-weight: bold;
+          color: #333333;
+          box-sizing: border-box;
+          margin-top: 20rpx;
+        }
+
+        .my-manage {
+          width: 100%;
+          height: 88rpx;
+          line-height: 42rpx;
+          font-size: 24rpx;
+          box-sizing: border-box;
+          padding: 28rpx 0rpx 36rpx 30rpx;
+          font-weight: bold;
+          background: #FFFFFF;
+          font-family: Source Han Sans CN;
+          color: #666666;
+          border-bottom: 2rpx solid #F1F1F1;
+        }
+
+        .my-item {
+          width: 100%;
+          height: 88rpx;
+          padding: 28rpx 16rpx 22rpx 20rpx;
+          display: flex;
+          align-items: center;
+
+          &:not(:last-child) {
+            border-bottom: 2rpx solid #F1F1F1;
+          }
+
+          view {
+            box-sizing: border-box;
+            padding: 15rpx 0rpx;
+          }
+
+          .item-icon {
+            box-sizing: border-box;
+            margin-right: 20rpx;
+          }
+
+          .item-name {
+            flex: 1;
+            font-size: 32rpx;
+          }
+
+          .item-arrow {
+            width: 80rpx;
+            text-align: right;
+          }
+        }
+      }
+
+      .my-btn {
+        width: 100%;
+        box-sizing: border-box;
+        margin: 32rpx 0rpx;
+
+        /deep/.u-btn {
+          height: 92rpx;
+          background-color: $u-type-primary;
+          color: white;
+        }
+      }
+    }
+  }
+
+  .popup-tips, .popup-info {
+    width: 100%;
+    height: 90rpx;
+    line-height: 90rpx;
+    text-align: center;
+  }
+
+  .popup-tips {
+    font-size: 30rpx;
+    font-weight: 600;
+  }
+
+  .popup-btn-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    margin-top: 20rpx;
+
+    view {
+      flex: 1;
+      text-align: center;
+      height: 90rpx;
+      line-height: 90rpx;
+      font-size: 32rpx;
+      border: 1rpx solid #f1f1f1;
+    }
+  }
+</style>
