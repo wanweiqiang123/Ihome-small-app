@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-01 11:51:10
+ * @LastEditTime: 2020-12-10 17:29:08
  */
 import Vue from 'vue'
 import App from './App'
@@ -17,6 +17,7 @@ import store from './store'
 import tool from './common/tool'
 import storageTool from './common/storageTool'
 import './common/css/public.scss'
+import { getDictGetAllApi, getAreaApi } from './api/index'
 //把vuex定义成全局组件
 Vue.prototype.$store = store;
 Vue.prototype.$tool = tool;
@@ -64,12 +65,163 @@ Vue.prototype.$has = function (key) {
   console.log(result, key, list)
   return result;
 }
+let areaAll = {};//全部行政区数据
+let dictAll = [];//存在后端加载的所有字典数据
+async function startApp() {
+  Promise.all([getAreaApi(), getDictGetAllApi()])
+    .then(res => {
+      areaAll = res[0];
+      dictAll = res[1];
+    }).catch(err => {
+      console.error('系统初始化数据存在异常', err)
+    }).finally(() => {
+      const app = new Vue({
+        ...App,
+        store,
+        methods: {
+
+          /**根据字典类别获取该分类的列表
+           * @param {type} 
+           * @return {type} 
+           */
+          dictAllList(category, tag) {
+            let list = dictAll[category];
+            if (list) {
+              if (tag) {
+                let listTag = list.filter((item) => {
+                  if (item.tag == tag) {
+                    return true;
+                  } else {
+                    return false;
+                  }
+                })
+                return listTag;
+
+              } else {
+                return list;
+              }
+
+            } else {
+              console.error(category, '字典类型无法匹配.')
+              return [];
+            }
+          },
+          /**根据字典code和类别获取对应的name
+           * @param {type} 
+           * @return {type} 
+           */
+          dictAllName(data, category) {
+            if (data === undefined || data === null) {
+              return null;
+            } else {
+              let list = dictAll[category];
+              if (list) {
+                let item = list.filter((i) => {
+                  if (i.code == data) {
+                    return true;
+                  } else {
+                    return false;
+                  }
+                })
+                if (item && item.length == 1) {
+                  return item[0].name;
+                } else if (item && item.length > 1) {
+                  console.error(data, category, item, '字典匹配到多项.返回第一项');
+                  return item[0].name;
+                } else {
+                  console.error(data, category, '字典无法匹配到数据');
+                  return null;
+                }
+              } else {
+                console.error(category, '字典类型无法匹配.')
+                return null;
+              }
+            }
+          },
+          /**根据字典code和类别获取对应的name
+          * @param {type} 
+          * @return {type} 
+          */
+          dictAllItem(data, category) {
+            if (data === undefined || data === null) {
+              return {}
+            } else {
+              let list = dictAll[category];
+              if (list) {
+                let item = list.filter((i) => {
+                  if (i.code == data) {
+                    return true;
+                  } else {
+                    return false;
+                  }
+                })
+                if (item && item.length == 1) {
+                  return item[0]
+                } else if (item && item.length > 1) {
+                  console.error(data, category, item, '字典匹配到多项.返回第一项');
+                  return item[0]
+                } else {
+                  console.error(data, category, '字典无法匹配到数据');
+                  return {};
+                }
+              } else {
+                console.error(category, '字典类型无法匹配.')
+                return {};
+              }
+            }
+          },
+          /**根据行政区code获取对应的name
+           * @param {type} 
+           * @return {type} 
+           */
+          getAreaName(code) {
+            if (areaAll) {
+              let areaName = null;
+              for (let index = 0; index < areaAll.length; index++) {
+                const element = areaAll[index];
+                if (element.code == code) {
+                  areaName = element.name;
+                  break;
+                }
+              }
+              return areaName;
+
+            } else {
+              return null;
+            }
+          },
+          /**根据行政区code获取对应的该项数据
+          * @param {type} 
+          * @return {type} 
+          */
+          getArea(code) {
+            if (areaAll) {
+              let area = null;
+              for (let index = 0; index < areaAll.length; index++) {
+                const element = areaAll[index];
+                if (element.code == code) {
+                  area = element;
+                  break;
+                }
+              }
+              return area;
+            } else {
+              return null;
+            }
+          }
+        },
+      })
+      app.$mount()
+    })
+  try {
+
+  } catch (error) {
+    console.log(error)
+  } finally {
+
+  }
+
+};
+startApp();
 
 
-
-const app = new Vue({
-  ...App,
-  store,
-
-})
-app.$mount()
