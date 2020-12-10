@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:53:18
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-30 10:15:08
+ * @LastEditTime: 2020-12-10 11:54:49
 -->
 <template>
   <view>
@@ -24,8 +24,8 @@
 let tablePage = [
   {
     pagePath: "/staffPackage/homeTab/index",
-    iconPath: "home",
-    selectedIconPath: "home-fill",
+    iconPath: require("@/static/img/tabbar/homeindex.png"),
+    selectedIconPath: require("@/static/img/tabbar/homeindexactive.png"),
     text: "主页",
     count: 2,
     isDot: true,
@@ -33,15 +33,15 @@ let tablePage = [
   },
   {
     pagePath: "/staffPackage/reportTab/index",
-    iconPath: "photo",
-    selectedIconPath: "photo-fill",
+    iconPath: require("@/static/img/tabbar/collect.png"),
+    selectedIconPath: require("@/static/img/tabbar/collectactive.png"),
     text: "报备汇总",
     customIcon: false,
   },
   {
     pagePath: "/staffPackage/personalTab/index",
-    iconPath: "account",
-    selectedIconPath: "account-fill",
+    iconPath: require("@/static/img/tabbar/my.png"),
+    selectedIconPath: require("@/static/img/tabbar/myactive.png"),
     text: "个人中心",
     count: 23,
     isDot: false,

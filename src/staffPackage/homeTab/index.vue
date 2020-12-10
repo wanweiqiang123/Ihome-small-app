@@ -4,11 +4,11 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-27 11:56:10
+ * @LastEditTime: 2020-12-10 11:25:31
 -->
 <template>
   <StaffTabBar>
-    <view>
+    <view class="home-tab-container">
       <view class="nav-grid">
         <swiper
           @change="handleChangeSwiper"
@@ -30,7 +30,7 @@
               >
                 <u-icon
                   :name="item.icon"
-                  :size="98"
+                  :size="82"
                 ></u-icon>
                 <text class="grid-text">{{ item.item }}</text>
               </u-grid-item>
@@ -46,27 +46,28 @@
           </template>
         </view>
       </view>
-      <u-gap bg-color="#f1f1f1"></u-gap>
       <view class="info-container">
-        <view class="info-title">今日业务数据</view>
+        <view class="info-title">
+          <view class="title"></view>
+        </view>
         <u-line />
         <view class="info-content">
           <view class="info-data">
             <view class="item">
-              <p>报备数</p>
-              <text>999</text>
+              <view>报备数</view>
+              <text class="red">999</text>
             </view>
             <view class="item">
-              <p>已到访</p>
-              <text>999</text>
+              <view>已到访</view>
+              <text class="red">999</text>
             </view>
             <view class="item">
-              <p>已成交</p>
-              <text>999</text>
+              <view>已成交</view>
+              <text class="red">999</text>
             </view>
             <view class="item">
-              <p>无效报备</p>
-              <text>999</text>
+              <view>无效报备</view>
+              <text class="red">999</text>
             </view>
           </view>
         </view>
@@ -82,52 +83,52 @@ export default {
       current: 0,
       gridList: [
         {
-          icon: "integral",
+          icon: require("@/static/staffIcon/report.png"),
           path: "/staffPackage/reportConfirm/index",
           item: "报备确认",
         },
         {
-          icon: "account-fill",
+          icon: require("@/static/staffIcon/visit.png"),
           path: "/staffPackage/visitConfirm/index",
           item: "到访确认",
         },
         {
-          icon: "grid-fill",
+          icon: require("@/static/staffIcon/deal.png"),
           path: "/staffPackage/dealConfirm/index",
           item: "成交确认",
         },
         {
-          icon: "photo",
+          icon: require("@/static/staffIcon/notice.png"),
           path: "/staffPackage/noticeList/index",
           item: "优惠告知书",
         },
         {
-          icon: "scan",
+          icon: require("@/static/staffIcon/client.png"),
           path: "/staffPackage/clientReport/index",
           item: "帮录报备",
         },
         {
-          icon: "file-text",
+          icon: require("@/static/staffIcon/performance.png"),
           path: "/staffPackage/performance/index",
           item: "业绩申报",
         },
         {
-          icon: "rmb-circle",
+          icon: require("@/static/staffIcon/payment.png"),
           path: "/staffPackage/payment/index",
           item: "结佣付款",
         },
         {
-          icon: "red-packet",
+          icon: require("@/static/staffIcon/receipt.png"),
           path: "/staffPackage/receipt/index",
           item: "收款管理",
         },
         {
-          icon: "fingerprint",
+          icon: require("@/static/staffIcon/code.png"),
           path: "/staffPackage/noticeCode/index",
           item: "查询优惠码",
         },
         {
-          icon: "order",
+          icon: require("@/static/staffIcon/channel.png"),
           path: "/staffPackage/channelAccount/index",
           item: "渠道结佣情况",
         },
@@ -157,10 +158,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.home-tab-container {
+  padding-top: 2rpx;
+}
 .nav-grid {
-  padding: 0 20rpx;
+  // padding: 0 20rpx;
+  background: #fff;
   padding-bottom: 10rpx;
-  font-size: 28rpx;
+  font-size: 24rpx;
+  .grid-text {
+    margin-top: 15rpx;
+  }
   .ih-grid-swiper {
     height: 370rpx;
   }
@@ -181,16 +189,22 @@ export default {
   }
 }
 .info-container {
+  margin-top: 30rpx;
+  background: #fff;
   .info-title {
-    padding-left: 26rpx;
-    height: 80rpx;
+    height: 92rpx;
     display: flex;
+    justify-content: center;
     align-items: center;
-    font-weight: 900;
+    .title {
+      background: url("../../static/staffIcon/title.png");
+      width: 692rpx;
+      height: 54rpx;
+      background-size: cover;
+    }
   }
   .info-content {
-    padding: 0 26rpx;
-    padding-top: 20rpx;
+    padding: 28rpx 80rpx;
   }
   .info-data {
     display: flex;
@@ -198,20 +212,35 @@ export default {
     .item {
       width: 50%;
       text-align: center;
-      font-size: 40rpx;
-      height: 200rpx;
-      padding-top: 50rpx;
+      // height: 200rpx;
+      // padding-top: 40rpx;
+      // padding-bottom: 40rpx;
+      padding: 40rpx 0;
+      font-size: 36rpx;
+      font-family: "Source Han Sans CN";
+      font-weight: bold;
+      color: #333333;
+      line-height: 60rpx;
+      .red {
+        // padding-top: 15rpx;
+        color: #ff0000;
+      }
       &:nth-child(1) {
-        border-bottom: 1rpx solid $u-border-color;
-        border-right: 1rpx solid $u-border-color;
+        border-bottom: 1px solid #f1f1f1;
+        border-right: 1px solid #f1f1f1;
       }
       &:nth-child(2) {
-        border-bottom: 1rpx solid $u-border-color;
+        border-bottom: 1px solid #f1f1f1;
       }
       &:nth-child(3) {
-        border-right: 1rpx solid $u-border-color;
+        border-right: 1px solid #f1f1f1;
       }
     }
   }
+}
+</style>
+<style lang="scss">
+page {
+  background: $u-bg-color;
 }
 </style>
