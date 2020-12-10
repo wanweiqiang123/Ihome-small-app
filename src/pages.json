@@ -3,10 +3,17 @@
 		"^u-(.*)": "@/uview-ui/components/u-$1/u-$1.vue"
 	},
 	"pages": [
+		
 		{
 			"path": "pages/start",
 			"style": {
 				"navigationBarTitleText": "启动首页"
+			}
+		},
+		{
+			"path": "pages/register/channel",
+			"style": {
+				"navigationBarTitleText": "渠道注册"
 			}
 		},
 		{
