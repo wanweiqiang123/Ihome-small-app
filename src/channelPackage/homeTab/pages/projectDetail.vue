@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-23 11:15:50
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-02 14:18:20
+ * @LastEditTime: 2020-12-11 17:26:30
 -->
 <template>
   <view class="project-detail-wrapper">
@@ -24,7 +24,7 @@
       </view>
       <view class="content-wrapper" v-show="tabCurrent === 0">
         <view>
-          <u-image width="100%" height="324rpx" border-radius="4" src="@/static/swiper/4.png"></u-image>
+          <u-image width="100%" height="324rpx" border-radius="4" :src="banner"></u-image>
           <view class="title">远洋招商保利东湾经纪渠道</view>
           <view class="price-wrapper">
             <span class="price">均价23000</span>
@@ -44,7 +44,7 @@
           <view class="home-info">
             <view class="info-item" @click="viewHomeDetail" v-for="item in [1, 2, 3]" :key="item">
               <view>
-                <u-image width="100%" height="160rpx" src="@/static/img/house.jpg"></u-image>
+                <u-image width="100%" height="160rpx" :src="homeImg"></u-image>
               </view>
               <view class="title-tip">底层2房68m²</view>
               <view class="price-color">160万起</view>
@@ -118,6 +118,8 @@
   export default {
     data() {
       return {
+        banner: require('@/channelPackage/common/img/banner_1.png'),
+        homeImg: require('@/channelPackage/common/img/house.jpg'),
         tabList: [
           {
             name: '项目简介'

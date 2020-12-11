@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-16 15:34:28
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-09 15:46:30
+ * @LastEditTime: 2020-12-11 17:26:30
 -->
 <template>
   <ChannelTabBar>
@@ -17,7 +17,7 @@
               width="150rpx"
               height="150rpx"
               shape="circle"
-              src="https://cdn.uviewui.com/uview/swiper/2.jpg"></u-image>
+              :src="myAvatar"></u-image>
           </view>
           <view class="name">张小凡</view>
           <view class="phone">18600002222</view>
@@ -81,6 +81,7 @@
 export default {
   data() {
     return {
+      myAvatar: require('@/channelPackage/common/icon/avatar.png'),
       gridList: [
         {
           id: 1,
