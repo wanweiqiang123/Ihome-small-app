@@ -31,19 +31,19 @@ export default {
       messageTypeList: [
         {
           id: '1',
-          leftIcon: require('@/static/ico/m-1.png'),
+          leftIcon: require('@/channelPackage/common/ico/projectMsg.png'),
           typeName: '项目通知',
           count: 5,
         },
         {
           id: '2',
-          leftIcon: require('@/static/ico/m-2.png'),
+          leftIcon: require('@/channelPackage/common/ico/reportMsg.png'),
           typeName: '报备带看提醒',
           count: 5
         },
         {
           id: '3',
-          leftIcon: require('@/static/ico/m-3.png'),
+          leftIcon: require('@/channelPackage/common/ico/commissionMsg.png'),
           typeName: '结佣提醒',
           count: 5
         }

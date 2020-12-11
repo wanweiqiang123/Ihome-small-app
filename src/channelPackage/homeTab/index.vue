@@ -105,24 +105,24 @@
         ],
         list: [
           {
-            image: require('@/static/swiper/4.png'),
+            image: require('@/channelPackage/common/img/banner_1.png'),
             title: '昨夜星辰昨夜风，画楼西畔桂堂东'
           },
           {
-            image: require('@/static/swiper/5.jpeg'),
+            image: require('@/channelPackage/common/img/banner_2.jpeg'),
             title: '身无彩凤双飞翼，心有灵犀一点通'
           },
           {
-            image: require('@/static/swiper/6.jpg'),
+            image: require('@/channelPackage/common/img/banner_3.jpg'),
             title: '谁念西风独自凉，萧萧黄叶闭疏窗，沉思往事立残阳'
           }
         ],
-        houseImg: require('@/static/img/house.jpg'),
-        icon_1: require('@/static/ico/1-1.png'),
-        icon_2: require('@/static/ico/2-1.png'),
-        icon_3: require('@/static/ico/3-1.png'),
-        icon_4: require('@/static/ico/4-1.png'),
-        icon_5: require('@/static/ico/5.png'),
+        houseImg: require('@/channelPackage/common/img/house.jpg'),
+        icon_1: require('@/channelPackage/common/ico/list.png'),
+        icon_2: require('@/channelPackage/common/ico/myClient.png'),
+        icon_3: require('@/channelPackage/common/ico/reportClient.png'),
+        icon_4: require('@/channelPackage/common/ico/myReport.png'),
+        icon_5: require('@/channelPackage/common/ico/recommend.png'),
       };
     },
     onLoad() {
