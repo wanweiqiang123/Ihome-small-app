@@ -4,53 +4,53 @@
  * @Author: zyc
  * @Date: 2020-10-29 15:58:19
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-11 10:54:32
+ * @LastEditTime: 2020-12-10 18:46:32
 -->
 <template>
-  <view class="page login-page-style">
-    <view style="margin: 50rpx"></view>
-    <view class="img-logo">
-      <image src="../../../static/login/1.png" mode="scaleToFill"></image>
-    </view>
-    <view style="margin: 70rpx"></view>
-
-    <view style="padding: 10rpx 70rpx">
-      <u-tabs
-        :list="list"
-        :is-scroll="false"
-        :current="current"
-        @change="changeType"
-      ></u-tabs>
-      <u-form :model="form" ref="uForm">
-        <u-form-item class="login-form-item" prop="account">
-          <u-icon name="account" class="account-ico"></u-icon>
-          <u-input
-            class="account-input"
-            v-model="form.account"
-            placeholder="账号"
-          />
-        </u-form-item>
-        <u-form-item class="login-form-item" prop="password">
-          <u-icon name="lock" class="password-ico"></u-icon>
-          <u-input
-            class="password-input"
-            type="password"
-            v-model="form.password"
-            placeholder="密码"
-          />
-        </u-form-item>
-      </u-form>
-      <view style="margin: 80rpx"></view>
+  <view class="page">
+    <view style="margin: 40rpx"></view>
+    <u-form :model="form" ref="uForm">
+      <u-form-item label="账号" prop="account">
+        <u-input v-model="form.account" placeholder="账号" />
+      </u-form-item>
+      <u-form-item label="密码" prop="password">
+        <u-input type="password" v-model="form.password" placeholder="密码" />
+      </u-form-item>
+    </u-form>
+    <view style="padding: 40rpx">
       <u-button type="primary" @click="submitUser">登录</u-button>
     </view>
-
-    <view class="img-bottom">
-      <image
-        style="width: 100%"
-        src="../../../static/login/5.png"
-        mode="scaleToFill"
-      ></image>
+     <view style="padding: 40rpx">
+      <u-button type="primary" @click="reg">渠道注册</u-button>
     </view>
+    <view style="padding: 40rpx">
+      <u-button type="success" @click="go()">列表demo</u-button>
+    </view>
+    <view style="padding: 40rpx">
+      <u-button
+        type="success"
+        open-type="getUserInfo"
+        @getuserinfo="getWxInfo()"
+        >获取微信用户信息</u-button
+      >
+    </view>
+    <view style="padding: 40rpx">
+      <u-button type="success" open-type="share">转发</u-button>
+    </view>
+
+    <u-popup width="80%" v-model="show" mode="center">
+      <view class="login-select-select login-select-select-title">
+        请选择登陆用户</view
+      >
+      <view
+        class="login-select-select"
+        v-for="(item, index) in list"
+        :key="index"
+        @click="gotoPage(item, index)"
+      >
+        {{ item.name }}</view
+      >
+    </u-popup>
   </view>
 </template>
 
@@ -61,20 +61,23 @@ import storageTool from "../../../common/storageTool";
 export default {
   data() {
     return {
-      list: [
-        {
-          name: "手机号码登录",
-        },
-        {
-          name: "账号密码登录",
-        },
-      ],
-      current: 1,
       show: false,
       form: {
-        account: "",
-        password: "",
+        account: "admin",
+        password: "123456",
       },
+      list: [
+        {
+          name: "客户登录",
+        },
+        {
+          name: "中介渠道",
+        },
+        {
+          name: "员工案场",
+          count: 5,
+        },
+      ],
 
       rules: {
         account: [
@@ -96,10 +99,10 @@ export default {
   },
 
   methods: {
-    changeType(index) {
+    change(index) {
       this.current = index;
+      storageTool.setLoginUserTypeLog(this.current);
     },
-
     async submitUser() {
       const that = this;
       this.$refs.uForm.validate(async (valid) => {
@@ -112,10 +115,40 @@ export default {
           const userInfo = await getUserInfoApi();
           storageTool.setUserInfo(userInfo);
           storageTool.goHome();
+          //userType用户类别(Staff-员工、Channel-渠道、Customer-客户)
+          // switch (userInfo.userType) {
+          //   case 'Staff':
+              
+          //     break;
+          
+          //   default:
+          //     break;
+          // }
+          // this.show = true;
+          // if (this.list.length == 1) {
+          //   storageTool.goHome();
+          // }
         } else {
           console.log("验证失败");
         }
       });
+    },
+    reg(){
+        uni.redirectTo({
+        url: "/pages/register/channel?scene=123321",
+      });
+    },
+    gotoPage(item, index) {
+      storageTool.setLoginUserTypeLog(index);
+      storageTool.goHome();
+    },
+    go() {
+      uni.redirectTo({
+        url: "/pages/customer/index/index",
+      });
+    },
+    getWxInfo(res) {
+      console.log(res.detail.userInfo.nickName);
     },
   },
 
@@ -151,7 +184,7 @@ export default {
 
 <style lang="scss" scoped>
 .page {
-  // padding: 0 20rpx 20rpx 20rpx;
+  padding: 0 20rpx 20rpx 20rpx;
 }
 
 .login-select-select {
@@ -164,60 +197,5 @@ export default {
   font-weight: 600 !important;
   background: $u-type-primary;
   color: #fff;
-}
-
-.img-logo {
-  text-align: center;
-  image {
-    height: 150rpx;
-    width: 150rpx;
-  }
-}
-.account-ico,
-.password-ico {
-  font-size: 40rpx;
-  color: #c2c2c2;
-  display: inline-block;
-  position: relative;
-  top: 18rpx;
-  width: 10%;
-}
-</style>
-<style lang="scss">
-.login-page-style {
-  .password-input,
-  .account-input {
-    display: inline-block;
-    width: 90%;
-  }
-  .password-input view,
-  .account-input view {
-    padding-left: 0rpx !important;
-  }
-  .login-form-item {
-    height: 100rpx !important;
-  }
-  button {
-    border-radius: 80rpx;
-  }
-  .u-form-item__message {
-    padding-left: 25px !important;
-  }
-  .u-scroll-view {
-    border-bottom: 1px solid #eee !important;
-  }
-  .u-tab-bar {
-    width: 80px !important;
-    margin-left: -30px !important;
-    transition-duration: 0.5s;
-    background-color: #2979ff;
-    height: 2px !important;
-    top: 40px !important;
-  }
-  .img-bottom {
-    width: 100%;
-    position: fixed;
-    bottom: -5px;
-  }
 }
 </style>
