@@ -118,11 +118,11 @@
           }
         ],
         houseImg: require('@/channelPackage/common/img/house.jpg'),
-        icon_1: require('@/channelPackage/common/ico/list.png'),
-        icon_2: require('@/channelPackage/common/ico/myClient.png'),
-        icon_3: require('@/channelPackage/common/ico/reportClient.png'),
-        icon_4: require('@/channelPackage/common/ico/myReport.png'),
-        icon_5: require('@/channelPackage/common/ico/recommend.png'),
+        icon_1: require('@/channelPackage/common/icon/list.png'),
+        icon_2: require('@/channelPackage/common/icon/myClient.png'),
+        icon_3: require('@/channelPackage/common/icon/reportClient.png'),
+        icon_4: require('@/channelPackage/common/icon/myReport.png'),
+        icon_5: require('@/channelPackage/common/icon/recommend.png'),
       };
     },
     onLoad() {

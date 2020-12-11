@@ -84,25 +84,25 @@ export default {
       gridList: [
         {
           id: 1,
-          icon: require('@/channelPackage/common/ico/password.png'),
+          icon: require('@/channelPackage/common/icon/password.png'),
           name: '修改密码',
           url: ''
         },
         {
           id: 2,
-          icon: require('@/channelPackage/common/ico/money.png'),
+          icon: require('@/channelPackage/common/icon/money.png'),
           name: '结佣列表',
           url: '/channelPackage/myTab/pages/commissionList'
         },
         {
           id: 3,
-          icon: require('@/channelPackage/common/ico/star.png'),
+          icon: require('@/channelPackage/common/icon/star.png'),
           name: '我的收藏',
           url: '/channelPackage/myTab/pages/favoritesList'
         },
         {
           id: 4,
-          icon: require('@/channelPackage/common/ico/record.png'),
+          icon: require('@/channelPackage/common/icon/record.png'),
           name: '报备成交记录',
           url: '/channelPackage/myTab/pages/dealList'
         }
@@ -110,31 +110,31 @@ export default {
       manageList: [
         {
           id: 1,
-          icon: require('@/channelPackage/common/ico/company.png'),
+          icon: require('@/channelPackage/common/icon/company.png'),
           name: '公司信息',
           url: '/channelPackage/myTab/channelPage/companyInfo'
         },
         {
           id: 2,
-          icon: require('@/channelPackage/common/ico/count.png'),
+          icon: require('@/channelPackage/common/icon/count.png'),
           name: '结佣账号管理',
           url: '/channelPackage/myTab/channelPage/commissionAccount'
         },
         {
           id: 3,
-          icon: require('@/channelPackage/common/ico/broker.png'),
+          icon: require('@/channelPackage/common/icon/broker.png'),
           name: '经纪人管理',
           url: '/channelPackage/myTab/channelPage/brokerList'
         },
         {
           id: 4,
-          icon: require('@/channelPackage/common/ico/project.png'),
+          icon: require('@/channelPackage/common/icon/project.png'),
           name: '项目结佣情况',
           url: '/channelPackage/myTab/pages/projectCommDetails'
         },
         {
           id: 5,
-          icon: require('@/channelPackage/common/ico/distribution.png'),
+          icon: require('@/channelPackage/common/icon/distribution.png'),
           name: '分销协议列表',
           url: '/channelPackage/myTab/channelPage/protocolList'
         },
@@ -142,7 +142,7 @@ export default {
       myBuyList: [
         {
           id: 1,
-          icon: require('@/channelPackage/common/ico/myHouse.png'),
+          icon: require('@/channelPackage/common/icon/myHouse.png'),
           name: '我的购房信息',
           url: '/customerPackage/homeTab/index'
         }
