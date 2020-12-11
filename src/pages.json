@@ -3,7 +3,6 @@
 		"^u-(.*)": "@/uview-ui/components/u-$1/u-$1.vue"
 	},
 	"pages": [
-		
 		{
 			"path": "pages/start",
 			"style": {
@@ -376,7 +375,8 @@
 				{
 					"path": "noticeList/index",
 					"style": {
-						"navigationBarTitleText": "优惠告知书"
+						"navigationBarTitleText": "优惠告知书",
+						"enablePullDownRefresh": true
 					}
 				},
 				{

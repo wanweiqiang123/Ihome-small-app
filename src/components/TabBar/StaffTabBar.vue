@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:53:18
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-10 11:54:49
+ * @LastEditTime: 2020-12-11 11:38:31
 -->
 <template>
   <view>
@@ -24,8 +24,8 @@
 let tablePage = [
   {
     pagePath: "/staffPackage/homeTab/index",
-    iconPath: require("@/static/img/tabbar/homeindex.png"),
-    selectedIconPath: require("@/static/img/tabbar/homeindexactive.png"),
+    iconPath: require("@/staffPackage/common/icon/tabicon/home.png"),
+    selectedIconPath: require("@/staffPackage/common/icon/tabicon/homeactive.png"),
     text: "主页",
     count: 2,
     isDot: true,
@@ -33,15 +33,15 @@ let tablePage = [
   },
   {
     pagePath: "/staffPackage/reportTab/index",
-    iconPath: require("@/static/img/tabbar/collect.png"),
-    selectedIconPath: require("@/static/img/tabbar/collectactive.png"),
+    iconPath: require("@/staffPackage/common/icon/tabicon/collect.png"),
+    selectedIconPath: require("@/staffPackage/common/icon/tabicon/collectactive.png"),
     text: "报备汇总",
     customIcon: false,
   },
   {
     pagePath: "/staffPackage/personalTab/index",
-    iconPath: require("@/static/img/tabbar/my.png"),
-    selectedIconPath: require("@/static/img/tabbar/myactive.png"),
+    iconPath: require("@/staffPackage/common/icon/tabicon/me.png"),
+    selectedIconPath: require("@/staffPackage/common/icon/tabicon/meactive.png"),
     text: "个人中心",
     count: 23,
     isDot: false,

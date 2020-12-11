@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-10 11:25:31
+ * @LastEditTime: 2020-12-11 11:37:33
 -->
 <template>
   <StaffTabBar>
@@ -26,8 +26,13 @@
                 v-for="(item, index) in gridItem"
                 :index="item.path"
                 :key="index"
+                :custom-style="{padding:'20rpx 0'}"
                 @click="handleGoto()"
               >
+                <!-- <u-badge
+                  count="0"
+                  :offset="[15, 45]"
+                ></u-badge> -->
                 <u-icon
                   :name="item.icon"
                   :size="82"
@@ -83,52 +88,52 @@ export default {
       current: 0,
       gridList: [
         {
-          icon: require("@/static/staffIcon/report.png"),
+          icon: require("../common/icon/report.png"),
           path: "/staffPackage/reportConfirm/index",
           item: "报备确认",
         },
         {
-          icon: require("@/static/staffIcon/visit.png"),
+          icon: require("../common/icon/visit.png"),
           path: "/staffPackage/visitConfirm/index",
           item: "到访确认",
         },
         {
-          icon: require("@/static/staffIcon/deal.png"),
+          icon: require("../common/icon/deal.png"),
           path: "/staffPackage/dealConfirm/index",
           item: "成交确认",
         },
         {
-          icon: require("@/static/staffIcon/notice.png"),
+          icon: require("../common/icon/notice.png"),
           path: "/staffPackage/noticeList/index",
           item: "优惠告知书",
         },
         {
-          icon: require("@/static/staffIcon/client.png"),
+          icon: require("../common/icon/client.png"),
           path: "/staffPackage/clientReport/index",
           item: "帮录报备",
         },
         {
-          icon: require("@/static/staffIcon/performance.png"),
+          icon: require("../common/icon/performance.png"),
           path: "/staffPackage/performance/index",
           item: "业绩申报",
         },
         {
-          icon: require("@/static/staffIcon/payment.png"),
+          icon: require("../common/icon/payment.png"),
           path: "/staffPackage/payment/index",
           item: "结佣付款",
         },
         {
-          icon: require("@/static/staffIcon/receipt.png"),
+          icon: require("../common/icon/receipt.png"),
           path: "/staffPackage/receipt/index",
           item: "收款管理",
         },
         {
-          icon: require("@/static/staffIcon/code.png"),
+          icon: require("../common/icon/code.png"),
           path: "/staffPackage/noticeCode/index",
           item: "查询优惠码",
         },
         {
-          icon: require("@/static/staffIcon/channel.png"),
+          icon: require("../common/icon/channel.png"),
           path: "/staffPackage/channelAccount/index",
           item: "渠道结佣情况",
         },
@@ -164,15 +169,19 @@ export default {
 .nav-grid {
   // padding: 0 20rpx;
   background: #fff;
-  padding-bottom: 10rpx;
   font-size: 24rpx;
   .grid-text {
     margin-top: 15rpx;
+    color: #333333;
   }
   .ih-grid-swiper {
-    height: 370rpx;
+    height: 330rpx;
+  }
+  /deep/ .u-grid-item-box {
+    padding: 20rpx 0;
   }
   .indicator-dots {
+    padding: 16rpx 0;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -181,7 +190,7 @@ export default {
       height: 12rpx;
       width: 12rpx;
       border-radius: 20rpx;
-      margin: 0 6rpx;
+      margin: 0 10rpx;
       &.indicator-dots-active {
         background-color: $u-type-primary;
       }
@@ -197,7 +206,7 @@ export default {
     justify-content: center;
     align-items: center;
     .title {
-      background: url("../../static/staffIcon/title.png");
+      background: url("../common/icon/title.png");
       width: 692rpx;
       height: 54rpx;
       background-size: cover;

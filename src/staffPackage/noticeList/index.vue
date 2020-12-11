@@ -4,24 +4,32 @@
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-09 08:51:59
+ * @LastEditTime: 2020-12-11 11:25:37
 -->
 <template>
   <view class="notice safe-area-inset-bottom">
     <view class="item-container">
       <view
         class="notice-item"
-        v-for="(i) in 10"
-        :key="i"
+        v-for="(i, n) in tablePage"
+        :key="n"
         @click="handleGoConfirm()"
       >
         <view class="notice-info">
-          <view class="notice-title">优惠告知书(1238755544645)</view>
-          <view>保利XX项目 住宅-10栋-1501</view>
-          <view>刘伟</view>
+          <view class="notice-title">{{`${$dict.dictAllName(i.notificationType, 'NotificationType')}(${i.noticeNo})`}}</view>
+          <view>{{`${i.projectName || '-'} ${i.buyUnit}栋-${i.roomNumberId}`}}</view>
+          <template v-for="(item, index) in i.ownerList">
+            <view
+              v-if="item.signingStatus"
+              :key="index"
+            >{{item.ownerName}}</view>
+          </template>
         </view>
-        <view>
-          <text :class="['notice-color', {'success': i == 1, 'error': i == 3}]">信息待确认</text>
+        <view class="">
+          <text :class="['notice-color', {
+            'success': i.notificationStatus == 'BecomeEffective',
+            'primary': i.notificationStatus === 'WaitDetermine'
+          }]">{{$dict.dictAllName(i.notificationStatus, 'NotificationStatus')}}</text>
           <u-icon
             name="arrow-right"
             color="#888"
@@ -63,7 +71,6 @@
           <u-input
             v-model="form.name"
             border
-            type="select"
           />
         </u-form-item>
         <u-form-item
@@ -134,15 +141,22 @@
 <script>
 import PopupSearch from "../../components/PopupSearch/index.vue";
 import IhCheckbox from "../../components/IhCheckbox/index.vue";
+import pagination from "../../mixins/pagination";
+import { postNoticeList } from "../../api/staff";
+
 export default {
   name: "notice-list",
   components: {
     PopupSearch,
     IhCheckbox,
   },
+  mixins: [pagination],
   data() {
     return {
       isShow: false,
+      queryPageParameters: {
+        ownerName: null,
+      },
       form: {
         name: null,
         value: ["1"],
@@ -204,6 +218,13 @@ export default {
     handleConfirm() {
       console.log(this.form);
     },
+    async getListMixin() {
+      this.setPageDataMixin(await postNoticeList(this.queryPageParameters));
+    },
+  },
+  onLoad() {
+    console.log(this);
+    this.getListMixin();
   },
 };
 </script>
@@ -235,7 +256,7 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20rpx 20rpx;
+    padding: 20rpx;
     background: #fff;
     .notice-info {
       color: #ccc;
@@ -247,12 +268,12 @@ export default {
       font-size: 30rpx;
       font-weight: bold;
       color: #333333;
-      // margin-bottom: 19rpx;
+      margin-bottom: 10rpx;
     }
     .notice-color {
-      color: #0099ff;
-      &.error {
-        color: #f91c11;
+      color: #f91c11;
+      &.primary {
+        color: #0099ff;
       }
       &.success {
         color: #18b566;
