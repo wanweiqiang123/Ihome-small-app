@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-27 16:53:07
+ * @LastEditTime: 2020-12-11 12:09:45
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -277,7 +277,7 @@ export default {
       .background {
         width: 406rpx;
         height: 187rpx;
-        background-image: url("../../static/img/coupon.png");
+        background-image: url("../common/img/coupon.png");
         background-size: cover;
         position: absolute;
         right: 0;
