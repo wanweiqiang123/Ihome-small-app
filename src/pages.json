@@ -27,18 +27,8 @@
 				 
 			}
 		},
-		{
-			"path": "pages/personal/index/index",
-			"style": {
-				"navigationBarTitleText": "我的"
-			}
-		},
-		{
-			"path": "pages/message/index/index",
-			"style": {
-				"navigationBarTitleText": "消息"
-			}
-		},
+	 
+	 
 		{
 			"path": "pages/customer/index/index",
 			"style": {
@@ -52,12 +42,7 @@
 				"navigationBarTitleText": "详情"
 			}
 		},
-		{
-			"path": "pages/home/index/index",
-			"style": {
-				"navigationBarTitleText": "首页"
-			}
-		},
+		 
 		{
 			"path": "pages/search/index/index",
 			"style": {
