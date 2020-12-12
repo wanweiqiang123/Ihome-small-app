@@ -4,78 +4,72 @@
  * @Author: lsj
  * @Date: 2020-11-27 08:14:50
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-27 08:42:20
+ * @LastEditTime: 2020-12-12 16:32:20
 -->
 <template>
   <view class="deal-details-wrapper">
-    <view class="form-wrapper">
-      <view class="title">客户信息</view>
-      <view class="form">
-        <u-form :model="paymentForm" ref="paymentForm" :label-width="190">
-          <u-form-item label="张小刚" right-icon="arrow-right">
-            <u-input
-              v-model="paymentForm.account"
-              placeholder="张小刚" disabled :clearable="false" input-align="right" />
-          </u-form-item>
-        </u-form>
-      </view>
+    <view class="info-item">
+      <view class="form-title u-border-bottom">客户信息</view>
+      <u-form :model="paymentForm" ref="paymentForm" :label-width="190">
+        <u-form-item label="张小刚">
+          <u-input
+            v-model="paymentForm.account"
+            placeholder="张小刚" disabled :clearable="false" input-align="left" />
+        </u-form-item>
+      </u-form>
     </view>
-    <view class="form-wrapper">
-      <view class="title">房产信息</view>
-      <view class="form">
-        <u-form :model="paymentForm" ref="paymentForm" :label-width="190">
-          <u-form-item label="楼盘名称" right-icon="arrow-right">
-            <u-input
-              v-model="paymentForm.account"
-              placeholder="楼盘名称" disabled :clearable="false" input-align="right" />
-          </u-form-item>
-          <u-form-item label="物业类型" right-icon="arrow-right">
-            <u-input
-              v-model="paymentForm.invoiceType"
-              placeholder="物业类型" disabled :clearable="false" input-align="right" />
-          </u-form-item>
-          <u-form-item label="栋座" right-icon="arrow-right">
-            <u-input
-              v-model="paymentForm.invoiceTaxRate"
-              placeholder="栋座" disabled :clearable="false" input-align="right" />
-          </u-form-item>
-          <u-form-item label="房号" right-icon="arrow-right">
-            <u-input
-              v-model="paymentForm.invoiceTaxRate"
-              placeholder="房号" disabled :clearable="false" input-align="right" />
-          </u-form-item>
-        </u-form>
-      </view>
+    <view class="info-item">
+      <view class="form-title u-border-bottom">房产信息</view>
+      <u-form :model="paymentForm" ref="paymentForm" :label-width="190">
+        <u-form-item label="楼盘名称">
+          <u-input
+            v-model="paymentForm.account"
+            placeholder="楼盘名称" disabled :clearable="false" input-align="left" />
+        </u-form-item>
+        <u-form-item label="物业类型">
+          <u-input
+            v-model="paymentForm.invoiceType"
+            placeholder="物业类型" disabled :clearable="false" input-align="left" />
+        </u-form-item>
+        <u-form-item label="栋座">
+          <u-input
+            v-model="paymentForm.invoiceTaxRate"
+            placeholder="栋座" disabled :clearable="false" input-align="left" />
+        </u-form-item>
+        <u-form-item label="房号">
+          <u-input
+            v-model="paymentForm.invoiceTaxRate"
+            placeholder="房号" disabled :clearable="false" input-align="left" />
+        </u-form-item>
+      </u-form>
     </view>
-    <view class="form-wrapper" v-if="detailsType === 'commission'">
-      <view class="title">结佣信息</view>
-      <view class="form">
-        <u-form :model="paymentForm" ref="paymentForm" :label-width="190">
-          <u-form-item label="可结佣金" right-icon="arrow-right">
-            <u-input
-              v-model="paymentForm.estateName"
-              placeholder="可结佣金" disabled :clearable="false" input-align="right" />
-          </u-form-item>
-          <u-form-item label="已结佣金" right-icon="arrow-right">
-            <u-input
-              v-model="paymentForm.roof"
-              placeholder="已结佣金" disabled :clearable="false" input-align="right" />
-          </u-form-item>
-          <u-form-item label="未结佣金" right-icon="arrow-right">
-            <u-input
-              v-model="paymentForm.room"
-              placeholder="未结佣金" disabled :clearable="false" input-align="right" />
-          </u-form-item>
-          <u-form-item label="在结佣金" right-icon="arrow-right">
-            <u-input
-              v-model="paymentForm.room"
-              placeholder="在结佣金" disabled :clearable="false" input-align="right" />
-          </u-form-item>
-        </u-form>
-      </view>
+    <view class="info-item" v-if="detailsType === 'commission'">
+      <view class="form-title u-border-bottom">结佣信息</view>
+      <u-form :model="paymentForm" ref="paymentForm" :label-width="190">
+        <u-form-item label="可结佣金">
+          <u-input
+            v-model="paymentForm.estateName"
+            placeholder="可结佣金" disabled :clearable="false" input-align="left" />
+        </u-form-item>
+        <u-form-item label="已结佣金">
+          <u-input
+            v-model="paymentForm.roof"
+            placeholder="已结佣金" disabled :clearable="false" input-align="left" />
+        </u-form-item>
+        <u-form-item label="未结佣金">
+          <u-input
+            v-model="paymentForm.room"
+            placeholder="未结佣金" disabled :clearable="false" input-align="left" />
+        </u-form-item>
+        <u-form-item label="在结佣金">
+          <u-input
+            v-model="paymentForm.room"
+            placeholder="在结佣金" disabled :clearable="false" input-align="left" />
+        </u-form-item>
+      </u-form>
     </view>
-    <view class="form-wrapper" v-if="detailsType === 'commission'">
-      <view class="title">结佣记录</view>
+    <view class="info-item" v-if="detailsType === 'commission'">
+      <view class="form-title u-border-bottom">结佣记录</view>
       <view class="form u-padding-0">
         <view class="record-list" v-for="item in [2,3,4,5,6]" :key="item">
           <view class="record-code">
@@ -86,8 +80,8 @@
         </view>
       </view>
     </view>
-    <view class="form-wrapper" v-if="detailsType === 'report'">
-      <view class="title">结佣信息</view>
+    <view class="info-item" v-if="detailsType === 'report'">
+      <view class="form-title u-border-bottom">结佣信息</view>
       <view class="u-margin-20">
         <u-table>
           <u-tr>
@@ -99,8 +93,8 @@
         </u-table>
       </view>
     </view>
-    <view class="form-wrapper" v-if="detailsType === 'report'">
-      <view class="title">附件信息</view>
+    <view class="info-item" v-if="detailsType === 'report'">
+      <view class="form-title u-border-bottom">附件信息</view>
       <view class="form-img">
         <view class="img-item" v-for="(item, index) in annexList" :key="index">
           <view class="img-upload">
@@ -203,10 +197,21 @@ export default {
     width: 100%;
     background-color: #F5F5F5;
 
-    .form-wrapper {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 20rpx 30rpx 0rpx 30rpx;
+    .info-item {
+      background-color: #FFFFFF;
+
+      &:not(:last-child) {
+        margin-bottom: 30rpx;
+      }
+
+      .form-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 92rpx;
+        padding: 0 20rpx;
+        color: $u-type-primary;
+      }
 
       .form {
         background-color: #FFFFFF;

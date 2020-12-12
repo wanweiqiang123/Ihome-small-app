@@ -4,16 +4,16 @@
  * @Author: lsj
  * @Date: 2020-11-25 14:26:33
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-25 16:13:38
+ * @LastEditTime: 2020-11-25 16:40:35
 -->
 <template>
   <view class="enter-client-wrapper">
     <view class="client-info-wrapper">
       <view class="title">客户信息</view>
       <view class="form-wrapper">
-        <u-form :model="infoForm" ref="infoForm" :label-width="130">
+        <u-form :model="infoForm" ref="infoForm" :label-width="150">
           <u-form-item label="姓名" right-icon="arrow-right" required>
-            <u-input v-model="infoForm.name" placeholder="姓名" :clearable="false" input-align="right" />
+            <u-input v-model="infoForm.name" placeholder="姓名" :clearable="true" input-align="left" />
           </u-form-item>
           <u-form-item label="性别" required>
             <u-radio-group v-model="infoForm.sex" class="group-wrapper">
@@ -22,7 +22,7 @@
             </u-radio-group>
           </u-form-item>
           <u-form-item label="手机号" right-icon="arrow-right" required>
-            <u-input v-model="infoForm.phone" placeholder="手机号" :clearable="false" input-align="right" />
+            <u-input v-model="infoForm.phone" placeholder="手机号" :clearable="true" input-align="left" />
           </u-form-item>
         </u-form>
       </view>
@@ -30,12 +30,12 @@
     <view class="client-info-wrapper u-margin-top-30">
       <view class="title">客户来源</view>
       <view class="form-wrapper">
-        <u-form :model="sourceForm" ref="sourceForm" :label-width="130">
+        <u-form :model="sourceForm" ref="sourceForm" :label-width="150">
           <u-form-item label="来源渠道" right-icon="arrow-right" class="hide-icon">
             <u-input
               @click="showSource = true"
               v-model="sourceForm.source"
-              type="select" placeholder="来源渠道" :clearable="false" input-align="right" />
+              type="select" placeholder="来源渠道" :clearable="true" input-align="left" />
           </u-form-item>
         </u-form>
       </view>
@@ -43,12 +43,12 @@
     <view class="client-info-wrapper u-margin-top-30">
       <view class="title">客户需求</view>
       <view class="form-wrapper">
-        <u-form :model="demandForm" ref="demandForm" :label-width="130">
+        <u-form :model="demandForm" ref="demandForm" :label-width="150">
           <u-form-item label="意向区域" right-icon="arrow-right" class="hide-icon">
             <u-input
               @click="selectArea('region')"
               v-model="demandForm.region"
-              type="select" placeholder="意向区域" :clearable="false" input-align="right" />
+              type="select" placeholder="意向区域" :clearable="true" input-align="left" />
           </u-form-item>
           <u-form-item label="购房目的">
             <u-checkbox-group class="check-box-wrapper">
@@ -91,24 +91,24 @@
     <view class="client-info-wrapper u-margin-top-30 u-margin-bottom-30">
       <view class="title">客户详情</view>
       <view class="form-wrapper">
-        <u-form :model="detailForm" ref="detailForm" :label-width="130">
+        <u-form :model="detailForm" ref="detailForm" :label-width="150">
           <u-form-item label="年龄段" right-icon="arrow-right" class="hide-icon">
             <u-input
               @click="showAge = true"
               v-model="detailForm.ageRange"
-              type="select" placeholder="年龄段" :clearable="false" input-align="right" />
+              type="select" placeholder="年龄段" :clearable="true" input-align="left" />
           </u-form-item>
           <u-form-item label="现住区域" right-icon="arrow-right" class="hide-icon">
             <u-input
               @click="selectArea('currentLocation')"
               v-model="detailForm.currentLocation"
-              type="select" placeholder="现住区域" :clearable="false" input-align="right" />
+              type="select" placeholder="现住区域" :clearable="true" input-align="left" />
           </u-form-item>
           <u-form-item label="工作区域" right-icon="arrow-right" class="hide-icon">
             <u-input
               @click="selectArea('workLocation')"
               v-model="detailForm.workLocation"
-              type="select" placeholder="工作区域" :clearable="false" input-align="right" />
+              type="select" placeholder="工作区域" :clearable="true" input-align="left" />
           </u-form-item>
         </u-form>
       </view>
@@ -376,7 +376,14 @@ export default {
       showWork: false
     };
   },
-  onLoad() {},
+  onLoad(option) {
+    console.log(option);
+    if (option.id) {
+      uni.setNavigationBarTitle({
+        title: '编辑客户'
+      })
+    }
+  },
   methods: {
     // 选择来源
     confirmSource(e) {
@@ -443,18 +450,10 @@ export default {
         box-sizing: border-box;
         padding: 0rpx 20rpx;
 
-        /deep/.u-radio {
-          float: right!important;
-        }
-
-        /deep/.u-checkbox {
-          float: none!important;
-        }
-
         .check-box-wrapper {
           display: flex;
           flex-direction: row;
-          justify-content: flex-end;
+          //justify-content: flex-end;
           align-items: center;
           flex-wrap: wrap;
         }

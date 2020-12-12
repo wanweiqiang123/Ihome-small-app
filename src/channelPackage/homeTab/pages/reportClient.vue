@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-24 09:58:09
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-25 10:55:55
+ * @LastEditTime: 2020-12-12 16:05:30
 -->
 <template>
   <view class="report-client-wrapper">
@@ -12,15 +12,17 @@
       <u-search
         class="search"
         shape="round"
-        bg-color="white"
-        border-color="#f2f2f2"
+        height="72"
+        placeholder-color="#BDBDBD"
+        search-icon-color="#BDBDBD"
+        bg-color="#FFFFFF"
+        border-color="#DCDCDC"
         :show-action="false"
-        :clearabled="false"
-        placeholder="请输入楼盘名称"
+        placeholder="请输入项目名称"
         v-model="queryPageParameters.projectName"></u-search>
       <view class="project-card">
         <view class="project-img">
-          <u-image width="242rpx" height="186rpx" src="https://cdn.uviewui.com/uview/swiper/1.jpg"></u-image>
+          <u-image width="242rpx" height="186rpx" :src="homeImg"></u-image>
         </view>
         <view class="project-info">
           <view>远洋招商保利东湾经纪渠道</view>
@@ -52,17 +54,17 @@
         </view>
         <view class="form-wrapper">
           <u-form :model="infoForm" ref="infoForm" :label-width="130">
-            <u-form-item label="姓名" right-icon="arrow-right" required>
-              <u-input v-model="infoForm.name" placeholder="姓名" :clearable="false" input-align="right" />
+            <u-form-item label="姓名" required>
+              <u-input v-model="infoForm.name" placeholder="姓名" :clearable="false" input-align="left" />
             </u-form-item>
             <u-form-item label="性别" required>
-              <u-radio-group v-model="infoForm.sex" class="group-wrapper">
+              <u-radio-group v-model="infoForm.sex">
                 <u-radio name="female">女</u-radio>
                 <u-radio name="male">男</u-radio>
               </u-radio-group>
             </u-form-item>
-            <u-form-item label="手机号" right-icon="arrow-right" required>
-              <u-input v-model="infoForm.phone" placeholder="手机号" :clearable="false" input-align="right" />
+            <u-form-item label="手机号" required>
+              <u-input v-model="infoForm.phone" placeholder="手机号" :clearable="false" input-align="left" />
             </u-form-item>
           </u-form>
         </view>
@@ -73,18 +75,18 @@
         </view>
         <view class="form-wrapper">
           <u-form :model="visitForm" ref="visitForm" :label-width="190">
-            <u-form-item label="预计到访人数" right-icon="arrow-right" required>
-              <u-input v-model="visitForm.number" placeholder="预计到访人数" :clearable="false" input-align="right" />
+            <u-form-item label="预计到访人数" required>
+              <u-input v-model="visitForm.number" placeholder="预计到访人数" :clearable="true" input-align="left" />
             </u-form-item>
             <u-form-item label="预计到访时间" required class="hide-icon" right-icon="arrow-right">
               <u-input
                 v-model="visitForm.time"
                 type="select"
                 @click="handleSelectTime"
-                placeholder="预计到访时间" :clearable="false" input-align="right" />
+                placeholder="预计到访时间" :clearable="true" input-align="left" />
             </u-form-item>
-            <u-form-item label="备注" right-icon="arrow-right">
-              <u-input v-model="visitForm.remark" placeholder="备注" :clearable="false" input-align="right" />
+            <u-form-item label="备注">
+              <u-input v-model="visitForm.remark" placeholder="备注" :clearable="true" input-align="left" />
             </u-form-item>
           </u-form>
         </view>
@@ -98,19 +100,19 @@
             <u-form-item label="楼盘名称" right-icon="arrow-right">
               <u-input
                 v-model="estateForm.estateName"
-                placeholder="楼盘名称" disabled :clearable="false" input-align="right" />
+                placeholder="楼盘名称" disabled :clearable="false" input-align="left" />
             </u-form-item>
             <u-form-item label="认购栋座" right-icon="arrow-right" class="hide-icon">
               <u-input
                 @click="selectEstate('roof')"
                 v-model="estateForm.roof" type="select"
-                placeholder="认购栋座" :clearable="false" input-align="right" />
+                placeholder="认购栋座" :clearable="false" input-align="left" />
             </u-form-item>
             <u-form-item label="认购房号" right-icon="arrow-right" class="hide-icon">
               <u-input
                 @click="selectEstate('room')"
                 v-model="estateForm.room" type="select"
-                placeholder="认购房号" :clearable="false" input-align="right" />
+                placeholder="认购房号" :clearable="false" input-align="left" />
             </u-form-item>
           </u-form>
         </view>
@@ -127,10 +129,12 @@
         <u-search
           class="search"
           shape="round"
-          bg-color="white"
-          border-color="#f2f2f2"
+          height="72"
+          placeholder-color="#BDBDBD"
+          search-icon-color="#BDBDBD"
+          bg-color="#FFFFFF"
+          border-color="#DCDCDC"
           :show-action="false"
-          :clearabled="false"
           placeholder="请输入姓名或电话"
           v-model="queryPageParameters.projectName"></u-search>
       </view>
@@ -147,6 +151,7 @@
   export default {
     data() {
       return {
+        homeImg: require('@/channelPackage/common/img/house.jpg'),
         pageType: '',
         queryPageParameters: {
           projectName: ''
@@ -309,17 +314,11 @@
     .top-wrapper {
       width: 100%;
       box-sizing: border-box;
-      padding: 0rpx 20rpx;
-      margin-top: 10rpx;
+      padding: 10rpx 24rpx 10rpx 18rpx;
       background-color: #FFFFFF;
 
       .search {
         height: 72rpx;
-
-        /deep/ .u-content {
-          height: 72rpx !important;
-          border: 2rpx solid #DCDCDC;
-        }
       }
 
       .project-card {
@@ -327,7 +326,7 @@
         display: flex;
         flex-direction: row;
         box-sizing: border-box;
-        padding: 25rpx 0rpx 0rpx 24rpx;
+        padding: 25rpx 0rpx 0rpx 0rpx;
 
         .project-info {
           flex: 1;
@@ -431,10 +430,6 @@
           width: 100%;
           box-sizing: border-box;
           padding: 0rpx 20rpx;
-
-          /deep/.u-radio {
-            float: right!important;
-          }
         }
       }
 
@@ -462,11 +457,6 @@
 
       .search {
         height: 72rpx;
-
-        /deep/ .u-content {
-          height: 72rpx !important;
-          border: 2rpx solid #DCDCDC;
-        }
       }
     }
 

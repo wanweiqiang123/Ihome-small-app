@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-27 11:21:10
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-09 15:52:10
+ * @LastEditTime: 2020-12-12 17:17:30
 -->
 <template>
   <view class="favorites-list-wrapper">
@@ -25,7 +25,7 @@
     <view :class="currentClick ? 'list-wrapper list-height' : 'list-wrapper'">
       <view class="item" v-for="item in [1, 2, 3, 4, 5, 6, 7, 8, 9]" :key="item" @click="viewProjectDetail">
         <view>
-          <u-image width="242rpx" height="186rpx" src="https://cdn.uviewui.com/uview/swiper/1.jpg"></u-image>
+          <u-image width="242rpx" height="186rpx" :src="homeImg"></u-image>
         </view>
         <view class="item-content">
           <view class="title-wrapper">远洋招商保利东湾经纪渠道</view>
@@ -60,6 +60,7 @@
 export default {
   data() {
     return {
+      homeImg: require('@/channelPackage/common/img/house.jpg'),
       currentClick: false,
       queryPageParameters: {
         projectName: ''

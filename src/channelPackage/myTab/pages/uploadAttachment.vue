@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-25 09:01:02
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-25 10:19:09
+ * @LastEditTime: 2020-12-12 16:11:50
 -->
 <template>
   <view class="upload-attachment-wrapper">
@@ -13,10 +13,18 @@
       <view class="form-wrapper">
         <u-form :model="typeForm" ref="typeForm" :label-width="140">
           <u-form-item label="附件类型" right-icon="arrow-right" required class="hide-icon">
-            <u-input v-model="typeForm.type" type="select" @click="selectType('type')" placeholder="附件类型" :clearable="false" input-align="right" />
+            <u-input
+              v-model="typeForm.type"
+              type="select"
+              @click="selectType('type')"
+              placeholder="附件类型" :clearable="false" input-align="left" />
           </u-form-item>
           <u-form-item label="具体附件" right-icon="arrow-right" required class="hide-icon">
-            <u-input v-model="typeForm.specific" type="select" @click="selectType('value')" placeholder="具体附件" :clearable="false" input-align="right" />
+            <u-input
+              v-model="typeForm.specific"
+              type="select"
+              @click="selectType('value')"
+              placeholder="具体附件" :clearable="false" input-align="left" />
           </u-form-item>
         </u-form>
       </view>

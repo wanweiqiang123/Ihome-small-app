@@ -15,7 +15,7 @@
           <span>(先生)</span>
         </view>
         <view>
-          <u-icon name="edit-pen" size="45"></u-icon>
+          <u-icon name="edit-pen" size="45" @click="editClient"></u-icon>
         </view>
       </view>
       <view class="phone-wrapper">
@@ -154,6 +154,13 @@ export default {
     // 点击tabs
     changeTabs(index) {
       this.current = index;
+    },
+    // 编辑客户
+    editClient() {
+      uni.navigateTo({
+        url: `/channelPackage/clientTab/pages/enterClient?id=145`,
+
+      });
     },
     // 上传附件
     uploadAttach() {

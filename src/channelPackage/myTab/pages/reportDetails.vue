@@ -21,7 +21,7 @@
       </view>
       <view class="project-card">
         <view class="project-img">
-          <u-image width="242rpx" height="186rpx" src="https://cdn.uviewui.com/uview/swiper/1.jpg"></u-image>
+          <u-image width="242rpx" height="186rpx" :src="homeImg"></u-image>
         </view>
         <view class="project-info">
           <view>远洋招商保利东湾经纪渠道</view>
@@ -136,6 +136,7 @@
   export default {
     data() {
       return {
+        homeImg: require('@/channelPackage/common/img/house.jpg'),
         queryPageParameters: {
           projectName: ''
         },
@@ -444,12 +445,13 @@
             padding: 20rpx 20rpx;
 
             .item-title {
-              width: 200rpx;
+              width: 230rpx;
+              text-align: left;
             }
 
             .item-value {
               flex: 1;
-              text-align: right;
+              text-align: left;
             }
           }
         }

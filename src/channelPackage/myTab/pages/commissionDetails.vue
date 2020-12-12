@@ -4,15 +4,13 @@
  * @Author: lsj
  * @Date: 2020-11-26 17:14:10
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-26 17:33:10
+ * @LastEditTime: 2020-12-12 17:15:20
 -->
 <template>
   <view class="commission-details-wrapper">
     <view class="code-wrapper">
-      <view class="u-margin-right-15">结佣单号：CJ38135843321</view>
-      <view>
-        <u-button type="warning" size="mini">审核中</u-button>
-      </view>
+      <view class="code u-margin-right-15">结佣单号：CJ38135843321</view>
+      <view class="status">审核中</view>
     </view>
     <view class="initiate-title">
       <view class="title">结算佣金明细</view>
@@ -42,52 +40,52 @@
         </view>
       </view>
     </view>
-    <view class="form-wrapper">
-      <view class="title">收款信息</view>
+    <view class="info-item u-margin-top-20">
+      <view class="form-title u-border-bottom">收款信息</view>
       <view class="form">
         <u-form :model="paymentForm" ref="paymentForm" :label-width="190">
-          <u-form-item label="收款帐号" right-icon="arrow-right" class="hide-icon">
+          <u-form-item label="收款帐号">
             <u-input
-              v-model="paymentForm.account" type="select"
-              placeholder="收款帐号" :clearable="false" input-align="right" />
+              v-model="paymentForm.account"
+              placeholder="收款帐号" :clearable="false" input-align="left" />
           </u-form-item>
-          <u-form-item label="发票类型" right-icon="arrow-right" class="hide-icon">
+          <u-form-item label="发票类型">
             <u-input
-              v-model="paymentForm.invoiceType" type="select"
-              placeholder="发票类型" :clearable="false" input-align="right" />
+              v-model="paymentForm.invoiceType"
+              placeholder="发票类型" :clearable="false" input-align="left" />
           </u-form-item>
-          <u-form-item label="发票税率" right-icon="arrow-right" class="hide-icon">
+          <u-form-item label="发票税率">
             <u-input
-              v-model="paymentForm.invoiceTaxRate" type="select"
-              placeholder="发票税率" :clearable="false" input-align="right" />
+              v-model="paymentForm.invoiceTaxRate"
+              placeholder="发票税率" :clearable="false" input-align="left" />
           </u-form-item>
         </u-form>
       </view>
     </view>
-    <view class="form-wrapper">
-      <view class="title">佣金结算</view>
+    <view class="info-item">
+      <view class="form-title u-border-bottom">佣金结算</view>
       <view class="form">
         <u-form :model="paymentForm" ref="paymentForm" :label-width="190">
-          <u-form-item label="本单佣金" right-icon="arrow-right">
+          <u-form-item label="本单佣金">
             <u-input
               v-model="paymentForm.estateName"
-              placeholder="本单佣金" disabled :clearable="false" input-align="right" />
+              placeholder="本单佣金" disabled :clearable="false" input-align="left" />
           </u-form-item>
-          <u-form-item label="不含税金额" right-icon="arrow-right">
+          <u-form-item label="不含税金额">
             <u-input
               v-model="paymentForm.roof"
-              placeholder="不含税金额" disabled :clearable="false" input-align="right" />
+              placeholder="不含税金额" disabled :clearable="false" input-align="left" />
           </u-form-item>
-          <u-form-item label="税额" right-icon="arrow-right">
+          <u-form-item label="税额">
             <u-input
               v-model="paymentForm.room"
-              placeholder="税额" disabled :clearable="false" input-align="right" />
+              placeholder="税额" disabled :clearable="false" input-align="left" />
           </u-form-item>
         </u-form>
       </view>
     </view>
-    <view class="form-wrapper">
-      <view class="title">附件信息</view>
+    <view class="info-item">
+      <view class="form-title u-border-bottom">附件信息</view>
       <view class="form-img">
         <view class="img-item">
           <view class="img-upload">
@@ -107,16 +105,22 @@
           </view>
           <view class="img-type">结算明细</view>
         </view>
+        <view class="img-item">
+          <view class="img-upload">
+            <u-upload :action="action" :file-list="fileList" ></u-upload>
+          </view>
+          <view class="img-type">其他</view>
+        </view>
       </view>
     </view>
-    <view class="form-wrapper">
-      <view class="title">说明</view>
+    <view class="info-item u-margin-bottom-20">
+      <view class="form-title u-border-bottom">说明</view>
       <view class="form">
         <u-form :model="paymentForm" ref="paymentForm" :label-width="190">
-          <u-form-item label="申请说明" right-icon="arrow-right">
+          <u-form-item label="申请说明">
             <u-input
               v-model="paymentForm.estateName"
-              placeholder="申请说明" :clearable="false" input-align="right" />
+              placeholder="申请说明" :clearable="false" input-align="left" />
           </u-form-item>
         </u-form>
       </view>
@@ -163,6 +167,25 @@ export default {
       justify-content: center;
       padding: 20rpx;
       background-color: #FFFFFF;
+
+      .code {
+        font-family: PingFang SC;
+        font-weight: 600;
+        color: #1F1F1F;
+        line-height: 48rpx;
+      }
+
+      .status {
+        width: 91rpx;
+        background: #EB7734;
+        border-radius: 4rpx;
+        font-family: PingFang SC;
+        font-size: 24rpx;
+        font-weight: 600;
+        color: #FFFFFF;
+        line-height: 46rpx;
+        text-align: center;
+      }
     }
 
     .initiate-title {
@@ -245,22 +268,26 @@ export default {
       }
     }
 
-    .form-wrapper {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 20rpx 30rpx 0rpx 30rpx;
+    .info-item {
+      background-color: #FFFFFF;
 
-      .form {
-        background-color: #FFFFFF;
-        border: 1rpx solid #E4E4E4;
-        box-sizing: border-box;
-        padding: 0rpx 30rpx;
-        margin: 20rpx 0rpx;
+      &:not(:last-child) {
+        margin-bottom: 30rpx;
+      }
+
+      .form-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 92rpx;
+        padding: 0 20rpx;
+        color: $u-type-primary;
       }
 
       .form-img {
         display: flex;
         flex-direction: row;
+        flex-wrap: wrap;
         align-items: center;
         justify-content: space-between;
 

@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-27 13:05:22
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-09 15:55:10
+ * @LastEditTime: 2020-12-12 16:17:10
 -->
 <template>
   <view class="deal-list-wrapper">
@@ -52,18 +52,18 @@
     <u-popup v-model="showSearchWin" mode="right" length="70%">
       <view class="project-case-wrapper">
         <view>
-          <u-form :model="searchForm" ref="searchForm" :label-width="190">
+          <u-form :model="searchForm" ref="searchForm" :label-width="140">
             <u-form-item label="项目名称" right-icon="arrow-right" class="hide-icon">
               <u-input
                 @click="showProjectName = true"
                 v-model="searchForm.name" type="select"
-                placeholder="项目名称" :clearable="false" input-align="right" />
+                placeholder="项目名称" :clearable="false" input-align="left" />
             </u-form-item>
             <u-form-item label="成交阶段" right-icon="arrow-right" class="hide-icon">
               <u-input
                 @click="showProjectStage = true"
                 v-model="searchForm.stage" type="select"
-                placeholder="成交阶段" :clearable="false" input-align="right" />
+                placeholder="成交阶段" :clearable="false" input-align="left" />
             </u-form-item>
           </u-form>
         </view>

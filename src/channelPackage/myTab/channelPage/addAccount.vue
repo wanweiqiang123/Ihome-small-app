@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-27 17:13:50
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-12 14:23:30
+ * @LastEditTime: 2020-12-12 17:20:50
 -->
 <template>
   <view class="add-account-wrapper">
@@ -13,18 +13,18 @@
         <u-form-item label="账户名称">
           <u-input
             v-model="addForm.accountName"
-            placeholder="账户名称" :clearable="false" input-align="right" />
+            placeholder="账户名称" :clearable="true" input-align="left" />
         </u-form-item>
         <u-form-item label="开户银行" right-icon="arrow-right" class="hide-icon">
           <u-input
             @click="showBank = true"
             v-model="addForm.accountBank" type="select"
-            placeholder="开户银行" disabled :clearable="false" input-align="right" />
+            placeholder="开户银行" disabled :clearable="true" input-align="left" />
         </u-form-item>
         <u-form-item label="银行卡号">
           <u-input
             v-model="addForm.accountCode"
-            placeholder="银行卡号" :clearable="false" input-align="right"/>
+            placeholder="银行卡号" :clearable="true" input-align="left"/>
         </u-form-item>
       </u-form>
     </view>

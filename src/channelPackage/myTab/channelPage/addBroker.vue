@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-27 19:34:30
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-27 20:11:30
+ * @LastEditTime: 2020-12-12 17:20:30
 -->
 <template>
   <view class="add-broker-wrapper">
@@ -13,17 +13,17 @@
         <u-form-item label="姓名">
           <u-input
             v-model="addForm.accountName"
-            placeholder="姓名" :clearable="false" input-align="right" />
+            placeholder="姓名" :clearable="true" input-align="left" />
         </u-form-item>
         <u-form-item label="手机号">
           <u-input
             v-model="addForm.accountName"
-            placeholder="手机号" :clearable="false" input-align="right" />
+            placeholder="手机号" :clearable="true" input-align="left" />
         </u-form-item>
         <u-form-item label="邮箱">
           <u-input
             v-model="addForm.accountName"
-            placeholder="邮箱" :clearable="false" input-align="right" />
+            placeholder="邮箱" :clearable="true" input-align="left" />
         </u-form-item>
         <u-form-item label="账号状态" class="u-text-right">
           <u-switch v-model="checked"></u-switch>

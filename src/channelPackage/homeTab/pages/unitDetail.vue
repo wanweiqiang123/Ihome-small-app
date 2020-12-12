@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-23 17:30:18
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-24 09:33:10
+ * @LastEditTime: 2020-12-12 15:43:20
 -->
 <template>
   <view class="project-detail-wrapper">
@@ -13,7 +13,7 @@
       <view class="content-wrapper">
         <u-card :show-head="false" margin="0rpx" padding="20">
           <view class="" slot="body">
-            <u-image width="100%" height="320rpx" src="https://cdn.uviewui.com/uview/swiper/1.jpg"></u-image>
+            <u-image width="100%" height="320rpx" :src="banner"></u-image>
             <view class="title">低层洋房87m<span class="square">2</span></view>
           </view>
         </u-card>
@@ -79,7 +79,7 @@
           <view class="home-info-title">同楼盘其他户型</view>
           <view class="home-info-other" v-for="item in [1, 2, 3]" :key="item" @click="viewHomeDetail">
             <view class="home-img">
-              <u-image width="170rpx" height="130rpx" src="https://cdn.uviewui.com/uview/swiper/1.jpg"></u-image>
+              <u-image width="170rpx" height="130rpx" :src="homeImg"></u-image>
             </view>
             <view class="home-info-right">
               <view class="info-title">
@@ -100,6 +100,8 @@
   export default {
     data() {
       return {
+        banner: require('@/channelPackage/common/img/banner_1.png'),
+        homeImg: require('@/channelPackage/common/img/house.jpg'),
         homeForm: {}
       };
     },

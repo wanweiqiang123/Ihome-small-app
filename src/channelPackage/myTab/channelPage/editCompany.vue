@@ -14,49 +14,49 @@
         <u-form-item label="公司简称">
           <u-input
             v-model="paymentForm.account"
-            placeholder="公司简称" :clearable="false" input-align="right" />
+            placeholder="公司简称" :clearable="false" input-align="left" />
         </u-form-item>
         <u-form-item label="公司类型">
           <u-input
             v-model="paymentForm.account"
-            placeholder="公司类型" :clearable="false" input-align="right" />
+            placeholder="公司类型" :clearable="false" input-align="left" />
         </u-form-item>
         <u-form-item label="法定代表人">
           <u-input
             v-model="paymentForm.account"
-            placeholder="法定代表人" :clearable="false" input-align="right"/>
+            placeholder="法定代表人" :clearable="false" input-align="left"/>
         </u-form-item>
         <u-form-item label="法人身份证号码">
           <u-input
             v-model="paymentForm.account"
-            placeholder="法人身份证号码" :clearable="false" input-align="right"/>
+            placeholder="法人身份证号码" :clearable="false" input-align="left"/>
         </u-form-item>
         <u-form-item label="成立日期" right-icon="arrow-right" class="hide-icon">
           <u-input
             @click="showTime = true"
             v-model="paymentForm.account" type="select"
-            placeholder="成立日期" disabled :clearable="false" input-align="right" />
+            placeholder="成立日期" disabled :clearable="false" input-align="left" />
         </u-form-item>
         <u-form-item label="注册资本">
           <u-input
             v-model="paymentForm.account"
-            placeholder="注册资本" :clearable="false" input-align="right"/>
+            placeholder="注册资本" :clearable="false" input-align="left"/>
         </u-form-item>
         <u-form-item label="营业期限">
           <u-input
             v-model="paymentForm.account"
-            placeholder="营业期限" :clearable="false" input-align="right"/>
+            placeholder="营业期限" :clearable="false" input-align="left"/>
         </u-form-item>
         <u-form-item label="地区" right-icon="arrow-right" class="hide-icon">
           <u-input
             @click="showRegion = true"
             v-model="paymentForm.account" type="select"
-            placeholder="地区" disabled :clearable="false" input-align="right" />
+            placeholder="地区" disabled :clearable="false" input-align="left" />
         </u-form-item>
         <u-form-item label="住所">
           <u-input
             v-model="paymentForm.account"
-            placeholder="住所" :clearable="false" input-align="right"/>
+            placeholder="住所" :clearable="false" input-align="left"/>
         </u-form-item>
       </u-form>
     </view>
@@ -75,18 +75,18 @@
         <u-form-item label="账户名称">
           <u-input
             v-model="paymentForm.account"
-            placeholder="账户名称" :clearable="false" input-align="right" />
+            placeholder="账户名称" :clearable="false" input-align="left" />
         </u-form-item>
         <u-form-item label="开户银行" right-icon="arrow-right" class="hide-icon">
           <u-input
             @click="showBank = true"
             v-model="paymentForm.account" type="select"
-            placeholder="开户银行" disabled :clearable="false" input-align="right" />
+            placeholder="开户银行" disabled :clearable="false" input-align="left" />
         </u-form-item>
         <u-form-item label="银行卡号">
           <u-input
             v-model="paymentForm.account"
-            placeholder="银行卡号" :clearable="false" input-align="right"/>
+            placeholder="银行卡号" :clearable="false" input-align="left"/>
         </u-form-item>
       </u-form>
     </view>

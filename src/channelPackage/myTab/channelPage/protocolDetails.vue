@@ -4,16 +4,29 @@
  * @Author: lsj
  * @Date: 2020-11-27 20:02:11
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-27 20:35:11
+ * @LastEditTime: 2020-12-12 17:32:15
 -->
 <template>
   <view class="protocol-details-wrapper">
     <view class="details-wrapper">
       <view class="title">协议信息</view>
-      <view class="info-wrapper" v-for="(item, index) in infoList" :key="index">
-        <view>{{item.type}}</view>
-        <view class="u-text-right">{{item.value}}</view>
-      </view>
+      <u-form :model="infoForm" ref="infoForm" :label-width="170">
+        <u-form-item label="协议编号">
+          <u-input
+            v-model="infoForm.code"
+            placeholder="协议编号" disabled :clearable="false" input-align="left" />
+        </u-form-item>
+        <u-form-item label="协议名称">
+          <u-input
+            v-model="infoForm.name"
+            placeholder="协议名称" disabled :clearable="false" input-align="left" />
+        </u-form-item>
+        <u-form-item label="甲方">
+          <u-input
+            v-model="infoForm.type"
+            placeholder="甲方" disabled :clearable="false" input-align="left"/>
+        </u-form-item>
+      </u-form>
       <view class="title u-margin-top-30">合同附件</view>
       <view class="annex-wrapper">
         <view class="annex-item" v-for="(item, index) in annexItem" :key="index">
@@ -32,20 +45,11 @@
 export default {
   data() {
     return {
-      infoList: [
-        {
-          type: '协议编号',
-          value: '79454987532165'
-        },
-        {
-          type: '协议名称',
-          value: '保利XX项目合作协议'
-        },
-        {
-          type: '甲方',
-          value: '保利爱家地产有限公司'
-        }
-      ],
+      infoForm: {
+        code: '79454987532165',
+        name: '保利XX项目合作协议',
+        type: '保利爱家地产有限公司'
+      },
       annexItem: [
         {
           type: '未盖章版协议',

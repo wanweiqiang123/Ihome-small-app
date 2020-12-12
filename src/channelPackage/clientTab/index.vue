@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-17 10:08:05
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-08 18:43:10
+ * @LastEditTime: 2020-12-12 16:41:20
 -->
 <template>
   <ChannelTabBar>
@@ -63,10 +63,12 @@ export default {
     // 录入客户/报备客户
     handleAdd(type) {
       if (type === 'report') {
+        // 报备客户
         uni.navigateTo({
-          url: `/channelPackage/clientTab/pages/enterClient`
+          url: `/channelPackage/homeTab/pages/reportClient`
         });
       } else if (type === 'enter') {
+        // 录入客户
         uni.navigateTo({
           url: `/channelPackage/clientTab/pages/enterClient`
         });

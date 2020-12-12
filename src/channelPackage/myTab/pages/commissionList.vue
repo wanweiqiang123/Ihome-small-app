@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-26 10:15:18
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-09 15:50:50
+ * @LastEditTime: 2020-12-12 17:03:50
 -->
 <template>
   <view class="commission-wrapper">
@@ -27,14 +27,16 @@
       <view class="list-item" v-for="item in [1,2,3,4,5,6,7,8,9,10]" :key="item" @click="viewCommissionDetails">
         <view class="item-code u-padding-bottom-20">
           <view class="code">结佣申请单号：CJ38135843321</view>
-          <u-button type="primary" size="mini">审核中</u-button>
-          <view class="detail">详情</view>
-          <u-icon name="arrow-right" size="30"></u-icon>
+          <view class="status">审核中</view>
         </view>
-        <view class="price u-padding-bottom-20">申请佣金：1000.00</view>
-        <view class="price u-padding-bottom-20">扣除金额：1000.00</view>
-        <view class="price u-padding-bottom-20">实结佣金：1000.00</view>
-        <view class="price u-text-right">申请时间：2020-10-18 18:20:20</view>
+        <view class="price u-padding-bottom-10">申请佣金：1000.00</view>
+        <view class="price u-padding-bottom-10">扣除金额：1000.00</view>
+        <view class="price u-padding-bottom-10">实结佣金：1000.00</view>
+        <view class="price u-padding-bottom-10">申请时间：2020-10-18 18:20:20</view>
+        <view class="detail u-padding-bottom-10">
+          <text>详情</text>
+          <u-icon name="arrow-right" size="28"></u-icon>
+        </view>
       </view>
     </view>
     <view class="bottom-btn">
@@ -136,14 +138,14 @@ export default {
       width: 100%;
       height: calc(100vh - 230rpx);
       overflow-y: auto;
-      background-color: #F5F5F5;
+      background-color: #F1F1F1;
 
       .list-item {
         box-sizing: border-box;
-        margin: 20rpx;
+        margin: 10rpx 20rpx 20rpx 20rpx;
         padding: 20rpx;
         background-color: #FFFFFF;
-        border: 1rpx solid #DADADA;
+        //border: 1rpx solid #DADADA;
 
         .item-code {
           display: flex;
@@ -153,16 +155,49 @@ export default {
 
           .code {
             flex: 1;
+            font-family: PingFang SC;
+            font-weight: 600;
+            color: #1F1F1F;
+            line-height: 48rpx;
           }
 
-          .detail {
-            box-sizing: border-box;
-            margin: 0rpx 10rpx;
+          .status {
+            width: 91rpx;
+            background: #EB7734;
+            border-radius: 4rpx;
+            font-family: PingFang SC;
+            font-size: 24rpx;
+            font-weight: 600;
+            color: #FFFFFF;
+            line-height: 46rpx;
+            text-align: center;
+          }
+        }
+
+        .detail {
+          width: 100%;
+          text-align: right;
+          box-sizing: border-box;
+          margin-right: 20rpx;
+          font-size: 26rpx;
+          font-family: Source Han Sans CN;
+          font-weight: bold;
+          color: #888888;
+          line-height: 42rpx;
+          display: flex;
+          flex-direction: row;
+
+          text {
+            flex: 1;
           }
         }
 
         .price {
-          color: #999999;
+          font-size: 26rpx;
+          font-family: Source Han Sans CN;
+          font-weight: bold;
+          color: #606266;
+          line-height: 42rpx;
         }
       }
     }
