@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-27 17:13:50
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-27 17:30:50
+ * @LastEditTime: 2020-12-12 14:23:30
 -->
 <template>
   <view class="add-account-wrapper">
@@ -37,8 +37,11 @@
           <u-search
             class="search"
             shape="round"
+            height="72"
+            placeholder-color="#BDBDBD"
+            search-icon-color="#BDBDBD"
             bg-color="#FFFFFF"
-            border-color="#FFFFFF"
+            border-color="#DCDCDC"
             :show-action="false"
             placeholder="请输入开户银行名搜索"
             v-model="queryPageParameters.bankName"></u-search>
@@ -75,7 +78,10 @@ export default {
         {
           name: '广东广州工商银行番禺支行'
         }
-      ]
+      ],
+      queryPageParameters: {
+        bankName: null
+      }
     };
   },
   onLoad() {
@@ -115,20 +121,15 @@ export default {
 
     .top-wrapper {
       width: 100%;
-      //height: 72rpx;
+      height: 92rpx;
       box-sizing: border-box;
-      padding: 20rpx 20rpx;
-      margin-top: 10rpx;
+      padding: 10rpx 24rpx 10rpx 18rpx;
       display: flex;
       background-color: #EFEFF4;
 
       .search {
         flex: 1;
         height: 72rpx;
-
-        /deep/ .u-content {
-          height: 72rpx !important;
-        }
       }
     }
 
