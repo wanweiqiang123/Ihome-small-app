@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-23 11:15:50
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-11 17:26:30
+ * @LastEditTime: 2020-12-15 17:20:30
 -->
 <template>
   <view class="project-detail-wrapper">
@@ -25,29 +25,33 @@
       <view class="content-wrapper" v-show="tabCurrent === 0">
         <view>
           <u-image width="100%" height="324rpx" border-radius="4" :src="banner"></u-image>
-          <view class="title">远洋招商保利东湾经纪渠道</view>
+          <view class="title">{{detailInfo.proName}}</view>
           <view class="price-wrapper">
-            <span class="price">均价23000</span>
+            <span class="price">均价{{detailInfo.averagePrice}}</span>
             <span class="unit">元/m²</span>
           </view>
           <view class="address-wrapper">
             <u-icon name="map-fill" size="40rpx" class="icon"></u-icon>
-            <view class="text">广州市增城区增城大道</view>
+            <view class="text">{{detailInfo.province + detailInfo.city + detailInfo.district}}</view>
           </view>
           <view class="rule-color">
             <view>佣金规则：</view>
-            <view>保利国际广场位于成都市高新区金融城模板，是成都市2018年重点规划的城市CBD中心，丰富的配套等资源。</view>
+            <view>{{detailInfo.commissionRules}}</view>
           </view>
         </view>
         <view class="home-info-wrapper u-margin-top-80">
           <view class="home-info-title">户型信息</view>
           <view class="home-info">
-            <view class="info-item" @click="viewHomeDetail" v-for="item in [1, 2, 3]" :key="item">
+            <view
+              class="info-item"
+              v-for="(item, index) in detailInfo.houseTypeDetailVos"
+              :key="index"
+              @click="viewHomeDetail(item)">
               <view>
-                <u-image width="100%" height="160rpx" :src="homeImg"></u-image>
+                <u-image width="100%" height="160rpx" :src="item.picAddr"></u-image>
               </view>
-              <view class="title-tip">底层2房68m²</view>
-              <view class="price-color">160万起</view>
+              <view class="title-tip">{{item.houseName}}</view>
+              <view class="price-color">{{item.averagePrice}}万起</view>
             </view>
           </view>
         </view>
@@ -69,7 +73,7 @@
         <view class="u-padding-30">
           <view class="u-margin-bottom-50">
             <view class="home-info-title">报备规则</view>
-            <view class="content-time">报备保护期: 3天</view>
+            <view class="content-time">报备保护期: {{detailInfo.customerReportRule.developerProtectionPeriod}}天</view>
             <view class="content-time">报备类型: 前三后四</view>
           </view>
           <view class="u-margin-bottom-50">
@@ -115,9 +119,16 @@
 </template>
 
 <script>
+import { getProDetail } from '@/api/channel'
   export default {
     data() {
       return {
+        currentProId: null, // 项目的id
+        detailInfo: {
+          houseTypeDetailVos: [], // 户型信息
+          customerReportRule: {}, // 导客规则信息
+          promotion: [], // 楼盘卖点
+        }, // 详情信息
         banner: require('@/channelPackage/common/img/banner_1.png'),
         homeImg: require('@/channelPackage/common/img/house.jpg'),
         tabList: [
@@ -155,9 +166,31 @@
         keepFlag: false
       };
     },
-    onLoad() {
+    onLoad(option) {
+      if (option && option.proId) {
+        this.currentProId = option.proId;
+        // this.init();
+      }
     },
     methods: {
+      // 初始化页面
+      async init() {
+        if (!this.currentProId) return;
+        this.detailInfo = await getProDetail(this.currentProId);
+        // console.log('detailInfo', this.detailInfo);
+        if (this.detailInfo.promotion && this.detailInfo.promotion.priceAdvantage) {
+          this.sellingPointList[0].content = this.detailInfo.promotion.priceAdvantage;
+        }
+        if (this.detailInfo.promotion && this.detailInfo.promotion.priceAdvantage) {
+          this.sellingPointList[1].content = this.detailInfo.promotion.priceAdvantage;
+        }
+        if (this.detailInfo.promotion && this.detailInfo.promotion.lifeFacilities) {
+          this.sellingPointList[2].content = this.detailInfo.promotion.lifeFacilities;
+        }
+        if (this.detailInfo.promotion && this.detailInfo.promotion.propertyManagement) {
+          this.sellingPointList[3].content = this.detailInfo.promotion.propertyManagement;
+        }
+      },
       changeTab(index) {
         this.tabCurrent = index;
       },

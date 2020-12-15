@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-23 17:20:21
+ * @LastEditTime: 2020-12-15 14:49:15
 -->
 <template>
   <ChannelTabBar>
@@ -54,29 +54,30 @@
         <u-image width="100%" height="54rpx" :src="icon_5"></u-image>
       </view>
       <view class="content-wrapper">
-        <view class="content" v-for="item in [1, 2, 3, 4, 5, 6, 7, 8, 9]" :key="item" @click="viewProjectDetail">
+        <view class="content" v-for="item in tablePage" :key="item.proId" @click="viewProjectDetail(item)">
           <view>
-            <u-image width="242rpx" height="186rpx" :src="houseImg"></u-image>
+            <u-image width="242rpx" height="186rpx" :src="item.imgScr"></u-image>
           </view>
           <view class="content-right">
-            <view class="title-wrapper">远洋招商保利东湾经纪渠道</view>
+            <view class="title-wrapper">{{item.proName}}</view>
             <view class="tag-wrapper">
               <view class="tag">
-                <text>天河区</text>
+                <text>{{item.district}}</text>
               </view>
             </view>
             <view class="price-wrapper">
-              <span class="price">均价23000</span>
+              <span class="price">均价{{item.averagePrice}}</span>
               <span class="unit">元/m²</span>
             </view>
             <view class="rule">
               <span class="rule-tap">佣</span>
-              <span class="rule-text">佣金规则</span>
+              <span class="rule-text">{{item.commissionRules}}</span>
             </view>
           </view>
         </view>
         <view class="loading-wrapper">
-          <u-loadmore status="loading" />
+          <!-- <u-loadmore status="loading" />-->
+          <u-divider half-width="100%">没有更多了</u-divider>
         </view>
       </view>
     </view>
@@ -84,13 +85,18 @@
 </template>
 
 <script>
+  import pagination from "@/mixins/pagination";
+  import { getImgUrl, getRecommendItemList } from "@/api/channel";
   export default {
+    mixins: [pagination],
     data() {
       return {
         queryPageParameters: {
           location: '',
           projectName: ''
         },
+        tableTotal: null, //总数
+        tablePage: [], //列表数据
         showLocation: false,
         locationList: [
           {
@@ -126,21 +132,49 @@
       };
     },
     onLoad() {
+      // uni.getLocation({
+      //   type: 'wgs84',
+      //   success: function (res) {
+      //     console.log('当前位置的经度：', res);
+      //   }
+      // });
+      this.getListMixin();
+    },
+    onShow() {
+      console.log('onShow');
     },
     methods: {
+      async getListMixin() {
+        let data = await getRecommendItemList(this.queryPageParameters);
+        if (data.length > 0) {
+          data.forEach((item) => {
+            if (item.attachAddr && item.attachAddr.fileId) {
+              item.imgScr = getImgUrl(item.attachAddr.fileId);
+            } else {
+              item.imgScr = this.houseImg;
+            }
+          })
+          this.tablePage = data;
+        } else {
+          this.tablePage = [];
+        }
+        // this.setPageDataMixin(await getRecommendItemList(this.queryPageParameters));
+      },
       locationCallback(index) {
         this.queryPageParameters.location = this.locationList[index].text;
       },
+      // 跳转Tabs页
       goToItem(index) {
-        console.log(index);
+        // console.log(index);
         uni.navigateTo({
           url: `/channelPackage/${index}`,
         })
       },
       // 查看项目详情
-      viewProjectDetail() {
+      viewProjectDetail(item) {
         uni.navigateTo({
-          url: `/channelPackage/homeTab/pages/projectDetail`,
+          url: `/channelPackage/homeTab/pages/projectDetail?proId=${item.proId}`,
+
         })
       }
     },
@@ -225,7 +259,11 @@
         display: flex;
         flex-direction: row;
         align-items: center;
-        border-bottom: 1px solid #f2f2f2;
+
+
+        &:not(:last-child) {
+          border-bottom: 1px solid #f2f2f2;
+        }
 
         .content-right {
           flex: 1;

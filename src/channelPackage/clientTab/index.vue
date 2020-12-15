@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-17 10:08:05
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-12 16:41:20
+ * @LastEditTime: 2020-12-15 19:14:50
 -->
 <template>
   <ChannelTabBar>
@@ -19,19 +19,20 @@
           bg-color="#FFFFFF"
           border-color="#FFFFFF"
           :show-action="false"
+          @search="getListMixin('search')"
           placeholder="请输入客户姓名/电话"
-          v-model="queryPageParameters.projectName"></u-search>
+          v-model="queryPageParameters.name"></u-search>
         <view class="icon" @click="showAddWin = true">
           <u-icon name="plus" color="#888888" size="30"></u-icon>
         </view>
       </view>
       <view class="client-content-wrapper">
-        <view class="client-content" v-for="item in [1, 2, 3, 4, 5, 6, 7, 8, 9]" :key="item" @click="viewClientDetails">
+        <view class="client-content" v-for="item in tablePage" :key="item" @click="viewClientDetails(item)">
           <view class="client-avatar">王</view>
           <view class="client-info">
-            <view class="client-name">陈经纪</view>
-            <view class="client-phone">13455556666</view>
-            <view class="client-time">录入时间：2020-08-16 10:00</view>
+            <view class="client-name">{{ item.name }}</view>
+            <view class="client-phone">{{ item.mobile }}</view>
+            <view class="client-time">录入时间：{{ item. inputTime }}</view>
           </view>
         </view>
       </view>
@@ -49,17 +50,35 @@
 </template>
 
 <script>
+import pagination from "@/mixins/pagination";
+import { getCustomerList } from '@/api/channel'
 export default {
+  mixins: [pagination],
   data() {
     return {
       queryPageParameters: {
-        projectName: ''
+        name: '',
+        mobile: ''
       },
+      tableTotal: null, //总数
+      tablePage: [], //列表数据
       showAddWin: false
     };
   },
   onLoad() {},
+  onShow() {
+    this.getListMixin('');
+  },
   methods: {
+    async getListMixin(type) {
+      if (type) {
+        this.tableTotal = 0;
+        this.tablePage = [];
+        this.queryPageParameters.pageNum = 1;
+        this.queryPageParameters.pageSize = 10;
+      }
+      this.setPageDataMixin(await getCustomerList(this.queryPageParameters));
+    },
     // 录入客户/报备客户
     handleAdd(type) {
       if (type === 'report') {
