@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 12:09:45
+ * @LastEditTime: 2020-12-16 20:20:40
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -12,7 +12,7 @@
       <view class="info-first-title">
         <view>
           <view class="info-first-way">优惠方式</view>
-          <view class="info-first-discount">5万抵10万优惠折扣</view>
+          <view class="info-first-discount">{{info.discountInformationResponseVo.explain}}</view>
         </view>
         <view class="background"></view>
       </view>
@@ -22,16 +22,16 @@
             height="18"
             active-color="#4881F9"
             :show-percent="false"
-            :percent="70"
+            :percent="percent"
             :striped-active="true"
           ></u-line-progress>
         </view>
         <view class="info-first-msg">
-          <view>已付30000.00</view>
-          <view>应付50000.00</view>
+          <view>已付{{info.discountInformationResponseVo.paid}}</view>
+          <view>应付{{info.discountInformationResponseVo.paymentAmount}}</view>
         </view>
         <view class="info-first-paid">未付金额</view>
-        <view class="info-first-money">20000.00
+        <view class="info-first-money">{{info.discountInformationResponseVo.unpaid}}
           <text style="margin-left:20rpx;font-size: 24rpx;font-weight: bold;">元</text>
         </view>
         <view
@@ -65,7 +65,7 @@
             type="primary"
             size="medium"
             shape="circle"
-            @click="gotoPay"
+            @click="gotoPay(info.discountInformationResponseVo)"
           >去付款</u-button>
         </view>
       </view>
@@ -73,8 +73,8 @@
     <view class="info-second">
       <view class="info-second-title">购房信息</view>
       <view class="info-second-msg">
-        <view class="info-second-top">保利拾光年</view>
-        <view class="info-second-bottom">住宅-3栋-1908号</view>
+        <view class="info-second-top">{{info.purchaseInformation.projectName}}</view>
+        <view class="info-second-bottom">{{`${$dict.dictAllName(info.purchaseInformation.propertyType, 'PropertyEnum')}-${info.purchaseInformation.buyUnit}-${info.purchaseInformation.roomNumberName}`}}</view>
       </view>
       <view class="info-second-wrap">
         <swiper
@@ -86,32 +86,32 @@
         >
           <swiper-item
             class="swiper-item"
-            v-for="(item, i) in ownerList"
+            v-for="(item, i) in info.purchaseInformation.ownerWeChatList"
             :key="i"
           >
-            <view class="swiper-item-title">{{item.title}}</view>
+            <view class="swiper-item-title">{{`业主${i+1}`}}</view>
             <view class="swiper-item-msg">
               <view class="swiper-item-detail">姓名
-                <text class="swiper-item-name">{{item.name}}</text>
+                <text class="swiper-item-name">{{item.ownerName}}</text>
               </view>
               <view
                 class="swiper-item-detail"
                 style="padding-top: 20rpx"
               >身份证号
-                <text class="swiper-item-identity">{{item.identity}}</text>
+                <text class="swiper-item-identity">{{item.ownerCertificateNo}}</text>
               </view>
               <view
                 class="swiper-item-detail"
                 style="padding-top: 20rpx"
               >手机号码
-                <text class="swiper-item-phone">{{item.phone}}</text>
+                <text class="swiper-item-phone">{{item.ownerMobile}}</text>
               </view>
             </view>
           </swiper-item>
         </swiper>
         <view class="indicator-dots">
           <view
-            v-for="(item, i) in ownerList"
+            v-for="(item, i) in info.purchaseInformation.ownerWeChatList"
             :key="i"
             class="indicator-dots-item"
             :class="[current == i ? 'indicator-dots-active' : '']"
@@ -124,7 +124,7 @@
       <view class="info-third-title">
         <view style="color: #4881f9;">优惠告知书信息</view>
         <view class="all">全部（
-          <text style="color: #FF0000">{{notification.length}}</text>
+          <text style="color: #FF0000">{{info.noticeList.length}}</text>
           ）
         </view>
       </view>
@@ -138,22 +138,24 @@
         >
           <swiper-item
             class="swiper-item"
-            v-for="(item, i) in notification"
+            v-for="(item, i) in info.noticeList"
             :key="i"
           >
             <view class="swiper-item-msg">
               <view class="swiper-item-layout">
                 <view class="swiper-item-detail">
-                  <view class="swiper-item-type">{{item.title}}</view>
-                  <view class="swiper-item-num">编号（{{item.num}}）</view>
+                  <view class="swiper-item-type">{{`${$dict.dictAllName(item.notificationType, 'NotificationType')}`}}</view>
+                  <view class="swiper-item-num">编号（{{item.noticeNo}}）</view>
                 </view>
-                <view class="swiper-item-status">{{item.status}}</view>
+                <view class="swiper-item-status">{{`${$dict.dictAllName(item.notificationStatus, 'NotificationStatus')}`}}</view>
               </view>
               <view class="swiper-item-btn">
                 <u-button
+                  v-if="item.notificationStatus === 'BecomeEffective'"
                   type="primary"
                   size="medium"
                   shape="circle"
+                  @click="viewNotice(item.templateId)"
                 >预览</u-button>
               </view>
             </view>
@@ -161,7 +163,7 @@
         </swiper>
         <view class="indicator-dots">
           <view
-            v-for="(item, i) in notification"
+            v-for="(item, i) in info.noticeList"
             :key="i"
             class="indicator-dots-item"
             :class="[currents == i ? 'indicator-dots-active' : '']"
@@ -188,48 +190,111 @@
           class="pay-list"
           style="padding-top: 10rpx"
         >退款时间
-          <text class="pay-list-money">1111-11-11 11:11:11</text>
+          <text class="pay-list-money">2011-11-11 11:11:11</text>
         </view>
       </view>
     </view>
+    <view>
+      <u-modal 
+        v-model="show"
+        @confirm="confirm(info.discountInformationResponseVo)"
+        @cancel="cancel"
+        ref="uModal"
+        title="您还有一笔未完成付款"
+        show-confirm-button
+        :show-cancel-button="true"
+        confirm-text="继续支付"
+        cancel-text="重新创建"
+        :content="content"
+      >
+      </u-modal>
+    </view>  
   </view>
 </template>
 <script>
+import { 
+  getWechatNoticeInfoApi, 
+  getCheckIsExistNoPayApi,
+  postDeleteByBusinessIdApi,
+} from "../../api/customer";
+import uImage from '../../uview-ui/components/u-image/u-image.vue';
 export default {
+  components: { uImage },
   data() {
     return {
-      ownerList: [
-        {
-          title: "业主1",
-          name: "皮小强",
-          identity: "441424199302050555",
-          phone: "15119337611",
-        },
-        {
-          title: "业主2",
-          name: "皮小强1",
-          identity: "44142419930205055x",
-          phone: "15119337612",
-        },
-      ],
-      notification: [
-        {
-          title: "购房优惠告知书",
-          num: "899722334783",
-          status: "已签署",
-        },
-        {
-          title: "补充协议",
-          num: "899722334783",
-          status: "已签署",
-        },
-      ],
+      info: {
+        discountInformationResponseVo: {},
+        noticeId: null,
+        noticeList: [],
+        purchaseInformation: {},
+      },
       current: 0,
       currents: 0,
+      noticeId: '',
+      show: false,
+      content: '您上次还有一笔待付款单未完成支付，您可以选择前往继续支付，也可以选择创建一笔新的付款。'
+      // webviewSrc: 'http://api.polyihome.develop/sales-api/sales-document-cover/file/browse/5fd02f5e282f220001e07fa6',
     };
   },
+  onLoad(options) {
+    this.noticeId = options.id;
+  },
+  onShow() {
+    if (this.noticeId) {
+      this.getInfo();
+    }
+  },
+  computed: {
+    perceent() {
+      if (this.obj?.discountInformationResponseVo?.paid) {
+        const paid = Number(info.discountInformationResponseVo.paid);
+        const amount = paid / Number(info.discountInformationResponseVo.paymentAmount)
+        return amount*100;
+      }
+      
+    }
+  },
   methods: {
-    gotoPay() {
+    async getInfo() {
+      if (this.noticeId) {
+        const res = await getWechatNoticeInfoApi({
+          noticeId: this.noticeId
+        });
+        this.info = { ...res };
+      }
+    },
+    // 预览
+    viewNotice(val) {
+      if (val) {
+        // this.webviewSrc = `/sales-api/sales-document-cover/file/browse/${val}`;
+        // this.webView = true;
+      }
+    },
+    async gotoPay(obj) {
+      const res = await getCheckIsExistNoPayApi({
+        id: 15,
+        // id: obj.grogroupId,
+      });
+      if (res) {
+        this.show = true;
+      } else {
+        getApp().paidData = { ...obj, businessId: this.info.noticeId };
+        uni.navigateTo({
+          url: `/customerPackage/paymentMethod/index`,
+        });
+      }
+    },
+    confirm(obj){
+      getApp().paidData = { ...obj, businessId: this.info.noticeId };
+      uni.navigateTo({
+        url: `/customerPackage/unpaid/index`,
+      });
+    },
+    async cancel() {
+      await postDeleteByBusinessIdApi({
+        businessId: this.info.noticeId
+      });
+      getApp().paidData = { ...this.info.discountInformationResponseVo, businessId: this.info.noticeId };
       uni.navigateTo({
         url: `/customerPackage/paymentMethod/index`,
       });
@@ -319,6 +384,7 @@ export default {
     }
 
     &-progress {
+      font-size: 0;
       padding: 30rpx 6rpx 0 1rpx;
     }
 

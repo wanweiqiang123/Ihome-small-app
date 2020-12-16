@@ -4,33 +4,25 @@
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-24 15:39:34
+ * @LastEditTime: 2020-12-16 21:13:06
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
+    <view class="pay-title margin-top">付款信息</view>
     <view class="pay-msg margin-top">
-      <view class="pay-title">付款信息</view>
       <view class="pay-item">
-        <view class="pay-list">应付服务费
-          <text class="pay-list-money">{{payNum}}</text>
-        </view>
-        <view class="pay-list">已付服务费
-          <text class="pay-list-money">{{payNum}}</text>
-        </view>
-        <view class="pay-list">未付服务费
-          <text class="pay-list-money">{{payNum}}</text>
-        </view>
-        <view class="pay-list">付款金额
-          <text class="pay-list-money">{{payNum}}</text>
-        </view>
+        <u-field label-width="150" v-model="payData.paymentAmount" label="应付服务费" disabled></u-field>
+        <u-field label-width="150" v-model="payData.paid" label="已付服务费" disabled></u-field>
+        <u-field label-width="150" v-model="payData.unpaid" label="未付服务费" disabled></u-field>
+        <u-field label-width="150" v-model="payNum" label="付款金额" :clearable="false" @blur="payNumChange"></u-field>
       </view>
     </view>
+    <view class="pay-title">付款方式</view>
     <view class="pay-msg margin-top">
-      <view class="pay-title">付款方式</view>
-      <u-radio-group v-model="value">
+      <u-radio-group v-model="payType">
         <view
           class="pay-type"
-          v-for="(item, i) in payTypeList"
+          v-for="(item, i) in $dict.dictAllList('PayType')"
           :key="i"
         >
           <view style="line-height: 80rpx">
@@ -38,11 +30,12 @@
               name="zhifubao"
               size="50"
             ></u-icon>
-            <text class="pay-type-name">{{item.paytype}}</text>
+            <text class="pay-type-name">{{item.name}}</text>
           </view>
           <u-radio
+            active-color="#18B566"
             class="pay-type-radio"
-            :name="item.paytype"
+            :name="item.code"
             @change="radioChange"
           ></u-radio>
         </view>
@@ -52,7 +45,7 @@
       <u-button
         shape="square"
         @click="payGoto"
-      >{{`${payType}支付 ￥${payNum}`}}</u-button>
+      >{{`${$dict.dictAllName(payType, 'PayType')}支付 ￥${payNum?payNum:0}`}}</u-button>
     </view>
     <view class="pay-hint">
       付款成功后可能存在延迟，请耐心等待1~2分钟！
@@ -61,72 +54,85 @@
   </view>
 </template>
 <script>
+import { postAddServiceApi, getDoPaymentApi } from "../../api/customer";
 export default {
   data() {
     return {
-      value: "微信支付",
-      payType: "微信支付",
-      payNum: "50000.00",
-      payTypeList: [
-        {
-          paytype: "微信支付",
-          id: 1,
-        },
-        {
-          paytype: "POS机刷卡",
-          id: 2,
-        },
-        {
-          paytype: "银行转账",
-          id: 3,
-        },
-        {
-          paytype: "银联支付",
-          id: 4,
-        },
-        {
-          paytype: "支付宝支付",
-          id: 5,
-        },
-        {
-          paytype: "微信好友代付",
-          id: 6,
-        },
-      ],
+      payData: {},
+      payType: "WeChatPay",
+      payNum: 0,
     };
   },
+  onLoad() {
+    this.payData = { ...getApp().paidData };
+    this.payNum = this.payData.paymentAmount;
+  },
   methods: {
+    payNumChange(v) {
+      let num = v.target.value;
+      let amount = this.payData.paymentAmount + '';
+      if (Number(num) > Number(this.payData.paymentAmount)) {
+        this.payNum = num.substring(0, amount.length);
+      }
+    },
     radioChange(e) {
       this.payType = e;
     },
-    payGoto() {
-      switch (this.value) {
-        case "微信支付":
+    async payGoto() {
+      console.log(this.payType)
+      let obj = {};
+      obj.amount = this.payNum;
+      obj.businessId = this.payData.businessId;
+      obj.foundType = 'ServiceCharge';
+      obj.groupId = this.payData.groupId;
+      obj.operator = this.payData.operator;
+      obj.payType = this.payType;
+      obj.payer = 'Customer';
+      obj.proId = this.payData.projectId;
+      obj.roomId = this.payData.roomNumberId;
+      obj.serviceAmount = this.payData.paymentAmount;
+      obj.serviceFeePaid = this.payData.paid;
+      obj.termId = this.payData.cycleId;
+      obj.unpaidServiceFee = this.payData.unpaid;
+      obj.terminal = 'WeChatApp';
+      // 假数据
+      obj.groupId = 15;
+      obj.operator = 15;
+      obj.proId = 1;
+      obj.termId = 3;
+      let res = await postAddServiceApi(obj);
+      console.log(res);
+      // const yinlian = await getDoPaymentApi({
+        // id: 15,
+      //   // id: this.payData.groupId,
+      // })
+      switch (this.payType) {
+        // 微信支付
+        case "WeChatPay":
           uni.navigateTo({
             url: `/customerPackage/paymentMethod/weChatPay`,
           });
           break;
-        case "POS机刷卡":
+        // pos机
+        case "Pos":
           uni.navigateTo({
             url: `/customerPackage/paymentMethod/POS`,
           });
           break;
-        case "微信好友代付":
-          uni.navigateTo({
-            url: `/customerPackage/paymentMethod/friendPay`,
-          });
-          break;
-        case "银行转账":
+        // 银行转账
+        case "Transfer":
           uni.navigateTo({
             url: `/customerPackage/paymentMethod/bankTransfer`,
           });
           break;
-        case "银联支付":
+        // 支付宝
+        case "Alipay":
           uni.navigateTo({
             url: `/customerPackage/paymentMethod/zhifubaoPay`,
           });
           break;
-        case "支付宝支付":
+        // 银联支付
+        case "UnionPay":
           uni.navigateTo({
             url: `/customerPackage/paymentMethod/zhifubaoPay`,
           });
@@ -154,18 +160,19 @@ export default {
   }
 
   &-title {
-    width: 100%;
-    font-size: 34rpx;
-    box-sizing: border-box;
-    font-weight: 600;
-    padding: 15rpx 0rpx;
-    border-bottom: 1px solid #f2f2f2;
+    width: 90%;
   }
 
   &-item {
     width: 100%;
     display: flex;
     flex-flow: column nowrap;
+    /deep/ .u-field {
+      padding: 20rpx 0;
+    }
+    /deep/ .u-field__input-wrap {
+      text-align: center;
+    }
   }
   &-list {
     height: 80rpx;

@@ -23,11 +23,8 @@
 					"titleNView": false
 				},
 				"navigationBarBackgroundColor": "#fff"
-				 
 			}
 		},
-	 
-	 
 		{
 			"path": "pages/customer/index/index",
 			"style": {
@@ -41,7 +38,6 @@
 				"navigationBarTitleText": "详情"
 			}
 		},
-		 
 		{
 			"path": "pages/search/index/index",
 			"style": {
@@ -129,6 +125,18 @@
 					"path": "payAuditing/index",
 					"style": {
 						"navigationBarTitleText": "付款待审核"
+					}
+				},
+				{
+					"path": "unpaid/index",
+					"style": {
+						"navigationBarTitleText": "待付款订单"
+					}
+				},
+				{
+					"path": "paySuccess/index",
+					"style": {
+						"navigationBarTitleText": "在线支付"
 					}
 				}
 			]
