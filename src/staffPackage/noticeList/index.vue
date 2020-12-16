@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-11 11:25:37
+ * @LastEditTime: 2020-12-16 14:16:06
 -->
 <template>
   <view class="notice safe-area-inset-bottom">
@@ -17,15 +17,15 @@
       >
         <view class="notice-info">
           <view class="notice-title">{{`${$dict.dictAllName(i.notificationType, 'NotificationType')}(${i.noticeNo})`}}</view>
-          <view>{{`${i.projectName || '-'} ${i.buyUnit}栋-${i.roomNumberId}`}}</view>
+          <view>{{`${i.projectName} ${i.buyUnit}栋-${i.roomNumberId}`}}</view>
           <template v-for="(item, index) in i.ownerList">
             <view
-              v-if="item.signingStatus"
+              v-if="item.signingStatus === 'Yes'"
               :key="index"
             >{{item.ownerName}}</view>
           </template>
         </view>
-        <view class="">
+        <view class="notice-identify">
           <text :class="['notice-color', {
             'success': i.notificationStatus == 'BecomeEffective',
             'primary': i.notificationStatus === 'WaitDetermine'
@@ -58,7 +58,6 @@
       @confirm="handleConfirm()"
     >
       <u-form
-        :model="form"
         ref="notice"
         label-position="top"
         :border-bottom="false"
@@ -89,7 +88,7 @@
           :border-bottom="false"
         >
           <u-input
-            v-model="form.intro"
+            v-model="queryPageParameters.ownerName"
             placeholder="请输入客户姓名"
             border
           />
@@ -100,7 +99,7 @@
           :border-bottom="false"
         >
           <u-input
-            v-model="form.intro"
+            v-model="queryPageParameters.ownerMobile"
             placeholder="请输入客户电话"
             border
           />
@@ -110,7 +109,7 @@
           :border-bottom="false"
         >
           <u-input
-            v-model="form.intro"
+            v-model="queryPageParameters.noticeNo"
             placeholder="请输入优惠告知书编号"
             border
           />
@@ -120,8 +119,9 @@
           :border-bottom="false"
         >
           <IhCheckbox
-            :arr="checkbox"
-            v-model="form.value"
+            v-model="queryPageParameters.notificationTypes"
+            :arr="$dict.dictAllList('NotificationType')"
+            :alias="{name:'name',value:'code'}"
           ></IhCheckbox>
         </u-form-item>
         <u-form-item
@@ -129,8 +129,9 @@
           :border-bottom="false"
         >
           <IhCheckbox
-            :arr="checkbox2"
-            v-model="form.value2"
+            v-model="queryPageParameters.notificationStatuses"
+            :arr="$dict.dictAllList('NotificationStatus')"
+            :alias="{name:'name',value:'code'}"
           ></IhCheckbox>
         </u-form-item>
       </u-form>
@@ -156,52 +157,11 @@ export default {
       isShow: false,
       queryPageParameters: {
         ownerName: null,
+        ownerMobile: null,
+        noticeNo: null,
+        notificationStatuses: [],
+        notificationTypes: [],
       },
-      form: {
-        name: null,
-        value: ["1"],
-        value2: [],
-      },
-      checkbox: [
-        {
-          value: "1",
-          name: "优惠告知书",
-        },
-        {
-          value: "2",
-          name: "补充协议",
-        },
-        {
-          value: "3",
-          name: "终止协议",
-        },
-      ],
-      checkbox2: [
-        {
-          value: "1",
-          name: "信息待确认",
-        },
-        {
-          value: "2",
-          name: "客户待签署",
-        },
-        {
-          value: "3",
-          name: "客户已签署",
-        },
-        {
-          value: "4",
-          name: "待支付",
-        },
-        {
-          value: "5",
-          name: "分公司业管待审核",
-        },
-        {
-          value: "6",
-          name: "已生效",
-        },
-      ],
     };
   },
   methods: {
@@ -215,8 +175,11 @@ export default {
         url: "/staffPackage/noticeCreate/index",
       });
     },
-    handleConfirm() {
-      console.log(this.form);
+    async handleConfirm() {
+      this.tablePage = [];
+      this.queryPageParameters.pageNum = 1;
+      this.setPageDataMixin(await postNoticeList(this.queryPageParameters));
+      // console.log(this.queryPageParameters);
     },
     async getListMixin() {
       this.setPageDataMixin(await postNoticeList(this.queryPageParameters));
@@ -256,11 +219,12 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
     padding: 20rpx;
     background: #fff;
     .notice-info {
       color: #ccc;
-      line-height: 42rpx;
+      line-height: 50rpx;
       font-size: 26rpx;
       font-family: "Source Han Sans CN";
     }
@@ -268,7 +232,13 @@ export default {
       font-size: 30rpx;
       font-weight: bold;
       color: #333333;
-      margin-bottom: 10rpx;
+    }
+    .notice-identify {
+      position: absolute;
+      // z-index: 100;
+      right: 20rpx;
+      top: 50%;
+      transform: translateY(-50%);
     }
     .notice-color {
       color: #f91c11;
