@@ -91,11 +91,6 @@ const storageTool = {
         if (token) {
             const userInfo = this.getUserInfo();
             let userType = userInfo?.userType;
-            userType = 'Channel';
-            // uni.redirectTo({
-            //     url: "/pages/register/channel",
-            // });
-            // return
             //userType用户类别(Staff-员工、Channel-渠道、Customer-客户)
             switch (userType) {
                 case 'Customer':
