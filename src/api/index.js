@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 10:09:50
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-10 17:09:17
+ * @LastEditTime: 2020-12-17 14:26:17
  */
 
 import { getApi, postApi } from '../common/http.js';
@@ -85,6 +85,11 @@ export async function postdevepolersApi(data = {}, option = {}) {
 /**字典列表，全部数据*/
 export async function getDictGetAllApi(data = {}, option = {}) {
     return await getApi('/sales-api/system/dict/getAll', data, option);
+}
+
+/**获取系统参数，各环境域名*/
+export async function getSystemParamApi(data = {}, option = {}) {
+    return await getApi('/sales-api/sessionUser/getSystemParam', data, option);
 }
 
 

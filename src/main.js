@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-10 19:11:54
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-12-17 14:56:20
  */
 import Vue from 'vue'
 import App from './App'
@@ -17,7 +17,7 @@ import store from './store'
 import tool from './common/tool'
 import storageTool from './common/storageTool'
 import './common/css/public.scss'
-import { getDictGetAllApi, getAreaApi } from './api/index'
+import {getSystemParamApi, getDictGetAllApi, getAreaApi } from './api/index'
 //把vuex定义成全局组件
 Vue.prototype.$store = store;
 Vue.prototype.$tool = tool;
@@ -200,6 +200,8 @@ Vue.prototype.$dict = {
   }
 }
 async function startApp() {
+  let env=__wxConfig.envVersion;
+  const configEnv= await getSystemParamApi({env:env});
   Promise.all([getAreaApi(), getDictGetAllApi()])
     .then(res => {
       areaAll = res[0];

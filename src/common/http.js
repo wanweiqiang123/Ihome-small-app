@@ -4,11 +4,15 @@
  * @Author: zyc
  * @Date: 2020-11-10 10:17:55
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-07 11:25:42
+ * @LastEditTime: 2020-12-17 14:53:59
  */
 
 import storageTool from './storageTool'
-const baseUrl = 'http://api.polyihome.develop';
+import { currentEnvConfig } from '../env-config'
+//api请求域名，带协议
+const baseUrl = currentEnvConfig['protocol'] + '://' + currentEnvConfig['apiDomain'];
+console.log(baseUrl);
+// const baseUrl = 'http://api.polyihome.develop';
 
 const showToast = (title) => {
     uni.showToast({
