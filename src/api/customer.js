@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-15 18:08:02
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-16 20:27:16
+ * @LastEditTime: 2020-12-17 19:19:50
  */
 import { getApi, postApi } from '../common/http.js';
 
@@ -24,10 +24,6 @@ export async function getCheckIsExistNoPayApi(data = {}, option = {}) {
 export async function postAddServiceApi(data = {}, option = {}) {
   return await postApi(`/sales-api/finance/payment/addService`, data, option)
 }
-// 向银联发起支付请求
-export async function getDoPaymentApi(data = {}, option = {}) {
-  return await getApi(`/sales-api/finance/payment/doPayment/${data.id}`, option)
-}
 // 获取待付款记录ID
 export async function getBusinessIdApi(data = {}, option = {}) {
   return await getApi(`/sales-api/finance/payment/getBusinessId/${data.getBusinessId}`, option)
@@ -39,4 +35,20 @@ export async function getIdApi(data = {}, option = {}) {
 // 根据优惠告知书ID删除未付款付款记录
 export async function postDeleteByBusinessIdApi(data = {}, option = {}) {
   return await postApi(`/sales-api/finance/payment/deleteByBusinessId/${data.businessId}`, option)
+}
+// 获取银联支付接口参数
+export async function postUnionPayParameterApi(data = {}, option = {}) {
+  return await postApi(`/sales-api/finance/payment/getUnionPayParameter`, data, option)
+}
+// 获取微信openId
+export async function getOpenidApi(data = {}, option = {}) {
+  return await getApi(`/sales-api/system/wx/getOpenid/${data}`, option)
+}
+// 获取二维码信息
+export async function getPaymentQRCodeInfoApi(data = {}, option = {}) {
+  return await getApi(`/sales-api/finance/payment/getPaymentQRCodeInfo/${data}`, option)
+}
+// 生成二维码
+export async function postQrcodeApi(data = {}, option = {}) {
+  return await postApi(`/sales-api/sales-document-cover/file/qrcode`, data, option)
 }

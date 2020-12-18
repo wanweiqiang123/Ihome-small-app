@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-30 14:22:01
- * @LastEditors: zyc
- * @LastEditTime: 2020-12-07 14:16:53
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-17 15:31:55
 -->
 <template>
   <view style="padding-top: 100px">
@@ -40,6 +40,7 @@
 <script>
 import storageTool from "../common/storageTool";
 import { getUserInfoApi } from "../api/index";
+import { getOpenidApi } from '../api/customer';
 export default {
   data() {
     return {
@@ -63,8 +64,11 @@ export default {
     }
 
     uni.login({
-      success: function (res) {
+      success: async function (res) {
         console.log(res);
+        const { openId, sessionKey } = await getOpenidApi(res.code);
+        uni.setStorageSync('openId', openId);
+        uni.setStorageSync('sessionKey', sessionKey);
         // uni.redirectTo({
         //   url: "/pages/login/index/index",
         // });

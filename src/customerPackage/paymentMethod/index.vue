@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-16 21:13:06
+ * @LastEditTime: 2020-12-18 09:51:52
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
@@ -25,11 +25,12 @@
           v-for="(item, i) in $dict.dictAllList('PayType')"
           :key="i"
         >
-          <view style="line-height: 80rpx">
-            <u-icon
-              name="zhifubao"
-              size="50"
-            ></u-icon>
+          <view class="pay-type-image">
+            <u-image
+              height="60rpx"
+              width="60rpx"
+              :src="require(`../common/img/${item.code}.png`)"
+            ></u-image>
             <text class="pay-type-name">{{item.name}}</text>
           </view>
           <u-radio
@@ -54,8 +55,13 @@
   </view>
 </template>
 <script>
-import { postAddServiceApi, getDoPaymentApi } from "../../api/customer";
+import { 
+  postAddServiceApi,
+  postUnionPayParameterApi,
+} from "../../api/customer";
+import uImage from '../../uview-ui/components/u-image/u-image.vue';
 export default {
+  components: { uImage },
   data() {
     return {
       payData: {},
@@ -83,7 +89,6 @@ export default {
       let obj = {};
       obj.amount = this.payNum;
       obj.businessId = this.payData.businessId;
-      obj.foundType = 'ServiceCharge';
       obj.groupId = this.payData.groupId;
       obj.operator = this.payData.operator;
       obj.payType = this.payType;
@@ -102,42 +107,63 @@ export default {
       obj.termId = 3;
       let res = await postAddServiceApi(obj);
       console.log(res);
-      // const yinlian = await getDoPaymentApi({
-        // id: 15,
-      //   // id: this.payData.groupId,
-      // })
-      switch (this.payType) {
-        // 微信支付
-        case "WeChatPay":
+      switch(this.payType) {
+        // case 'WeChatPay':
+        case 'UnionPay':
+        case 'Alipay':
           uni.navigateTo({
-            url: `/customerPackage/paymentMethod/weChatPay`,
+            url: `/customerPackage/paymentMethod/zhifubaoPay?id=${res.data}&type=${this.payType}`,
           });
           break;
-        // pos机
-        case "Pos":
-          uni.navigateTo({
-            url: `/customerPackage/paymentMethod/POS`,
-          });
+          // uni.request({
+          //   url: `http://test.gnetpg.com:8089/GneteMerchantAPI/api/PayV36`,
+          //   method: 'POST',
+          //   data: submit,
+          //   success: data => {
+          //     console.log(data, '银联回调成功!');
+          //   }
+          // })
           break;
-        // 银行转账
-        case "Transfer":
+        case 'Pos':
           uni.navigateTo({
-            url: `/customerPackage/paymentMethod/bankTransfer`,
-          });
-          break;
-        // 支付宝
-        case "Alipay":
-          uni.navigateTo({
-            url: `/customerPackage/paymentMethod/zhifubaoPay`,
-          });
-          break;
-        // 银联支付
-        case "UnionPay":
-          uni.navigateTo({
-            url: `/customerPackage/paymentMethod/zhifubaoPay`,
+            url: `/customerPackage/paymentMethod/POS?id=${res.data}`,
           });
           break;
       }
+
+    
+      // switch (this.payType) {
+      //   // 微信支付
+      //   case "WeChatPay":
+      //     uni.navigateTo({
+      //       url: `/customerPackage/paymentMethod/weChatPay`,
+      //     });
+      //     break;
+      //   // 支付宝
+      //   case "Alipay":
+      //     uni.navigateTo({
+      //       url: `/customerPackage/paymentMethod/zhifubaoPay`,
+      //     });
+      //     break;
+      //   // 银联支付
+      //   case "UnionPay":
+      //     uni.navigateTo({
+      //       url: `/customerPackage/paymentMethod/zhifubaoPay`,
+      //     });
+      //     break;
+      //   // pos机
+      //   case "Pos":
+      //     uni.navigateTo({
+      //       url: `/customerPackage/paymentMethod/POS`,
+      //     });
+      //     break;
+      //   // 银行转账
+      //   case "Transfer":
+      //     uni.navigateTo({
+      //       url: `/customerPackage/paymentMethod/bankTransfer`,
+      //     });
+      //     break;
+      // }
     },
   },
 };
@@ -192,8 +218,15 @@ export default {
     justify-content: space-between;
     border-bottom: 1px solid #f2f2f2;
 
+    &-image {
+      line-height: 80rpx;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+
     &-name {
-      margin-left: 30rpx;
+      margin-left: 20rpx;
     }
 
     &-radio {

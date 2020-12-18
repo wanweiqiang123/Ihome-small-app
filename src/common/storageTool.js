@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 15:30:00
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-16 21:21:56
+ * @LastEditTime: 2020-12-17 08:43:41
  */
 const tokenKey = 'token';//token的key
 const expiresInKey = 'expires_in';//token的key的过期时间
@@ -89,9 +89,9 @@ const storageTool = {
     goHome() {
         const token = this.getToken();
         if (token) {
-            const userInfo = this.getUserInfo();
-            let userType = userInfo?.userType;
-            userType = 'Channel';
+            // const userInfo = this.getUserInfo();
+            // let userType = userInfo?.userType;
+            const userType = 'Customer';
             // uni.redirectTo({
             //     url: "/pages/register/channel",
             // });
