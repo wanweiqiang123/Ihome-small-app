@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-10 10:09:50
- * @LastEditors: zyc
- * @LastEditTime: 2020-12-17 14:26:17
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-21 16:02:00
  */
 
 import { getApi, postApi } from '../common/http.js';
@@ -87,9 +87,13 @@ export async function getDictGetAllApi(data = {}, option = {}) {
     return await getApi('/sales-api/system/dict/getAll', data, option);
 }
 
+/**查询指定类型的所有字典项*/
+export async function getAllByTypeApi(data = {}, option = {}) {
+    return await postApi('/sales-api/system/dict/getAllByType', data, option);
+}
 /**获取系统参数，各环境域名*/
 export async function getSystemParamApi(data = {}, option = {}) {
-    return await getApi('/sales-api/sessionUser/getSystemParam', data, option);
+    return await getApi('/sales-api/system/sessionUser/getSystemParam', data, option);
 }
 
 

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-15 18:08:02
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-17 19:19:50
+ * @LastEditTime: 2020-12-21 16:37:20
  */
 import { getApi, postApi } from '../common/http.js';
 
@@ -51,4 +51,20 @@ export async function getPaymentQRCodeInfoApi(data = {}, option = {}) {
 // 生成二维码
 export async function postQrcodeApi(data = {}, option = {}) {
   return await postApi(`/sales-api/sales-document-cover/file/qrcode`, data, option)
+}
+// 查询待审核数列表数据
+export async function getNotCheckListApi(data = {}, option = {}) {
+  return await getApi(`/sales-api/finance/payment/getNotCheckList/${data}`, option)
+}
+// 删除付款记录
+export async function paymentdeleteApi(data = {}, option = {}) {
+  return await postApi(`/sales-api/finance/payment/delete/${data}`, option)
+}
+// 查询收款信息列表数据
+export async function getAppListApi(data = {}, option = {}) {
+  return await getApi(`/sales-api/finance/payment/getAppList/${data}`, option)
+}
+// 查询待审核数据数量
+export async function getNotCheckNumApi(data = {}, option = {}) {
+  return await getApi(`/sales-api/finance/payment/getNotCheckNum/${data}`, option)
 }

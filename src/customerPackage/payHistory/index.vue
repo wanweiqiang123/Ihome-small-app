@@ -4,78 +4,67 @@
  * @Author: wwq
  * @Date: 2020-11-25 11:40:27
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-25 16:56:18
+ * @LastEditTime: 2020-12-21 14:16:59
 -->
 <template>
   <view class="box">
     <view
       class="box-item"
-      v-for="(item, i) in history"
+      v-for="(item, i) in info"
       :key="i"
     >
       <view class="box-item-title">
-        <view style="font-weight: bold;">付款金额：{{item.paid}}</view>
+        <view style="font-weight: bold;">付款金额：{{item.amount}}</view>
         <view>
           <u-button
             type="primary"
             size="mini"
+            @click="downLoad(item.id)"
           >下载电子回单</u-button>
         </view>
       </view>
       <view class="box-item-msg">
         <view class="box-item-msg-item">
           <view class="box-item-msg-title">付款单号
-            <text class="box-item-msg-detail">{{item.payNum}}</text>
+            <text class="box-item-msg-detail">{{item.payNo}}</text>
           </view>
           <view class="box-item-msg-title">付款方式
-            <text class="box-item-msg-detail">{{item.payType}}</text>
+            <text class="box-item-msg-detail">{{$dict.dictAllName(item.payType, 'PayType')}}</text>
           </view>
           <view class="box-item-msg-title">付款时间
-            <text class="box-item-msg-detail">{{item.time}}</text>
+            <text class="box-item-msg-detail">{{item.payDate}}</text>
           </view>
         </view>
       </view>
     </view>
+    <u-empty text="暂无数据" mode="list" v-if="!info.length" style="height: 100vh"></u-empty>
   </view>
 </template>
 <script>
+import { getAppListApi } from "../../api/customer";
 export default {
   components: {},
   data() {
     return {
-      history: [
-        {
-          paid: "10000.00",
-          payNum: "127892238733",
-          payType: "微信支付",
-          time: "2020-11-25 10:10:10",
-        },
-        {
-          paid: "20000.00",
-          payNum: "127892238733",
-          payType: "支付宝支付",
-          time: "2020-11-20 10:10:10",
-        },
-        {
-          paid: "30000.00",
-          payNum: "127892238733",
-          payType: "银联支付",
-          time: "2020-11-22 10:10:10",
-        },
-        {
-          paid: "30000.00",
-          payNum: "127892238733",
-          payType: "银行转账",
-          time: "2020-11-22 10:10:10",
-        },
-        {
-          paid: "30000.00",
-          payNum: "127892238733",
-          payType: "微信支付",
-          time: "2020-11-22 10:10:10",
-        },
-      ],
+      payId: '',
+      info: [],
     };
+  },
+  onLoad(options) {
+    this.payId = options.id;
+    this.getInfo();
+  },
+  methods: {
+    async getInfo() {
+      this.info = await getAppListApi(this.payId);
+      console.log(this.info);
+    },
+    downLoad(id) {
+      uni.showToast({
+        title: '接口未提供',
+        icon: 'none'
+      })
+    }
   },
 };
 </script>

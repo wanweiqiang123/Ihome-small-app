@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-15 20:04:32
+ * @LastEditTime: 2020-12-21 15:13:24
 -->
 <template>
   <view>
@@ -77,7 +77,6 @@ export default {
       console.log(this.info);
     },
     routerTo(id) {
-      console.log(id);
       uni.navigateTo({
         url: `/customerPackage/discountsInfo/index?id=${id}`,
       });

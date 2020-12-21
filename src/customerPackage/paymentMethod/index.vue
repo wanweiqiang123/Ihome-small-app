@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-18 09:51:52
+ * @LastEditTime: 2020-12-21 17:28:28
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
@@ -22,7 +22,7 @@
       <u-radio-group v-model="payType">
         <view
           class="pay-type"
-          v-for="(item, i) in $dict.dictAllList('PayType')"
+          v-for="(item, i) in payTypeOptions"
           :key="i"
         >
           <view class="pay-type-image">
@@ -59,6 +59,7 @@ import {
   postAddServiceApi,
   postUnionPayParameterApi,
 } from "../../api/customer";
+import { getAllByTypeApi } from "../../api/index";
 import uImage from '../../uview-ui/components/u-image/u-image.vue';
 export default {
   components: { uImage },
@@ -67,13 +68,24 @@ export default {
       payData: {},
       payType: "WeChatPay",
       payNum: 0,
+      payTypeOptions: [],
+      payParam: {},
     };
   },
   onLoad() {
     this.payData = { ...getApp().paidData };
     this.payNum = this.payData.paymentAmount;
   },
+  onShow() {
+    this.PayTypeChange();
+  },
   methods: {
+    async PayTypeChange() {
+      this.payTypeOptions = await getAllByTypeApi({
+        type: 'PayType',
+        tag: 'Customer',
+      });
+    },
     payNumChange(v) {
       let num = v.target.value;
       let amount = this.payData.paymentAmount + '';
@@ -108,62 +120,50 @@ export default {
       let res = await postAddServiceApi(obj);
       console.log(res);
       switch(this.payType) {
-        // case 'WeChatPay':
         case 'UnionPay':
         case 'Alipay':
           uni.navigateTo({
             url: `/customerPackage/paymentMethod/zhifubaoPay?id=${res.data}&type=${this.payType}`,
           });
           break;
-          // uni.request({
-          //   url: `http://test.gnetpg.com:8089/GneteMerchantAPI/api/PayV36`,
-          //   method: 'POST',
-          //   data: submit,
-          //   success: data => {
-          //     console.log(data, '银联回调成功!');
-          //   }
-          // })
-          break;
         case 'Pos':
           uni.navigateTo({
             url: `/customerPackage/paymentMethod/POS?id=${res.data}`,
           });
           break;
+        case 'Transfer':
+          uni.navigateTo({
+            url: `/customerPackage/paymentMethod/bankTransfer`,
+          });
+          break;
+        case 'WeChatPay':
+          const openId = uni.getStorageSync('openId');
+          const item = await postUnionPayParameterApi({
+            id: res.data,
+            openId
+          });
+          let objs = {};
+          objs.MerId = item.MerId;
+          objs.OrderNo = item.OrderNo;
+          objs.OrderAmount = item.OrderAmount;
+          objs.CurrCode = item.CurrCode;
+          objs.CallBackUrl = item.CallBackUrl;
+          objs.OrderType = item.OrderType;
+          objs.BankCode = item.BankCode;
+          objs.LangType = item.LangType;
+          objs.BuzType = item.BuzType;
+          objs.Reserved01 = item.Reserved01;
+          objs.Reserved02 = item.Reserved02;
+          objs.SignMsg = item.SignMsg;
+          uni.request({
+            url: 'http://test.gnetpg.com:8089/GneteMerchantAPI/api/PayV36',
+            method: 'POST',
+            data: objs,
+            success: aaa => {
+              console.log(aaa);
+            }
+          })
       }
-
-    
-      // switch (this.payType) {
-      //   // 微信支付
-      //   case "WeChatPay":
-      //     uni.navigateTo({
-      //       url: `/customerPackage/paymentMethod/weChatPay`,
-      //     });
-      //     break;
-      //   // 支付宝
-      //   case "Alipay":
-      //     uni.navigateTo({
-      //       url: `/customerPackage/paymentMethod/zhifubaoPay`,
-      //     });
-      //     break;
-      //   // 银联支付
-      //   case "UnionPay":
-      //     uni.navigateTo({
-      //       url: `/customerPackage/paymentMethod/zhifubaoPay`,
-      //     });
-      //     break;
-      //   // pos机
-      //   case "Pos":
-      //     uni.navigateTo({
-      //       url: `/customerPackage/paymentMethod/POS`,
-      //     });
-      //     break;
-      //   // 银行转账
-      //   case "Transfer":
-      //     uni.navigateTo({
-      //       url: `/customerPackage/paymentMethod/bankTransfer`,
-      //     });
-      //     break;
-      // }
     },
   },
 };
