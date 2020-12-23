@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-12-17 14:29:26
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-23 15:41:23
+ * @LastEditTime: 2020-12-23 16:42:39
  */
 
 /**各环境变量参数
@@ -17,15 +17,15 @@ const envConfig = {
         "env": "develop",
         "envName": "开发环境",
         "protocol": 'http',
-        // "fileDomain": "api.polyihome.develop",
-        // "apiDomain": "api.polyihome.develop",
-        // "h5Domain": "m.polyihome.develop",
-        // "pcDomain": "web.polyihome.develop",
-        "protocol": 'https',
-        "fileDomain": "testapi.polyihome.com",
-        "apiDomain": "testapi.polyihome.com",
-        "h5Domain": "testm.polyihome.com",
-        "pcDomain": "testweb.polyihome.com",
+        "fileDomain": "api.polyihome.develop",
+        "apiDomain": "api.polyihome.develop",
+        "h5Domain": "m.polyihome.develop",
+        "pcDomain": "web.polyihome.develop",
+        // "protocol": 'https',
+        // "fileDomain": "testapi.polyihome.com",
+        // "apiDomain": "testapi.polyihome.com",
+        // "h5Domain": "testm.polyihome.com",
+        // "pcDomain": "testweb.polyihome.com",
 
     },
     trial: {
