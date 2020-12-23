@@ -19,7 +19,7 @@
           bg-color="#FFFFFF"
           border-color="#FFFFFF"
           :show-action="false"
-          @search="getListMixin('search')"
+          @search="getListMixin()"
           placeholder="请输入客户姓名/电话"
           v-model="queryPageParameters.name"></u-search>
         <view class="icon" @click="showAddWin = true">
@@ -67,16 +67,14 @@ export default {
   },
   onLoad() {},
   onShow() {
-    this.getListMixin('');
+    this.getListMixin();
   },
   methods: {
-    async getListMixin(type) {
-      if (type) {
-        this.tableTotal = 0;
-        this.tablePage = [];
-        this.queryPageParameters.pageNum = 1;
-        this.queryPageParameters.pageSize = 10;
-      }
+    async getListMixin() {
+      this.tableTotal = 0;
+      this.tablePage = [];
+      this.queryPageParameters.pageNum = 1;
+      this.queryPageParameters.pageSize = 10;
       this.setPageDataMixin(await getCustomerList(this.queryPageParameters));
     },
     // 录入客户/报备客户
