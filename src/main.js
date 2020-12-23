@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-19 16:09:36
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-12-23 20:18:57
  */
 import Vue from 'vue'
 import App from './App'
@@ -41,6 +41,7 @@ Vue.component('ChannelTabBar', ChannelTabBar);
 Vue.component('StaffTabBar', StaffTabBar);
 
 //是否有资源权限的方法
+
 Vue.prototype.$has = function (key) {
   let list = ['xx', 'yy'];//权限列表（从用户信息中读取）
   let result = false;//是否有权限
@@ -199,9 +200,8 @@ Vue.prototype.$dict = {
     }
   }
 }
-async function startApp() {
-  // let env = __wxConfig.envVersion;
-  // const configEnv = await getSystemParamApi();
+
+function initGlobalData() {
   Promise.all([getAreaApi(), getDictGetAllApi()])
     .then(res => {
       areaAll = res[0];
@@ -209,25 +209,18 @@ async function startApp() {
     }).catch(err => {
       console.error('系统初始化数据存在异常', err)
     }).finally(() => {
-      const app = new Vue({
-        ...App,
-        store,
-        methods: {
-
-
-        },
-      })
-      app.$mount()
+      getApp().globalData.initData = true;
     })
-  try {
-
-  } catch (error) {
-    console.log(error)
-  } finally {
-
-  }
-
 };
-startApp();
+initGlobalData();
+
+
+const app = new Vue({
+  ...App,
+  store,
+  methods: {}
+})
+app.$mount();
+
 
 

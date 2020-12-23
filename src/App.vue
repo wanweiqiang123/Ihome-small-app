@@ -3,12 +3,13 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-16 09:50:11
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-12-23 17:44:20
 -->
 <script>
 export default {
   globalData: {
+    initData: false, //初始化数据是否完成参数
     paidData: {},
     refreshListData: null, //列表缓存页面刷新存放数据
     userType: null,

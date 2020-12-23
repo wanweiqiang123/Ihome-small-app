@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-29 15:58:19
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-23 16:40:55
+ * @LastEditTime: 2020-12-23 19:37:21
 -->
 <template>
   <view class="page login-page-style">
@@ -15,23 +15,31 @@
     <view style="margin: 70rpx"></view>
 
     <view style="padding: 10rpx 70rpx">
-      <u-tabs
-        :list="list"
-        :is-scroll="false"
-        :current="current"
-        @change="changeType"
-        :font-size="36"
-        inactive-color="#C2C2C2"
-        bar-width="220"
-        :bold="false"
-      ></u-tabs>
+      <view class="page-tab">
+        <view
+          class="page-tab-item"
+          :class="{ 'page-tab-item-active': current == 0 }"
+          @click="activeTab(0)"
+        >
+          手机号码登录</view
+        >
+        <view
+          class="page-tab-item"
+          :class="{ 'page-tab-item-active': current == 1 }"
+          @click="activeTab(1)"
+          >账号密码登录
+        </view>
+      </view>
+
       <view class="form-container" v-show="current == 0">
         <view class="form-container-item">
-          <u-icon
-            name="account"
-            class="account-ico form-container-item-ico icon-style"
-          ></u-icon>
+          <image
+            class="form-container-item-ico-all"
+            src="../../../static/login/user.png"
+            mode="scaleToFill"
+          ></image>
           <input
+            type="number"
             v-model="phoneForm.phone"
             class="uni-input form-container-item-input"
             placeholder="手机号码"
@@ -42,10 +50,11 @@
         <view class="form-container-item">
           <u-row gutter="12">
             <u-col span="7">
-              <u-icon
-                name="lock"
-                class="password-ico form-container-item-ico icon-style"
-              ></u-icon>
+              <image
+                class="form-container-item-ico-all"
+                src="../../../static/login/password.png"
+                mode="scaleToFill"
+              ></image>
               <input
                 v-model="phoneForm.code"
                 type="number"
@@ -76,10 +85,11 @@
       </view>
       <view class="form-container" v-show="current == 1">
         <view class="form-container-item">
-          <u-icon
-            name="account"
-            class="account-ico form-container-item-ico icon-style"
-          ></u-icon>
+          <image
+            class="form-container-item-ico-all"
+            src="../../../static/login/user.png"
+            mode="scaleToFill"
+          ></image>
           <input
             v-model="form.account"
             class="uni-input form-container-item-input"
@@ -90,10 +100,11 @@
         <view class="form-container-item">
           <u-row gutter="12">
             <u-col span="11">
-              <u-icon
-                name="lock"
-                class="password-ico form-container-item-ico icon-style"
-              ></u-icon>
+              <image
+                class="form-container-item-ico-all"
+                src="../../../static/login/password.png"
+                mode="scaleToFill"
+              ></image>
               <input
                 v-model="form.password"
                 class="uni-input form-container-item-input"
@@ -167,12 +178,16 @@ export default {
   },
 
   methods: {
+    activeTab(index) {
+      this.current = index;
+    },
     changeType(index) {
       this.current = index;
     },
     async login() {
       //账号密码登录
       console.log(this.form);
+    
       if (this.form.account && this.form.account.length > 0) {
       } else {
         uni.showToast({
@@ -230,6 +245,13 @@ export default {
     async sendCode() {
       console.log("sendCode");
       //发送验证码
+      if (this.phoneForm.phone == "") {
+        uni.showToast({
+          title: "请选输入手机号码",
+          icon: "none",
+        });
+        return;
+      }
       if (this.checkPhone(this.phoneForm.phone)) {
         const res = await getSessionUserSendSmsApi(this.phoneForm.phone);
         console.log(res);
@@ -305,6 +327,23 @@ export default {
     width: 150rpx;
   }
 }
+.page-tab {
+  display: flex;
+  text-align: center;
+  color: #c2c2c2;
+  font-size: 36rpx;
+  border-bottom: 1px solid #c2c2c2;
+  // padding-bottom: -4rpx;
+}
+.page-tab-item {
+  flex: 1;
+  margin: 0 40rpx;
+}
+.page-tab-item-active {
+  color: #4881f9;
+  border-bottom: 2px solid #4881f9;
+  padding-bottom: 20rpx;
+}
 </style>
 <style lang="scss">
 .login-page-style {
@@ -335,7 +374,7 @@ export default {
     top: 48rpx;
   }
   .form-container-item-input {
-    padding-left: 60rpx;
+    padding-left: 80rpx;
   }
   .form-container-item-phone {
     position: relative;
@@ -350,6 +389,12 @@ export default {
   .icon-style {
     font-size: 20px;
     color: #c2c2c2;
+  }
+  .form-container-item-ico-all {
+    width: 50rpx;
+    height: 50rpx;
+    position: relative;
+    top: 56rpx;
   }
 }
 </style>

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-12-17 14:29:26
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-23 16:42:39
+ * @LastEditTime: 2020-12-23 20:19:07
  */
 
 /**各环境变量参数
@@ -21,6 +21,8 @@ const envConfig = {
         "apiDomain": "api.polyihome.develop",
         "h5Domain": "m.polyihome.develop",
         "pcDomain": "web.polyihome.develop",
+
+
         // "protocol": 'https',
         // "fileDomain": "testapi.polyihome.com",
         // "apiDomain": "testapi.polyihome.com",

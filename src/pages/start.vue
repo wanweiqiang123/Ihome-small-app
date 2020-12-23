@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-30 14:22:01
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-23 16:31:34
+ * @LastEditTime: 2020-12-23 20:19:28
 -->
 <template>
   <view style="padding-top: 100px">
@@ -41,68 +41,64 @@
 import storageTool from "../common/storageTool";
 import { getUserInfoApi } from "../api/index";
 import { getOpenidApi } from "../api/customer";
+import { currentEnvConfig } from "../env-config";
 export default {
   data() {
     return {
       token: null,
     };
   },
-  onLoad(options) {
-    console.log(options);
-  },
-  async created() {
-    const that = this;
-    const token = storageTool.getToken();
-    uni.showLoading({
-      title: "加载中...",
-      mask: true,
-    });
-    try {
-      const userInfo = await getUserInfoApi({ hideMsg: true });
-      storageTool.setUserInfo(userInfo);
-    } catch (error) {
-      uni.redirectTo({
-        url: "/pages/login/index/index",
-      });
-    }
-
-    uni.login({
-      success: async function (res) {
-        console.log(res);
-        const { openId, sessionKey } = await getOpenidApi(res.code);
-        uni.setStorageSync("openId", openId);
-        uni.setStorageSync("sessionKey", sessionKey);
-        // uni.redirectTo({
-        //   url: "/pages/login/index/index",
-        // });
-        // 获取用户信息
-        uni.getUserInfo({
-          provider: "weixin",
-          success: function (infoRes) {
-            console.log("用户昵称为：" + infoRes.userInfo.nickName);
-            storageTool.goHome();
-          },
-          fail: function (err) {
-            console.log(err);
-            storageTool.goHome();
-          },
-        });
-
-        // if (token) {
-        //   that.$store.commit("setTabBarList", that.$store.getters.tabBarList);
-        //   uni.redirectTo({
-        //     url: "/pages/home/index/index",
-        //   });
-        // } else {
-        //   uni.redirectTo({
-        //     url: "/pages/login/index/index",
-        //   });
-        // }
-      },
-    });
+  onLoad() {
+    // uni.showToast({
+    //   title: currentEnvConfig.envName + currentEnvConfig.apiDomain,
+    //   icon: "none",
+    //   duration: 5000,
+    // });
+    this.init();
   },
 
   methods: {
+    async init() {
+      console.log("initData", getApp().globalData.initData);
+      const that = this;
+      const token = storageTool.getToken();
+      uni.showLoading({
+        title: "加载中...",
+        mask: true,
+      });
+      try {
+        const userInfo = await getUserInfoApi({ hideMsg: true });
+        storageTool.setUserInfo(userInfo);
+      } catch (error) {
+        uni.redirectTo({
+          url: "/pages/login/index/index",
+        });
+      }
+
+      uni.login({
+        success: async function (res) {
+          console.log(res);
+          const { openId, sessionKey } = await getOpenidApi(res.code);
+          uni.setStorageSync("openId", openId);
+          uni.setStorageSync("sessionKey", sessionKey);
+          // uni.redirectTo({
+          //   url: "/pages/login/index/index",
+          // });
+          // 获取用户信息
+          uni.getUserInfo({
+            provider: "weixin",
+            success: function (infoRes) {
+              console.log("用户昵称为：" + infoRes.userInfo.nickName);
+              storageTool.goHome();
+            },
+            fail: function (err) {
+              console.log(err);
+              storageTool.goHome();
+            },
+          });
+        },
+      });
+    },
     getPhoneNumber: function (e) {
       console.log(e);
       console.log(e.detail.encryptedData);
