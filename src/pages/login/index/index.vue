@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-29 15:58:19
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-23 11:42:40
+ * @LastEditTime: 2020-12-23 15:31:55
 -->
 <template>
   <view class="page login-page-style">
@@ -25,12 +25,13 @@
         <view class="form-container-item">
           <u-icon
             name="account"
-            class="account-ico form-container-item-ico"
+            class="account-ico form-container-item-ico icon-style"
           ></u-icon>
           <input
             v-model="phoneForm.phone"
             class="uni-input form-container-item-input"
             placeholder="手机号码"
+            placeholder-style="color:#C2C2C2;"
             maxlength="11"
           />
         </view>
@@ -39,7 +40,7 @@
             <u-col span="7">
               <u-icon
                 name="lock"
-                class="password-ico form-container-item-ico"
+                class="password-ico form-container-item-ico icon-style"
               ></u-icon>
               <input
                 v-model="phoneForm.code"
@@ -47,6 +48,7 @@
                 class="uni-input form-container-item-input"
                 placeholder="验证码"
                 maxlength="6"
+                placeholder-style="color:#C2C2C2;"
               />
             </u-col>
             <u-col span="5">
@@ -72,12 +74,13 @@
         <view class="form-container-item">
           <u-icon
             name="account"
-            class="account-ico form-container-item-ico"
+            class="account-ico form-container-item-ico icon-style"
           ></u-icon>
           <input
             v-model="form.account"
             class="uni-input form-container-item-input"
             placeholder="账号"
+            placeholder-style="color:#C2C2C2;"
           />
         </view>
         <view class="form-container-item">
@@ -85,13 +88,14 @@
             <u-col span="11">
               <u-icon
                 name="lock"
-                class="password-ico form-container-item-ico"
+                class="password-ico form-container-item-ico icon-style"
               ></u-icon>
               <input
                 v-model="form.password"
                 class="uni-input form-container-item-input"
                 placeholder="密码"
                 :password="passwordType"
+                placeholder-style="color:#C2C2C2;"
               />
             </u-col>
             <u-col span="1">
@@ -220,6 +224,7 @@ export default {
       this.loginSuccess(res);
     },
     async sendCode() {
+      console.log('sendCode');
       //发送验证码
       if (this.checkPhone(this.phoneForm.phone)) {
         const res = await getSessionUserSendSmsApi(this.phoneForm.phone);
@@ -326,7 +331,7 @@ export default {
   }
   .form-container-item-ico {
     position: relative;
-    top: 46rpx;
+    top: 48rpx;
   }
   .form-container-item-input {
     padding-left: 60rpx;
@@ -340,6 +345,10 @@ export default {
     height: 60rpx;
     position: relative;
     top: 40rpx;
+  }
+  .icon-style {
+    font-size: 20px;
+    color: #c2c2c2;
   }
 }
 </style>
