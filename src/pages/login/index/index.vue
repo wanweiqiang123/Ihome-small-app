@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-29 15:58:19
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-23 15:31:55
+ * @LastEditTime: 2020-12-23 16:40:55
 -->
 <template>
   <view class="page login-page-style">
@@ -20,6 +20,10 @@
         :is-scroll="false"
         :current="current"
         @change="changeType"
+        :font-size="36"
+        inactive-color="#C2C2C2"
+        bar-width="220"
+        :bold="false"
       ></u-tabs>
       <view class="form-container" v-show="current == 0">
         <view class="form-container-item">
@@ -58,14 +62,14 @@
                 shape="circle"
                 :plain="true"
                 :disabled="second != 60"
-                @click="sendCode()"
+                @click="sendCode"
                 >{{ codeBtnText }}</u-button
               >
             </u-col>
           </u-row>
         </view>
         <view style="margin-top: 60rpx">
-          <u-button type="primary" shape="circle" @click="loginPhone()"
+          <u-button type="primary" shape="circle" @click="loginPhone"
             >登 录</u-button
           >
         </view>
@@ -103,13 +107,13 @@
                 class="form-container-item-eye"
                 src="../../../static/login/eye.png"
                 mode="scaleToFill"
-                @click="eye()"
+                @click="eye"
               ></image>
             </u-col>
           </u-row>
         </view>
         <view style="margin-top: 60rpx">
-          <u-button type="primary" shape="circle" @click="login()"
+          <u-button type="primary" shape="circle" @click="login"
             >登 录</u-button
           >
         </view>
@@ -224,7 +228,7 @@ export default {
       this.loginSuccess(res);
     },
     async sendCode() {
-      console.log('sendCode');
+      console.log("sendCode");
       //发送验证码
       if (this.checkPhone(this.phoneForm.phone)) {
         const res = await getSessionUserSendSmsApi(this.phoneForm.phone);
@@ -308,13 +312,10 @@ export default {
     border-bottom: 1px solid #eee !important;
   }
   .u-tab-bar {
-    width: 80px !important;
-    margin-left: -30px !important;
-    transition-duration: 0.5s;
-    background-color: #2979ff;
-    height: 2px !important;
     top: 40px !important;
+    height: 2px !important;
   }
+
   .img-bottom {
     width: 100%;
     position: fixed;

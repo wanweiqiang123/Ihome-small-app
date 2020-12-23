@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-30 14:22:01
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-17 15:31:55
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-12-23 16:31:34
 -->
 <template>
   <view style="padding-top: 100px">
@@ -40,14 +40,17 @@
 <script>
 import storageTool from "../common/storageTool";
 import { getUserInfoApi } from "../api/index";
-import { getOpenidApi } from '../api/customer';
+import { getOpenidApi } from "../api/customer";
 export default {
   data() {
     return {
       token: null,
     };
   },
-  async onLoad() {
+  onLoad(options) {
+    console.log(options);
+  },
+  async created() {
     const that = this;
     const token = storageTool.getToken();
     uni.showLoading({
@@ -67,8 +70,8 @@ export default {
       success: async function (res) {
         console.log(res);
         const { openId, sessionKey } = await getOpenidApi(res.code);
-        uni.setStorageSync('openId', openId);
-        uni.setStorageSync('sessionKey', sessionKey);
+        uni.setStorageSync("openId", openId);
+        uni.setStorageSync("sessionKey", sessionKey);
         // uni.redirectTo({
         //   url: "/pages/login/index/index",
         // });
@@ -80,7 +83,7 @@ export default {
             storageTool.goHome();
           },
           fail: function (err) {
-            console.log(err)
+            console.log(err);
             storageTool.goHome();
           },
         });
