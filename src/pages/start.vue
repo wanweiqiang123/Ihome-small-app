@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-30 14:22:01
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-25 10:55:48
+ * @LastEditTime: 2020-12-25 16:50:31
 -->
 <template>
   <view style="padding-top: 100px">
@@ -59,19 +59,29 @@ export default {
         title: "启动程序中...",
         mask: true,
       });
-      Promise.all([getAreaApi(), getDictGetAllApi()])
+      Promise.all([
+        getAreaApi(null, { hideLoading: true }),
+        getDictGetAllApi(null, { hideLoading: true }),
+      ])
         .then((res) => {
+          uni.hideLoading();
           getApp().globalData.initData.areaAll = res[0];
           getApp().globalData.initData.dictAll = res[1];
         })
         .catch((err) => {
-          console.error("系统初始化数据存在异常", err);
+          uni.hideLoading();
+          console.error("系统初始化数据异常", err);
+          uni.showToast({
+            title: "系统初始化数据异常",
+            icon: "none",
+            duration: 3000,
+          });
         })
         .finally(async () => {
-          uni.hideLoading();
-          getApp().globalData.initData = true;
           try {
-            const userInfo = await getUserInfoApi({}, { hideMsg: true });
+            const userInfo = await getUserInfoApi(null, {
+              hideMsg: true,
+            });
             storageTool.setUserInfo(userInfo);
           } catch (error) {
           } finally {

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 10:17:55
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-25 09:13:50
+ * @LastEditTime: 2020-12-25 15:23:50
  */
 
 import storageTool from './storageTool'
@@ -17,7 +17,8 @@ console.log(baseUrl);
 const showToast = (title) => {
     uni.showToast({
         title: title,
-        icon: 'none'
+        icon: 'none',
+        duration: 3000
     })
 }
 
@@ -66,39 +67,27 @@ const api = (url, data = {}, option = {}) => {
                         resolve(result.data)
                         return
                     } else {
-                        showToast(result.msg);
+                        if (!hideMsg) {
+                            showToast(result.msg);
+                        }
                         reject(result);
                     }
 
                 } else { // 返回值非 200，强制显示提示信息
-                    showToast('[' + res.statusCode + '] 系统处理失败')
-                    reject('[' + res.statusCode + '] 系统处理失败')
+                    if (!hideMsg) {
+                        showToast('[' + res.statusCode + '] 系统处理失败')
+                    }
+
+                    reject(res)
                 }
             },
             fail: (err) => { // 接口调用失败的回调函数
                 if (!hideLoading) uni.hideLoading();
-                if (!hideMsg) {
-                    if (err.errMsg == 'request:fail url not in domain list') {
-                        uni.showToast({
-                            title: '服务器域名未配置',
-                            icon: 'none',
-                            duration: 3000
-                        });
-                    }
-                    else if (err.errMsg != 'request:fail abort') {
-                        uni.showToast({
-                            title: '连接超时，请检查您的网络。',
-                            icon: 'none',
-                            duration: 3000
-                        });
-                    }
-                    else {
-                        uni.showToast({
-                            title: err.errMsg,
-                            icon: 'none',
-                            duration: 3000
-                        });
-                    }
+                if (err.errMsg == 'request:fail url not in domain list') {
+                    showToast('服务器域名未配置');
+                }
+                else {
+                    showToast(err.errMsg);
                 }
                 reject(err.errMsg);
 
