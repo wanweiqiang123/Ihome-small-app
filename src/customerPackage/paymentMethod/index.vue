@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-16 21:13:06
+ * @LastEditTime: 2020-12-21 17:28:28
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
@@ -22,14 +22,15 @@
       <u-radio-group v-model="payType">
         <view
           class="pay-type"
-          v-for="(item, i) in $dict.dictAllList('PayType')"
+          v-for="(item, i) in payTypeOptions"
           :key="i"
         >
-          <view style="line-height: 80rpx">
-            <u-icon
-              name="zhifubao"
-              size="50"
-            ></u-icon>
+          <view class="pay-type-image">
+            <u-image
+              height="60rpx"
+              width="60rpx"
+              :src="require(`../common/img/${item.code}.png`)"
+            ></u-image>
             <text class="pay-type-name">{{item.name}}</text>
           </view>
           <u-radio
@@ -54,20 +55,37 @@
   </view>
 </template>
 <script>
-import { postAddServiceApi, getDoPaymentApi } from "../../api/customer";
+import { 
+  postAddServiceApi,
+  postUnionPayParameterApi,
+} from "../../api/customer";
+import { getAllByTypeApi } from "../../api/index";
+import uImage from '../../uview-ui/components/u-image/u-image.vue';
 export default {
+  components: { uImage },
   data() {
     return {
       payData: {},
       payType: "WeChatPay",
       payNum: 0,
+      payTypeOptions: [],
+      payParam: {},
     };
   },
   onLoad() {
     this.payData = { ...getApp().paidData };
     this.payNum = this.payData.paymentAmount;
   },
+  onShow() {
+    this.PayTypeChange();
+  },
   methods: {
+    async PayTypeChange() {
+      this.payTypeOptions = await getAllByTypeApi({
+        type: 'PayType',
+        tag: 'Customer',
+      });
+    },
     payNumChange(v) {
       let num = v.target.value;
       let amount = this.payData.paymentAmount + '';
@@ -83,7 +101,6 @@ export default {
       let obj = {};
       obj.amount = this.payNum;
       obj.businessId = this.payData.businessId;
-      obj.foundType = 'ServiceCharge';
       obj.groupId = this.payData.groupId;
       obj.operator = this.payData.operator;
       obj.payType = this.payType;
@@ -102,41 +119,50 @@ export default {
       obj.termId = 3;
       let res = await postAddServiceApi(obj);
       console.log(res);
-      // const yinlian = await getDoPaymentApi({
-        // id: 15,
-      //   // id: this.payData.groupId,
-      // })
-      switch (this.payType) {
-        // 微信支付
-        case "WeChatPay":
+      switch(this.payType) {
+        case 'UnionPay':
+        case 'Alipay':
           uni.navigateTo({
-            url: `/customerPackage/paymentMethod/weChatPay`,
+            url: `/customerPackage/paymentMethod/zhifubaoPay?id=${res.data}&type=${this.payType}`,
           });
           break;
-        // pos机
-        case "Pos":
+        case 'Pos':
           uni.navigateTo({
-            url: `/customerPackage/paymentMethod/POS`,
+            url: `/customerPackage/paymentMethod/POS?id=${res.data}`,
           });
           break;
-        // 银行转账
-        case "Transfer":
+        case 'Transfer':
           uni.navigateTo({
             url: `/customerPackage/paymentMethod/bankTransfer`,
           });
           break;
-        // 支付宝
-        case "Alipay":
-          uni.navigateTo({
-            url: `/customerPackage/paymentMethod/zhifubaoPay`,
+        case 'WeChatPay':
+          const openId = uni.getStorageSync('openId');
+          const item = await postUnionPayParameterApi({
+            id: res.data,
+            openId
           });
-          break;
-        // 银联支付
-        case "UnionPay":
-          uni.navigateTo({
-            url: `/customerPackage/paymentMethod/zhifubaoPay`,
-          });
-          break;
+          let objs = {};
+          objs.MerId = item.MerId;
+          objs.OrderNo = item.OrderNo;
+          objs.OrderAmount = item.OrderAmount;
+          objs.CurrCode = item.CurrCode;
+          objs.CallBackUrl = item.CallBackUrl;
+          objs.OrderType = item.OrderType;
+          objs.BankCode = item.BankCode;
+          objs.LangType = item.LangType;
+          objs.BuzType = item.BuzType;
+          objs.Reserved01 = item.Reserved01;
+          objs.Reserved02 = item.Reserved02;
+          objs.SignMsg = item.SignMsg;
+          uni.request({
+            url: 'http://test.gnetpg.com:8089/GneteMerchantAPI/api/PayV36',
+            method: 'POST',
+            data: objs,
+            success: aaa => {
+              console.log(aaa);
+            }
+          })
       }
     },
   },
@@ -192,8 +218,15 @@ export default {
     justify-content: space-between;
     border-bottom: 1px solid #f2f2f2;
 
+    &-image {
+      line-height: 80rpx;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+
     &-name {
-      margin-left: 30rpx;
+      margin-left: 20rpx;
     }
 
     &-radio {

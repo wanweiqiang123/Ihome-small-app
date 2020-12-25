@@ -4,19 +4,19 @@
  * @Author: wwq
  * @Date: 2020-11-25 11:42:30
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-25 15:26:35
+ * @LastEditTime: 2020-12-21 15:30:02
 -->
 <template>
   <view class="box">
     <view
       class="box-item"
-      v-for="(item, i) in history"
+      v-for="(item, i) in info"
       :key="i"
     >
       <view class="box-item-title">
-        <view style="font-weight: bold;">付款金额：{{item.paid}}</view>
+        <view style="font-weight: bold;">付款金额：{{item.amount}}</view>
         <view style="color:#F59A23;font-size:26rpx">
-          审核中
+          {{$dict.dictAllName(item.status, 'PaymentStatus')}}
           <u-icon
             name="info-circle"
             size="28"
@@ -26,13 +26,13 @@
       <view class="box-item-msg">
         <view class="box-item-msg-item">
           <view class="box-item-msg-title">付款单号
-            <text class="box-item-msg-detail">{{item.payNum}}</text>
+            <text class="box-item-msg-detail">{{item.payNo}}</text>
           </view>
           <view class="box-item-msg-title">付款方式
-            <text class="box-item-msg-detail">{{item.payType}}</text>
+            <text class="box-item-msg-detail">{{$dict.dictAllName(item.payType, 'PayType')}}</text>
           </view>
           <view class="box-item-msg-title">付款时间
-            <text class="box-item-msg-detail">{{item.time}}</text>
+            <text class="box-item-msg-detail">{{item.payDate}}</text>
           </view>
           <view class="box-item-msg-title">转账凭证
             <u-image
@@ -51,42 +51,57 @@
               class="box-item-msg-detail"
               type="error"
               size="mini"
+              @click="del(item.id)"
             >删除</u-button>
           </view>
         </view>
       </view>
     </view>
+    <u-empty text="暂无数据" mode="list" v-if="!info.length" style="height: 100vh"></u-empty>
+    <u-modal 
+      v-model="show"
+      content="是否确认删除?"
+      :show-cancel-button="true"
+      @confirm="delConfirm"
+    ></u-modal>
   </view>
 </template>
 <script>
+import { getNotCheckListApi, paymentdeleteApi } from "../../api/customer";
 export default {
   components: {},
   data() {
     return {
-      history: [
-        {
-          paid: "10000.00",
-          payNum: "127892238733",
-          payType: "微信支付",
-          time: "2020-11-25 10:10:10",
-          url: "https://cdn.uviewui.com/uview/example/fade.jpg",
-        },
-        {
-          paid: "20000.00",
-          payNum: "127892238733",
-          payType: "支付宝支付",
-          time: "2020-11-20 10:10:10",
-          url: "https://cdn.uviewui.com/uview/example/fade.jpg",
-        },
-        {
-          paid: "30000.00",
-          payNum: "127892238733",
-          payType: "银联支付",
-          time: "2020-11-22 10:10:10",
-          url: "https://cdn.uviewui.com/uview/example/fade.jpg",
-        },
-      ],
+      payId: '',
+      info: [],
+      show: false,
+      delId: '',
     };
+  },
+  onLoad(options) {
+    this.payId = options.id;
+  },
+  onShow() {
+    if (this.payId) {
+      this.getInfo();
+    }
+  },
+  methods: {
+    async getInfo() {
+      this.info = await getNotCheckListApi(this.payId);
+    },
+    del(id) {
+      this.delId = id;
+      this.show = true;
+    },
+    async delConfirm() {
+      await paymentdeleteApi(this.delId);
+      uni.showToast({
+        title: '删除成功',
+        icon: 'none'
+      })
+      this.getInfo();
+    }
   },
 };
 </script>

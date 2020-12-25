@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-17 14:56:20
+ * @LastEditTime: 2020-12-25 10:54:58
  */
 import Vue from 'vue'
 import App from './App'
@@ -17,7 +17,7 @@ import store from './store'
 import tool from './common/tool'
 import storageTool from './common/storageTool'
 import './common/css/public.scss'
-import {getSystemParamApi, getDictGetAllApi, getAreaApi } from './api/index'
+import { getDictGetAllApi, getAreaApi } from './api/index'
 //把vuex定义成全局组件
 Vue.prototype.$store = store;
 Vue.prototype.$tool = tool;
@@ -41,6 +41,7 @@ Vue.component('ChannelTabBar', ChannelTabBar);
 Vue.component('StaffTabBar', StaffTabBar);
 
 //是否有资源权限的方法
+
 Vue.prototype.$has = function (key) {
   let list = ['xx', 'yy'];//权限列表（从用户信息中读取）
   let result = false;//是否有权限
@@ -65,8 +66,6 @@ Vue.prototype.$has = function (key) {
   console.log(result, key, list)
   return result;
 }
-let areaAll = {};//全部行政区数据
-let dictAll = [];//存在后端加载的所有字典数据
 
 Vue.prototype.$dict = {
   /**根据字典类别获取该分类的列表
@@ -74,6 +73,7 @@ Vue.prototype.$dict = {
    * @return {type} 
    */
   dictAllList(category, tag) {
+    let areaAll = getApp().globalData.initData.areaAll;
     let list = dictAll[category];
     if (list) {
       if (tag) {
@@ -100,6 +100,7 @@ Vue.prototype.$dict = {
    * @return {type} 
    */
   dictAllName(data, category) {
+    let dictAll = getApp().globalData.initData.dictAll;
     if (data === undefined || data === null) {
       return null;
     } else {
@@ -132,6 +133,7 @@ Vue.prototype.$dict = {
   * @return {type} 
   */
   dictAllItem(data, category) {
+    let dictAll = getApp().globalData.initData.dictAll;
     if (data === undefined || data === null) {
       return {}
     } else {
@@ -164,6 +166,7 @@ Vue.prototype.$dict = {
    * @return {type} 
    */
   getAreaName(code) {
+    let areaAll = getApp().globalData.initData.areaAll;
     if (areaAll) {
       let areaName = null;
       for (let index = 0; index < areaAll.length; index++) {
@@ -199,35 +202,27 @@ Vue.prototype.$dict = {
     }
   }
 }
-async function startApp() {
-  let env=__wxConfig.envVersion;
-  const configEnv= await getSystemParamApi({env:env});
-  Promise.all([getAreaApi(), getDictGetAllApi()])
-    .then(res => {
-      areaAll = res[0];
-      dictAll = res[1];
-    }).catch(err => {
-      console.error('系统初始化数据存在异常', err)
-    }).finally(() => {
-      const app = new Vue({
-        ...App,
-        store,
-        methods: {
+
+// function initGlobalData() {
+//   Promise.all([getAreaApi(), getDictGetAllApi()])
+//     .then(res => {
+//       areaAll = res[0];
+//       dictAll = res[1];
+//     }).catch(err => {
+//       console.error('系统初始化数据存在异常', err)
+//     }).finally(() => {
+//       getApp().globalData.initData = true;
+//     })
+// };
+// initGlobalData();
 
 
-        },
-      })
-      app.$mount()
-    })
-  try {
+const app = new Vue({
+  ...App,
+  store,
+  methods: {}
+})
+app.$mount();
 
-  } catch (error) {
-    console.log(error)
-  } finally {
-
-  }
-
-};
-startApp();
 
 

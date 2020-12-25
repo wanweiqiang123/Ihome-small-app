@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-16 14:19:14
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-16 21:19:49
+ * @LastEditTime: 2020-12-18 09:53:42
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
@@ -19,11 +19,12 @@
     <view class="pay-msg margin-top">
       <u-radio-group v-model="payRecod.payType">
         <view class="pay-type">
-          <view style="line-height: 80rpx">
-            <u-icon
-              name="zhifubao"
-              size="50"
-            ></u-icon>
+          <view class="pay-type-image">
+            <u-image
+              height="60rpx"
+              width="60rpx"
+              :src="require(`../common/img/${payRecod.payType}.png`)"
+            ></u-image>
             <text class="pay-type-name">{{`${$dict.dictAllName(payRecod.payType, 'PayType')}`}}</text>
           </view>
           <u-radio
@@ -50,7 +51,12 @@
   </view>
 </template>
 <script>
-import { getBusinessIdApi, getIdApi, postDeleteByBusinessIdApi } from "../../api/customer";
+import { 
+  getBusinessIdApi, 
+  getIdApi,
+  postDeleteByBusinessIdApi,
+  postUnionPayParameterApi
+} from "../../api/customer";
 export default {
   data() {
     return {
@@ -59,6 +65,7 @@ export default {
         amount: 0,
         payType: 'WeChatPay',
       },
+      padId: '',
     };
   },
   onShow() {
@@ -68,11 +75,11 @@ export default {
   },
   methods: {
     async getInfo() {
-      const padId = await getBusinessIdApi({
+      this.padId = await getBusinessIdApi({
         getBusinessId: this.noticeId,
       });
       const res = await getIdApi({
-        id: padId,
+        id: this.padId,
       });
       this.payRecod = { ...res };
     },
@@ -86,6 +93,35 @@ export default {
       uni.navigateTo({
         url: `/customerPackage/paymentMethod/index`,
       });
+    },
+    async payGoto() {
+      switch (this.payRecod.payType) {
+        // 微信支付
+        case "WeChatPay":
+          uni.navigateTo({
+            url: `/customerPackage/paymentMethod/weChatPay`,
+          });
+          break;
+        // 支付宝,银联
+        case "Alipay":
+        case "UnionPay":
+          uni.navigateTo({
+            url: `/customerPackage/paymentMethod/zhifubaoPay?id=${this.padId}&type=${this.payRecod.payType}`,
+          });
+          break;
+        // pos机
+        case "Pos":
+          uni.navigateTo({
+            url: `/customerPackage/paymentMethod/POS?id=${this.padId}`,
+          });
+          break;
+        // 银行转账
+        case "Transfer":
+          uni.navigateTo({
+            url: `/customerPackage/paymentMethod/bankTransfer`,
+          });
+          break;
+      }
     },
   },
 };
@@ -136,8 +172,15 @@ export default {
     justify-content: space-between;
     border-bottom: 1px solid #f2f2f2;
 
+    &-image {
+      line-height: 80rpx;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+
     &-name {
-      margin-left: 30rpx;
+      margin-left: 20rpx;
     }
 
     &-radio {

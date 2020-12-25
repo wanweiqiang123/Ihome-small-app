@@ -3,12 +3,16 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-16 09:50:11
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-12-25 10:53:08
 -->
 <script>
 export default {
   globalData: {
+    initData: {
+      areaAll: {}, //省市区数据
+      dictAll: [], //字典数据
+    }, //初始化数据是否完成参数
     paidData: {},
     refreshListData: null, //列表缓存页面刷新存放数据
     userType: null,

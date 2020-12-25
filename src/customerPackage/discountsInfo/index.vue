@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-16 20:20:40
+ * @LastEditTime: 2020-12-21 17:19:28
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -36,7 +36,7 @@
         </view>
         <view
           class="info-first-detail"
-          @click="payHistory"
+          @click="payHistory(noticeId)"
         >
           <u-icon
             name="arrow-right"
@@ -48,7 +48,7 @@
         </view>
         <view
           class="info-first-audit"
-          @click="payAuditing"
+          @click="payAuditing(noticeId)"
         >
           <u-icon
             name="arrow-right"
@@ -56,7 +56,7 @@
             color="#666666"
           ></u-icon>
           <text class="text">您有
-            <text style="color:#FF0000;padding: 0 5rpx">2</text>
+            <text style="color:#FF0000;padding: 0 5rpx">{{payAuditNum}}</text>
             笔付款正在审核中
           </text>
         </view>
@@ -190,7 +190,7 @@
           class="pay-list"
           style="padding-top: 10rpx"
         >退款时间
-          <text class="pay-list-money">2011-11-11 11:11:11</text>
+          <text class="pay-list-money">2020-12-20 23:59:59</text>
         </view>
       </view>
     </view>
@@ -216,6 +216,7 @@ import {
   getWechatNoticeInfoApi, 
   getCheckIsExistNoPayApi,
   postDeleteByBusinessIdApi,
+  getNotCheckNumApi,
 } from "../../api/customer";
 import uImage from '../../uview-ui/components/u-image/u-image.vue';
 export default {
@@ -232,6 +233,7 @@ export default {
       currents: 0,
       noticeId: '',
       show: false,
+      payAuditNum: 0,
       content: '您上次还有一笔待付款单未完成支付，您可以选择前往继续支付，也可以选择创建一笔新的付款。'
       // webviewSrc: 'http://api.polyihome.develop/sales-api/sales-document-cover/file/browse/5fd02f5e282f220001e07fa6',
     };
@@ -261,6 +263,7 @@ export default {
           noticeId: this.noticeId
         });
         this.info = { ...res };
+        this.payAuditNum = await getNotCheckNumApi(this.noticeId);
       }
     },
     // 预览
@@ -278,23 +281,23 @@ export default {
       if (res) {
         this.show = true;
       } else {
-        getApp().paidData = { ...obj, businessId: this.info.noticeId };
+        getApp().paidData = { ...obj, businessId: this.noticeId };
         uni.navigateTo({
           url: `/customerPackage/paymentMethod/index`,
         });
       }
     },
     confirm(obj){
-      getApp().paidData = { ...obj, businessId: this.info.noticeId };
+      getApp().paidData = { ...obj, businessId: this.noticeId };
       uni.navigateTo({
         url: `/customerPackage/unpaid/index`,
       });
     },
     async cancel() {
       await postDeleteByBusinessIdApi({
-        businessId: this.info.noticeId
+        businessId: this.noticeId
       });
-      getApp().paidData = { ...this.info.discountInformationResponseVo, businessId: this.info.noticeId };
+      getApp().paidData = { ...this.info.discountInformationResponseVo, businessId: this.noticeId };
       uni.navigateTo({
         url: `/customerPackage/paymentMethod/index`,
       });
@@ -305,14 +308,14 @@ export default {
     changemsg(e) {
       this.currents = e.detail.current;
     },
-    payHistory() {
+    payHistory(e) {
       uni.navigateTo({
-        url: `/customerPackage/payHistory/index`,
+        url: `/customerPackage/payHistory/index?id=${e}`,
       });
     },
-    payAuditing() {
+    payAuditing(e) {
       uni.navigateTo({
-        url: `/customerPackage/payAuditing/index`,
+        url: `/customerPackage/payAuditing/index?id=${e}`,
       });
     },
   },
@@ -548,6 +551,7 @@ export default {
             display: flex;
             flex-direction: column;
             border-radius: 14rpx;
+            height: 100%
           }
 
           &-layout {
