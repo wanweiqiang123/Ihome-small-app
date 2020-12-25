@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-30 14:22:01
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-25 20:21:29
+ * @LastEditTime: 2020-12-25 20:26:15
 -->
 <template>
   <view style="padding-top: 100px">
@@ -39,66 +39,81 @@
 
 <script>
 import storageTool from "../common/storageTool";
-import { getUserInfoApi } from "../api/index";
-import { getOpenidApi } from '../api/customer';
+import { getUserInfoApi, getAreaApi, getDictGetAllApi } from "../api/index";
+import { getOpenidApi } from "../api/customer";
+import { currentEnvConfig } from "../env-config";
 export default {
   data() {
     return {
       token: null,
     };
   },
-  async onLoad() {
-    const that = this;
-    const token = storageTool.getToken();
-    uni.showLoading({
-      title: "加载中...",
-      mask: true,
-    });
-    try {
-      const userInfo = await getUserInfoApi({ hideMsg: true });
-      storageTool.setUserInfo(userInfo);
-    } catch (error) {
-      uni.redirectTo({
-        url: "/pages/login/index/index",
-      });
-    }
-
-    uni.login({
-      success: async function (res) {
-        console.log(res);
-        const { openId, sessionKey } = await getOpenidApi(res.code);
-        storageTool.setOpenId(openId);
-        // uni.redirectTo({
-        //   url: "/pages/login/index/index",
-        // });
-        // 获取用户信息
-        uni.getUserInfo({
-          provider: "weixin",
-          success: function (infoRes) {
-            console.log("用户昵称为：" + infoRes.userInfo.nickName);
-            storageTool.goHome();
-          },
-          fail: function (err) {
-            console.log(err)
-            storageTool.goHome();
-          },
-        });
-
-        // if (token) {
-        //   that.$store.commit("setTabBarList", that.$store.getters.tabBarList);
-        //   uni.redirectTo({
-        //     url: "/pages/home/index/index",
-        //   });
-        // } else {
-        //   uni.redirectTo({
-        //     url: "/pages/login/index/index",
-        //   });
-        // }
-      },
-    });
+  onLoad() {
+    this.init();
   },
 
   methods: {
+    async init() {
+      console.log("initData", getApp().globalData.initData);
+      uni.showLoading({
+        title: "启动程序中...",
+        mask: true,
+      });
+      Promise.all([
+        getAreaApi(null, { hideLoading: true }),
+        getDictGetAllApi(null, { hideLoading: true }),
+      ])
+        .then((res) => {
+          uni.hideLoading();
+          getApp().globalData.initData.areaAll = res[0];
+          getApp().globalData.initData.dictAll = res[1];
+        })
+        .catch((err) => {
+          uni.hideLoading();
+          console.error("系统初始化数据异常", err);
+          uni.showToast({
+            title: "系统初始化数据异常",
+            icon: "none",
+            duration: 3000,
+          });
+        })
+        .finally(async () => {
+          try {
+            const userInfo = await getUserInfoApi(null, {
+              hideMsg: true,
+            });
+            storageTool.setUserInfo(userInfo);
+          } catch (error) {
+          } finally {
+            uni.login({
+              success: async function (res) {
+                console.log(res);
+                try {
+                  const { openId, sessionKey } = await getOpenidApi(res.code);
+                  storageTool.setOpenId(openId);
+                  // uni.redirectTo({
+                  //   url: "/pages/login/index/index",
+                  // });
+                  // 获取用户信息
+                  uni.getUserInfo({
+                    provider: "weixin",
+                    success: function (infoRes) {
+                      console.log("用户昵称为：" + infoRes.userInfo.nickName);
+                      storageTool.goHome();
+                    },
+                    fail: function (err) {
+                      console.log(err);
+                      storageTool.goHome();
+                    },
+                  });
+                } catch (error) {
+                  storageTool.goHome();
+                }
+              },
+            });
+          }
+        });
+    },
     getPhoneNumber: function (e) {
       console.log(e);
       console.log(e.detail.encryptedData);

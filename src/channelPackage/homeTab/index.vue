@@ -60,11 +60,7 @@
           </view>
           <view class="content-right">
             <view class="title-wrapper">{{item.proName}}</view>
-            <view class="tag-wrapper">
-              <view class="tag">
-                <text>{{item.district}}</text>
-              </view>
-            </view>
+            <text class="tag-wrapper">{{item.district}}</text>
             <view class="price-wrapper">
               <span class="price">均价{{item.averagePrice}}</span>
               <span class="unit">元/m²</span>
@@ -280,28 +276,20 @@
           }
 
           .tag-wrapper {
-            margin-bottom: 18rpx;
-
-            .tag {
-              width: 84rpx;
-              height: 32rpx;
-              line-height: 32rpx;
-              text-align: center;
-              background: rgba(241, 241, 241, 1);
-
-              text {
-                font-size: 24rpx;
-                font-family: PingFang SC;
-                font-weight: 400;
-                color: #666666;
-              }
-            }
+            display: inline-block;
+            padding: 0rpx 8rpx;
+            margin-bottom: 14rpx;
+            background: rgba(241, 241, 241, 1);
+            font-size: 24rpx;
+            font-family: PingFang SC;
+            font-weight: 400;
+            color: #666666;
           }
 
           .price-wrapper {
             width: 100%;
             color: #FD4918;
-            margin-bottom: 16rpx;
+            margin-bottom: 14rpx;
             font-family: PingFang SC;
 
             .price {

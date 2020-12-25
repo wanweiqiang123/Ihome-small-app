@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 10:17:55
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-17 14:53:59
+ * @LastEditTime: 2020-12-25 15:23:50
  */
 
 import storageTool from './storageTool'
@@ -17,7 +17,8 @@ console.log(baseUrl);
 const showToast = (title) => {
     uni.showToast({
         title: title,
-        icon: 'none'
+        icon: 'none',
+        duration: 3000
     })
 }
 
@@ -66,21 +67,30 @@ const api = (url, data = {}, option = {}) => {
                         resolve(result.data)
                         return
                     } else {
-                        showToast(result.msg);
+                        if (!hideMsg) {
+                            showToast(result.msg);
+                        }
                         reject(result);
                     }
 
                 } else { // 返回值非 200，强制显示提示信息
-                    showToast('[' + res.statusCode + '] 系统处理失败')
-                    reject('[' + res.statusCode + '] 系统处理失败')
+                    if (!hideMsg) {
+                        showToast('[' + res.statusCode + '] 系统处理失败')
+                    }
+
+                    reject(res)
                 }
             },
             fail: (err) => { // 接口调用失败的回调函数
-                if (!hideLoading) uni.hideLoading()
-                if (err.errMsg != 'request:fail abort') {
-                    showToast('连接超时，请检查您的网络。')
-                    reject('连接超时，请检查您的网络。')
+                if (!hideLoading) uni.hideLoading();
+                if (err.errMsg == 'request:fail url not in domain list') {
+                    showToast('服务器域名未配置');
                 }
+                else {
+                    showToast(err.errMsg);
+                }
+                reject(err.errMsg);
+
             }
         })
     })

@@ -169,7 +169,7 @@ import { getProDetail } from '@/api/channel'
     onLoad(option) {
       if (option && option.proId) {
         this.currentProId = option.proId;
-        // this.init();
+        this.init();
       }
     },
     methods: {
@@ -358,7 +358,7 @@ import { getProDetail } from '@/api/channel'
           justify-content: space-between;
 
           .info-item {
-            flex: 1;
+            width: 32%;
             box-sizing: border-box;
 
             &:not(:last-child) {

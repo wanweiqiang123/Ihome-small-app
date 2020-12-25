@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-13 15:13:13
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-09 08:50:50
+ * @LastEditTime: 2020-12-16 17:22:12
 -->
 <template>
   <view class="container safe-area-inset-bottom">
@@ -14,7 +14,7 @@
           style="flex: 1"
           :show-action="false"
           placeholder="请输入客户名称和手机号"
-          v-model="keyword"
+          v-model="queryPageParameters.name"
           height="72"
           :clearabled="true"
         ></u-search>
@@ -34,7 +34,10 @@
         @change="tabChange"
       ></u-tabs>
     </view>
-    <view class="card-list">
+    <view
+      class="card-list"
+      v-if="tablePage.length"
+    >
       <u-card
         :border="false"
         :show-head="false"
@@ -43,25 +46,25 @@
         :body-style="{padding: '0'}"
         margin="30rpx 30rpx 0"
         class="ih-card"
-        v-for="i in 2"
-        :key="i"
+        v-for="(i, n) in tablePage"
+        :key="n"
       >
         <view
           slot="body"
           class="ih-card-content"
         >
           <text ref="text">
-            客户姓名：陈家家(先生)
-            客户电话：1389998444
-            预计到访时间：2020-08-25 16:30
+            客户姓名：{{`${i.name}(${i.sex === 'Mr' ? '先生' : '女士'})`}}
+            客户电话：{{i.mobile}}
+            预计到访时间：{{i.visitDate}}
             预计到访人数：2
-            报备项目：保利十方舟
-            项目周期：20200310~20200410
-            所属渠道：中介
-            报备人：艾佳佳
+            报备项目：{{i.proName}}
+            项目周期：{{i.proCycle}}
+            所属渠道：{{i.channelName}}
+            报备人：{{i.reportUser}}
             报备人电话：18761234521
             公司门店：广州居家房地产有限公司(居家置业店)
-            报备时间：2020-08-25 16:40:12
+            报备时间：{{i.reportDate}}
           </text>
           <view class="ih-card-tag">市场化</view>
         </view>
@@ -86,6 +89,17 @@
           >有效</u-button>
         </view>
       </u-card>
+
+    </view>
+    <view
+      class="card-list"
+      style="height: 100vh"
+      v-else
+    >
+      <u-empty
+        text="报备列表为空"
+        mode="list"
+      ></u-empty>
     </view>
     <!-- 弹出层 -->
     <PopupSearch
@@ -93,7 +107,6 @@
       @reset="handleReset()"
     >
       <u-form
-        :model="form"
         ref="uForm"
         label-position="top"
         :border-bottom="false"
@@ -104,7 +117,7 @@
           :border-bottom="false"
         >
           <u-input
-            v-model="form.name"
+            v-model="queryPageParameters.proName"
             placeholder="请输入项目名称"
             border
           />
@@ -115,7 +128,7 @@
           :border-bottom="false"
         >
           <u-input
-            v-model="form.intro"
+            v-model="queryPageParameters.proCycle"
             placeholder="请输入项目周期"
             border
           />
@@ -126,7 +139,7 @@
           :border-bottom="false"
         >
           <u-input
-            v-model="form.intro"
+            v-model="queryPageParameters.channelName"
             placeholder="请输入渠道公司名称"
             border
           />
@@ -137,7 +150,7 @@
           :border-bottom="false"
         >
           <IhCheckbox
-            v-model="form.value"
+            v-model="exMarketList"
             :arr="checkList"
           ></IhCheckbox>
         </u-form-item>
@@ -149,6 +162,8 @@
 <script>
 import PopupSearch from "../../components/PopupSearch/index.vue";
 import IhCheckbox from "../../components/IhCheckbox/index.vue";
+import pagination from "../../mixins/pagination";
+import { postReportList } from "../../api/staff";
 
 export default {
   name: "report",
@@ -156,28 +171,33 @@ export default {
     PopupSearch,
     IhCheckbox,
   },
+  mixins: [pagination],
   data() {
     return {
       keyword: null,
       tabList: [
-        { name: "报备未确认" },
-        { name: "报备有效" },
-        { name: "报备无效" },
+        { name: "报备未确认", value: "UnderReview" },
+        { name: "报备有效", value: "ValidReport" },
+        { name: "报备无效", value: "InvalidReport" },
       ],
       current: 0,
       show: false,
-      form: {
+      queryPageParameters: {
+        proName: null,
+        proCycle: null,
+        channelName: null,
+        exMarket: null,
         name: null,
-        intro: null,
-        value: [],
+        reportStatus: "UnderReview",
       },
+      exMarketList: [],
       checkList: [
         {
           value: 1,
           name: "市场化项目",
         },
         {
-          value: 2,
+          value: 0,
           name: "非市场化项目",
         },
       ],
@@ -188,12 +208,14 @@ export default {
       this.current = index;
     },
     handleReset() {
-      Object.assign(this.form, {
-        name: null,
-        intro: null,
+      Object.assign(this.queryPageParameters, {
+        proName: null,
+        proCycle: null,
+        channelName: null,
+        exMarket: null,
       });
     },
-    handleCopy(str) {
+    handleCopy(data) {
       uni.setClipboardData({
         data: `客户姓名：陈家家(先生)
 客户电话：1389998444
@@ -211,6 +233,12 @@ export default {
         },
       });
     },
+    async getListMixin() {
+      this.setPageDataMixin(await postReportList(this.queryPageParameters));
+    },
+  },
+  onLoad() {
+    this.getListMixin();
   },
 };
 </script>
