@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-21 15:13:24
+ * @LastEditTime: 2020-12-23 16:16:18
 -->
 <template>
   <view>
@@ -25,7 +25,7 @@
             <view class="ih-card-content">
               <view>
                 <view class="receipt-title">{{item.projectName}}</view>
-                <view>{{`${$dict.dictAllName(item.propertyType, 'Property')}-${item.buyUnit}-${item.roomNumberName}`}}</view>
+                <view>{{`${$dict.dictAllName(item.propertyType, 'Property')}-${item.buyUnitName}-${item.roomNumberName}`}}</view>
               </view>
               <view>{{item.explain}}</view>
             </view>

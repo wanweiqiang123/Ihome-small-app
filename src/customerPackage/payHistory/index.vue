@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-25 11:40:27
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-21 14:16:59
+ * @LastEditTime: 2020-12-22 08:24:00
 -->
 <template>
   <view class="box">
@@ -37,7 +37,7 @@
         </view>
       </view>
     </view>
-    <u-empty text="暂无数据" mode="list" v-if="!info.length" style="height: 100vh"></u-empty>
+    <u-empty text="暂无数据" mode="list" v-if="!info.length" style="height: 80vh"></u-empty>
   </view>
 </template>
 <script>

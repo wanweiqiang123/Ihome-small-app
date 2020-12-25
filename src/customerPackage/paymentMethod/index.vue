@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-21 17:28:28
+ * @LastEditTime: 2020-12-24 14:59:21
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
@@ -58,6 +58,7 @@
 import { 
   postAddServiceApi,
   postUnionPayParameterApi,
+  postUnionPayUrlApi,
 } from "../../api/customer";
 import { getAllByTypeApi } from "../../api/index";
 import uImage from '../../uview-ui/components/u-image/u-image.vue';
@@ -97,7 +98,6 @@ export default {
       this.payType = e;
     },
     async payGoto() {
-      console.log(this.payType)
       let obj = {};
       obj.amount = this.payNum;
       obj.businessId = this.payData.businessId;
@@ -117,52 +117,60 @@ export default {
       obj.operator = 15;
       obj.proId = 1;
       obj.termId = 3;
-      let res = await postAddServiceApi(obj);
-      console.log(res);
+      let res = {};
       switch(this.payType) {
         case 'UnionPay':
         case 'Alipay':
+          res = await postAddServiceApi(obj);
           uni.navigateTo({
             url: `/customerPackage/paymentMethod/zhifubaoPay?id=${res.data}&type=${this.payType}`,
           });
           break;
         case 'Pos':
+          res = await postAddServiceApi(obj);
           uni.navigateTo({
             url: `/customerPackage/paymentMethod/POS?id=${res.data}`,
           });
           break;
         case 'Transfer':
           uni.navigateTo({
-            url: `/customerPackage/paymentMethod/bankTransfer`,
+            url: `/customerPackage/paymentMethod/bankTransfer?id=${this.payData.cycleId}&payNum=${this.payNum}`,
           });
           break;
         case 'WeChatPay':
+          res = await postAddServiceApi(obj);
           const openId = uni.getStorageSync('openId');
-          const item = await postUnionPayParameterApi({
-            id: res.data,
-            openId
-          });
-          let objs = {};
-          objs.MerId = item.MerId;
-          objs.OrderNo = item.OrderNo;
-          objs.OrderAmount = item.OrderAmount;
-          objs.CurrCode = item.CurrCode;
-          objs.CallBackUrl = item.CallBackUrl;
-          objs.OrderType = item.OrderType;
-          objs.BankCode = item.BankCode;
-          objs.LangType = item.LangType;
-          objs.BuzType = item.BuzType;
-          objs.Reserved01 = item.Reserved01;
-          objs.Reserved02 = item.Reserved02;
-          objs.SignMsg = item.SignMsg;
-          uni.request({
-            url: 'http://test.gnetpg.com:8089/GneteMerchantAPI/api/PayV36',
-            method: 'POST',
-            data: objs,
-            success: aaa => {
-              console.log(aaa);
-            }
-          })
+          // async getUrl() {
+          //   const res = await postUnionPayUrlApi({
+          //     id: this.payId,
+          //   });
+          //   this.url = `alipays://platformapi/startapp?appId=20000067&url=` + res;
+          // }
+          // const item = await postUnionPayParameterApi({
+          //   id: res.data,
+          //   openId
+          // });
+          // let objs = {};
+          // objs.MerId = item.MerId;
+          // objs.OrderNo = item.OrderNo;
+          // objs.OrderAmount = item.OrderAmount;
+          // objs.CurrCode = item.CurrCode;
+          // objs.CallBackUrl = item.CallBackUrl;
+          // objs.OrderType = item.OrderType;
+          // objs.BankCode = item.BankCode;
+          // objs.LangType = item.LangType;
+          // objs.BuzType = item.BuzType;
+          // objs.Reserved01 = item.Reserved01;
+          // objs.Reserved02 = item.Reserved02;
+          // objs.SignMsg = item.SignMsg;
+          // uni.request({
+          //   url: 'http://test.gnetpg.com:8089/GneteMerchantAPI/api/PayV36',
+          //   method: 'POST',
+          //   data: objs,
+          //   success: aaa => {
+          //     console.log(aaa);
+          //   }
+          // })
       }
     },
   },

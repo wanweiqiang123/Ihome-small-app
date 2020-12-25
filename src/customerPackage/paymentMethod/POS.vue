@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 15:27:32
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-17 20:30:20
+ * @LastEditTime: 2020-12-24 15:58:11
 -->
 <template>
   <view class="box">
@@ -20,11 +20,11 @@
     </view>
     <view style="margin-top: 20rpx">￥{{payMsg.transAmount}}</view>
     <view>订单号：{{payMsg.billNo}}</view>
-    <view>状态：待支付</view>
+    <view>状态：{{$dict.dictAllName(payMsg.status, 'PaymentStatus')}}</view>
   </view>
 </template>
 <script>
-import { getPaymentQRCodeInfoApi } from "../../api/customer";
+import { getPaymentQRCodeInfoApi, getPayStatusApi } from "../../api/customer";
 import storageTool from '../../common/storageTool';
 export default {
   components: {},
@@ -32,6 +32,7 @@ export default {
     return {
       payId: '',
       url: '',
+      timer: '',
       payMsg: {
         transAmount: 0,
         billNo: '',
@@ -44,13 +45,23 @@ export default {
   onShow() {
     if (this.payId) {
       this.getInfo();
+      this.timer = setInterval(this.getStatus, 3000);
     }
+  },
+  onHide() {
+    clearInterval(this.timer);
+  },
+  onUnload() {
+    clearInterval(this.timer);
   },
   methods: {
     async getInfo() {
-      this.payMsg = await getPaymentQRCodeInfoApi(this.payId);
+      const item = await getPaymentQRCodeInfoApi(this.payId);
+      this.payMsg = {...item};
+      let o = { ...item};
+      delete o.status
       let obj = {
-        content: JSON.stringify(this.payMsg),
+        content: JSON.stringify(o),
       };
       const token = storageTool.getToken();
       let header = {
@@ -61,13 +72,24 @@ export default {
         method: 'POST',
         header: {
           ...header,
-          "Content-Type": "application/x-www-form-urlencoded",
+          "Content-Type": "application/json",
         },
         data: obj,
         success: res => {
           this.url = `http://api.polyihome.develop/sales-api/sales-document-cover/file/browse/${res.data.data.fileId}`
         }
       })
+    },
+    async getStatus() {
+      const item = await getPayStatusApi(this.payId, {
+        hideLoading: true
+      });
+      if (item === 'Paid') {
+        uni.navigateTo({
+          url: `/customerPackage/paySuccess/index`,
+        });
+        clearInterval(this.timer);
+      }
     }
   }
 }

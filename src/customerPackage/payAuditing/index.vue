@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-25 11:42:30
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-21 15:30:02
+ * @LastEditTime: 2020-12-22 08:23:27
 -->
 <template>
   <view class="box">
@@ -57,7 +57,7 @@
         </view>
       </view>
     </view>
-    <u-empty text="暂无数据" mode="list" v-if="!info.length" style="height: 100vh"></u-empty>
+    <u-empty text="暂无数据" mode="list" v-if="!info.length" style="height: 80vh"></u-empty>
     <u-modal 
       v-model="show"
       content="是否确认删除?"

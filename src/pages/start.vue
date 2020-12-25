@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-30 14:22:01
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-17 15:31:55
+ * @LastEditTime: 2020-12-25 20:21:29
 -->
 <template>
   <view style="padding-top: 100px">
@@ -67,8 +67,7 @@ export default {
       success: async function (res) {
         console.log(res);
         const { openId, sessionKey } = await getOpenidApi(res.code);
-        uni.setStorageSync('openId', openId);
-        uni.setStorageSync('sessionKey', sessionKey);
+        storageTool.setOpenId(openId);
         // uni.redirectTo({
         //   url: "/pages/login/index/index",
         // });

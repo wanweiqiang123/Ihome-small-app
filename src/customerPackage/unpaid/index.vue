@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-16 14:19:14
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-18 09:53:42
+ * @LastEditTime: 2020-12-23 12:08:32
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
@@ -75,9 +75,7 @@ export default {
   },
   methods: {
     async getInfo() {
-      this.padId = await getBusinessIdApi({
-        getBusinessId: this.noticeId,
-      });
+      this.padId = await getBusinessIdApi(this.noticeId);
       const res = await getIdApi({
         id: this.padId,
       });

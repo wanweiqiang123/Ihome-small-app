@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-15 18:08:02
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-21 16:37:20
+ * @LastEditTime: 2020-12-24 11:53:31
  */
 import { getApi, postApi } from '../common/http.js';
 
@@ -26,7 +26,7 @@ export async function postAddServiceApi(data = {}, option = {}) {
 }
 // 获取待付款记录ID
 export async function getBusinessIdApi(data = {}, option = {}) {
-  return await getApi(`/sales-api/finance/payment/getBusinessId/${data.getBusinessId}`, option)
+  return await getApi(`/sales-api/finance/payment/getBusinessId/${data}`, option)
 }
 // 查询一条付款记录
 export async function getIdApi(data = {}, option = {}) {
@@ -67,4 +67,16 @@ export async function getAppListApi(data = {}, option = {}) {
 // 查询待审核数据数量
 export async function getNotCheckNumApi(data = {}, option = {}) {
   return await getApi(`/sales-api/finance/payment/getNotCheckNum/${data}`, option)
+}
+// 根据立项周期ID查询付款银行基本信息
+export async function getBankInfoApi(data = {}, option = {}) {
+  return await getApi(`/sales-api/finance/payment/getBankInfo/${data}`, option)
+}
+// 获取银联请求url
+export async function postUnionPayUrlApi(data = {}, option = {}) {
+  return await postApi(`/sales-api/finance/payment/getUnionPayUrl`, data, option)
+}
+// 获取订单支付状态
+export async function getPayStatusApi(data = {}, option = {}) {
+  return await getApi(`/sales-api/finance/payment/getPayStatus/${data}`, data, option)
 }

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-21 17:19:28
+ * @LastEditTime: 2020-12-24 10:28:33
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -74,7 +74,7 @@
       <view class="info-second-title">购房信息</view>
       <view class="info-second-msg">
         <view class="info-second-top">{{info.purchaseInformation.projectName}}</view>
-        <view class="info-second-bottom">{{`${$dict.dictAllName(info.purchaseInformation.propertyType, 'PropertyEnum')}-${info.purchaseInformation.buyUnit}-${info.purchaseInformation.roomNumberName}`}}</view>
+        <view class="info-second-bottom">{{`${$dict.dictAllName(info.purchaseInformation.propertyType, 'Property')}-${info.purchaseInformation.buyUnit}-${info.purchaseInformation.roomNumberName}`}}</view>
       </view>
       <view class="info-second-wrap">
         <swiper
@@ -217,6 +217,7 @@ import {
   getCheckIsExistNoPayApi,
   postDeleteByBusinessIdApi,
   getNotCheckNumApi,
+  getBusinessIdApi
 } from "../../api/customer";
 import uImage from '../../uview-ui/components/u-image/u-image.vue';
 export default {
@@ -274,10 +275,8 @@ export default {
       }
     },
     async gotoPay(obj) {
-      const res = await getCheckIsExistNoPayApi({
-        id: 15,
-        // id: obj.grogroupId,
-      });
+      const res = await getBusinessIdApi(this.noticeId);
+      console.log(res);
       if (res) {
         this.show = true;
       } else {

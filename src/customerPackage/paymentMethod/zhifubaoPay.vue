@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 15:26:47
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-18 20:02:07
+ * @LastEditTime: 2020-12-24 14:20:23
 -->
 <template>
   <view class="box">
@@ -22,13 +22,14 @@
   </view>
 </template>
 <script>
-import { postUnionPayParameterApi } from "../../api/customer";
+import { getPayStatusApi } from "../../api/customer";
 export default {
   data() {
     return {
       payId: '',
       payType: '',
       url: '',
+      timer: '',
     }
   },
   onLoad(options) {
@@ -36,25 +37,33 @@ export default {
     this.payType = options.type;
     this.url = `https://test.m.polyihome.com/sales-h5/${this.payType}?id=${this.payId}`;
   },
+  onShow() {
+    this.timer = setInterval(this.getInfo, 3000);
+  },
+  onHide() {
+    clearInterval(this.timer);
+  },
+  onUnload() {
+    clearInterval(this.timer);
+  },
   methods: {
-      // let unionMsg = await postUnionPayParameterApi({
-      //   id: this.payId,
-      // });
-      // console.log(unionMsg, '银联参数');
-      // let submit = {
-      //   MerId: unionMsg.merId,
-      //   OrderNo: unionMsg.orderNo,
-      //   OrderAmount: unionMsg.orderAmount,
-      //   CurrCode: unionMsg.currCode,
-      //   OrderType: unionMsg.orderType,
-      //   CallBackUrl: unionMsg.callBackUrl,
-      //   BankCode: unionMsg.bankCode,
-      //   LangType: unionMsg.langType,
-      //   BuzType: unionMsg.buzType,
-      //   Reserved01: unionMsg.reserved01,
-      //   Reserved02: unionMsg.reserved02,
-      //   SignMsg: unionMsg.signMsg,
-      // };
+    // async getUrl() {
+    //   const res = await postUnionPayUrlApi({
+    //     id: this.payId,
+    //   });
+    //   this.url = `alipays://platformapi/startapp?appId=20000067&url=` + res;
+    // }
+    async getInfo() {
+      const item = await getPayStatusApi(this.payId, {
+        hideLoading: true
+      });
+      if (item === 'Paid') {
+        uni.navigateTo({
+          url: `/customerPackage/paySuccess/index`,
+        });
+        clearInterval(this.timer);
+      }
+    }
   }
 }
 </script>
