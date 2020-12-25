@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 10:09:50
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-23 11:03:10
+ * @LastEditTime: 2020-12-25 10:26:29
  */
 
 import { getApi, postApi } from '../common/http.js';
@@ -57,7 +57,7 @@ export async function loginApi(data = { username: '', password: '' }, option = {
 export async function loginPhoneApi(data = { phone: '', code: '' }, option = {}) {
     //验证码登录
     // /sales-api/oauth/token?grant_type=sms&mobile_phone=18800000001&sms_code=640720&auth_client=UGM6c2FsZXMhMjAyMA==
-    let url = '/sales-api/oauth/token?grant_type=sms&mobile_phone=' + data.phone + '&sms_code=' + data.code + '&auth_client=UGM6c2FsZXMhMjAyMA==';
+    let url = '/sales-api/sales-oauth2/oauth/token?grant_type=sms&mobile_phone=' + data.phone + '&sms_code=' + data.code + '&auth_client=UGM6c2FsZXMhMjAyMA==';
     return await postApi(url, {}, option);
 }
 

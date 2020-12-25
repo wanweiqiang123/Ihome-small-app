@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-29 15:58:19
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-23 19:37:21
+ * @LastEditTime: 2020-12-25 10:19:55
 -->
 <template>
   <view class="page login-page-style">
@@ -187,7 +187,7 @@ export default {
     async login() {
       //账号密码登录
       console.log(this.form);
-    
+
       if (this.form.account && this.form.account.length > 0) {
       } else {
         uni.showToast({
@@ -256,9 +256,14 @@ export default {
         const res = await getSessionUserSendSmsApi(this.phoneForm.phone);
         console.log(res);
         uni.showToast({
-          title: "发送成功",
+          title: res,
           icon: "none",
+          duration: 3000,
         });
+        // uni.showToast({
+        //   title: "发送成功",
+        //   icon: "none",
+        // });
         //倒计时
         let timer = setInterval(() => {
           this.second--;
@@ -378,13 +383,13 @@ export default {
   }
   .form-container-item-phone {
     position: relative;
-    top: 30rpx;
+    top: 36rpx;
   }
   .form-container-item-eye {
     width: 60rpx;
     height: 60rpx;
     position: relative;
-    top: 40rpx;
+    top: 48rpx;
   }
   .icon-style {
     font-size: 20px;
