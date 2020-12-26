@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-25 10:54:58
+ * @LastEditTime: 2020-12-26 15:10:48
  */
 import Vue from 'vue'
 import App from './App'
@@ -67,11 +67,9 @@ Vue.prototype.$has = function (key) {
   return result;
 }
 
+/**  字典数据，省市区数据方法（已弃用，取name值让后端接口返回）
 Vue.prototype.$dict = {
-  /**根据字典类别获取该分类的列表
-   * @param {type} 
-   * @return {type} 
-   */
+  //根据字典类别获取该分类的列表
   dictAllList(category, tag) {
     let areaAll = getApp().globalData.initData.areaAll;
     let list = dictAll[category];
@@ -95,10 +93,7 @@ Vue.prototype.$dict = {
       return [];
     }
   },
-  /**根据字典code和类别获取对应的name
-   * @param {type} 
-   * @return {type} 
-   */
+  //根据字典code和类别获取对应的name
   dictAllName(data, category) {
     let dictAll = getApp().globalData.initData.dictAll;
     if (data === undefined || data === null) {
@@ -128,10 +123,7 @@ Vue.prototype.$dict = {
       }
     }
   },
-  /**根据字典code和类别获取对应的name
-  * @param {type} 
-  * @return {type} 
-  */
+  //根据字典code和类别获取对应的name
   dictAllItem(data, category) {
     let dictAll = getApp().globalData.initData.dictAll;
     if (data === undefined || data === null) {
@@ -161,10 +153,7 @@ Vue.prototype.$dict = {
       }
     }
   },
-  /**根据行政区code获取对应的name
-   * @param {type} 
-   * @return {type} 
-   */
+  //根据行政区code获取对应的name
   getAreaName(code) {
     let areaAll = getApp().globalData.initData.areaAll;
     if (areaAll) {
@@ -182,10 +171,7 @@ Vue.prototype.$dict = {
       return null;
     }
   },
-  /**根据行政区code获取对应的该项数据
-  * @param {type} 
-  * @return {type} 
-  */
+ //根据行政区code获取对应的该项数据
   getArea(code) {
     if (areaAll) {
       let area = null;
@@ -202,6 +188,9 @@ Vue.prototype.$dict = {
     }
   }
 }
+ */
+
+
 
 // function initGlobalData() {
 //   Promise.all([getAreaApi(), getDictGetAllApi()])

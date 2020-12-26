@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 10:09:50
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-25 10:26:29
+ * @LastEditTime: 2020-12-26 11:23:19
  */
 
 import { getApi, postApi } from '../common/http.js';
@@ -106,6 +106,22 @@ export async function getSystemParamApi(data = {}, option = {}) {
 /**发送手机验证码，用于登录*/
 export async function getSessionUserSendSmsApi(mobilePhone, option = {}) {
     return await getApi('/sales-api/system/sessionUser/sendSms/' + mobilePhone, {}, option);
+}
+
+/**测试接口睡眠时间*/
+export async function getTestApi(time = 2000) {
+    return new Promise((resolve, reject) => {
+        uni.request({
+            url: "http://api.test.zhangdada666.com/api/Test/Sleep?time=" + time,
+            method: "get",
+            success(res) {
+                return resolve(res);
+            },
+            fail(res) {
+                return reject(res);
+            },
+        });
+    })
 }
 
 
