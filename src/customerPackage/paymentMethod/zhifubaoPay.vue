@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 15:26:47
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-28 10:19:15
+ * @LastEditTime: 2020-12-28 16:40:57
 -->
 <template>
   <view class="box">
@@ -36,7 +36,7 @@ export default {
   onLoad(options) {
     this.payId = options.id;
     this.payType = options.type;
-    this.url = `${currentEnvConfig['protocol']}://${currentEnvConfig['h5Domain']}/sales-h5/${this.payType}?id=${this.payId}`
+    this.url = `${currentEnvConfig['protocol']}://${currentEnvConfig['h5Domain']}/sales-h5/${this.payType}/${this.payId}`
   },
   onShow() {
     this.timer = setInterval(this.getInfo, 3000);
