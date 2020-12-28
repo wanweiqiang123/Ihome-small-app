@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-16 14:19:14
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-23 12:08:32
+ * @LastEditTime: 2020-12-28 15:49:04
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
@@ -25,7 +25,7 @@
               width="60rpx"
               :src="require(`../common/img/${payRecod.payType}.png`)"
             ></u-image>
-            <text class="pay-type-name">{{`${$dict.dictAllName(payRecod.payType, 'PayType')}`}}</text>
+            <text class="pay-type-name">{{`${getDictName(payRecod.payType, PayType)}`}}</text>
           </view>
           <u-radio
             active-color="#18B566"
@@ -40,7 +40,7 @@
       <u-button
         shape="square"
         @click="payGoto"
-      >{{`${$dict.dictAllName(payRecod.payType, 'PayType')}支付 ￥${payRecod.amount?payRecod.amount: 0}`}}</u-button>
+      >{{`${getDictName(payRecod.payType, PayType)}支付 ￥${payRecod.amount?payRecod.amount: 0}`}}</u-button>
     </view>
     <view class="my-btn">
       <u-button
@@ -57,6 +57,7 @@ import {
   postDeleteByBusinessIdApi,
   postUnionPayParameterApi
 } from "../../api/customer";
+import { getAllByTypeApi } from "../../api/index";
 export default {
   data() {
     return {
@@ -66,14 +67,28 @@ export default {
         payType: 'WeChatPay',
       },
       padId: '',
+      PayType: [],
     };
   },
-  onShow() {
+  async onShow() {
     let paidData = {...getApp().paidData};
     this.noticeId = paidData.businessId;
     this.getInfo();
+    this.PayType = await this.getDictAll('PayType');
   },
   methods: {
+    // 字典翻译
+    async getDictAll(type) {
+      const dictList = await getAllByTypeApi({ type });
+      return dictList;
+    },
+    // 字典匹配
+    getDictName(code, list) {
+      if (list.length) {
+        const { name } = list.find(v => v.code === code);
+        return name;
+      }
+    },
     async getInfo() {
       this.padId = await getBusinessIdApi(this.noticeId);
       const res = await getIdApi({

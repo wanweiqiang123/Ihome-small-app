@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-25 11:40:27
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-28 14:26:33
+ * @LastEditTime: 2020-12-28 15:44:06
 -->
 <template>
   <view class="box">
@@ -29,7 +29,7 @@
             <text class="box-item-msg-detail">{{item.payNo}}</text>
           </view>
           <view class="box-item-msg-title">付款方式
-            <text class="box-item-msg-detail">{{$dict.dictAllName(item.payType, 'PayType')}}</text>
+            <text class="box-item-msg-detail">{{getDictName(item.payType, PayType)}}</text>
           </view>
           <view class="box-item-msg-title">付款时间
             <text class="box-item-msg-detail">{{item.payDate}}</text>
@@ -42,19 +42,36 @@
 </template>
 <script>
 import { getAppListApi } from "../../api/customer";
+import { getAllByTypeApi } from "../../api/index";
 export default {
   components: {},
   data() {
     return {
       payId: '',
       info: [],
+      PayType: [],
     };
   },
   onLoad(options) {
     this.payId = options.id;
     this.getInfo();
   },
+  async onShow() {
+    this.PayType = await this.getDictAll('PayType');
+  },
   methods: {
+    // 字典翻译
+    async getDictAll(type) {
+      const dictList = await getAllByTypeApi({ type });
+      return dictList;
+    },
+    // 字典匹配
+    getDictName(code, list) {
+      if (list.length) {
+        const { name } = list.find(v => v.code === code);
+        return name;
+      }
+    },
     async getInfo() {
       this.info = await getAppListApi(this.payId);
     },

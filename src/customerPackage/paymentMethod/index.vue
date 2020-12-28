@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-24 14:59:21
+ * @LastEditTime: 2020-12-28 15:45:57
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
@@ -46,7 +46,7 @@
       <u-button
         shape="square"
         @click="payGoto"
-      >{{`${$dict.dictAllName(payType, 'PayType')}支付 ￥${payNum?payNum:0}`}}</u-button>
+      >{{`${getDictName(payType, payTypeOptions)}支付 ￥${payNum?payNum:0}`}}</u-button>
     </view>
     <view class="pay-hint">
       付款成功后可能存在延迟，请耐心等待1~2分钟！
@@ -77,15 +77,24 @@ export default {
     this.payData = { ...getApp().paidData };
     this.payNum = this.payData.paymentAmount;
   },
-  onShow() {
-    this.PayTypeChange();
+  async onShow() {
+    this.payTypeOptions = await getAllByTypeApi({
+      type: 'PayType',
+      tag: 'Customer',
+    });
   },
   methods: {
-    async PayTypeChange() {
-      this.payTypeOptions = await getAllByTypeApi({
-        type: 'PayType',
-        tag: 'Customer',
-      });
+    // 字典翻译
+    async getDictAll(type) {
+      const dictList = await getAllByTypeApi({ type });
+      return dictList;
+    },
+    // 字典匹配
+    getDictName(code, list) {
+      if (list.length) {
+        const { name } = list.find(v => v.code === code);
+        return name;
+      }
     },
     payNumChange(v) {
       let num = v.target.value;

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 15:27:32
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-24 15:58:11
+ * @LastEditTime: 2020-12-28 15:47:32
 -->
 <template>
   <view class="box">
@@ -20,12 +20,13 @@
     </view>
     <view style="margin-top: 20rpx">￥{{payMsg.transAmount}}</view>
     <view>订单号：{{payMsg.billNo}}</view>
-    <view>状态：{{$dict.dictAllName(payMsg.status, 'PaymentStatus')}}</view>
+    <view>状态：{{getDictName(payMsg.status, PaymentStatus)}}</view>
   </view>
 </template>
 <script>
 import { getPaymentQRCodeInfoApi, getPayStatusApi } from "../../api/customer";
 import storageTool from '../../common/storageTool';
+import { getAllByTypeApi } from "../../api/index";
 export default {
   components: {},
   data() {
@@ -36,17 +37,19 @@ export default {
       payMsg: {
         transAmount: 0,
         billNo: '',
-      }
+      },
+      PaymentStatus: [],
     }
   },
   onLoad(options) {
     this.payId = options.id;
   },
-  onShow() {
+  async onShow() {
     if (this.payId) {
       this.getInfo();
       this.timer = setInterval(this.getStatus, 3000);
     }
+    this.PaymentStatus = await this.getDictAll('PaymentStatus');
   },
   onHide() {
     clearInterval(this.timer);
@@ -55,6 +58,18 @@ export default {
     clearInterval(this.timer);
   },
   methods: {
+    // 字典翻译
+    async getDictAll(type) {
+      const dictList = await getAllByTypeApi({ type });
+      return dictList;
+    },
+    // 字典匹配
+    getDictName(code, list) {
+      if (list.length) {
+        const { name } = list.find(v => v.code === code);
+        return name;
+      }
+    },
     async getInfo() {
       const item = await getPaymentQRCodeInfoApi(this.payId);
       this.payMsg = {...item};

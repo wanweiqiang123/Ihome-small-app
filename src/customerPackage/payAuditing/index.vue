@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-25 11:42:30
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-28 14:33:29
+ * @LastEditTime: 2020-12-28 15:42:51
 -->
 <template>
   <view class="box">
@@ -16,7 +16,7 @@
       <view class="box-item-title">
         <view style="font-weight: bold;">付款金额：{{item.amount}}</view>
         <view style="color:#F59A23;font-size:26rpx">
-          {{$dict.dictAllName(item.status, 'PaymentStatus')}}
+          {{getDictName(item.status, PaymentStatus)}}
           <u-icon
             name="info-circle"
             size="28"
@@ -29,7 +29,7 @@
             <text class="box-item-msg-detail">{{item.payNo}}</text>
           </view>
           <view class="box-item-msg-title">付款方式
-            <text class="box-item-msg-detail">{{$dict.dictAllName(item.payType, 'PayType')}}</text>
+            <text class="box-item-msg-detail">{{getDictName(item.payType, PayType)}}</text>
           </view>
           <view class="box-item-msg-title">付款时间
             <text class="box-item-msg-detail">{{item.payDate}}</text>
@@ -68,6 +68,7 @@
 </template>
 <script>
 import { getNotCheckListApi, paymentdeleteApi } from "../../api/customer";
+import { getAllByTypeApi } from "../../api/index";
 export default {
   components: {},
   data() {
@@ -76,17 +77,33 @@ export default {
       info: [],
       show: false,
       delId: '',
+      PaymentStatus: [],
+      PayType: [],
     };
   },
   onLoad(options) {
     this.payId = options.id;
   },
-  onShow() {
+  async onShow() {
     if (this.payId) {
       this.getInfo();
     }
+    this.PaymentStatus = await this.getDictAll('PaymentStatus');
+    this.PayType = await this.getDictAll('PayType');
   },
   methods: {
+    // 字典翻译
+    async getDictAll(type) {
+      const dictList = await getAllByTypeApi({ type });
+      return dictList;
+    },
+    // 字典匹配
+    getDictName(code, list) {
+      if (list.length) {
+        const { name } = list.find(v => v.code === code);
+        return name;
+      }
+    },
     async getInfo() {
       this.info = await getNotCheckListApi(this.payId);
     },

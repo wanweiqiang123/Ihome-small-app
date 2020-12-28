@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-28 14:26:26
+ * @LastEditTime: 2020-12-28 15:41:06
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -74,7 +74,7 @@
       <view class="info-second-title">购房信息</view>
       <view class="info-second-msg">
         <view class="info-second-top">{{info.purchaseInformation.projectName}}</view>
-        <view class="info-second-bottom">{{`${$dict.dictAllName(info.purchaseInformation.propertyType, 'Property')}-${info.purchaseInformation.buyUnit}-${info.purchaseInformation.roomNumberName}`}}</view>
+        <view class="info-second-bottom">{{`${getDictName(info.purchaseInformation.propertyType, Property)}-${info.purchaseInformation.buyUnit}-${info.purchaseInformation.roomNumberName}`}}</view>
       </view>
       <view class="info-second-wrap">
         <swiper
@@ -144,10 +144,10 @@
             <view class="swiper-item-msg">
               <view class="swiper-item-layout">
                 <view class="swiper-item-detail">
-                  <view class="swiper-item-type">{{`${$dict.dictAllName(item.notificationType, 'NotificationType')}`}}</view>
+                  <view class="swiper-item-type">{{`${getDictName(item.notificationType, NotificationType)}`}}</view>
                   <view class="swiper-item-num">编号（{{item.noticeNo}}）</view>
                 </view>
-                <view class="swiper-item-status">{{`${$dict.dictAllName(item.notificationStatus, 'NotificationStatus')}`}}</view>
+                <view class="swiper-item-status">{{`${getDictName(item.notificationStatus, NotificationStatus)}`}}</view>
               </view>
               <view class="swiper-item-btn">
                 <u-button
@@ -219,6 +219,7 @@ import {
   getNotCheckNumApi,
   getBusinessIdApi
 } from "../../api/customer";
+import { getAllByTypeApi } from "../../api/index";
 import uImage from '../../uview-ui/components/u-image/u-image.vue';
 export default {
   components: { uImage },
@@ -235,17 +236,23 @@ export default {
       noticeId: '',
       show: false,
       payAuditNum: 0,
-      content: '您上次还有一笔待付款单未完成支付，您可以选择前往继续支付，也可以选择创建一笔新的付款。'
+      content: '您上次还有一笔待付款单未完成支付，您可以选择前往继续支付，也可以选择创建一笔新的付款。',
       // webviewSrc: 'http://api.polyihome.develop/sales-api/sales-document-cover/file/browse/5fd02f5e282f220001e07fa6',
+      Property: [],
+      NotificationType: [],
+      NotificationStatus: [],
     };
   },
   onLoad(options) {
     this.noticeId = options.id;
   },
-  onShow() {
+  async onShow() {
     if (this.noticeId) {
       this.getInfo();
     }
+    this.NotificationType = await this.getDictAll('NotificationType');
+    this.NotificationStatus = await this.getDictAll('NotificationStatus');
+    this.Property = await this.getDictAll('Property');
   },
   computed: {
     perceent() {
@@ -316,6 +323,18 @@ export default {
         url: `/customerPackage/payAuditing/index?id=${e}`,
       });
     },
+    // 字典翻译
+    async getDictAll(type) {
+      const dictList = await getAllByTypeApi({ type });
+      return dictList;
+    },
+    // 字典匹配
+    getDictName(code, list) {
+      if (list.length) {
+        const { name } = list.find(v => v.code === code);
+        return name;
+      }
+    }
   },
 };
 </script>

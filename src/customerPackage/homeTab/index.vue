@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-26 16:17:55
+ * @LastEditTime: 2020-12-28 15:41:23
 -->
 <template>
   <view>
@@ -25,7 +25,7 @@
             <view class="ih-card-content">
               <view>
                 <view class="receipt-title">{{item.projectName}}</view>
-                <view>{{`${$dict.dictAllName(item.propertyType, 'Property')}-${item.buyUnitName}-${item.roomNumberName}`}}</view>
+                <view>{{`${getDictName(item.propertyType, Property)}-${item.buyUnitName}-${item.roomNumberName}`}}</view>
               </view>
               <view>{{item.explain}}</view>
             </view>
@@ -54,6 +54,7 @@
 
 <script>
 import { postWechatNoticeListApi } from "../../api/customer";
+import { getAllByTypeApi } from "../../api/index";
 import storageTool from "../../common/storageTool";
 export default {
   name: "PageingSearch",
@@ -62,12 +63,15 @@ export default {
     return {
       info: [],
       show: false,
+      Property: [],
     };
   },
   onLoad() {
     this.getInfo();
   },
-  onShow() {},
+  async onShow() {
+    this.Property = await this.getDictAll('Property');
+  },
   methods: {
     async getInfo() {
       const userInfo = storageTool.getUserInfo();
@@ -96,6 +100,18 @@ export default {
       //       url: `/customerPackage/createRefund/index?id=${val.id}`,
       //     });
       //     break;
+    },
+    // 字典翻译
+    async getDictAll(type) {
+      const dictList = await getAllByTypeApi({ type });
+      return dictList;
+    },
+    // 字典匹配
+    getDictName(code, list) {
+      if (list.length) {
+        const { name } = list.find(v => v.code === code);
+        return name;
+      }
     }
   },
 }
