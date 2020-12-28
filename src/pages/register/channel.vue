@@ -3,7 +3,7 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-12-10 10:42:47
- * @LastEditors: zyc
+ * @LastEditors: lsj
  * @LastEditTime: 2020-12-23 16:32:37
 -->
 <template>
@@ -15,12 +15,11 @@
         :class="
           currentStep === index ? `${item.className} color` : item.className
         "
-        >{{ item.name }}</view
-      >
+        >{{ item.name }}</view>
     </view>
     <view class="component-wrapper">
-      <BaseInfo @next="nextStep" v-show="currentStep === 0"></BaseInfo>
-      <CompanyInfo @next="nextStep" v-show="currentStep === 1"></CompanyInfo>
+      <BaseInfo :qrCode="qrScene" @next="nextStep" v-show="currentStep === 0"></BaseInfo>
+      <CompanyInfo :baseForm="baseForm" @next="nextStep" v-show="currentStep === 1"></CompanyInfo>
     </view>
     <view v-if="currentStep === 2" class="u-margin-top-30">
       <view class="tips-wrapper">
@@ -64,20 +63,25 @@ export default {
         },
       ],
       currentStep: 0,
+      qrScene: '',
+      baseForm: {}
     };
   },
-
   onLoad(query) {
     // scene 需要使用 decodeURIComponent 才能获取到生成二维码时传入的 scene
     if (query && query.scene) {
       const scene = decodeURIComponent(query.scene);
+      this.qrScene = scene;
       console.log(scene);
+    } else {
+      this.qrScene = '';
     }
   },
   methods: {
     // 下一步
     nextStep(data) {
-      console.log(data);
+      // console.log(data);
+      this.baseForm = data;
       this.currentStep = this.currentStep + 1;
     },
     // 查看个人中心
