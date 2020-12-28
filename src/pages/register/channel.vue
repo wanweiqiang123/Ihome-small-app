@@ -87,7 +87,7 @@ export default {
     // 查看个人中心
     handleView() {
       this.currentStep = 0;
-    },
+    }
   },
 };
 </script>
