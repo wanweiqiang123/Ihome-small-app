@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-28 15:45:57
+ * @LastEditTime: 2020-12-28 20:59:57
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
@@ -14,7 +14,7 @@
         <u-field label-width="150" v-model="payData.paymentAmount" label="应付服务费" disabled></u-field>
         <u-field label-width="150" v-model="payData.paid" label="已付服务费" disabled></u-field>
         <u-field label-width="150" v-model="payData.unpaid" label="未付服务费" disabled></u-field>
-        <u-field label-width="150" v-model="payNum" label="付款金额" :clearable="false" @blur="payNumChange"></u-field>
+        <u-field label-width="150" v-model="payNum" label="付款金额" :clearable="false" @blur="payNumChange" disabled @click="show = true"></u-field>
       </view>
     </view>
     <view class="pay-title">付款方式</view>
@@ -52,6 +52,15 @@
       付款成功后可能存在延迟，请耐心等待1~2分钟！
       如付款成功后长时间还未更新记录请及时联系工作人员。
     </view>
+    <u-keyboard 
+      ref="uKeyboard"
+      mode="number"
+      v-model="show"
+      @change="keyChange"
+      @backspace="backspace"
+      :show-tips="false"
+      :cancel-btn="false"
+    ></u-keyboard>
   </view>
 </template>
 <script>
@@ -71,6 +80,8 @@ export default {
       payNum: 0,
       payTypeOptions: [],
       payParam: {},
+      show: false,
+      open: true
     };
   },
   onLoad() {
@@ -102,6 +113,20 @@ export default {
       if (Number(num) > Number(this.payData.paymentAmount)) {
         this.payNum = num.substring(0, amount.length);
       }
+    },
+    
+    keyConfirm(e) {
+      console.log(e, 'e');
+    },
+    keyChange(e) {
+      if (this.open) {
+        this.payNum = ''
+        this.open = false
+      }
+      this.payNum += e;
+    },
+    backspace(e) {
+      if (this.payNum.length) this.payNum = this.payNum.substr(0, this.payNum.length - 1);
     },
     radioChange(e) {
       this.payType = e;
