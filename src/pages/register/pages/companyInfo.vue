@@ -56,24 +56,27 @@
         <u-gap height="30" bg-color="#F1F1F1"></u-gap>
         <view class="info-item">
           <view class="form-title u-border-bottom">公司附件</view>
-          <view class="annex-list-wrapper" v-for="item in annexInfo" :key="item.id">
+          <view class="annex-list-wrapper" v-for="(item, infoIndex) in annexInfo" :key="item.id">
             <view class="annex-type">
               <text v-if="item.subType === 'must'"
                     class="annex-required">*</text>
               {{item.name}}
             </view>
-            <view>
-              <u-upload
-                :before-upload="beforeUpload"
-                @on-success="uploadSuccess"
-                @on-error="uploadError"
-                :show-progress="false"
-                :header="uploadHeader"
-                :action="action"
-                :multiple="false"
-                name="files"
-                :max-size="10 * 1024 * 1024"
-                :file-list="fileList"></u-upload>
+            <view class="upload-file-wrapper">
+              <view v-if="item.fileList.length > 0">
+                <view class="file-list-wrapper" v-for="list in item.fileList" :key="list.fileId">
+                  <u-icon
+                    @click="deleteImg(infoIndex, list)"
+                    class="icon" name="close-circle-fill" color="#FA3534" size="50"></u-icon>
+                  <u-image
+                    @click="viewImg(list)"
+                    width="100%" height="100%" :src="list.fileUrls ? list.fileUrls : getImgUrl(list.fileId)"></u-image>
+                </view>
+              </view>
+              <view class="upload-icon" @click="uploadByType(item)">
+                <u-icon name="plus" color="#606266" size="40"></u-icon>
+                <view class="select">选择文件</view>
+              </view>
             </view>
           </view>
         </view>
@@ -113,6 +116,11 @@
       mode="mutil-column-auto"
       :list="areaList"
       @confirm="confirmRegion"></u-select>
+    <u-action-sheet
+      :safe-area-inset-bottom="true"
+      :list="actionList"
+      v-model="showActionShow"
+      @click="handleUpload"></u-action-sheet>
     <u-popup v-model="showBank" mode="right" length="100%">
       <view class="select-bank-list-wrapper">
         <view class="top-wrapper">
@@ -139,13 +147,16 @@
         </scroll-view>
       </view>
     </u-popup>
+    <u-modal
+      @confirm="handleDelete"
+      v-model="showDeleteWin" :content="content"></u-modal>
   </view>
 </template>
 
 <script>
 import { getAreaList, getChannelAttachment, getBankBranchList, channelRegister } from '@/api/channel';
 import { validIdentityCard } from '@/common/validate';
-import { getTempToken } from '@/api/channel';
+import { getTempToken, getImgUrl } from '@/api/channel';
 import { currentEnvConfig } from '@/env-config';
 
 // 防抖
@@ -166,6 +177,10 @@ export default {
   },
   data() {
     return {
+      pdfImg: require('@/channelPackage/common/img/pdf.jpg'),
+      excelImg: require('@/channelPackage/common/img/excel.png'),
+      wordImg: require('@/channelPackage/common/img/word.jpg'),
+      getImgUrl: getImgUrl,
       areaList: [], // 省市区
       companyForm: {
         shortName: null,
@@ -183,13 +198,6 @@ export default {
         accountName: null,
         branchName: null,
         accountNo: null,
-        channelBanks: [
-          {
-            accountName: null, // 账户名称
-            accountNo: null, // 账户号码
-            branchName: null, // 开户银行
-          }
-        ],
         channelAttachments: [
           {
             fileId: null,
@@ -234,8 +242,10 @@ export default {
         ]
       },
       annexInfo: [],
-      action: `${currentEnvConfig['protocol']}://${currentEnvConfig['apiDomain']}/sales-api/sales-document-cover/file/upload`,
-      uploadHeader: {},
+      imgUrl:`${currentEnvConfig['protocol']}://${currentEnvConfig['apiDomain']}/sales-api/sales-document-cover/file/browse/`,
+      uploadAction: `${currentEnvConfig['protocol']}://${currentEnvConfig['apiDomain']}/sales-api/sales-document-cover/file/upload`,
+      uploadHeader: {}, // 请求header
+      uploadName: 'files', // 供后端取值用
       fileList: [],
       showDate: false,
       dateParams:  {
@@ -255,7 +265,26 @@ export default {
       },
       bankList: [],
       tempToke: '',
-      isMore: false
+      isMore: false,
+      actionList: [
+        {
+          text: '上传图片',
+          color: '',
+          fontSize: 30,
+          subText: ''
+        },
+        {
+          text: '上传文件',
+          color: '',
+          fontSize: 30,
+          subText: 'pdf、word、excel文件，大小不能超过10M'
+        }
+      ],
+      currentUploadType: null, // 上传的附件类型
+      showActionShow: false,
+      showDeleteWin: false,
+      deleteIndex: '',
+      deleteItem: '',
     };
   },
   onReady() {
@@ -270,46 +299,196 @@ export default {
     await this.getBankList();
   },
   methods: {
-    // 上传前
-    beforeUpload(index, list) {
-      console.log('beforeUpload+index', index);
-      console.log('beforeUpload+list', list);
-      uni.showToast({
-        icon: 'loading',
-        title: '正在上传...',
-        duration: 500000000000
+    // 上传
+    uploadByType(item) {
+      // console.log(item);
+      this.currentUploadType = item.code;
+      this.showActionShow = true;
+    },
+    // 上传选择
+    handleUpload(index) {
+      let self = this;
+      if (index === 0) {
+        console.log('上传图片');
+        uni.chooseImage({
+          count: 9, // 默认9
+          success: (res) => {
+            // console.log(res);
+            if (res && res.tempFiles && res.tempFiles.length > 0) {
+              let flag = false;
+              flag = self.validFileSizeAndType(res.tempFiles, 'img');
+              if (!flag) {
+                uni.showToast({
+                  icon: 'none',
+                  title: '图片大小不能超过10M!',
+                });
+                return;
+              }
+              // 上传
+              res.tempFilePaths.forEach((path) => {
+                uni.uploadFile({
+                  url: self.uploadAction, //仅为示例，非真实的接口地址
+                  filePath: path,
+                  name: self.uploadName,
+                  header: self.uploadHeader,
+                  success: (res) => {
+                    let data = JSON.parse(res.data);
+                    console.log('图片：', data);
+                    self.annexInfo.forEach((item) => {
+                      if (item.code === self.currentUploadType) {
+                        item.fileList.push(
+                          {
+                            ...data[0],
+                            fileUrls: ''
+                          }
+                        )
+                      }
+                    });
+                  },
+                  fail: (error) => {
+                    console.log(error);
+                  }
+                });
+              });
+            }
+          }
+        });
+      } else {
+        console.log('上传文件');
+        wx.chooseMessageFile({
+          count: 10, // 最大可选
+          type: 'file',
+          success: (res) => {
+            // tempFilePath可以作为img标签的src属性显示图片
+            // console.log(res);
+            if (res && res.tempFiles && res.tempFiles.length > 0) {
+              let flag = false;
+              flag = self.validFileSizeAndType(res.tempFiles, 'file');
+              if (!flag) {
+                uni.showToast({
+                  icon: 'none',
+                  title: '请上传符合要求的文件！',
+                });
+                return;
+              }
+              // 上传
+              res.tempFiles.forEach((list) => {
+                uni.uploadFile({
+                  url: self.uploadAction, //仅为示例，非真实的接口地址
+                  filePath: list.path,
+                  name: self.uploadName,
+                  header: self.uploadHeader,
+                  success: (res) => {
+                    let data = JSON.parse(res.data);
+                    console.log('文件：', data);
+
+                    self.annexInfo.forEach((item) => {
+                      if (item.code === self.currentUploadType) {
+                        item.fileList.push(
+                          {
+                            ...data[0],
+                            fileUrls: self.getFileImg(list)
+                          }
+                        )
+                      }
+                    });
+                  },
+                  fail: (error) => {
+                    console.log(error);
+                  }
+                });
+              });
+            }
+          },
+        })
+      }
+    },
+    // 删除图片/文件
+    deleteImg(index, item) {
+      console.log(item);
+      this.showDeleteWin = true;
+      this.deleteIndex = index;
+      this.deleteItem = item;
+    },
+    // 确定删除图片/文件
+    handleDelete() {
+      this.annexInfo[this.deleteIndex].fileList = this.annexInfo[this.deleteIndex].fileList.filter((list) => {
+        return list.fileId !== this.deleteItem.fileId;
       });
-      return true;
+      uni.showToast({
+        icon: 'none',
+        title: '移除成功',
+      });
     },
-    // 上传成功
-    uploadSuccess(data, index, lists, name) {
-      console.log('uploadSuccess+data', data);
-      console.log('uploadSuccess+index', index);
-      console.log('uploadSuccess+lists', lists);
-      console.log('uploadSuccess+name', name);
-      uni.hideToast();
-      setTimeout(() => {
-        uni.showToast({
-          icon: 'success',
-          title: '上传成功',
-          duration: 5000
-        });
-      }, 100)
+    // 预览图片
+    viewImg(file) {
+      let url = '';
+      if (file.fileUrls) {
+        url = file.fileUrls;
+      } else {
+        url = getImgUrl(file.fileId);
+      }
+      uni.previewImage({
+        urls: [url]
+      })
     },
-    // 上传失败
-    uploadError(res, index, lists, name) {
-      uni.hideToast();
-      setTimeout(() => {
-        uni.showToast({
-          icon: 'error',
-          title: '上传失败',
-          duration: 5000
-        });
-      }, 100)
-      console.log('uploadError+res', res);
-      console.log('uploadError+index', index);
-      console.log('uploadError+lists', lists);
-      console.log('uploadError+name', name);
+    // 校验上传的图片的大小和类型是否符合要求
+    validFileSizeAndType(fileList = [], type = '') {
+      if (fileList.length > 0) {
+        const FILE_SIZE = 10 * 1024 * 1024; // 文件大小
+        const RegStr = /.doc$|.docx$|.xls$|.xlsx$|.pdf$/i; // 上传文件的类型 --- 图片不校验类型
+        let sizeList = [];
+        let typeList = [];
+        if (type === 'img') {
+          // 校验图片
+          sizeList = fileList.filter((list) => {
+            return list.size > FILE_SIZE;
+          });
+          if (sizeList.length > 0) {
+            return false;
+          } else {
+            return true;
+          }
+        } else {
+          // 校验文件
+          fileList.forEach((list) => {
+            if (list.size > FILE_SIZE) {
+              sizeList.push(list);
+            }
+            if (!RegStr.test(list.name)) {
+              typeList.push(list);
+            }
+          })
+          if (sizeList.length > 0 || typeList.length > 0) {
+            return false;
+          } else {
+            return true;
+          }
+        }
+      } else {
+        return false;
+      }
+    },
+    // 获取文件的图片
+    getFileImg(file) {
+      let url = '';
+      let pdfReg = /.pdf$/i;
+      let wordReg = /.doc$|.docx$/i;
+      let excelReg = /.xls$|.xlsx$/i;
+      let fileTypes = '';
+      if (pdfReg.test(file.name)) {
+        fileTypes = 'pdf';
+        url = this.pdfImg;
+      }
+      if (wordReg.test(file.name)) {
+        fileTypes = 'word';
+        url = this.wordImg;
+      }
+      if (excelReg.test(file.name)) {
+        fileTypes = 'excel';
+        url = this.excelImg;
+      }
+      return url;
     },
     // 获取临时token
     getTempToken() {
@@ -334,16 +513,70 @@ export default {
     },
     // 保存并注册
     async handleSave() {
+      let self = this;
+      let flag = false;
+      // 校验附件是否有值
+      flag = self.validAnnex(self.annexInfo);
+      console.log('flag', flag)
+      if (!flag) {
+        uni.showToast({
+          icon: 'none',
+          title: '请上传公司附件'
+        });
+      }
       this.$refs.companyForm.validate(valid => {
-        if (valid) {
+        if (valid && flag) {
           console.log('验证通过');
-          const info = channelRegister(this.queryPageParameters);
+          let postData = {
+            ...self.baseForm,
+            ...self.companyForm
+          }
+          postData.channelBanks = [
+            {
+              accountName: self.companyForm.accountName, // 账户名称
+              accountNo: self.companyForm.accountNo, // 账户号码
+              branchName: self.companyForm.branchName, // 开户银行
+            }
+          ];
+          if (self.annexInfo && self.annexInfo.length > 0) {
+            self.annexInfo.forEach((item) => {
+              let obj = {
+                fileId: item.fileId,
+                fileName: item.fileId,
+                type: item.fileId,
+              };
+              postData.channelAttachments.push(obj);
+            })
+          }
+          const info = channelRegister(postData);
           console.log(info);
-          this.$emit('next');
+          if (info.code === 'success') {
+            uni.showToast({
+              icon: 'success',
+              title: '注册成功'
+            });
+            this.$emit('next');
+          }
         } else {
           console.log('验证失败');
         }
       });
+    },
+    // 校验附件
+    validAnnex() {
+      if (this.annexInfo && this.annexInfo.length > 0) {
+        let flag = false;
+        flag = this.annexInfo.some((item) => {
+          return (item.subType === "must" && item.fileList.length === 0);
+        });
+        if (flag) {
+          return false;
+        } else {
+          return true;
+        }
+      } else {
+        return false;
+      }
     },
     // 确定选择日期
     confirmDate(value) {
@@ -416,7 +649,14 @@ export default {
         type: "ChannelAttachment",
         valid: "Valid"
       }
-      this.annexInfo = await getChannelAttachment(postData);
+      let list = await getChannelAttachment(postData);
+      // console.log('listlistlist', list);
+      if (list && list.length > 0) {
+        list.forEach((item) => {
+          this.$set(item, 'fileList', []);
+        });
+        this.annexInfo = list;
+      }
       console.log('this.annexInfo', this.annexInfo);
     },
     // 搜索银行
@@ -484,6 +724,47 @@ export default {
               vertical-align: middle;
               color: #fa3534;
               padding-top: 6rpx;
+            }
+          }
+
+          .upload-file-wrapper {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+
+            .file-list-wrapper {
+              width: 200rpx;
+              height: 200rpx;
+              margin: 4rpx;
+              border-radius: 8rpx;
+              position: relative;
+
+              .icon {
+                position: absolute;
+                top: 4rpx;
+                right: 4rpx;
+                z-index: 10;
+              }
+            }
+
+            .upload-icon {
+              width: 200rpx;
+              height: 200rpx;
+              margin: 4rpx;
+              border-radius: 8rpx;
+              background: #f4f5f6;
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+
+              .select {
+                box-sizing: border-box;
+                margin-top: 10rpx;
+                font-size: 28rpx;
+                color: #606266;
+              }
             }
           }
         }
