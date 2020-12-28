@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-24 10:28:33
+ * @LastEditTime: 2020-12-28 14:26:26
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -276,7 +276,6 @@ export default {
     },
     async gotoPay(obj) {
       const res = await getBusinessIdApi(this.noticeId);
-      console.log(res);
       if (res) {
         this.show = true;
       } else {

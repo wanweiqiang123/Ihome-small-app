@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-25 11:40:27
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-22 08:24:00
+ * @LastEditTime: 2020-12-28 14:26:33
 -->
 <template>
   <view class="box">
@@ -57,7 +57,6 @@ export default {
   methods: {
     async getInfo() {
       this.info = await getAppListApi(this.payId);
-      console.log(this.info);
     },
     downLoad(id) {
       uni.showToast({

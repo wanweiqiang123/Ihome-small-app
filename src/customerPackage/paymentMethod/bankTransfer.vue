@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 15:28:17
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-25 18:08:47
+ * @LastEditTime: 2020-12-28 14:26:01
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
@@ -41,12 +41,11 @@
           class="upload"
           ref="uUpload"
           :action="action"
-          :auto-upload="false"
           @on-success="successChange"
           :show-upload-list="showUploadList"
-          :header="{
-            'Authorization': 'bearer '+ token
-          }"
+          :header="header"
+          :show-progress="false"
+          :before-upload="beforeUpload"
           name="files"
         ></u-upload>
       </view>
@@ -60,7 +59,7 @@
   </view>
 </template>
 <script>
-import { getBankInfoApi } from "../../api/customer";
+import { getBankInfoApi, postAddServiceApi } from "../../api/customer";
 import { currentEnvConfig } from "../../env-config.js";
 import storageTool from "../../common/storageTool.js";
 export default {
@@ -69,33 +68,34 @@ export default {
       info: {},
       payId: '',
       payNum: 0,
-      action: "",
+      action: currentEnvConfig['protocol'] + '://' + currentEnvConfig['apiDomain'] + '/sales-api/sales-document-cover/file/upload',
       lists: [],
-      showUploadList: false,
-      token: null,
+      showUploadList: true,
+      header: {
+        'Authorization': 'bearer '+ storageTool.getToken()
+      },
+      payData: {},
+      uploadArr: [],
     };
   },
   onLoad(options) {
     this.payId = options.id;
     this.payNum = options.payNum;
+    this.payData = { ...getApp().paidData };
     // 假数据
     this.payId = 3;
   },
   onReady() {
 		// 得到整个组件对象，内部图片列表变量为"lists"
-    this.lists = this.$refs.uUpload.lists;
+    // this.lists = this.$refs.uUpload.lists;
   },
   onShow() {
     if (this.payId) {
       this.getInfo();
-      this.token = storageTool.getToken();
-      this.action = currentEnvConfig['protocol'] + '://' + currentEnvConfig['apiDomain'] + '/sales-api/sales-document-cover/file/upload'
     }
   },
   methods: {
     async getInfo() {
-      console.log(this.action, 'action');
-      console.log(this.lists, 'lists');
       this.info = await getBankInfoApi(this.payId);
     },
     copyPayNum() {
@@ -104,7 +104,52 @@ export default {
       })
     },
     async successChange(data, index, lists, name) {
-      console.log(data, index, lists, name);
+      this.uploadArr = lists.map(v => ({
+        fileId: v.response.data[0].fileId,
+        fileName: v.response.data[0].generateFileName + '.' + v.response.data[0].generateFileType,
+      }))
+    },
+    beforeUpload() {
+      uni.showToast({
+        icon: 'loading',
+        title: '正在上传...',
+        duration: 500000000000
+      });
+      return true;
+    },
+    async submitMsg() {
+      let obj = {};
+      obj.amount = this.payNum;
+      obj.businessId = this.payData.businessId;
+      obj.groupId = this.payData.groupId;
+      obj.operator = this.payData.operator;
+      obj.payType = 'Transfer';
+      obj.payer = 'Customer';
+      obj.proId = this.payData.projectId;
+      obj.roomId = this.payData.roomNumberId;
+      obj.serviceAmount = this.payData.paymentAmount;
+      obj.serviceFeePaid = this.payData.paid;
+      obj.termId = this.payData.cycleId;
+      obj.unpaidServiceFee = this.payData.unpaid;
+      obj.terminal = 'WeChatApp';
+      obj.attachments = this.uploadArr;
+      obj.payeeAccount = this.info.payeeAccount;
+      obj.payeeName = this.info.payeeName;
+      // 假数据
+      obj.groupId = 15;
+      obj.operator = 15;
+      obj.proId = 1;
+      obj.termId = 3;
+      const res = await postAddServiceApi(obj);
+      if (res) {
+        uni.showToast({
+          title: '提交成功',
+          icon: 'none'
+        })
+      }
+      uni.navigateTo({
+        url: `/customerPackage/discountsInfo/index?id=${this.payData.businessId}`,
+      });
     }
   },
   

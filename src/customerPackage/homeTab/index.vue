@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-23 16:16:18
+ * @LastEditTime: 2020-12-26 16:17:55
 -->
 <template>
   <view>
@@ -74,7 +74,6 @@ export default {
       this.info = await postWechatNoticeListApi({
         ownerMobile: userInfo.mobilePhone,
       })
-      console.log(this.info);
     },
     routerTo(id) {
       uni.navigateTo({

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-25 11:42:30
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-22 08:23:27
+ * @LastEditTime: 2020-12-28 14:33:29
 -->
 <template>
   <view class="box">
@@ -40,13 +40,13 @@
               width="100rpx"
               height="60rpx"
               class="box-item-msg-detail"
-              :url="item.url"
+              :url="`/sales-api/sales-document-cover/file/browse/${item.fileIds[0]}`"
             ></u-image>
           </view>
           <view
             class="box-item-msg-title"
             style="border-top: 1px solid #f2f2f2f2;padding: 10rpx 0;height: 80rpx"
-          >转账凭证
+          >
             <u-button
               class="box-item-msg-detail"
               type="error"
