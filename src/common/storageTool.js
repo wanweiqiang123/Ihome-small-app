@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 15:30:00
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-26 10:19:20
+ * @LastEditTime: 2020-12-28 14:45:36
  */
 const tokenKey = 'token';//token的key
 const expiresInKey = 'expires_in';//token的key的过期时间
@@ -93,8 +93,9 @@ const storageTool = {
     goHome() {
         const token = this.getToken();
         if (token) {
-            const userInfo = this.getUserInfo();
-            let userType = userInfo?.userType;
+            // const userInfo = this.getUserInfo();
+            // let userType = userInfo?.userType;
+            const userType = 'Customer';
             //userType用户类别(Staff-员工、Channel-渠道、Customer-客户)
             switch (userType) {
                 case 'Customer':
