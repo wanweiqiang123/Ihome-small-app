@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-27 11:34:30
+ * @LastEditTime: 2020-12-26 18:40:43
 -->
 <template>
   <view class="notice safe-area-inset-bottom">
@@ -45,6 +45,19 @@
               v-model="form.sex"
               type="select"
               placeholder="请选择优惠折扣方式"
+              @click="selectShow = true"
+            />
+          </u-form-item>
+          <u-form-item label="优惠说明">
+            <u-input
+              v-model="form.sex"
+              placeholder="请输入优惠说明"
+            />
+          </u-form-item>
+          <u-form-item label="服务费金额">
+            <u-input
+              v-model="form.sex"
+              placeholder="请输入服务费金额"
             />
           </u-form-item>
         </u-form>
@@ -201,6 +214,12 @@
         </view>
       </template>
     </view>
+    <u-select
+      v-model="selectShow"
+      :list="list"
+      safe-area-inset-bottom
+      @confirm="selectConfirm"
+    ></u-select>
     <view class="notice-btn safe-area-inset-bottom">
       <u-button
         shape="circle"
@@ -217,6 +236,7 @@ export default {
   name: "notice-create",
   data() {
     return {
+      selectShow: false,
       form: {
         ownerType: "1",
       },
@@ -258,6 +278,10 @@ export default {
           { validator: validIdentityCard, trigger: "change" },
         ],
       },
+      list: [
+        { label: "优惠", value: 1 },
+        { label: "自定义", value: 2 },
+      ],
     };
   },
   methods: {
@@ -300,6 +324,10 @@ export default {
         .catch(() => {
           console.log("不通过");
         });
+    },
+    selectConfirm(val) {
+      console.log(val);
+      let item = val[0];
     },
   },
   onReady() {

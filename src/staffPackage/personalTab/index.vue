@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 11:22:52
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-07 14:24:40
+ * @LastEditTime: 2020-12-26 15:04:11
 -->
 <template>
   <StaffTabBar>
@@ -114,7 +114,7 @@ export default {
       console.log("切换用户");
       let userInfo = storageTool.getUserInfo();
       this.userTypeList = userInfo?.userTypeList || [];
-      this.userTypeList = ["Staff", "Channel", "Customer"];
+      // this.userTypeList = ["Staff", "Channel", "Customer"];
       this.userSwitchShow = true;
     },
     async userSwitch(item, index) {

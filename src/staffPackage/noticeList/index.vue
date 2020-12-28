@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-16 14:16:06
+ * @LastEditTime: 2020-12-26 18:10:40
 -->
 <template>
   <view class="notice safe-area-inset-bottom">
@@ -16,20 +16,17 @@
         @click="handleGoConfirm()"
       >
         <view class="notice-info">
-          <view class="notice-title">{{`${$dict.dictAllName(i.notificationType, 'NotificationType')}(${i.noticeNo})`}}</view>
+          <view class="notice-title">{{i.notificationType | filterNoticeDict(noticeTypes)}}{{`(${i.noticeNo})`}}</view>
           <view>{{`${i.projectName} ${i.buyUnit}栋-${i.roomNumberId}`}}</view>
           <template v-for="(item, index) in i.ownerList">
-            <view
-              v-if="item.signingStatus === 'Yes'"
-              :key="index"
-            >{{item.ownerName}}</view>
+            <view :key="index">{{item.ownerName || '-'}}</view>
           </template>
         </view>
         <view class="notice-identify">
           <text :class="['notice-color', {
             'success': i.notificationStatus == 'BecomeEffective',
             'primary': i.notificationStatus === 'WaitDetermine'
-          }]">{{$dict.dictAllName(i.notificationStatus, 'NotificationStatus')}}</text>
+          }]">{{i.notificationStatus | filterNoticeDict(noticeStatus)}}</text>
           <u-icon
             name="arrow-right"
             color="#888"
@@ -120,7 +117,7 @@
         >
           <IhCheckbox
             v-model="queryPageParameters.notificationTypes"
-            :arr="$dict.dictAllList('NotificationType')"
+            :arr="noticeTypes"
             :alias="{name:'name',value:'code'}"
           ></IhCheckbox>
         </u-form-item>
@@ -130,7 +127,7 @@
         >
           <IhCheckbox
             v-model="queryPageParameters.notificationStatuses"
-            :arr="$dict.dictAllList('NotificationStatus')"
+            :arr="noticeStatus"
             :alias="{name:'name',value:'code'}"
           ></IhCheckbox>
         </u-form-item>
@@ -143,6 +140,7 @@
 import PopupSearch from "../../components/PopupSearch/index.vue";
 import IhCheckbox from "../../components/IhCheckbox/index.vue";
 import pagination from "../../mixins/pagination";
+import { getAllByTypeApi } from "../../api/index";
 import { postNoticeList } from "../../api/staff";
 
 export default {
@@ -162,7 +160,15 @@ export default {
         notificationStatuses: [],
         notificationTypes: [],
       },
+      noticeTypes: [],
+      noticeStatus: [],
     };
+  },
+  filters: {
+    filterNoticeDict(type, data) {
+      const { name } = data.find((i) => i.code === type);
+      return name;
+    },
   },
   methods: {
     handleGoConfirm() {
@@ -184,10 +190,15 @@ export default {
     async getListMixin() {
       this.setPageDataMixin(await postNoticeList(this.queryPageParameters));
     },
+    async getDictName(type) {
+      const dictList = await getAllByTypeApi({ type });
+      return dictList;
+    },
   },
-  onLoad() {
-    console.log(this);
+  async onLoad() {
     this.getListMixin();
+    this.noticeTypes = await this.getDictName("NotificationType");
+    this.noticeStatus = await this.getDictName("NotificationStatus");
   },
 };
 </script>
