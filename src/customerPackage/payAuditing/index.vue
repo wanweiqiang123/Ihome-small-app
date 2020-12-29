@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-25 11:42:30
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-28 15:42:51
+ * @LastEditTime: 2020-12-28 18:32:42
 -->
 <template>
   <view class="box">
@@ -35,17 +35,22 @@
             <text class="box-item-msg-detail">{{item.payDate}}</text>
           </view>
           <view class="box-item-msg-title">转账凭证
-            <u-image
-              bg-color="#FFFFFF"
-              width="100rpx"
-              height="60rpx"
-              class="box-item-msg-detail"
-              :url="`/sales-api/sales-document-cover/file/browse/${item.fileIds[0]}`"
-            ></u-image>
+            <view class="box-item-msg-detail" style="display: inline-block">
+              <u-upload
+                bg-color="#FFFFFF"
+                width="100rpx"
+                height="50rpx"
+                :file-list="item.fileIds"
+                upload-text=""
+                :show-progress="false"
+                :deletable="false"
+                :max-count="item.fileIds.length"
+              ></u-upload>
+            </view>
           </view>
           <view
             class="box-item-msg-title"
-            style="border-top: 1px solid #f2f2f2f2;padding: 10rpx 0;height: 80rpx"
+            style="border-top: 1px solid #f2f2f2f2;padding: 10rpx 0;margin-top: 10rpx;height: 80rpx"
           >
             <u-button
               class="box-item-msg-detail"
@@ -69,6 +74,7 @@
 <script>
 import { getNotCheckListApi, paymentdeleteApi } from "../../api/customer";
 import { getAllByTypeApi } from "../../api/index";
+import { currentEnvConfig } from "../../env-config.js";
 export default {
   components: {},
   data() {
@@ -105,7 +111,13 @@ export default {
       }
     },
     async getInfo() {
-      this.info = await getNotCheckListApi(this.payId);
+      const res = await getNotCheckListApi(this.payId);
+      this.info = res.map(v => ({
+        ...v,
+        fileIds: v.fileIds.map(j => ({
+          url: `${currentEnvConfig['protocol']}://${currentEnvConfig['apiDomain']}/sales-api/sales-document-cover/file/browse/${j}`
+        }))
+      }))
     },
     del(id) {
       this.delId = id;

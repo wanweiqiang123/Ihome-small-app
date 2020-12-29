@@ -68,7 +68,7 @@
         </u-form-item>
       </u-form>
     </view>
-    <view class="down-load">下载授权确认函模板</view>
+    <view class="down-load" @click="downTemplate">下载授权确认函模板</view>
     <view class="tips">注册信息需与签约授权确认函保持一致</view>
     <view class="btn">
       <u-button type="primary" @click="nextStep">下一步</u-button>
@@ -79,6 +79,7 @@
 <script>
 import { getMessage } from '@/api/channel';
 import { phoneValidator, validIdentityCard, emailOrNullValidato } from '@/common/validate';
+import { currentEnvConfig } from '@/env-config';
 
 export default {
   props: {
@@ -172,6 +173,7 @@ export default {
       },
       codeBtn: '发送验证码',
       timer: null, // 计时器
+      fileUrl: `${currentEnvConfig['protocol']}://${currentEnvConfig['apiDomain']}/sales-api/sales-document-cover/static/channel/模版-委托书.docx`
     };
   },
   onReady() {
@@ -209,7 +211,11 @@ export default {
             title: '正在获取验证码',
             duration: 50000000
           });
-          await getMessage(this.baseForm.mobile);
+          let postData = {
+            mobilePhone: this.baseForm.mobile,
+            smsCodeType: 'Register'
+          }
+          await getMessage(postData);
           uni.hideToast();
           setTimeout(() => {
             uni.showToast({
@@ -255,6 +261,29 @@ export default {
         });
         return false;
       }
+    },
+    // 下载授权确认函模板
+    downTemplate() {
+      let self = this;
+      uni.downloadFile({
+        url: self.fileUrl,
+        success: (res) => {
+          if (res.statusCode === 200) {
+            console.log('下载成功');
+            uni.showToast({
+              icon: 'success',
+              title: '下载成功',
+            });
+            // 预览下载的文件
+            // uni.openDocument({
+            //   filePath: res.tempFilePath,
+            //   success: (res) => {
+            //     console.log('打开文档成功');
+            //   }
+            // });
+          }
+        }
+      });
     }
   },
 };

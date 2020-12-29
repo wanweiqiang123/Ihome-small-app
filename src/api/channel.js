@@ -7,11 +7,12 @@
  * @LastEditTime: 2020-12-15 16:30:30
  */
 import { getApi, postApi } from '@/common/http';
+import { currentEnvConfig } from '@/env-config';
 
 // 图片地址
 export function getImgUrl(id = '') {
   if (!id) return ''
-  return `http://api.polyihome.develop/sales-api/sales-document-cover/file/browse/${id}`;
+  return `${currentEnvConfig['protocol']}://${currentEnvConfig['apiDomain']}/sales-api/sales-document-cover/file/browse/${id}`;
 }
 
 // 渠道公司注册 --- 获取临时token
@@ -20,8 +21,8 @@ export async function getTempToken(code = '',data = {}, option = {}) {
 }
 
 // 渠道公司注册 --- 获取短信验证码
-export async function getMessage(phone = '',data = {}, option = {}) {
-  return await getApi(`/sales-api/system/sessionUser/sendSms/${phone}`, data, option);
+export async function getMessage(data = {}, option = {}) {
+  return await postApi(`/sales-api/system/sessionUser/sendSms`, data, option);
 }
 
 // 渠道公司注册 --- 获取银行网点列表
