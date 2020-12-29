@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
- * @LastEditors: zyc
- * @LastEditTime: 2020-12-26 14:55:32
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-12-28 19:24:48
 -->
 <script>
 export default {
@@ -14,6 +14,7 @@ export default {
       dictAll: [], //字典数据
     }, //初始化数据是否完成参数
     paidData: {},
+    searchParams: null,
     refreshListData: null, //列表缓存页面刷新存放数据
     userType: null,
     tabList: [

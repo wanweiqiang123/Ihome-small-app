@@ -4,21 +4,25 @@
  * @Author: wwq
  * @Date: 2020-11-20 17:03:55
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-09 08:57:40
+ * @LastEditTime: 2020-12-28 19:48:16
 -->
 <template>
   <PageingSearch
     ref="search"
+    :props="{
+      label: paramsKey,
+      value: paramsId
+    }"
     :search-api="searchApi"
     :params-key="paramsKey"
   >
-    <template #searchlist="{ scrollData }">
+    <template #searchlist="{ scrollData, label, value }">
       <view
         class="list-item"
-        :key="scrollData.id"
+        :key="scrollData[paramsId]"
         @click="goBackPage(scrollData)"
       >
-        {{scrollData.name}} {{scrollData.id}}
+        {{scrollData[label]}} {{scrollData[value]}}
       </view>
     </template>
   </PageingSearch>
@@ -31,19 +35,30 @@ export default {
     return {
       searchApi: "",
       paramsKey: "",
+      paramsId: "",
+      type: "",
     };
   },
   onLoad(option) {
+    console.log(option);
     this.searchApi = option.api;
+    this.paramsKey = option.key;
+    this.paramsId = option.idName;
+  },
+  onShow() {
+    this.searchApi = getApp().globalData.searchParams.api;
+    this.paramsKey = getApp().globalData.searchParams.key;
+    this.paramsId = getApp().globalData.searchParams.id;
+    this.type = getApp().globalData.searchParams.type;
   },
   mounted() {},
   methods: {
     goBackPage(data) {
-      this.$tool.back(null, { type: "init", data });
+      this.$tool.back(null, { type: this.type, data });
     },
   },
 };
-</script>
+</script> 
 <style lang="scss" scoped>
 .list-item {
   text-align: left;
