@@ -12,9 +12,8 @@
       <view
         v-for="(item, index) in stepList"
         :key="index"
-        :class="
-          currentStep === index ? `${item.className} color` : item.className
-        "
+        @click="handleChangeTab(index)"
+        :class="currentStep === index ? `${item.className} color` : item.className"
         >{{ item.name }}</view>
     </view>
     <view class="component-wrapper">
@@ -87,6 +86,13 @@ export default {
         this.baseForm = data;
       }
       this.currentStep = this.currentStep + 1;
+    },
+    // 切换Tab
+    handleChangeTab(index) {
+      console.log(index);
+      if (index !== 2) {
+        this.currentStep = index;
+      }
     },
     // 查看个人中心
     handleView() {

@@ -130,7 +130,9 @@
         </view>
       </view>
     </view>
-
+    <view class="register-wrapper">
+      <u-button shape="circle" @click="handleRegister">渠道商注册</u-button>
+    </view>
     <view class="img-bottom">
       <image
         style="width: 100%"
@@ -305,6 +307,12 @@ export default {
     async eye() {
       this.passwordType = !this.passwordType;
     },
+    // 渠道商注册
+    handleRegister() {
+      uni.redirectTo({
+        url: "/pages/register/channel",
+      });
+    }
   },
 
   onReady() {},
@@ -313,6 +321,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.register-wrapper {
+  width: 100%;
+  padding: 10rpx 70rpx;
+  margin-top: 20rpx;
+}
 .login-select-select {
   line-height: 100rpx;
   border-bottom: 1px solid #eeeeee;

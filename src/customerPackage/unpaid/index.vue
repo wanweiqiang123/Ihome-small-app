@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-16 14:19:14
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-28 15:49:04
+ * @LastEditTime: 2020-12-30 10:11:41
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
@@ -111,9 +111,11 @@ export default {
       switch (this.payRecod.payType) {
         // 微信支付
         case "WeChatPay":
-          uni.navigateTo({
-            url: `/customerPackage/paymentMethod/weChatPay`,
-          });
+          // uni.navigateTo({
+          //   url: `/customerPackage/paymentMethod/weChatPay`,
+          // });
+          const openId = uni.getStorageSync('openId');
+          console.log(openId);
           break;
         // 支付宝,银联
         case "Alipay":

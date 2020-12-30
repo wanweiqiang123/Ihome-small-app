@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:17:34
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-24 10:39:15
+ * @LastEditTime: 2020-12-30 10:06:41
 -->
 <template>
   <CustomerTabBar>
@@ -18,8 +18,8 @@
             src="https://cdn.uviewui.com/uview/swiper/2.jpg"
           ></u-image>
         </view>
-        <view>张小凡</view>
-        <view>18600002222</view>
+        <view>{{userInfo.name}}</view>
+        <view>{{userInfo.mobilePhone}}</view>
       </view>
       <view class="btn-container">
         <u-button
@@ -56,7 +56,11 @@ export default {
           fontSize: 28,
         },
       ],
+      userInfo: {},
     };
+  },
+  onShow() {
+    this.userInfo = uni.getStorageSync('userInfo');
   },
   methods: {
     // 退出登录
