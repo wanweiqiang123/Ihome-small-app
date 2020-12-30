@@ -82,6 +82,7 @@
 import { getMessage } from '@/api/channel';
 import { phoneValidator, validIdentityCard, emailOrNullValidato } from '@/common/validate';
 import { currentEnvConfig } from '@/env-config';
+import {getSessionUserSendSmsApi} from "@/api";
 
 export default {
   props: {
@@ -93,17 +94,47 @@ export default {
   data() {
     const validPassword = (rule, value, callback) => {
       // const reg = /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z_]+$)(?![a-z0-9]+$)(?![a-z_]+$)(?![0-9_]+$)[a-zA-Z0-9_]{8,}$/;
-      const reg = /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\\W_]+$)(?![a-z0-9]+$)(?![a-z\\W_]+$)(?![0-9\\W_]+$)[a-zA-Z0-9\\W_]{8,}$/;
+      // const reg = /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\\W_]+$)(?![a-z0-9]+$)(?![a-z\\W_]+$)(?![0-9\\W_]+$)[a-zA-Z0-9\\W_]{8,}$/;
+      // const reg = /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\W@#$%^&.]+$)(?![a-z0-9]+$)(?![a-z\W@#$%^&.]+$)(?![0-9\W@#$%^&.]+$)[a-zA-Z0-9\W@#$%^&.]{8,}$/;
+      let rC = {
+        lW:'[a-z]', // 小写字母
+        uW:'[A-Z]', // 大写字母
+        nW:'[0-9]', // 数字
+        sW:'[@#$%^&.]'// 特殊字符
+      };
+      function Reg(str, rStr){
+        let reg = new RegExp(rStr);
+        if(reg.test(str)) return true;
+        else return false;
+      }
       if (!value) {
         callback(new Error('请输入密码'));
         return;
       } else {
-        if (!reg.test(value)) {
-          callback(new Error('密码必须是数字、大写字母、小写字母、符号4类中包含3类且长度不能少于8位。'));
+        if(value.length < 8){
+          callback(new Error('请至少输入8位及以上密码'));
           return;
-        } else {
-          callback();
+        }else{
+          let tR = {
+            l: Reg(value, rC.lW),
+            u: Reg(value, rC.uW),
+            n: Reg(value, rC.nW),
+            s: Reg(value, rC.sW)
+          };
+          if((tR.l && tR.u && tR.n) || (tR.l && tR.u && tR.s) || (tR.s && tR.u && tR.n) ||                                     (tR.s && tR.l && tR.n)){
+            // 密码符合要求
+            callback();
+          }else{
+            callback(new Error('密码必须是数字、大写字母、小写字母、符号4类中包含3类且长度不能少于8位。'));
+            return;
+          }
         }
+        // if (!reg.test(value)) {
+        //   callback(new Error('密码必须是数字、大写字母、小写字母、符号4类中包含3类且长度不能少于8位。'));
+        //   return;
+        // } else {
+        //   callback();
+        // }
       }
     }
     const validConfirmPassword = (rule, value, callback) => {
@@ -111,20 +142,53 @@ export default {
         callback(new Error('请先输入密码'));
         return;
       }
-      const reg = /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\\W_]+$)(?![a-z0-9]+$)(?![a-z\\W_]+$)(?![0-9\\W_]+$)[a-zA-Z0-9\\W_]{8,}$/;
+      // const reg = /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\\W_]+$)(?![a-z0-9]+$)(?![a-z\\W_]+$)(?![0-9\\W_]+$)[a-zA-Z0-9\\W_]{8,}$/;
+      let rC = {
+        lW:'[a-z]', // 小写字母
+        uW:'[A-Z]', // 大写字母
+        nW:'[0-9]', // 数字
+        sW:'[@#$%^&.]'// 特殊字符
+      };
+      function Reg(str, rStr){
+        let reg = new RegExp(rStr);
+        if(reg.test(str)) return true;
+        else return false;
+      }
       if (!value) {
         callback(new Error('请输入确认密码'));
         return;
       } else {
-        if (!reg.test(value)) {
-          callback(new Error('密码必须是数字、大写字母、小写字母、符号4类中包含3类且长度不能少于8位。'));
+        // if (!reg.test(value)) {
+        //   callback(new Error('密码必须是数字、大写字母、小写字母、符号4类中包含3类且长度不能少于8位。'));
+        //   return;
+        // } else {
+        //   if (this.baseForm.password !== value) {
+        //     callback(new Error('两次输入的密码不一致'));
+        //     return;
+        //   }
+        //   callback();
+        // }
+        if(value.length < 8){
+          callback(new Error('请至少输入8位及以上密码'));
           return;
-        } else {
+        }else{
           if (this.baseForm.password !== value) {
             callback(new Error('两次输入的密码不一致'));
             return;
           }
-          callback();
+          let tR = {
+            l: Reg(value, rC.lW),
+            u: Reg(value, rC.uW),
+            n: Reg(value, rC.nW),
+            s: Reg(value, rC.sW)
+          };
+          if((tR.l && tR.u && tR.n) || (tR.l && tR.u && tR.s) || (tR.s && tR.u && tR.n) ||                                     (tR.s && tR.l && tR.n)){
+            // 密码符合要求
+            callback();
+          }else{
+            callback(new Error('密码必须是数字、大写字母、小写字母、符号4类中包含3类且长度不能少于8位。'));
+            return;
+          }
         }
       }
     }
@@ -215,11 +279,19 @@ export default {
             mobilePhone: this.baseForm.mobile,
             smsCodeType: 'RegisterAndLogin'
           }
-          await getMessage(postData);
-          uni.showToast({
-            icon: 'none',
-            title: '验证码已发送'
-          });
+          const res = await getMessage(postData);
+          if (res) {
+            uni.showToast({
+              title: res,
+              icon: "none",
+              duration: 3000,
+            });
+          } else {
+            uni.showToast({
+              icon: 'none',
+              title: '验证码已发送'
+            });
+          }
           self.timer = setInterval(() => {
             if (count > 0 && count <= 60) {
               self.codeBtn = `${count}后重新获取`;

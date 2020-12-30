@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-28 15:41:06
+ * @LastEditTime: 2020-12-30 14:24:01
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -155,7 +155,7 @@
                   type="primary"
                   size="medium"
                   shape="circle"
-                  @click="viewNotice(item.templateId)"
+                  @click="viewNotice(item)"
                 >预览</u-button>
               </view>
             </view>
@@ -279,6 +279,9 @@ export default {
       if (val) {
         // this.webviewSrc = `/sales-api/sales-document-cover/file/browse/${val}`;
         // this.webView = true;
+        uni.navigateTo({
+          url: `/customerPackage/notification/index?templateId=${val.templateId}&&id=${val.id}`,
+        });
       }
     },
     async gotoPay(obj) {

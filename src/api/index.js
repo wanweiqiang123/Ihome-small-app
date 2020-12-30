@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 10:09:50
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-30 14:08:44
+ * @LastEditTime: 2020-12-30 17:05:58
  */
 
 import { getApi, postApi } from '../common/http.js';
@@ -71,6 +71,7 @@ export async function userSwitchApi(data = {}, option = {}) {
 
 /**查询登录用户信息*/
 export async function getUserInfoApi(data = {}, option = {}) {
+
     return await postApi('/sales-api/system/sessionUser/getUserInfo', data, option);
 }
 
@@ -128,12 +129,7 @@ export async function getTestApi(time = 2000) {
         });
     })
 }
-
-
-
-
-
-
-
-
-
+/**PDF转图片*/
+export async function getPdf2PicApi(data, option = {}) {
+    return await getApi(`/sales-api/sales-document-cover/file/pdf2Pic/${data}`, option);
+}
