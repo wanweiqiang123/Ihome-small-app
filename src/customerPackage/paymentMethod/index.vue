@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-28 20:59:57
+ * @LastEditTime: 2020-12-30 10:13:54
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
@@ -81,12 +81,12 @@ export default {
       payTypeOptions: [],
       payParam: {},
       show: false,
-      open: true
+      open: true,
     };
   },
   onLoad() {
     this.payData = { ...getApp().paidData };
-    this.payNum = this.payData.paymentAmount;
+    this.payNum = this.payData.unpaid;
   },
   async onShow() {
     this.payTypeOptions = await getAllByTypeApi({
@@ -174,6 +174,7 @@ export default {
         case 'WeChatPay':
           res = await postAddServiceApi(obj);
           const openId = uni.getStorageSync('openId');
+          console.log(openId);
           // async getUrl() {
           //   const res = await postUnionPayUrlApi({
           //     id: this.payId,

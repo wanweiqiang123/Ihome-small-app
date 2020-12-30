@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-10 10:09:50
- * @LastEditors: zyc
- * @LastEditTime: 2020-12-26 11:23:19
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-30 11:17:31
  */
 
 import { getApi, postApi } from '../common/http.js';
@@ -123,12 +123,7 @@ export async function getTestApi(time = 2000) {
         });
     })
 }
-
-
-
-
-
-
-
-
-
+/**PDF转图片*/
+export async function getPdf2PicApi(data, option = {}) {
+    return await getApi(`/sales-api/sales-document-cover/file/pdf2Pic/${data}`, option);
+}

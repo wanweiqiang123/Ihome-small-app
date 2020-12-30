@@ -138,6 +138,12 @@
 					"style": {
 						"navigationBarTitleText": "在线支付"
 					}
+				},
+				{
+					"path": "notification/index",
+					"style": {
+						"navigationBarTitleText": "优惠告知书"
+					}
 				}
 			]
 		},
