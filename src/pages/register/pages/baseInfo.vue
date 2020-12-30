@@ -27,6 +27,7 @@
         </u-form-item>
         <u-form-item label="手机号码" required prop="mobile">
           <u-input
+            type="number"
             v-model="baseForm.mobile"
             placeholder="请输入您的手机号码" :clearable="true" />
         </u-form-item>
@@ -49,6 +50,7 @@
         </u-form-item>
         <u-form-item label="邀请码" required prop="invitationCode">
           <u-input
+            type="number"
             :disabled="!!qrCode"
             v-model="baseForm.invitationCode"
             placeholder="请联系对接人获取并输入" :clearable="true" />
@@ -61,6 +63,7 @@
         <u-form-item label="短信验证码" required prop="verifyCode">
           <view class="input-btn-flex">
             <u-input
+              type="number"
               v-model="baseForm.verifyCode"
               placeholder="请输入短信验证码" :clearable="true" />
             <u-button class="u-margin-left-8" type="success" size="mini" @click="sendMessage">{{codeBtn}}</u-button>
@@ -142,20 +145,53 @@ export default {
         callback(new Error('请先输入密码'));
         return;
       }
-      const reg = /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\\W_]+$)(?![a-z0-9]+$)(?![a-z\\W_]+$)(?![0-9\\W_]+$)[a-zA-Z0-9\\W_]{8,}$/;
+      // const reg = /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\\W_]+$)(?![a-z0-9]+$)(?![a-z\\W_]+$)(?![0-9\\W_]+$)[a-zA-Z0-9\\W_]{8,}$/;
+      let rC = {
+        lW:'[a-z]', // 小写字母
+        uW:'[A-Z]', // 大写字母
+        nW:'[0-9]', // 数字
+        sW:'[@#$%^&.]'// 特殊字符
+      };
+      function Reg(str, rStr){
+        let reg = new RegExp(rStr);
+        if(reg.test(str)) return true;
+        else return false;
+      }
       if (!value) {
         callback(new Error('请输入确认密码'));
         return;
       } else {
-        if (!reg.test(value)) {
-          callback(new Error('密码必须是数字、大写字母、小写字母、符号4类中包含3类且长度不能少于8位。'));
+        // if (!reg.test(value)) {
+        //   callback(new Error('密码必须是数字、大写字母、小写字母、符号4类中包含3类且长度不能少于8位。'));
+        //   return;
+        // } else {
+        //   if (this.baseForm.password !== value) {
+        //     callback(new Error('两次输入的密码不一致'));
+        //     return;
+        //   }
+        //   callback();
+        // }
+        if(value.length < 8){
+          callback(new Error('请至少输入8位及以上密码'));
           return;
-        } else {
+        }else{
           if (this.baseForm.password !== value) {
             callback(new Error('两次输入的密码不一致'));
             return;
           }
-          callback();
+          let tR = {
+            l: Reg(value, rC.lW),
+            u: Reg(value, rC.uW),
+            n: Reg(value, rC.nW),
+            s: Reg(value, rC.sW)
+          };
+          if((tR.l && tR.u && tR.n) || (tR.l && tR.u && tR.s) || (tR.s && tR.u && tR.n) ||                                     (tR.s && tR.l && tR.n)){
+            // 密码符合要求
+            callback();
+          }else{
+            callback(new Error('密码必须是数字、大写字母、小写字母、符号4类中包含3类且长度不能少于8位。'));
+            return;
+          }
         }
       }
     }

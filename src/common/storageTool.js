@@ -4,12 +4,15 @@
  * @Author: zyc
  * @Date: 2020-11-10 15:30:00
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-30 14:56:26
+ * @LastEditTime: 2020-12-30 19:27:00
  */
 const tokenKey = 'token';//token的key
 const expiresInKey = 'expires_in';//token的key的过期时间
 const userInfoKey = 'userInfo';//用户信息的key
 const loginUserTypeLogKey = 'loginUserTypeLog';//登录类别记录
+
+const sessionKeyKey = 'sessionKey';
+const openIdKey = 'openId';
 
 const storageTool = {
     /**设置token*/
@@ -87,8 +90,19 @@ const storageTool = {
     },
     /**存储openId*/
     setOpenId(openId) {
-        uni.setStorageSync('openId', openId);
+        uni.setStorageSync(openIdKey, openId);
     },
+    getOpenId() {
+        return uni.getStorageSync(openIdKey);
+    },
+    /**存储setSessionKey*/
+    setSessionKey(sessionKey) {
+        uni.setStorageSync(sessionKeyKey, sessionKey);
+    },
+    getSessionKey() {
+        return uni.getStorageSync(sessionKeyKey);
+    },
+
     /**根据用户类别跳转首页，未登录情况跳转登录页面*/
     goHome() {
         const token = this.getToken();

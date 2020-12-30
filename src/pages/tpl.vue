@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-12 16:10:33
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-12 16:10:48
+ * @LastEditTime: 2020-12-30 15:48:36
 -->
 <template>
   <view> </view>
@@ -22,5 +22,5 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 </style>

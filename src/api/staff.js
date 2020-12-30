@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-10 15:30:58
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-29 14:59:00
+ * @LastEditTime: 2020-12-30 09:46:22
  */
 import { getApi, postApi } from '../common/http.js';
 
@@ -47,4 +47,13 @@ export async function postBuildByProId(data = {}, option = {}) {
  */
 export async function postRoomByProId(data = {}, option = {}) {
   return await postApi('/sales-api/project/room/getFuzzySearch', data, option)
+}
+/**
+ * @description: 优惠告知书申领
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function postNoticeCreate(data = {}, option = {}) {
+  return await postApi('/sales-api/contract/notice/create', data, option)
 }
