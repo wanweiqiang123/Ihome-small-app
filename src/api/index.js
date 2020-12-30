@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 10:09:50
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-28 16:56:13
+ * @LastEditTime: 2020-12-30 14:08:44
  */
 
 import { getApi, postApi } from '../common/http.js';
@@ -91,7 +91,7 @@ export async function postdevepolersApi(data = {}, option = {}) {
 
 /* 查询周期列表 */
 export async function postTermApi(data = {}, option = {}) {
-    return await postApi('/sales-api/project/term/getList', data, option);
+    return await postApi('/sales-api/project/term/getYdList', data, option);
 }
 
 /**字典列表，全部数据*/

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-29 15:08:18
+ * @LastEditTime: 2020-12-30 15:59:24
 -->
 <template>
   <view class="notice safe-area-inset-bottom">
@@ -23,12 +23,16 @@
       <view class="form-color">
         <u-form
           :model="form"
+          ref="baseFrom"
           label-width="190"
+          :error-type="['message']"
         >
           <u-form-item
             label="项目联动周期"
             class="hide-icon"
             right-icon="arrow-right"
+            required
+            prop="cycleName"
           >
             <u-input
               v-model="form.cycleName"
@@ -41,6 +45,8 @@
             label="优惠方式"
             class="hide-icon"
             right-icon="arrow-right"
+            required
+            prop="manner"
           >
             <u-input
               v-model="form.manner"
@@ -50,13 +56,21 @@
             />
           </u-form-item>
           <template v-if="isOther">
-            <u-form-item label="优惠说明">
+            <u-form-item
+              label="优惠说明"
+              required
+              prop="explain"
+            >
               <u-input
                 v-model="form.explain"
                 placeholder="请输入优惠说明"
               />
             </u-form-item>
-            <u-form-item label="服务费金额">
+            <u-form-item
+              label="服务费金额"
+              required
+              prop="paymentAmount"
+            >
               <u-input
                 v-model="form.paymentAmount"
                 placeholder="请输入服务费金额"
@@ -67,7 +81,7 @@
             <u-form-item label="服务费金额">
               <u-input
                 v-model="form.paymentAmount"
-                placeholder="请输入服务费金额"
+                placeholder="服务费金额"
                 disabled
               />
             </u-form-item>
@@ -78,16 +92,20 @@
         <u-form
           :model="form"
           label-width="190"
+          ref="roomFrom"
+          :error-type="['message']"
         >
           <u-form-item
             label="选择栋座"
             class="hide-icon"
             right-icon="arrow-right"
+            required
+            prop="unitName"
           >
             <u-input
               v-model="form.unitName"
               type="select"
-              placeholder="请选择栋座"
+              :placeholder="`${isRecognize ? '认筹阶段可不选择房号': '请选择栋座'}`"
               @click="handleShowBuild"
             />
           </u-form-item>
@@ -95,24 +113,29 @@
             label="选择房号"
             class="hide-icon"
             right-icon="arrow-right"
+            required
+            prop="roomName"
           >
             <u-input
               v-model="form.roomName"
               type="select"
-              placeholder="请选择房号"
+              :placeholder="`${isRecognize ? '认筹阶段可不选择房号':'请选择房号'}`"
               @click="handleShowRoom"
             />
           </u-form-item>
           <u-form-item label="业主类型">
-            <u-radio-group v-model="form.ownerType">
-              <u-radio name="1">个人</u-radio>
-              <u-radio name="0">企业</u-radio>
+            <u-radio-group
+              v-model="form.ownerType"
+              @change="changeOwner"
+            >
+              <u-radio name="Personal">个人</u-radio>
+              <u-radio name="Enterprise">企业</u-radio>
             </u-radio-group>
           </u-form-item>
         </u-form>
       </view>
       <!-- 个人部分 -->
-      <template v-if="form.ownerType == '1'">
+      <template v-if="form.ownerType == 'Personal'">
         <view class="owner-tilte">
           <view class="owner-tilte-right">如有多个业主通过右侧“
             <u-icon
@@ -131,37 +154,38 @@
               :model="item"
               :ref="`uForm`"
               class="owner-msg"
-              label-width="150"
+              :error-type="['message']"
+              label-width="160"
             >
               <u-form-item
                 label="业主姓名"
-                prop="name"
+                prop="ownerName"
+                required
               >
                 <u-input
-                  v-model="item.name"
-                  :auto-height="autoHeight"
+                  v-model="item.ownerName"
                   placeholder="请输入姓名"
                   clearable
                 />
               </u-form-item>
               <u-form-item
                 label="手机号码"
-                prop="phone"
+                prop="ownerMobile"
+                required
               >
                 <u-input
-                  v-model="item.phone"
-                  :auto-height="autoHeight"
+                  v-model="item.ownerMobile"
                   placeholder="请输入手机号码"
                   clearable
                 />
               </u-form-item>
               <u-form-item
                 label="身份证号"
-                prop="identity"
+                prop="ownerCertificateNo"
+                required
               >
                 <u-input
-                  v-model="item.identity"
-                  :auto-height="autoHeight"
+                  v-model="item.ownerCertificateNo"
                   placeholder="请输入身份证号"
                   clearable
                 />
@@ -191,29 +215,58 @@
             </view>
           </view>
         </template>
+        <view class="form-title u-border-bottom">
+          <view>{{`切换为${isType ? '纸质' : '电子'}优惠告知书`}}</view>
+          <u-switch v-model="isType"></u-switch>
+        </view>
+        <view
+          class="form-color"
+          v-if="!isType"
+        >
+          <u-form label-width="220">
+            <u-form-item label="优惠告知书附件">
+              <u-upload
+                :action="action"
+                :file-list="fileList"
+                max-count="1"
+              ></u-upload>
+            </u-form-item>
+          </u-form>
+        </view>
       </template>
       <!-- 企业部分 -->
       <template v-else>
         <view class="form-color">
           <u-form
-            :model="form"
+            :model="enterpriseFrom"
+            ref="enterprise"
             label-width="220"
+            :error-type="['message']"
           >
-            <u-form-item label="公司名称">
+            <u-form-item
+              label="公司名称"
+              prop="ownerName"
+            >
               <u-input
-                v-model="form.sex"
+                v-model="enterpriseFrom.ownerName"
                 placeholder="请输入公司名称"
               />
             </u-form-item>
-            <u-form-item label="经办人号码">
+            <u-form-item
+              label="经办人号码"
+              prop="ownerMobile"
+            >
               <u-input
-                v-model="form.sex"
+                v-model="enterpriseFrom.ownerMobile"
                 placeholder="请输入经办人号码"
               />
             </u-form-item>
-            <u-form-item label="营业执照编号">
+            <u-form-item
+              label="营业执照编号"
+              prop="ownerCertificateNo"
+            >
               <u-input
-                v-model="form.sex"
+                v-model="enterpriseFrom.ownerCertificateNo"
                 placeholder="请输入营业执照编号"
               />
             </u-form-item>
@@ -269,6 +322,7 @@ import {
   getMannerListByTermId,
   postBuildByProId,
   postRoomByProId,
+  postNoticeCreate,
 } from "../../api/staff";
 
 export default {
@@ -277,15 +331,19 @@ export default {
     return {
       proId: null,
       selectShow: false,
+      isRecognize: false,
       selectList: [],
       buildSelectShow: false,
       buildSelectList: [],
       roomSelectShow: false,
       roomSelectList: [],
       isOther: false,
+      isType: true,
       form: {
+        channel: "CustomerService",
         cycleId: null,
         cycleName: null,
+        promotionMethod: null,
         manner: null,
         explain: null,
         paymentAmount: null,
@@ -293,30 +351,65 @@ export default {
         unitName: null,
         roomNumberId: null,
         roomName: null,
-        ownerType: "1",
+        ownerType: "Personal",
+        templateType: null,
+        ownerList: [],
+        noticeAttachmentList: [],
+      },
+      baseRules: {
+        cycleName: [
+          { required: true, message: "请选择项目联动周期", trigger: "change" },
+        ],
+        manner: [
+          { required: true, message: "请选择优惠折扣方式", trigger: "change" },
+        ],
+        explain: [
+          { required: true, message: "请输入优惠说明", trigger: "change" },
+        ],
+        paymentAmount: [
+          { required: true, message: "请输入服务费金额", trigger: "change" },
+        ],
+      },
+      roomRules: {
+        unitName: [
+          { required: true, message: "请选择栋座", trigger: "change" },
+        ],
+        roomName: [
+          { required: true, message: "请选择房号", trigger: "change" },
+        ],
+      },
+      enterpriseFrom: {
+        ownerCertificateNo: null,
+        ownerMobile: null,
+        ownerName: null,
+      },
+      enterpriseRules: {
+        ownerName: [
+          { required: true, message: "请输入公司名称", trigger: "change" },
+        ],
+        ownerMobile: [
+          { required: true, message: "请输入经办人号码", trigger: "change" },
+        ],
+        ownerCertificateNo: [
+          { required: true, message: "请输入营业执照编号", trigger: "change" },
+        ],
       },
       ownerInfo: [
         {
-          name: "",
-          phone: "",
-          identity: "",
+          ownerName: "",
+          ownerMobile: "",
+          ownerCertificateNo: "",
         },
       ],
-      action: "",
-      fileList: [
-        {
-          url: "http://pics.sc.chinaz.com/files/pic/pic9/201912/hpic1886.jpg",
-        },
-      ],
-      rules: {
-        name: [
+      personRules: {
+        ownerName: [
           {
             required: true,
             message: "请输入姓名",
             trigger: "change",
           },
         ],
-        phone: [
+        ownerMobile: [
           {
             required: true,
             message: "请输入手机号码",
@@ -324,7 +417,7 @@ export default {
           },
           { validator: phoneValidator, trigger: "change" },
         ],
-        identity: [
+        ownerCertificateNo: [
           {
             required: true,
             message: "请输入身份证号",
@@ -333,17 +426,19 @@ export default {
           { validator: validIdentityCard, trigger: "change" },
         ],
       },
+      action: "",
+      fileList: [],
     };
   },
   methods: {
     addOwner() {
       this.ownerInfo.push({
-        name: "",
-        phone: "",
-        identity: "",
+        ownerName: "",
+        ownerMobile: "",
+        ownerCertificateNo: "",
       });
       this.$nextTick(() => {
-        this.$refs.uForm[this.ownerInfo.length - 1].setRules(this.rules);
+        this.$refs.uForm[this.ownerInfo.length - 1].setRules(this.personRules);
       });
     },
     subtractOwner(i) {
@@ -361,6 +456,14 @@ export default {
       });
       this.arr.push(res);
     },
+    changeOwner(val) {
+      console.log(val);
+      if (val === "Enterprise") {
+        this.$nextTick(() => {
+          this.$refs.enterprise.setRules(this.enterpriseRules);
+        });
+      }
+    },
     handleClick() {
       getApp().globalData.searchParams = {
         api: "postTermApi",
@@ -376,11 +479,13 @@ export default {
       let item = val[0];
       if (item.value === "other") {
         this.isOther = true;
+        this.form.promotionMethod = "Manual";
         this.form.manner = item.label;
         this.form.explain = null;
         this.form.paymentAmount = null;
       } else {
         this.isOther = false;
+        this.form.promotionMethod = "Automatic";
         this.form.manner = item.label;
         this.form.explain = item.label;
         this.form.paymentAmount = item.value;
@@ -436,14 +541,51 @@ export default {
     },
     submit() {
       this.arr = [];
-      this.ownerInfo.forEach((v, i) => {
-        console.log(i);
-        this.refForm(i, this.ownerInfo[i]);
+      const baseRes = new Promise((resolve, reject) => {
+        this.$refs.baseFrom.validate((val) => {
+          val ? resolve() : reject(err);
+        });
       });
-      console.log(this.arr);
+      const roomRes = new Promise((resolve, reject) => {
+        this.$refs.roomFrom.validate((val) => {
+          val ? resolve() : reject(err);
+        });
+      });
+      this.arr.push(baseRes, roomRes);
+      if (this.form.ownerType === "Personal") {
+        this.ownerInfo.forEach((v, i) => {
+          this.refForm(i, this.ownerInfo[i]);
+        });
+        this.form.templateType = this.isType
+          ? "ElectronicTemplate"
+          : "PaperTemplate";
+        this.form.ownerList = this.ownerInfo;
+      } else {
+        const enterprise = new Promise((resolve, reject) => {
+          this.$refs.enterprise.validate((val) => {
+            val ? resolve() : reject(err);
+          });
+        });
+        this.arr.push(enterprise);
+        this.form.templateType = "PaperTemplate";
+        this.form.ownerList = [{ ...this.enterpriseFrom }];
+      }
       Promise.all(this.arr)
-        .then(() => {
-          console.log("全部通过");
+        .then(async () => {
+          console.log("全部通过", this.form);
+          try {
+            const res = await postNoticeCreate(this.form);
+            uni.showToast({
+              title: "保存成功",
+              icon: "none",
+            });
+            if (this.form.templateType === "ElectronicTemplate") {
+            } else {
+              this.$tool.back(null, { type: "init", page: null });
+            }
+          } catch (err) {
+            console.log(err);
+          }
         })
         .catch(() => {
           console.log("不通过");
@@ -451,7 +593,13 @@ export default {
     },
   },
   onReady() {
-    this.$refs.uForm[0].setRules(this.rules);
+    this.$refs.baseFrom.setRules(this.baseRules);
+    this.$refs.roomFrom.setRules(this.roomRules);
+    if (this.form.ownerType === "Personal") {
+      this.$refs.uForm[0].setRules(this.personRules);
+    } else {
+      this.$refs.enterprise.setRules(this.enterpriseRules);
+    }
   },
   onShow() {
     console.log(getApp().globalData.refreshListData, "ssaa");
@@ -462,6 +610,20 @@ export default {
           this.form.cycleId = item.data.termId;
           this.form.cycleName = item.data.termName;
           this.proId = item.data.proId;
+          this.isRecognize = item.data.termStageEnum === "Recognize";
+          // this.form.manner = null;
+          // this.form.explain = null;
+          // this.form.paymentAmount = null;
+          Object.assign(this.form, {
+            buyUnit: "",
+            unitName: "",
+            roomNumberId: "",
+            roomName: "",
+            manner: "",
+            explain: "",
+            paymentAmount: "",
+          });
+          console.log(this.form);
           break;
 
         default:
@@ -489,6 +651,17 @@ export default {
       }
     }
   }
+}
+.form-title {
+  margin-top: 20rpx;
+  height: 92rpx;
+  background: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24rpx;
+  color: $u-type-primary;
+  font-family: "Source Han Sans CN";
 }
 .form-content {
   padding: 20rpx 30rpx 110rpx;
