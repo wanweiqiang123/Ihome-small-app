@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-15 18:08:02
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-30 14:18:02
+ * @LastEditTime: 2020-12-30 18:32:07
  */
 import { getApi, postApi } from '../common/http.js';
 
@@ -83,4 +83,12 @@ export async function getPayStatusApi(data = {}, option = {}) {
 // 优惠告知书签署
 export async function postSignApi(data = {}, option = {}) {
   return await postApi(`/sales-api/contract/notice/wechat/sign`, data, option)
+}
+// 获取实名认证验证码
+export async function postVerificationApi(data = {}, option = {}) {
+  return await postApi(`/sales-api/contract/notice/verification/code`, data, option)
+}
+// 实名认证
+export async function postCertificationApi(data = {}, option = {}) {
+  return await postApi(`/sales-api/contract/notice/accounts/certification/check`, data, option)
 }

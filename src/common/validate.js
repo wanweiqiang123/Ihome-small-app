@@ -4,11 +4,11 @@
  * @Author: wwq
  * @Date: 2020-11-20 15:08:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-20 15:11:25
+ * @LastEditTime: 2020-12-30 17:43:26
  */
 /**手机号码校验（大陆及港澳台）*/
 export function phoneValidator(rule, value, callback) {
-  let reg = /^[1][3-9]\d{9}$|^([6|9])\d{7}$|^[0][9]\d{8}$|^[6]([8|6])\d{5}$/
+  let reg = /^[1][3-9]\d{9}$|([6|9])\d{7}$|6\d{7}$|[0][9]\d{8}$/
   if (!(reg.test(value))) {
     callback(new Error('请输入有效手机号码'))
     return false;
