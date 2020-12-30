@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-13 16:47:03
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-09 16:41:57
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-12-28 19:49:34
 -->
 <template>
   <view class="box">
@@ -74,6 +74,8 @@
             <slot
               name="searchlist"
               :scrollData="item"
+              :label="props.label"
+              :value="props.value"
             ></slot>
           </view>
           <view
@@ -130,7 +132,13 @@ export default {
     },
     isArea: {
       type: Boolean,
-      default: true,
+      default: false,
+    },
+    props: {
+      type: Object,
+      default: () => {
+        return {};
+      },
     },
   },
   data() {
@@ -233,6 +241,7 @@ export default {
         let item = await apiList[this.searchApi](params);
         this.setPageDataMixin(item);
         this.total = item.total;
+        console.log(this.tablePage);
         if (this.tablePage.length) {
           this.searchNull = false;
         } else {

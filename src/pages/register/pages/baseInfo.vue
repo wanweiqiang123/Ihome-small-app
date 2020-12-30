@@ -62,13 +62,15 @@
           <view class="input-btn-flex">
             <u-input
               v-model="baseForm.verifyCode"
-              placeholder="4位数验证码" :clearable="true" />
-            <u-button type="success" size="mini" @click="sendMessage">{{codeBtn}}</u-button>
+              placeholder="请输入短信验证码" :clearable="true" />
+            <u-button class="u-margin-left-8" type="success" size="mini" @click="sendMessage">{{codeBtn}}</u-button>
           </view>
         </u-form-item>
       </u-form>
     </view>
-    <view class="down-load" @click="downTemplate">下载授权确认函模板</view>
+    <view class="down-load" >
+      <text @click="downTemplate">下载授权确认函模板</text>
+    </view>
     <view class="tips">注册信息需与签约授权确认函保持一致</view>
     <view class="btn">
       <u-button type="primary" @click="nextStep">下一步</u-button>
@@ -80,6 +82,7 @@
 import { getMessage } from '@/api/channel';
 import { phoneValidator, validIdentityCard, emailOrNullValidato } from '@/common/validate';
 import { currentEnvConfig } from '@/env-config';
+import {getSessionUserSendSmsApi} from "@/api";
 
 export default {
   props: {
@@ -91,17 +94,47 @@ export default {
   data() {
     const validPassword = (rule, value, callback) => {
       // const reg = /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z_]+$)(?![a-z0-9]+$)(?![a-z_]+$)(?![0-9_]+$)[a-zA-Z0-9_]{8,}$/;
-      const reg = /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\\W_]+$)(?![a-z0-9]+$)(?![a-z\\W_]+$)(?![0-9\\W_]+$)[a-zA-Z0-9\\W_]{8,}$/;
+      // const reg = /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\\W_]+$)(?![a-z0-9]+$)(?![a-z\\W_]+$)(?![0-9\\W_]+$)[a-zA-Z0-9\\W_]{8,}$/;
+      // const reg = /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\W@#$%^&.]+$)(?![a-z0-9]+$)(?![a-z\W@#$%^&.]+$)(?![0-9\W@#$%^&.]+$)[a-zA-Z0-9\W@#$%^&.]{8,}$/;
+      let rC = {
+        lW:'[a-z]', // 小写字母
+        uW:'[A-Z]', // 大写字母
+        nW:'[0-9]', // 数字
+        sW:'[@#$%^&.]'// 特殊字符
+      };
+      function Reg(str, rStr){
+        let reg = new RegExp(rStr);
+        if(reg.test(str)) return true;
+        else return false;
+      }
       if (!value) {
         callback(new Error('请输入密码'));
         return;
       } else {
-        if (!reg.test(value)) {
-          callback(new Error('密码必须是数字、大写字母、小写字母、符号4类中包含3类且长度不能少于8位。'));
+        if(value.length < 8){
+          callback(new Error('请至少输入8位及以上密码'));
           return;
-        } else {
-          callback();
+        }else{
+          let tR = {
+            l: Reg(value, rC.lW),
+            u: Reg(value, rC.uW),
+            n: Reg(value, rC.nW),
+            s: Reg(value, rC.sW)
+          };
+          if((tR.l && tR.u && tR.n) || (tR.l && tR.u && tR.s) || (tR.s && tR.u && tR.n) ||                                     (tR.s && tR.l && tR.n)){
+            // 密码符合要求
+            callback();
+          }else{
+            callback(new Error('密码必须是数字、大写字母、小写字母、符号4类中包含3类且长度不能少于8位。'));
+            return;
+          }
         }
+        // if (!reg.test(value)) {
+        //   callback(new Error('密码必须是数字、大写字母、小写字母、符号4类中包含3类且长度不能少于8位。'));
+        //   return;
+        // } else {
+        //   callback();
+        // }
       }
     }
     const validConfirmPassword = (rule, value, callback) => {
@@ -128,16 +161,16 @@ export default {
     }
     return {
       baseForm: {
-        companyName: '测试有限公司',
-        creditCode: '95279527',
-        username: '测先生',
-        mobile: '15888888888',
-        identityCode: '441223200805131576',
-        password: '123456Abc',
-        rePassword: '123456Abc',
-        invitationCode: '20124670',
+        companyName: '',
+        creditCode: '',
+        username: '',
+        mobile: '',
+        identityCode: '',
+        password: '',
+        rePassword: '',
+        invitationCode: '',
         email: '',
-        verifyCode: '111111'
+        verifyCode: ''
       },
       rules: {
         companyName: [
@@ -179,9 +212,7 @@ export default {
   onReady() {
     // 必须要在onReady生命周期，因为onLoad生命周期组件可能尚未创建完毕
     this.$refs.baseForm.setRules(this.rules);
-  },
-  created() {
-    // console.log('qrCode', this.qrCode);
+    console.log('qrCode - onReady', this.qrCode);
     if (this.qrCode) {
       this.baseForm.invitationCode = this.qrCode;
     }
@@ -213,16 +244,21 @@ export default {
           });
           let postData = {
             mobilePhone: this.baseForm.mobile,
-            smsCodeType: 'Register'
+            smsCodeType: 'RegisterAndLogin'
           }
-          await getMessage(postData);
-          uni.hideToast();
-          setTimeout(() => {
+          const res = await getMessage(postData);
+          if (res) {
+            uni.showToast({
+              title: res,
+              icon: "none",
+              duration: 3000,
+            });
+          } else {
             uni.showToast({
               icon: 'none',
               title: '验证码已发送'
             });
-          }, 100);
+          }
           self.timer = setInterval(() => {
             if (count > 0 && count <= 60) {
               self.codeBtn = `${count}后重新获取`;
@@ -275,12 +311,12 @@ export default {
               title: '下载成功',
             });
             // 预览下载的文件
-            // uni.openDocument({
-            //   filePath: res.tempFilePath,
-            //   success: (res) => {
-            //     console.log('打开文档成功');
-            //   }
-            // });
+            uni.openDocument({
+              filePath: res.tempFilePath,
+              success: (res) => {
+                console.log('打开文档成功');
+              }
+            });
           }
         }
       });
@@ -303,10 +339,7 @@ export default {
         display: flex;
         flex-direction: row;
         align-items: center;
-
-        /deep/.u-btn {
-          margin-left: 10rpx !important;
-        }
+        justify-content: center;
       }
     }
 

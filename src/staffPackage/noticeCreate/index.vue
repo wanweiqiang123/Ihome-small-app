@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-26 18:40:43
+ * @LastEditTime: 2020-12-29 15:08:18
 -->
 <template>
   <view class="notice safe-area-inset-bottom">
@@ -13,7 +13,7 @@
         <u-image
           width="80rpx"
           height="80rpx"
-          src="https://cdn.uviewui.com/uview/example/fade.jpg"
+          src="http://pics.sc.chinaz.com/files/pic/pic9/201912/hpic1886.jpg"
           shape="circle"
         ></u-image>
         <text class="title-text">优惠信息</text>
@@ -31,9 +31,10 @@
             right-icon="arrow-right"
           >
             <u-input
-              v-model="form.sex"
+              v-model="form.cycleName"
               type="select"
               placeholder="请选择项目联动周期"
+              @click="handleClick"
             />
           </u-form-item>
           <u-form-item
@@ -42,24 +43,35 @@
             right-icon="arrow-right"
           >
             <u-input
-              v-model="form.sex"
+              v-model="form.manner"
               type="select"
               placeholder="请选择优惠折扣方式"
-              @click="selectShow = true"
+              @click="handleShowSelect"
             />
           </u-form-item>
-          <u-form-item label="优惠说明">
-            <u-input
-              v-model="form.sex"
-              placeholder="请输入优惠说明"
-            />
-          </u-form-item>
-          <u-form-item label="服务费金额">
-            <u-input
-              v-model="form.sex"
-              placeholder="请输入服务费金额"
-            />
-          </u-form-item>
+          <template v-if="isOther">
+            <u-form-item label="优惠说明">
+              <u-input
+                v-model="form.explain"
+                placeholder="请输入优惠说明"
+              />
+            </u-form-item>
+            <u-form-item label="服务费金额">
+              <u-input
+                v-model="form.paymentAmount"
+                placeholder="请输入服务费金额"
+              />
+            </u-form-item>
+          </template>
+          <template v-else>
+            <u-form-item label="服务费金额">
+              <u-input
+                v-model="form.paymentAmount"
+                placeholder="请输入服务费金额"
+                disabled
+              />
+            </u-form-item>
+          </template>
         </u-form>
       </view>
       <view class="form-color">
@@ -73,9 +85,10 @@
             right-icon="arrow-right"
           >
             <u-input
-              v-model="form.sex"
+              v-model="form.unitName"
               type="select"
               placeholder="请选择栋座"
+              @click="handleShowBuild"
             />
           </u-form-item>
           <u-form-item
@@ -84,9 +97,10 @@
             right-icon="arrow-right"
           >
             <u-input
-              v-model="form.sex"
+              v-model="form.roomName"
               type="select"
               placeholder="请选择房号"
+              @click="handleShowRoom"
             />
           </u-form-item>
           <u-form-item label="业主类型">
@@ -214,12 +228,6 @@
         </view>
       </template>
     </view>
-    <u-select
-      v-model="selectShow"
-      :list="list"
-      safe-area-inset-bottom
-      @confirm="selectConfirm"
-    ></u-select>
     <view class="notice-btn safe-area-inset-bottom">
       <u-button
         shape="circle"
@@ -227,17 +235,64 @@
         @click="submit()"
       >保存并预览优惠告知书</u-button>
     </view>
+    <!-- 选择器 -->
+    <u-select
+      v-model="selectShow"
+      :list="selectList"
+      safe-area-inset-bottom
+      value-name="premiumReceived"
+      label-name="modeDescription"
+      @confirm="selectConfirm"
+    ></u-select>
+    <u-select
+      v-model="buildSelectShow"
+      :list="buildSelectList"
+      safe-area-inset-bottom
+      value-name="buildingId"
+      label-name="buildingName"
+      @confirm="buildConfirm"
+    ></u-select>
+    <u-select
+      v-model="roomSelectShow"
+      :list="roomSelectList"
+      safe-area-inset-bottom
+      value-name="roomId"
+      label-name="roomNo"
+      @confirm="roomConfirm"
+    ></u-select>
   </view>
 </template>
 
 <script>
 import { phoneValidator, validIdentityCard } from "../../common/validate.js";
+import {
+  getMannerListByTermId,
+  postBuildByProId,
+  postRoomByProId,
+} from "../../api/staff";
+
 export default {
   name: "notice-create",
   data() {
     return {
+      proId: null,
       selectShow: false,
+      selectList: [],
+      buildSelectShow: false,
+      buildSelectList: [],
+      roomSelectShow: false,
+      roomSelectList: [],
+      isOther: false,
       form: {
+        cycleId: null,
+        cycleName: null,
+        manner: null,
+        explain: null,
+        paymentAmount: null,
+        buyUnit: null,
+        unitName: null,
+        roomNumberId: null,
+        roomName: null,
         ownerType: "1",
       },
       ownerInfo: [
@@ -278,10 +333,6 @@ export default {
           { validator: validIdentityCard, trigger: "change" },
         ],
       },
-      list: [
-        { label: "优惠", value: 1 },
-        { label: "自定义", value: 2 },
-      ],
     };
   },
   methods: {
@@ -310,6 +361,79 @@ export default {
       });
       this.arr.push(res);
     },
+    handleClick() {
+      getApp().globalData.searchParams = {
+        api: "postTermApi",
+        key: "termName",
+        id: "termId",
+        type: "term",
+      };
+      uni.navigateTo({
+        url: "/pages/search/index/index",
+      });
+    },
+    selectConfirm(val) {
+      let item = val[0];
+      if (item.value === "other") {
+        this.isOther = true;
+        this.form.manner = item.label;
+        this.form.explain = null;
+        this.form.paymentAmount = null;
+      } else {
+        this.isOther = false;
+        this.form.manner = item.label;
+        this.form.explain = item.label;
+        this.form.paymentAmount = item.value;
+      }
+    },
+    async handleShowSelect() {
+      if (!this.form.cycleId) {
+        uni.showToast({
+          title: "请先选择联动周期",
+          icon: "none",
+        });
+        return;
+      }
+      const list = [{ modeDescription: "自定义", premiumReceived: "other" }];
+      this.selectList = await getMannerListByTermId({ id: this.form.cycleId });
+      this.selectList = this.selectList.concat(list);
+      this.selectShow = true;
+    },
+    buildConfirm(val) {
+      let item = val[0];
+      this.form.unitName = item.label;
+      this.form.buyUnit = item.value;
+    },
+    async handleShowBuild() {
+      if (!this.proId) {
+        uni.showToast({
+          title: "请先选择联动周期",
+          icon: "none",
+        });
+        return;
+      }
+      this.buildSelectList = await postBuildByProId({ proId: this.proId });
+      this.buildSelectShow = true;
+    },
+    roomConfirm(val) {
+      let item = val[0];
+      this.form.roomNumberId = item.value;
+      this.form.roomName = item.label;
+    },
+    async handleShowRoom() {
+      if (!this.proId) {
+        uni.showToast({
+          title: "请先选择联动周期",
+          icon: "none",
+        });
+        return;
+      }
+      this.roomSelectList = await postRoomByProId({
+        proId: this.proId,
+        buildingId: this.form.buyUnit,
+      });
+      this.roomSelectShow = true;
+    },
     submit() {
       this.arr = [];
       this.ownerInfo.forEach((v, i) => {
@@ -325,13 +449,25 @@ export default {
           console.log("不通过");
         });
     },
-    selectConfirm(val) {
-      console.log(val);
-      let item = val[0];
-    },
   },
   onReady() {
     this.$refs.uForm[0].setRules(this.rules);
+  },
+  onShow() {
+    console.log(getApp().globalData.refreshListData, "ssaa");
+    let item = getApp().globalData.refreshListData;
+    if (item) {
+      switch (item.type) {
+        case "term":
+          this.form.cycleId = item.data.termId;
+          this.form.cycleName = item.data.termName;
+          this.proId = item.data.proId;
+          break;
+
+        default:
+          break;
+      }
+    }
   },
 };
 </script>

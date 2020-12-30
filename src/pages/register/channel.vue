@@ -12,9 +12,8 @@
       <view
         v-for="(item, index) in stepList"
         :key="index"
-        :class="
-          currentStep === index ? `${item.className} color` : item.className
-        "
+        @click="handleChangeTab(index)"
+        :class="currentStep === index ? `${item.className} color` : item.className"
         >{{ item.name }}</view>
     </view>
     <view class="component-wrapper">
@@ -43,6 +42,8 @@
 <script>
 import BaseInfo from "@/pages/register/pages/baseInfo.vue";
 import CompanyInfo from "@/pages/register/pages/companyInfo.vue";
+import {getUserInfoApi, loginPhoneApi} from "@/api/index.js";
+import storageTool from "@/common/storageTool";
 
 export default {
   components: { BaseInfo, CompanyInfo },
@@ -72,7 +73,7 @@ export default {
     if (query && query.scene) {
       const scene = decodeURIComponent(query.scene);
       this.qrScene = scene;
-      console.log(scene);
+      // console.log(scene);
     } else {
       this.qrScene = '';
     }
@@ -81,13 +82,38 @@ export default {
     // 下一步
     nextStep(data) {
       // console.log(data);
-      this.baseForm = data;
+      if (data) {
+        this.baseForm = data;
+      }
       this.currentStep = this.currentStep + 1;
+    },
+    // 切换Tab
+    handleChangeTab(index) {
+      console.log(index);
+      if (index !== 2) {
+        this.currentStep = index;
+      }
     },
     // 查看个人中心
     handleView() {
-      this.currentStep = 0;
-    }
+      // this.currentStep = 0;
+      this.loginByPhone();
+    },
+    // 自动登录
+    async loginByPhone() {
+      const res = await loginPhoneApi({
+        phone: this.baseForm.mobile,
+        code: this.baseForm.verifyCode,
+      });
+      await this.loginSuccess(res);
+    },
+    // 执行登录操作
+    async loginSuccess(res) {
+      storageTool.setToken(res.access_token, res.expires_in);
+      const userInfo = await getUserInfoApi();
+      storageTool.setUserInfo(userInfo);
+      storageTool.goHome();
+    },
   },
 };
 </script>
