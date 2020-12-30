@@ -27,6 +27,7 @@
         </u-form-item>
         <u-form-item label="手机号码" required prop="mobile">
           <u-input
+            type="number"
             v-model="baseForm.mobile"
             placeholder="请输入您的手机号码" :clearable="true" />
         </u-form-item>
@@ -49,6 +50,7 @@
         </u-form-item>
         <u-form-item label="邀请码" required prop="invitationCode">
           <u-input
+            type="number"
             :disabled="!!qrCode"
             v-model="baseForm.invitationCode"
             placeholder="请联系对接人获取并输入" :clearable="true" />
@@ -61,6 +63,7 @@
         <u-form-item label="短信验证码" required prop="verifyCode">
           <view class="input-btn-flex">
             <u-input
+              type="number"
               v-model="baseForm.verifyCode"
               placeholder="请输入短信验证码" :clearable="true" />
             <u-button class="u-margin-left-8" type="success" size="mini" @click="sendMessage">{{codeBtn}}</u-button>
