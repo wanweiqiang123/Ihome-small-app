@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 11:22:52
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-26 15:04:11
+ * @LastEditTime: 2020-12-30 14:41:39
 -->
 <template>
   <StaffTabBar>
@@ -51,32 +51,20 @@
       @click="submit"
       safe-area-inset-bottom
     ></u-action-sheet>
-    <u-popup width="80%" v-model="userSwitchShow" mode="center">
-      <view
-        style="
-          padding: 10px;
-          border-bottom: 1px solid #eee;
-          font-weight: 600;
-          background: #f2f3ff;
-        "
-      >
-        请选择切换的用户（未完成）</view
-      >
-      <view
-        style="padding: 10px; border-bottom: 1px solid #eee"
-        v-for="(item, index) in userTypeList"
-        :key="index"
-        @click="userSwitch(item, index)"
-      >
-        {{ item }}</view
-      >
-    </u-popup>
+
+    <u-action-sheet
+      v-model="showSwitchUser"
+      :list="switchList"
+      :tips="switchUseTips"
+      @click="submitSwitchUser"
+      safe-area-inset-bottom
+    ></u-action-sheet>
   </StaffTabBar>
 </template>
 
 <script>
 import storageTool from "../../common/storageTool";
-import { userSwitchApi } from "../../api/index";
+import { userSwitchApi, getUserInfoApi } from "../../api/index";
 export default {
   name: "personal-tab",
   data() {
@@ -95,6 +83,13 @@ export default {
           fontSize: 28,
         },
       ],
+
+      showSwitchUser: false,
+      switchUseTips: {
+        text: "请选择需要切换的用户",
+        color: "#000",
+      },
+      switchList: [],
     };
   },
   methods: {
@@ -109,27 +104,54 @@ export default {
           break;
       }
     },
-    userSwitchClick() {
-      //切换用户
-      console.log("切换用户");
-      let userInfo = storageTool.getUserInfo();
-      this.userTypeList = userInfo?.userTypeList || [];
-      // this.userTypeList = ["Staff", "Channel", "Customer"];
-      this.userSwitchShow = true;
-    },
-    async userSwitch(item, index) {
-      console.log(item, index);
+    async submitSwitchUser(index) {
+      let item = this.switchList[index];
+      console.log(index, item);
       const res = await userSwitchApi({
-        change_type: item,
+        change_type: item.userType,
         access_token: storageTool.getToken(),
       });
       console.log(res);
+
+      storageTool.setToken(res.access_token, res.expires_in);
+      const userInfo = await getUserInfoApi();
+      storageTool.setUserInfo(userInfo);
       uni.showToast({
         title: "切换成功",
       });
       setTimeout(() => {
-        storageTool.goStart();
+        storageTool.goHome();
       }, 500);
+    },
+    userSwitchClick() {
+      let userInfo = storageTool.getUserInfo();
+      let userTypeList = userInfo?.userTypeList || [];
+      console.log(userTypeList);
+      if (userTypeList && userTypeList.length > 0) {
+        this.switchList = [];
+        for (let index = 0; index < userTypeList.length; index++) {
+          const element = userTypeList[index];
+          let color =
+            userInfo.userType == element.userType ? "#4881f9" : "#666";
+          let userTypeName =
+            userInfo.userType == element.userType
+              ? element.userTypeName + " √"
+              : element.userTypeName;
+          this.switchList.push({
+            text: userTypeName,
+            color: color,
+            fontSize: 28,
+            userType: element.userType,
+          });
+        }
+
+        this.showSwitchUser = true;
+      } else {
+        uni.showToast({
+          title: "暂无用户可切换",
+          icon: "none",
+        });
+      }
     },
   },
 };

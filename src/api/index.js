@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-10 10:09:50
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-28 16:56:13
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-12-30 14:20:07
  */
 
 import { getApi, postApi } from '../common/http.js';
@@ -71,6 +71,7 @@ export async function userSwitchApi(data = {}, option = {}) {
 
 /**查询登录用户信息*/
 export async function getUserInfoApi(data = {}, option = {}) {
+    
     return await postApi('/sales-api/system/sessionUser/getUserInfo', data, option);
 }
 

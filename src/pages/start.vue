@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-30 14:22:01
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-26 14:59:54
+ * @LastEditTime: 2020-12-30 14:38:28
 -->
 <template>
   <view style="padding-top: 100px">
@@ -49,13 +49,31 @@ export default {
     };
   },
   onLoad() {
-    console.log("start.vue onLoad====================");
-    this.init();
+    uni.login({
+      success: async function (res) {
+        console.log(res);
+        getOpenidApi(res.code, {
+          hideLoading: true,
+        }).then((infoRes) => {
+          storageTool.setOpenId(infoRes.openId);
+          storageTool.setSessionKey(infoRes.sessionKey);
+          getUserInfoApi(
+            { terminalType: "WechatApp" },
+            { hideMsg: true, hideLoading: true }
+          )
+            .then((userInfo) => {
+              storageTool.setUserInfo(userInfo);
+            })
+            .finally(() => {
+              storageTool.goHome();
+            });
+        });
+      },
+    });
   },
 
   methods: {
     async init() {
-      console.log("initData", getApp().globalData.initData);
       uni.showLoading({
         title: "启动程序中...",
         mask: true,
@@ -65,6 +83,8 @@ export default {
           hideMsg: true,
           hideLoading: true,
         });
+        console.log(userInfo);
+        debugger;
         storageTool.setUserInfo(userInfo);
       } catch (error) {
       } finally {
