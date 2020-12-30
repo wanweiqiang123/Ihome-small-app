@@ -62,13 +62,15 @@
           <view class="input-btn-flex">
             <u-input
               v-model="baseForm.verifyCode"
-              placeholder="4位数验证码" :clearable="true" />
-            <u-button type="success" size="mini" @click="sendMessage">{{codeBtn}}</u-button>
+              placeholder="请输入短信验证码" :clearable="true" />
+            <u-button class="u-margin-left-8" type="success" size="mini" @click="sendMessage">{{codeBtn}}</u-button>
           </view>
         </u-form-item>
       </u-form>
     </view>
-    <view class="down-load" @click="downTemplate">下载授权确认函模板</view>
+    <view class="down-load" >
+      <text @click="downTemplate">下载授权确认函模板</text>
+    </view>
     <view class="tips">注册信息需与签约授权确认函保持一致</view>
     <view class="btn">
       <u-button type="primary" @click="nextStep">下一步</u-button>
@@ -128,16 +130,16 @@ export default {
     }
     return {
       baseForm: {
-        companyName: '测试有限公司',
-        creditCode: '95279527',
-        username: '测先生',
-        mobile: '15888888888',
-        identityCode: '441223200805131576',
-        password: '123456Abc',
-        rePassword: '123456Abc',
-        invitationCode: '20124670',
+        companyName: '',
+        creditCode: '',
+        username: '',
+        mobile: '',
+        identityCode: '',
+        password: '',
+        rePassword: '',
+        invitationCode: '',
         email: '',
-        verifyCode: '111111'
+        verifyCode: ''
       },
       rules: {
         companyName: [
@@ -179,9 +181,7 @@ export default {
   onReady() {
     // 必须要在onReady生命周期，因为onLoad生命周期组件可能尚未创建完毕
     this.$refs.baseForm.setRules(this.rules);
-  },
-  created() {
-    // console.log('qrCode', this.qrCode);
+    console.log('qrCode - onReady', this.qrCode);
     if (this.qrCode) {
       this.baseForm.invitationCode = this.qrCode;
     }
@@ -213,16 +213,13 @@ export default {
           });
           let postData = {
             mobilePhone: this.baseForm.mobile,
-            smsCodeType: 'Register'
+            smsCodeType: 'RegisterAndLogin'
           }
           await getMessage(postData);
-          uni.hideToast();
-          setTimeout(() => {
-            uni.showToast({
-              icon: 'none',
-              title: '验证码已发送'
-            });
-          }, 100);
+          uni.showToast({
+            icon: 'none',
+            title: '验证码已发送'
+          });
           self.timer = setInterval(() => {
             if (count > 0 && count <= 60) {
               self.codeBtn = `${count}后重新获取`;
@@ -275,12 +272,12 @@ export default {
               title: '下载成功',
             });
             // 预览下载的文件
-            // uni.openDocument({
-            //   filePath: res.tempFilePath,
-            //   success: (res) => {
-            //     console.log('打开文档成功');
-            //   }
-            // });
+            uni.openDocument({
+              filePath: res.tempFilePath,
+              success: (res) => {
+                console.log('打开文档成功');
+              }
+            });
           }
         }
       });
@@ -303,10 +300,7 @@ export default {
         display: flex;
         flex-direction: row;
         align-items: center;
-
-        /deep/.u-btn {
-          margin-left: 10rpx !important;
-        }
+        justify-content: center;
       }
     }
 

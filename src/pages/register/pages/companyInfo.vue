@@ -18,8 +18,11 @@
           <u-form-item label="公司简称" required prop="shortName">
             <u-input v-model="companyForm.shortName" :clearable="true" placeholder="请输入公司简称"/>
           </u-form-item>
-          <u-form-item label="公司类型" required prop="type">
-            <u-input v-model="companyForm.type" :clearable="true" placeholder="请输入公司类型"/>
+          <u-form-item label="公司类型" right-icon="arrow-right" class="hide-icon" required prop="typeName">
+            <u-input
+              @click="showCompanyType = true"
+              v-model="companyForm.typeName" type="select"
+              placeholder="公司类型" disabled :clearable="true" input-align="left" />
           </u-form-item>
           <u-form-item label="法定代表人" required prop="legalPerson">
             <u-input v-model="companyForm.legalPerson" :clearable="true" placeholder="请输入法定代表人"/>
@@ -63,16 +66,16 @@
               {{item.name}}
             </view>
             <view class="upload-file-wrapper">
-              <view v-if="item.fileList.length > 0">
+              <template v-if="item.fileList.length > 0">
                 <view class="file-list-wrapper" v-for="list in item.fileList" :key="list.fileId">
                   <u-icon
                     @click="deleteImg(infoIndex, list)"
                     class="icon" name="close-circle-fill" color="#FA3534" size="50"></u-icon>
                   <u-image
                     @click="viewImg(list)"
-                    width="100%" height="100%" :src="list.fileUrls ? list.fileUrls : getImgUrl(list.fileId)"></u-image>
+                    width="100%" height="100%" :src="list.fileUrls ? list.fileUrls : imgUrl + list.fileId"></u-image>
                 </view>
-              </view>
+              </template>
               <view class="upload-icon" @click="uploadByType(item)">
                 <u-icon name="plus" color="#606266" size="40"></u-icon>
                 <view class="select">选择文件</view>
@@ -116,6 +119,7 @@
       mode="mutil-column-auto"
       :list="areaList"
       @confirm="confirmRegion"></u-select>
+    <u-select v-model="showCompanyType" :list="companyTypeList" @confirm="confirmCompanyType"></u-select>
     <u-action-sheet
       :safe-area-inset-bottom="true"
       :list="actionList"
@@ -180,38 +184,32 @@ export default {
       pdfImg: require('@/channelPackage/common/img/pdf.jpg'),
       excelImg: require('@/channelPackage/common/img/excel.png'),
       wordImg: require('@/channelPackage/common/img/word.jpg'),
-      getImgUrl: getImgUrl,
       areaList: [], // 省市区
       companyForm: {
-        shortName: null,
-        type: null,
-        legalPerson: null,
-        legalIdentityCode: null,
+        shortName: '',
+        type: '',
+        typeName: '',
+        legalPerson: '',
+        legalIdentityCode: '',
         setupTime: null,
-        capital: null,
-        businessTime: null,
+        capital: '',
+        businessTime: '',
         region: null,
         province: null,
         city: null,
         county: null,
-        address: null,
-        accountName: null,
+        address: '',
+        accountName: '',
         branchName: null,
-        accountNo: null,
-        channelAttachments: [
-          {
-            fileId: null,
-            fileName: null,
-            type: null
-          }
-        ] // 附件信息
+        accountNo: '',
+        branchNo: null
       },
       rules: {
         shortName: [
           { required: true, message: '请输入公司简称', trigger: ['blur'] }
         ],
-        type: [
-          { required: true, message: '请输入公司类型', trigger: ['blur'] }
+        typeName: [
+          { required: true, message: '请选择公司类型', trigger: ['blur', 'change'] }
         ],
         legalPerson: [
           { required: true, message: '请输入法定代表人', trigger: ['blur'] }
@@ -220,13 +218,13 @@ export default {
           { validator: validIdentityCard, trigger: ['blur'] }
         ],
         setupTime: [
-          { required: true, message: '请选择成立日期', trigger: ['blur'] }
+          { required: true, message: '请选择成立日期', trigger: ['blur', 'change'] }
         ],
         capital: [
           { required: true, message: '请输入注册资本', trigger: ['blur'] }
         ],
         region: [
-          { required: true, message: '请选择地区', trigger: ['blur'] }
+          { required: true, message: '请选择地区', trigger: ['blur', 'change'] }
         ],
         address: [
           { required: true, message: '请输入住所', trigger: ['blur'] }
@@ -235,7 +233,7 @@ export default {
           { required: true, message: '请输入账户名称', trigger: ['blur'] }
         ],
         branchName: [
-          { required: true, message: '请选择开户银行', trigger: ['blur'] }
+          { required: true, message: '请选择开户银行', trigger: ['blur', 'change'] }
         ],
         accountNo: [
           { required: true, message: '请输入银行卡号', trigger: ['blur'] }
@@ -246,7 +244,6 @@ export default {
       uploadAction: `${currentEnvConfig['protocol']}://${currentEnvConfig['apiDomain']}/sales-api/sales-document-cover/file/upload`,
       uploadHeader: {}, // 请求header
       uploadName: 'files', // 供后端取值用
-      fileList: [],
       showDate: false,
       dateParams:  {
         year: true,
@@ -271,7 +268,7 @@ export default {
           text: '上传图片',
           color: '',
           fontSize: 30,
-          subText: ''
+          subText: '大小不能超过10M'
         },
         {
           text: '上传文件',
@@ -285,6 +282,8 @@ export default {
       showDeleteWin: false,
       deleteIndex: '',
       deleteItem: '',
+      showCompanyType: false, // 公司类型
+      companyTypeList: []
     };
   },
   onReady() {
@@ -292,16 +291,15 @@ export default {
     this.$refs.companyForm.setRules(this.rules);
   },
   async created() {
-    // console.log('baseForm', this.baseForm);
     await this.getTempToken();
     await this.getArea();
     await this.getChannelAttachmentList();
+    await this.getCompanyTypeList();
     await this.getBankList();
   },
   methods: {
     // 上传
     uploadByType(item) {
-      // console.log(item);
       this.currentUploadType = item.code;
       this.showActionShow = true;
     },
@@ -309,7 +307,6 @@ export default {
     handleUpload(index) {
       let self = this;
       if (index === 0) {
-        console.log('上传图片');
         uni.chooseImage({
           count: 9, // 默认9
           success: (res) => {
@@ -333,12 +330,12 @@ export default {
                   header: self.uploadHeader,
                   success: (res) => {
                     let data = JSON.parse(res.data);
-                    console.log('图片：', data);
+                    // console.log('图片：', data);
                     self.annexInfo.forEach((item) => {
                       if (item.code === self.currentUploadType) {
                         item.fileList.push(
                           {
-                            ...data[0],
+                            ...data.data[0],
                             fileUrls: ''
                           }
                         )
@@ -354,12 +351,10 @@ export default {
           }
         });
       } else {
-        console.log('上传文件');
         wx.chooseMessageFile({
           count: 10, // 最大可选
           type: 'file',
           success: (res) => {
-            // tempFilePath可以作为img标签的src属性显示图片
             // console.log(res);
             if (res && res.tempFiles && res.tempFiles.length > 0) {
               let flag = false;
@@ -380,14 +375,13 @@ export default {
                   header: self.uploadHeader,
                   success: (res) => {
                     let data = JSON.parse(res.data);
-                    console.log('文件：', data);
-
+                    // console.log('文件：', data);
                     self.annexInfo.forEach((item) => {
                       if (item.code === self.currentUploadType) {
                         item.fileList.push(
                           {
-                            ...data[0],
-                            fileUrls: self.getFileImg(list)
+                            ...data.data[0],
+                            fileUrls: self.getFileImg(data.data[0])
                           }
                         )
                       }
@@ -472,19 +466,19 @@ export default {
     // 获取文件的图片
     getFileImg(file) {
       let url = '';
-      let pdfReg = /.pdf$/i;
-      let wordReg = /.doc$|.docx$/i;
-      let excelReg = /.xls$|.xlsx$/i;
+      let pdfReg = /pdf/i;
+      let wordReg = /doc|docx/i;
+      let excelReg = /xls|xlsx/i;
       let fileTypes = '';
-      if (pdfReg.test(file.name)) {
+      if (pdfReg.test(file.generateFileType)) {
         fileTypes = 'pdf';
         url = this.pdfImg;
       }
-      if (wordReg.test(file.name)) {
+      if (wordReg.test(file.generateFileType)) {
         fileTypes = 'word';
         url = this.wordImg;
       }
-      if (excelReg.test(file.name)) {
+      if (excelReg.test(file.generateFileType)) {
         fileTypes = 'excel';
         url = this.excelImg;
       }
@@ -498,7 +492,6 @@ export default {
           console.log('123onLoad:', res);
           try {
             let token = await getTempToken(res.code);
-            // console.log('tokenOnCompany', token);
             self.tempToke = token;
             this.uploadHeader = {
               'Content-Type': 'multipart/form-data',
@@ -517,7 +510,6 @@ export default {
       let flag = false;
       // 校验附件是否有值
       flag = self.validAnnex(self.annexInfo);
-      console.log('flag', flag)
       if (!flag) {
         uni.showToast({
           icon: 'none',
@@ -526,41 +518,48 @@ export default {
       }
       this.$refs.companyForm.validate(valid => {
         if (valid && flag) {
-          console.log('验证通过');
           let postData = {
             ...self.baseForm,
-            ...self.companyForm
+            ...self.companyForm,
+            channelAttachments: []
           }
           postData.channelBanks = [
             {
               accountName: self.companyForm.accountName, // 账户名称
               accountNo: self.companyForm.accountNo, // 账户号码
               branchName: self.companyForm.branchName, // 开户银行
+              branchNo: self.companyForm.branchNo, // 开户银行
             }
           ];
           if (self.annexInfo && self.annexInfo.length > 0) {
             self.annexInfo.forEach((item) => {
-              let obj = {
-                fileId: item.fileId,
-                fileName: item.fileId,
-                type: item.fileId,
-              };
-              postData.channelAttachments.push(obj);
+              if (item.fileList.length) {
+                item.fileList.forEach((list) => {
+                  let obj = {
+                    fileId: list.fileId,
+                    fileName: list.fileId,
+                    type: item.code,
+                  };
+                  postData.channelAttachments.push(obj);
+                });
+              }
             })
           }
-          const info = channelRegister(postData);
-          console.log(info);
-          if (info.code === 'success') {
-            uni.showToast({
-              icon: 'success',
-              title: '注册成功'
-            });
-            this.$emit('next');
-          }
+          self.handleRegister(postData);
         } else {
           console.log('验证失败');
         }
       });
+    },
+    // 注册
+    async handleRegister(data) {
+      const info = await channelRegister(data);
+      console.log(info);
+      uni.showToast({
+        icon: 'success',
+        title: '注册成功'
+      });
+      this.$emit('next');
     },
     // 校验附件
     validAnnex() {
@@ -595,11 +594,20 @@ export default {
         this.companyForm.region = `${value[0].label}${value[1].label}${value[2].label}`;
       }
     },
+    // 确定选择公司类型
+    confirmCompanyType(value) {
+      console.log(value);
+      if (value && value.length > 0) {
+        this.companyForm.type = value[0].value;
+        this.companyForm.typeName = value[0].label;
+      }
+    },
     // 确定选择银行
     handleSelectBank(item) {
       console.log(item);
       if (item.id) {
         this.companyForm.branchName = item.bankName;
+        this.companyForm.branchNo = item.branchNo;
         this.showBank = false;
       }
     },
@@ -607,7 +615,6 @@ export default {
     async getBankList(type = '') {
       if (this.isMore) return;
       const list = await getBankBranchList(this.queryPageParameters);
-      // console.log(list);
       if (type === 'more') {
         // 上拉加载更多
         if (list && list.list.length > 0) {
@@ -643,25 +650,44 @@ export default {
         id: "value",
       });
     },
+    // 获取公司类型
+    async getCompanyTypeList() {
+      let postData = {
+        type: "ChannelCompanyType",
+        valid: "Valid"
+      }
+      this.companyTypeList = [];
+      let list = await getChannelAttachment(postData);
+      console.log(list);
+      if (list && list.length) {
+        list.forEach((item) => {
+          let obj = {
+            value: item.code,
+            label: item.name
+          }
+          this.companyTypeList.push(obj);
+        })
+      } else {
+        this.companyTypeList = [];
+      }
+    },
     // 获取附件类型
     async getChannelAttachmentList() {
       let postData = {
         type: "ChannelAttachment",
         valid: "Valid"
       }
+      this.annexInfo = [];
       let list = await getChannelAttachment(postData);
-      // console.log('listlistlist', list);
       if (list && list.length > 0) {
         list.forEach((item) => {
           this.$set(item, 'fileList', []);
         });
         this.annexInfo = list;
       }
-      console.log('this.annexInfo', this.annexInfo);
     },
     // 搜索银行
     changeSearch(value) {
-      // console.log(value);
       this.isMore = false;
       this.queryPageParameters.pageNum = 1;
       this.queryPageParameters.pageSize = 10;
@@ -876,7 +902,7 @@ export default {
 
     .scroll-y-wrapper {
       width: 100%;
-      height: calc(100vh - 805rpx);
+      height: calc(100vh - 105rpx);
     }
 
     .bank-item {
