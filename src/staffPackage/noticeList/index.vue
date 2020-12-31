@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-26 18:10:40
+ * @LastEditTime: 2020-12-30 18:40:26
 -->
 <template>
   <view class="notice safe-area-inset-bottom">
@@ -13,11 +13,11 @@
         class="notice-item"
         v-for="(i, n) in tablePage"
         :key="n"
-        @click="handleGoConfirm()"
+        @click="handleGoConfirm(i)"
       >
         <view class="notice-info">
           <view class="notice-title">{{i.notificationType | filterNoticeDict(noticeTypes)}}{{`(${i.noticeNo})`}}</view>
-          <view>{{`${i.projectName} ${i.buyUnit}栋-${i.roomNumberId}`}}</view>
+          <view>{{`${i.projectName} ${i.buyUnitName}栋-${i.roomNumberName}`}}</view>
           <template v-for="(item, index) in i.ownerList">
             <view :key="index">{{item.ownerName || '-'}}</view>
           </template>
@@ -171,10 +171,21 @@ export default {
     },
   },
   methods: {
-    handleGoConfirm() {
-      uni.navigateTo({
-        url: "/staffPackage/noticeConfirm/index",
-      });
+    handleGoConfirm(item) {
+      if (item.notificationStatus === "WaitDetermine") {
+        uni.navigateTo({
+          url: `/staffPackage/noticeConfirm/index?id=${item.id}`,
+        });
+      } else {
+        console.log("其他");
+      }
+      // switch () {
+      //   case "WaitDetermine":
+
+      //     break;
+      //   default:
+      //     break;
+      // }
     },
     handleGoCreate() {
       uni.navigateTo({

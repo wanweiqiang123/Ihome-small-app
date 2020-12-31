@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-10 15:30:58
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-30 09:46:22
+ * @LastEditTime: 2020-12-30 17:54:05
  */
 import { getApi, postApi } from '../common/http.js';
 
@@ -56,4 +56,16 @@ export async function postRoomByProId(data = {}, option = {}) {
  */
 export async function postNoticeCreate(data = {}, option = {}) {
   return await postApi('/sales-api/contract/notice/create', data, option)
+}
+/**
+ * @description: 优惠告知书详情
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function getNoticeInfo(data = {}, option = {}) {
+  return await getApi(`/sales-api/contract/notice/detail/${data.id}`, null, option)
+}
+export async function postNoticeStatus(data = {}, option = {}) {
+  return await postApi('/sales-api/contract/notice/Information/status', data, option)
 }

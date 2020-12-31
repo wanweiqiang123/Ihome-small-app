@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 17:10:39
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-25 17:03:20
+ * @LastEditTime: 2020-12-31 16:42:54
 -->
 <template>
   <view class="notice">
@@ -12,8 +12,9 @@
       <u-cell-group>
         <u-cell-item
           title="项目周期"
-          value="11"
+          :value="termName || '请选择项目周期'"
           :arrow="true"
+          @click="handleToSearch()"
         ></u-cell-item>
       </u-cell-group>
     </view>
@@ -22,15 +23,15 @@
         :border="false"
         :show-foot="false"
         class="ih-card"
-        v-for="i in 3"
-        :key="i"
+        v-for="(i, n) in codeList"
+        :key="n"
         @click="handleCode(i)"
       >
         <view
           slot="head"
           class="ih-card-head"
         >
-          <view>优惠套餐1</view>
+          <view>{{`优惠套餐${n+1}`}}</view>
           <view class="sub-title">查看优惠二维码
             <u-icon name="arrow-right" />
           </view>
@@ -39,8 +40,8 @@
           slot="body"
           class="ih-card-content"
         >
-          <view>优惠方式说明：五万抵十万</view>
-          <view>需支付服务费：50000.00元</view>
+          <view>优惠方式说明：{{i.modeDescription}}</view>
+          <view>需支付服务费：{{i.premiumReceived}}元</view>
         </view>
       </u-card>
     </view>
@@ -58,11 +59,15 @@
           <u-image
             width="100%"
             height="100%"
-            src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3101623223,11353193&fm=26&gp=0.jpg"
+            :src="src"
           ></u-image>
         </view>
         <view class="btn">
-          <u-button type="primary">下载二维码</u-button>
+          <u-button
+            type="primary"
+            :loading="loading"
+            @click="downloadCode()"
+          >下载二维码</u-button>
         </view>
       </view>
     </u-popup>
@@ -70,18 +75,72 @@
 </template>
 
 <script>
+import { getMannerListByTermId } from "../../api/staff";
+import { currentEnvConfig } from "../../env-config.js";
+
 export default {
   name: "notice-code",
   data() {
     return {
       isShow: false,
+      termId: null,
+      termName: null,
+      codeList: [],
+      src: "",
+      fileId: null,
+      loading: false,
+      codeUrl: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/download/`,
     };
   },
   methods: {
-    handleCode(i) {
-      console.log(i);
+    handleCode(item) {
+      this.src = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${item.preferentialAddr}`;
+      this.fileId = item.preferentialAddr;
       this.isShow = true;
     },
+    downloadCode() {
+      this.loading = true;
+      uni.downloadFile({
+        url: `${this.codeUrl}${this.fileId}`,
+        success: (res) => {
+          let filePath = res.tempFilePath;
+          console.log(filePath);
+          uni.saveImageToPhotosAlbum({
+            filePath: filePath,
+            success: () => {
+              this.$u.toast("保存成功");
+              this.loading = false;
+            },
+          });
+        },
+      });
+    },
+    handleToSearch() {
+      getApp().globalData.searchParams = {
+        api: "postTermApi",
+        key: "termName",
+        id: "termId",
+        type: "term",
+      };
+      uni.navigateTo({
+        url: "/pages/search/index/index",
+      });
+    },
+    async getCodeList(id) {
+      try {
+        this.codeList = await getMannerListByTermId({ id });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  },
+  onShow() {
+    let item = getApp().globalData.refreshListData;
+    if (item && item.type === "term") {
+      this.termId = item.data.termId;
+      this.termName = item.data.termName;
+      this.getCodeList(item.data.termId);
+    }
   },
 };
 </script>
@@ -122,9 +181,9 @@ export default {
   }
   .code {
     background: #f1f1f1;
-    width: 500rpx;
+    width: 100%;
     height: 500rpx;
-    margin: 0 auto 20rpx;
+    // margin: 0 auto 20rpx;
   }
   .btn {
     padding: 20rpx 30rpx;

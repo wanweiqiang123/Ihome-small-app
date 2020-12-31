@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-30 15:59:24
+ * @LastEditTime: 2020-12-31 16:24:27
 -->
 <template>
   <view class="notice safe-area-inset-bottom">
@@ -344,13 +344,13 @@ export default {
         cycleId: null,
         cycleName: null,
         promotionMethod: null,
-        manner: null,
-        explain: null,
-        paymentAmount: null,
-        buyUnit: null,
-        unitName: null,
-        roomNumberId: null,
-        roomName: null,
+        manner: "",
+        explain: "",
+        paymentAmount: "",
+        buyUnit: "",
+        unitName: "",
+        roomNumberId: "",
+        roomName: "",
         ownerType: "Personal",
         templateType: null,
         ownerList: [],
@@ -511,10 +511,7 @@ export default {
     },
     async handleShowBuild() {
       if (!this.proId) {
-        uni.showToast({
-          title: "请先选择联动周期",
-          icon: "none",
-        });
+        this.$u.toast("请先选择联动周期");
         return;
       }
       this.buildSelectList = await postBuildByProId({ proId: this.proId });
@@ -527,10 +524,7 @@ export default {
     },
     async handleShowRoom() {
       if (!this.proId) {
-        uni.showToast({
-          title: "请先选择联动周期",
-          icon: "none",
-        });
+        this.$u.toast("请先选择联动周期");
         return;
       }
       this.roomSelectList = await postRoomByProId({
@@ -602,7 +596,6 @@ export default {
     }
   },
   onShow() {
-    console.log(getApp().globalData.refreshListData, "ssaa");
     let item = getApp().globalData.refreshListData;
     if (item) {
       switch (item.type) {
