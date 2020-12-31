@@ -60,7 +60,7 @@
           </view>
           <view class="content-right">
             <view class="title-wrapper">{{item.proName}}</view>
-            <text class="tag-wrapper">{{item.district}}</text>
+            <text class="tag-wrapper">{{item.districtName}}</text>
             <view class="price-wrapper">
               <span class="price">均价{{item.averagePrice}}</span>
               <span class="unit">元/m²</span>
@@ -267,7 +267,7 @@
           margin-left: 32rpx;
 
           .title-wrapper {
-            height: 32rpx;
+            //height: 32rpx;
             font-size: 30rpx;
             font-family: PingFang SC;
             font-weight: 400;

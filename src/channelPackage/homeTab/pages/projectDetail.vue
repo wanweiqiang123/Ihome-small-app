@@ -32,7 +32,7 @@
           </view>
           <view class="address-wrapper">
             <u-icon name="map-fill" size="40rpx" class="icon"></u-icon>
-            <view class="text">{{detailInfo.province + detailInfo.city + detailInfo.district}}</view>
+            <view class="text">{{detailInfo.provinceName + detailInfo.cityName + detailInfo.districtName}}</view>
           </view>
           <view class="rule-color">
             <view>佣金规则：</view>
@@ -98,7 +98,7 @@
             <view class="content-time">自住、投资</view>
           </view>
           <view>
-            <view class="home-info-title">开发商界定规则</view>
+            <view class="home-info-title">购房预算</view>
             <view class="content-time">200-300万</view>
           </view>
         </view>

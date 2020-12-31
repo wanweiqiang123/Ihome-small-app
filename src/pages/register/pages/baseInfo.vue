@@ -12,38 +12,45 @@
       <u-form :model="baseForm" ref="baseForm" :label-width="170">
         <u-form-item label="公司名称" required prop="companyName">
           <u-input
+            maxlength="64"
             v-model="baseForm.companyName"
             placeholder="请输入公司名称" :clearable="true" />
         </u-form-item>
         <u-form-item label="信用代码" required prop="creditCode">
           <u-input
+            maxlength="18"
             v-model="baseForm.creditCode"
             placeholder="请输入信用代码" :clearable="true" />
         </u-form-item>
         <u-form-item label="姓名" required prop="username">
           <u-input
+            maxlength="32"
             v-model="baseForm.username"
             placeholder="请输入您的姓名" :clearable="true" />
         </u-form-item>
         <u-form-item label="手机号码" required prop="mobile">
           <u-input
+            maxlength="16"
             type="number"
             v-model="baseForm.mobile"
             placeholder="请输入您的手机号码" :clearable="true" />
         </u-form-item>
         <u-form-item label="身份证号码" required prop="identityCode">
           <u-input
+            maxlength="18"
             v-model="baseForm.identityCode"
             placeholder="请输入您的身份证号码" :clearable="true" />
         </u-form-item>
         <u-form-item label="密码" required prop="password">
           <u-input
+            maxlength="32"
             v-model="baseForm.password"
             type="password"
             placeholder="请设置您的初始登录密码" :clearable="true" />
         </u-form-item>
         <u-form-item label="确认密码" required prop="rePassword">
           <u-input
+            maxlength="32"
             v-model="baseForm.rePassword"
             type="password"
             placeholder="请再次确认您的登录密码" :clearable="true" />
@@ -51,18 +58,21 @@
         <u-form-item label="邀请码" required prop="invitationCode">
           <u-input
             type="number"
+            maxlength="8"
             :disabled="!!qrCode"
             v-model="baseForm.invitationCode"
             placeholder="请联系对接人获取并输入" :clearable="true" />
         </u-form-item>
         <u-form-item label="邮箱" prop="email">
           <u-input
+            maxlength="64"
             v-model="baseForm.email"
             placeholder="请输入您的邮箱" :clearable="true" />
         </u-form-item>
         <u-form-item label="短信验证码" required prop="verifyCode">
           <view class="input-btn-flex">
             <u-input
+              maxlength="6"
               type="number"
               v-model="baseForm.verifyCode"
               placeholder="请输入短信验证码" :clearable="true" />
