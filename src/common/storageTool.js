@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-10 15:30:00
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-30 19:27:00
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-12-31 16:59:56
  */
 const tokenKey = 'token';//token的key
 const expiresInKey = 'expires_in';//token的key的过期时间
@@ -13,6 +13,7 @@ const loginUserTypeLogKey = 'loginUserTypeLog';//登录类别记录
 
 const sessionKeyKey = 'sessionKey';
 const openIdKey = 'openId';
+const wxCodeKey = 'wxcode';
 
 const storageTool = {
     /**设置token*/
@@ -101,6 +102,12 @@ const storageTool = {
     },
     getSessionKey() {
         return uni.getStorageSync(sessionKeyKey);
+    },
+    getWxCode() {
+        return uni.getStorageSync(wxCodeKey);
+    },
+    setWxCode(code) {
+        uni.setStorageSync(wxCodeKey, code);
     },
 
     /**根据用户类别跳转首页，未登录情况跳转登录页面*/

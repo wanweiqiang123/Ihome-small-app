@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-10 10:09:50
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-30 17:05:58
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-12-31 16:55:04
  */
 
 import { getApi, postApi } from '../common/http.js';
@@ -133,3 +133,10 @@ export async function getTestApi(time = 2000) {
 export async function getPdf2PicApi(data, option = {}) {
     return await getApi(`/sales-api/sales-document-cover/file/pdf2Pic/${data}`, option);
 }
+
+/**获取微信手机号码*/
+export async function postGetPhoneNumberApi(data, option = {}) {
+    return await postApi('/sales-api/system/wx/getWxOauthToken',data,option)
+}
+
+
