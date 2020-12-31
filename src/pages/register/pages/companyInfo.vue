@@ -153,7 +153,7 @@
     </u-popup>
     <u-modal
       @confirm="handleDelete"
-      v-model="showDeleteWin" :content="content"></u-modal>
+      v-model="showDeleteWin" content="您确定要删除此项吗？"></u-modal>
   </view>
 </template>
 

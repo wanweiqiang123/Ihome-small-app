@@ -19,8 +19,8 @@
               shape="circle"
               :src="myAvatar"></u-image>
           </view>
-          <view class="name">张小凡</view>
-          <view class="phone">18600002222</view>
+          <view class="name">{{userInfo.name}}</view>
+          <view class="phone">{{userInfo.mobilePhone}}</view>
         </view>
         <view class="my-item-wrapper u-padding-right-14">
           <u-grid :col="4" :border="false" @click="goToGrid">
@@ -78,6 +78,7 @@
 </template>
 
 <script>
+import storageTool from "@/common/storageTool";
 export default {
   data() {
     return {
@@ -148,10 +149,14 @@ export default {
           url: '/customerPackage/homeTab/index'
         }
       ],
-      showPopup: false
+      showPopup: false,
+      userInfo: null
     };
   },
-  onLoad() {},
+  onLoad() {
+    this.userInfo = storageTool.getUserInfo();
+    // console.log('this.userInfo', this.userInfo);
+  },
   methods: {
     // 跳转
     goToGrid(index) {

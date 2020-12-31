@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-12-17 14:29:26
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-23 20:19:07
+ * @LastEditTime: 2020-12-31 11:22:17
  */
 
 /**各环境变量参数
@@ -60,5 +60,10 @@ const envConfig = {
  */
 const currentEnvConfig = envConfig[__wxConfig.envVersion];
 
+/** api请求域名，带协议
+ * @param {*}
+ * @return {*}
+ */
+const baseUrl = currentEnvConfig['protocol'] + '://' + currentEnvConfig['apiDomain'];
 
-export { envConfig, currentEnvConfig }
+export { envConfig, currentEnvConfig, baseUrl }
