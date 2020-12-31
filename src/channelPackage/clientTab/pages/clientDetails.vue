@@ -11,19 +11,19 @@
     <view class="client-info">
       <view class="name-wrapper">
         <view class="name-left">
-          <span class="name">陈某某</span>
-          <span>(先生)</span>
+          <span class="name">{{detailForm.name}}</span>
+          <span>({{getDictName(detailForm.sex, sexList)}})</span>
         </view>
         <view>
           <u-icon name="edit-pen" size="45" @click="editClient"></u-icon>
         </view>
       </view>
       <view class="phone-wrapper">
-        <span>18300060111</span>
+        <span>{{detailForm.mobile}}</span>
         <u-icon class="icon-wrapper" name="phone" color="#04F21C" size="40"></u-icon>
       </view>
-      <view class="time">录入时间：2020-08-27 12:12</view>
-      <view class="time">报备楼盘：1</view>
+      <view class="time">录入时间：{{detailForm.inputTime}}</view>
+      <view class="time">报备楼盘：{{detailForm.reportDetails.length}}</view>
     </view>
     <view class="tabs-wrapper">
       <u-tabs :list="list" :is-scroll="false" :current="current" @change="changeTabs"></u-tabs>
@@ -31,52 +31,68 @@
     <view class="details-content-wrapper" v-show="current === 0">
       <view class="item">
         <view>意向区域：</view>
-        <view class="item-right"></view>
+        <view class="item-right">
+          {{getDictName(detailForm.intentionProvince, areaRegion)}}{{getDictName(detailForm.intentionCity, areaRegion)}}{{getDictName(detailForm.intentionCounty, areaRegion)}}
+        </view>
       </view>
       <view class="item">
         <view>购房目的：</view>
-        <view class="item-right"></view>
+        <view class="item-right">
+          <text v-for="(item, index) in detailForm.purposeOfPurchases" :key="index">{{getDictName(item, targetList)}}</text>
+        </view>
       </view>
       <view class="item">
         <view>意向面积：</view>
-        <view class="item-right"></view>
+        <view class="item-right">
+          <text v-for="(item, index) in detailForm.intentAreas" :key="index">{{getDictName(item, areaList)}}</text>
+        </view>
       </view>
       <view class="item">
         <view>意向户型：</view>
-        <view class="item-right"></view>
+        <view class="item-right">
+          <text v-for="(item, index) in detailForm.intentAreas" :key="index">{{getDictName(item, unitTypeList)}}</text>
+        </view>
       </view>
       <view class="item">
         <view>房屋装修：</view>
-        <view class="item-right"></view>
+        <view class="item-right">
+          <text v-for="(item, index) in detailForm.houseDecorations" :key="index">{{getDictName(item, decorationList)}}</text>
+        </view>
       </view>
       <view class="item">
         <view>关注因素：</view>
-        <view class="item-right"></view>
+        <view class="item-right">
+          <text v-for="(item, index) in detailForm.factorsOfConcerns" :key="index">{{getDictName(item, factorList)}}</text>
+        </view>
       </view>
     </view>
     <view class="details-content-wrapper" v-show="current === 1">
       <view class="item">
         <view>年龄段：</view>
-        <view class="item-right"></view>
+        <view class="item-right">{{getDictName(detailForm.ageGroup, ageList)}}</view>
       </view>
       <view class="item">
         <view>现住区域：</view>
-        <view class="item-right"></view>
+        <view class="item-right">
+          {{getDictName(detailForm.nowliveProvince, areaRegion)}}{{getDictName(detailForm.nowliveCity, areaRegion)}}{{getDictName(detailForm.nowliveCounty, areaRegion)}}
+        </view>
       </view>
       <view class="item">
         <view>工作区域：</view>
-        <view class="item-right"></view>
+        <view class="item-right">
+          {{getDictName(detailForm.workProvince, areaRegion)}}{{getDictName(detailForm.workCity, areaRegion)}}{{getDictName(detailForm.workCounty, areaRegion)}}
+        </view>
       </view>
     </view>
     <view class="details-content-wrapper" v-show="current === 2">
       <view class="time-line-wrapper">
         <u-time-line>
-          <u-time-line-item v-for="item in detailsTime" :key="item.currentTime">
+          <u-time-line-item v-for="item in detailForm.reportCustomerFollowups" :key="item.id">
             <template v-slot:content>
               <view>
-                <view class="lien-title">{{item.title}}</view>
-                <view class="lien-time">{{item.time}}</view>
-                <view class="lien-des">跟进情况：{{item.description}}</view>
+                <view class="lien-title">{{getDictName(item.type, followTypeList)}}跟进</view>
+                <view class="lien-time">{{item.followTime}}</view>
+                <view class="lien-des">跟进情况：{{item.describe}}</view>
               </view>
             </template>
           </u-time-line-item>
@@ -109,9 +125,12 @@
 </template>
 
 <script>
+import {getAreaList, getCustomerById} from "@/api/channel";
+import { getAllByTypeApi } from "@/api/index";
 export default {
   data() {
     return {
+      detailForm: {},
       list: [
         {
           name: '需求'
@@ -127,29 +146,33 @@ export default {
         }
       ],
       current: 0,
-      detailsTime: [
-        {
-          currentTime: 1,
-          title: '带看跟进',
-          time: '2020-08-28 13:55:44',
-          description: '客户已有高意向',
-        },
-        {
-          currentTime: 2,
-          title: '约见跟进',
-          time: '2020-08-27 13:55:44',
-          description: '客户预计一个月内购房',
-        },
-        {
-          currentTime: 3,
-          title: '电联跟进',
-          time: '2020-08-23 13:55:44',
-          description: '客户预期均价为xxxx',
-        }
-      ]
+      sexList: [],
+      areaRegion: [],
+      sourceList: [],
+      targetList: [],
+      areaList: [],
+      unitTypeList: [],
+      decorationList: [],
+      factorList: [],
+      ageList: [],
+      followTypeList: [],
     };
   },
-  onLoad() {},
+  async onLoad(option) {
+    this.sexList = await this.getDictByType('SexType'); // 性别
+    this.areaRegion = await this.getArea(); // 省市区
+    this.sourceList = await this.getDictByType('CustomerSourceType'); // 客户来源
+    this.targetList = await this.getDictByType('HousePurchaseType'); // 购房目的
+    this.areaList = await this.getDictByType('IntentionSpaceType'); // 意向面积
+    this.unitTypeList = await this.getDictByType('RoomType'); // 意向户型
+    this.decorationList = await this.getDictByType('RenovatLevel'); // 房屋装修
+    this.factorList = await this.getDictByType('FocusElementType'); // 关注因素
+    this.ageList = await this.getDictByType('AgeType'); // 年龄
+    this.followTypeList = await this.getDictByType('FollowUpType'); // 跟进
+    if (option && option.id) {
+      await this.initPage(option.id);
+    }
+  },
   methods: {
     // 点击tabs
     changeTabs(index) {
@@ -179,7 +202,32 @@ export default {
       uni.navigateTo({
         url: `/channelPackage/clientTab/pages/followUp`
       });
-    }
+    },
+    // 初始化详情页面
+    async initPage(id) {
+      const info = await getCustomerById(id);
+      console.log('initPage', info);
+      this.detailForm = info;
+    },
+    // 获取字典
+    async getDictByType(type) {
+      const dictList = await getAllByTypeApi({ type });
+      return dictList;
+    },
+    // 获取对应字典name
+    getDictName(code, list) {
+      if (list.length) {
+        const { name } = list.find(v => v.code === code);
+        return name;
+      } else {
+        return '';
+      }
+    },
+    // 获取省市区
+    async getArea() {
+      let areaList = await getAreaList();
+      return areaList;
+    },
   },
 };
 </script>

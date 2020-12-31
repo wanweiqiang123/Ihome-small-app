@@ -59,3 +59,13 @@ export async function getProDetail(id = '', data = {}, option = {}) {
 export async function getCustomerList(data = {}, option = {}) {
   return await postApi('/sales-api/customer/reportCustomer/getList', data, option);
 }
+
+// 客户 --- 录入客户
+export async function addCustomer(data = {}, option = {}) {
+  return await postApi('/sales-api/customer/reportCustomer/add', data, option);
+}
+
+// 客户 --- 查看客户
+export async function getCustomerById(id= '' , data = {}, option = {}) {
+  return await getApi(`/sales-api/customer/reportCustomer/get/${id}`, data, option);
+}

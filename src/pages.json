@@ -144,6 +144,12 @@
 					"style": {
 						"navigationBarTitleText": "优惠告知书"
 					}
+				},
+				{
+					"path": "attestation/index",
+					"style": {
+						"navigationBarTitleText": "认证信息"
+					}
 				}
 			]
 		},

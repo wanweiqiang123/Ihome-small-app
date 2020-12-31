@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-26 15:10:48
+ * @LastEditTime: 2020-12-30 17:19:44
  */
 import Vue from 'vue'
 import App from './App'
@@ -35,6 +35,12 @@ import TabBarPage from './components/TabBar/TabBarPage.vue'
 import CustomerTabBar from './components/TabBar/CustomerTabBar.vue'
 import ChannelTabBar from './components/TabBar/ChannelTabBar.vue'
 import StaffTabBar from './components/TabBar/StaffTabBar.vue'
+
+import LoginPage from './components/LoginPage.vue'
+import NoLoginPage from './components/LoginPage.vue'
+Vue.component('LoginPage', LoginPage);
+Vue.component('NoLoginPage', NoLoginPage);
+
 Vue.component('TabBarPage', TabBarPage);
 Vue.component('CustomerTabBar', CustomerTabBar);
 Vue.component('ChannelTabBar', ChannelTabBar);

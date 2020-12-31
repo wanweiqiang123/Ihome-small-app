@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-28 15:41:23
+ * @LastEditTime: 2020-12-30 18:28:30
 -->
 <template>
   <view>
@@ -83,23 +83,6 @@ export default {
       uni.navigateTo({
         url: `/customerPackage/discountsInfo/index?id=${id}`,
       });
-      // switch (val.id) {
-      //   case 1:
-      //     uni.navigateTo({
-      //       url: `/pages/search/index/index?api=postdevepolersApi`,
-      //       // url: `/pages/search/index/index?api=postUsersApi`,
-      //     });
-      //     break;
-      //   case 2:
-      //     uni.navigateTo({
-      //       url: `/customerPackage/createDiscounts/index?id=${val.id}`,
-      //     });
-      //     break;
-      //   case 3:
-      //     uni.navigateTo({
-      //       url: `/customerPackage/createRefund/index?id=${val.id}`,
-      //     });
-      //     break;
     },
     // 字典翻译
     async getDictAll(type) {

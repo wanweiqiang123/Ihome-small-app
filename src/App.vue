@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-28 19:24:48
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-30 19:26:51
 -->
 <script>
 export default {
@@ -13,8 +13,9 @@ export default {
       areaAll: {}, //省市区数据
       dictAll: [], //字典数据
     }, //初始化数据是否完成参数
-    paidData: {},
-    searchParams: null,
+    paidData: {}, // 支付信息
+    attestationInfo: {}, // 认证信息
+    searchParams: null, // 跳转分页查询页面携带的参数
     refreshListData: null, //列表缓存页面刷新存放数据
     userType: null,
     tabList: [

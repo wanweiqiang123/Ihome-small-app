@@ -32,7 +32,7 @@
           <view class="client-info">
             <view class="client-name">{{ item.name }}</view>
             <view class="client-phone">{{ item.mobile }}</view>
-            <view class="client-time">录入时间：{{ item. inputTime }}</view>
+            <view class="client-time">录入时间：{{ item.inputTime }}</view>
           </view>
         </view>
       </view>
@@ -65,10 +65,10 @@ export default {
       showAddWin: false
     };
   },
-  onLoad() {},
-  onShow() {
+  onLoad() {
     this.getListMixin();
   },
+  onShow() {},
   methods: {
     async getListMixin() {
       this.tableTotal = 0;
@@ -76,6 +76,7 @@ export default {
       this.queryPageParameters.pageNum = 1;
       this.queryPageParameters.pageSize = 10;
       this.setPageDataMixin(await getCustomerList(this.queryPageParameters));
+      // await getCustomerList(this.queryPageParameters)
     },
     // 录入客户/报备客户
     handleAdd(type) {
@@ -93,9 +94,9 @@ export default {
       this.showAddWin = false;
     },
     // 查看客户详情
-    viewClientDetails() {
+    viewClientDetails(item) {
       uni.navigateTo({
-        url: `/channelPackage/clientTab/pages/clientDetails`
+        url: `/channelPackage/clientTab/pages/clientDetails?id=${item.id}`
       });
     }
   },

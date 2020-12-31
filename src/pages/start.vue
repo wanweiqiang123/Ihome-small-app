@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-30 14:22:01
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-30 14:38:28
+ * @LastEditTime: 2020-12-31 17:00:43
 -->
 <template>
   <view style="padding-top: 100px">
@@ -52,11 +52,13 @@ export default {
     uni.login({
       success: async function (res) {
         console.log(res);
+        storageTool.setWxCode(res.code);
         getOpenidApi(res.code, {
           hideLoading: true,
         }).then((infoRes) => {
           storageTool.setOpenId(infoRes.openId);
           storageTool.setSessionKey(infoRes.sessionKey);
+
           getUserInfoApi(
             { terminalType: "WechatApp" },
             { hideMsg: true, hideLoading: true }

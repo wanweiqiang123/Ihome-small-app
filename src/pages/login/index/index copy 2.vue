@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-29 15:58:19
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-31 17:31:59
+ * @LastEditTime: 2020-12-25 10:19:55
 -->
 <template>
   <view class="page login-page-style">
@@ -133,15 +133,6 @@
     <view class="register-wrapper">
       <u-button shape="circle" @click="handleRegister">渠道商注册</u-button>
     </view>
-    <view class="register-wrapper">
-      <u-button
-        shape="circle"
-        open-type="getPhoneNumber"
-        @getphonenumber="getPhoneNumber"
-        >微信登录</u-button
-      >
-    </view>
-
     <view class="img-bottom">
       <image
         style="width: 100%"
@@ -158,7 +149,6 @@ import {
   loginPhoneApi,
   getUserInfoApi,
   getSessionUserSendSmsApi,
-  postGetPhoneNumberApi,
 } from "../../../api/index";
 import storageTool from "../../../common/storageTool";
 
@@ -188,44 +178,8 @@ export default {
       },
     };
   },
-  onLoad() {
-    uni.login({
-      success: function (res) {
-        // 获取code
-        console.log(res);
-      },
-    });
-  },
 
   methods: {
-    async getPhoneNumber(e) {
-      console.log(e);
-      if (e.detail.errMsg == "getPhoneNumber:fail user deny") {
-        //用户拒绝
-      } else {
-        try {
-          let code = storageTool.getWxCode();
-          let sessionKey = storageTool.getSessionKey();
-          let p = {
-            code: code,
-            encryptedData: e.detail.encryptedData,
-            iv: e.detail.iv,
-            sessionKey: sessionKey,
-          };
-          console.log(p);
-          const res = await postGetPhoneNumberApi(p);
-          console.log(res);
-        } catch (error) {
-          console.log(error);
-          uni.showToast({
-            title: "登陆失败",
-          });
-        }
-      }
-
-      //              console.log(JSON.stringify(e.encryptedData));
-      //              console.log(JSON.stringify(e.iv));
-    },
     activeTab(index) {
       this.current = index;
     },
@@ -358,7 +312,7 @@ export default {
       uni.redirectTo({
         url: "/pages/register/channel",
       });
-    },
+    }
   },
 
   onReady() {},

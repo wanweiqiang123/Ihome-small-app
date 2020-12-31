@@ -4,13 +4,12 @@
  * @Author: zyc
  * @Date: 2020-11-10 10:17:55
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-25 15:23:50
+ * @LastEditTime: 2020-12-31 10:24:03
  */
 
 import storageTool from './storageTool'
-import { currentEnvConfig } from '../env-config'
-//api请求域名，带协议
-const baseUrl = currentEnvConfig['protocol'] + '://' + currentEnvConfig['apiDomain'];
+import { baseUrl } from '../env-config'
+
 console.log(baseUrl);
 // const baseUrl = 'http://api.polyihome.develop';
 
@@ -54,9 +53,11 @@ const api = (url, data = {}, option = {}) => {
             method: option.method || 'POST', // 默认 post 请求
             header: header,
             data: data,
-            success: res => { // 服务器成功返回的回调函数
-
+            complete() {
                 if (!hideLoading) uni.hideLoading();
+            },
+            success: res => { // 服务器成功返回的回调函数
+ 
                 if (res.statusCode === 200) {
                     let result = res.data;
                     // if (url.startsWith('/sales-api/sales-oauth2/oauth/token') || url.startsWith('/sales-oauth2/oauth/token')) {
@@ -82,12 +83,15 @@ const api = (url, data = {}, option = {}) => {
                 }
             },
             fail: (err) => { // 接口调用失败的回调函数
-                if (!hideLoading) uni.hideLoading();
+                console.log(err.errMsg);
+               
                 if (err.errMsg == 'request:fail url not in domain list') {
                     showToast('服务器域名未配置');
+                } else if (err.errMsg.includes('CONNECTION_TIMED_OUT')) {
+                    showToast('网络连接超时');
                 }
                 else {
-                    showToast(err.errMsg);
+                    showToast("网络异常：" + err.errMsg);
                 }
                 reject(err.errMsg);
 

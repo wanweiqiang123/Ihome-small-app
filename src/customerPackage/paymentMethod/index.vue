@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-30 10:13:54
+ * @LastEditTime: 2020-12-31 11:41:20
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
@@ -172,9 +172,20 @@ export default {
           });
           break;
         case 'WeChatPay':
-          res = await postAddServiceApi(obj);
-          const openId = uni.getStorageSync('openId');
-          console.log(openId);
+          // res = await postAddServiceApi(obj);
+          // const openId = uni.getStorageSync('openId');
+          // console.log(openId);
+          let wcPayData = {
+            appId: "wx663ccfdeb2c29d07",
+            pkg: "prepay_id=wx31101343252936c16bc89167f1199c0000",
+            signType: "RSA",
+            paySign: "Zvq+ScK4Da13uDkEkJplBx3VVjmd1SkSVYBb9QBIB+WdECo0341TGPBrb1v/NHbSLOWdjQicACW75ugjLesaeoPRmZpywIvVZkOwbqxB1hfUjs/XUL8/aDxgqFj4ExaOjTsX+J9FjKgCSWgaixjpHpit1vW1MstX26Sl8J8JSNIXqHVGmoQOUht1njAdCSb5bEfKty/vKR0ogIS9K6tgWkndke3FRgJ1uXvDVO4AAklEB37P65EcF6ygg2D3vVj/b8tEK9iTaLWHdsyV/k2lUszFEtK+nHMn/EVmO/TVF9kl1jPdEaOCC6QQFMd69yM/vtCwHXoKf6MsvCWKlUwdWg==",
+            nonceStr: "LHphVKmrMSfAcAWm7SgmvHYUgAE3W8Bb",
+            prepayId: "wx31101343252936c16bc89167f1199c0000",
+            timeStamp: "1609380823"
+          }
+          uni.requestPayment(wcPayData);
+          debugger
           // async getUrl() {
           //   const res = await postUnionPayUrlApi({
           //     id: this.payId,

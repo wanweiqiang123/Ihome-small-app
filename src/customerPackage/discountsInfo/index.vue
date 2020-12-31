@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-30 14:24:01
+ * @LastEditTime: 2020-12-30 17:07:02
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -155,8 +155,15 @@
                   type="primary"
                   size="medium"
                   shape="circle"
-                  @click="viewNotice(item)"
+                  @click="gotoNotice(item, 'view')"
                 >预览</u-button>
+                <u-button
+                  v-if="item.notificationStatus === 'WaitBeSigned'"
+                  type="primary"
+                  size="medium"
+                  shape="circle"
+                  @click="gotoNotice(item, 'sign')"
+                >去签署</u-button>
               </view>
             </view>
           </swiper-item>
@@ -237,7 +244,6 @@ export default {
       show: false,
       payAuditNum: 0,
       content: '您上次还有一笔待付款单未完成支付，您可以选择前往继续支付，也可以选择创建一笔新的付款。',
-      // webviewSrc: 'http://api.polyihome.develop/sales-api/sales-document-cover/file/browse/5fd02f5e282f220001e07fa6',
       Property: [],
       NotificationType: [],
       NotificationStatus: [],
@@ -275,12 +281,10 @@ export default {
       }
     },
     // 预览
-    viewNotice(val) {
+    gotoNotice(val, type) {
       if (val) {
-        // this.webviewSrc = `/sales-api/sales-document-cover/file/browse/${val}`;
-        // this.webView = true;
         uni.navigateTo({
-          url: `/customerPackage/notification/index?templateId=${val.templateId}&&id=${val.id}`,
+          url: `/customerPackage/notification/index?templateId=${val.templateId}&&id=${val.id}&&type=${type}`,
         });
       }
     },

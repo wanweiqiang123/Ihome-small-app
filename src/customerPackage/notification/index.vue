@@ -4,14 +4,14 @@
  * @Author: wwq
  * @Date: 2020-12-30 10:23:11
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-30 14:25:18
+ * @LastEditTime: 2020-12-31 10:40:45
 -->
 <template>
   <view>
-    <view>
-      <u-image width="100%" height="100vh" :src="src"></u-image>
+    <view class="imageview">
+      <image style="width: 100%;height: 100vh" mode="aspectFit" :src="src"></image>
     </view>
-    <view class="sign">
+    <view class="sign" v-if="type === 'sign'">
       <u-button type="primary" :disabled="disabled" @click="gotoSign">{{tips}}</u-button>
     </view>
     <u-verification-code
@@ -33,17 +33,19 @@ export default {
   data() {
     return {
       templateId: '',
-      notificationId: '',
+      noticeId: '',
       src: '',
       isShow: true,
       tips: '',
       disabled: true,
+      type: '',
     }
   },
   onLoad(options) {
     this.templateId = options.templateId;
-    this.notificationId = options.id;
-    this.$refs.uCode.start();
+    this.noticeId = options.id;
+    this.type = options.type;
+    if (this.type === 'sign') this.$refs.uCode.start();
   },
   async onShow() {
     if (this.templateId) {
@@ -60,17 +62,42 @@ export default {
       this.tips = text;
     },
     async gotoSign() {
+      // getApp().globalData.attestationInfo = {
+      //   ownerName: '皮小强',
+      //   ownerMobile: '15119337612',
+      //   ownerCertificateNo: '441424199302050553',
+      //   noticeId: this.noticeId,
+      //   templateId: this.templateId,
+      // };
+      // uni.navigateTo({
+      //   url: `/customerPackage/attestation/index`,
+      // });
       const res = await postSignApi({
-        id: this.notificationId,
+        id: this.noticeId,
       });
       if (res.certificationStatus === 'notCertified') {
-        console.log(111)
+        getApp().globalData.attestationInfo = {
+          ownerName: res.ownerName,
+          ownerMobile: res.ownerMobile,
+          ownerCertificateNo: res.ownerCertificateNo,
+          noticeId: this.noticeId,
+          templateId: this.templateId,
+        };
+        uni.navigateTo({
+          url: `/customerPackage/attestation/index`,
+        });
+      } else {
+        // 去到E签宝
       }
     }
   }
 }
 </script>
 <style lang="scss" scoped>
+.imageview {
+  padding-bottom: 50rpx;
+}
+
 .sign {
   width: 80%;
   position: fixed;
