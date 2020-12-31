@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-30 10:23:11
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-30 18:36:08
+ * @LastEditTime: 2020-12-31 10:40:45
 -->
 <template>
   <view>
@@ -62,31 +62,33 @@ export default {
       this.tips = text;
     },
     async gotoSign() {
-      getApp().globalData.attestationInfo = {
-        ownerName: '皮小强',
-        ownerMobile: '15119337612',
-        ownerCertificateNo: '441424199302050553',
-        noticeId: this.noticeId,
-        templateId: this.templateId,
-      };
-      uni.navigateTo({
-        url: `/customerPackage/attestation/index`,
-      });
-      // const res = await postSignApi({
-      //   id: this.noticeId,
+      // getApp().globalData.attestationInfo = {
+      //   ownerName: '皮小强',
+      //   ownerMobile: '15119337612',
+      //   ownerCertificateNo: '441424199302050553',
+      //   noticeId: this.noticeId,
+      //   templateId: this.templateId,
+      // };
+      // uni.navigateTo({
+      //   url: `/customerPackage/attestation/index`,
       // });
-      // if (res.certificationStatus === 'notCertified') {
-      //   getApp().globalData.attestationInfo = {
-      //     ownerName: res.ownerName,
-      //     ownerMobile: res.ownerMobile,
-      //     ownerCertificateNo: res.ownerCertificateNo,
-      //     noticeId: this.noticeId,
-      //     templateId: this.templateId,
-      //   };
-      //   uni.navigateTo({
-      //     url: `/customerPackage/attestation/index`,
-      //   });
-      // }
+      const res = await postSignApi({
+        id: this.noticeId,
+      });
+      if (res.certificationStatus === 'notCertified') {
+        getApp().globalData.attestationInfo = {
+          ownerName: res.ownerName,
+          ownerMobile: res.ownerMobile,
+          ownerCertificateNo: res.ownerCertificateNo,
+          noticeId: this.noticeId,
+          templateId: this.templateId,
+        };
+        uni.navigateTo({
+          url: `/customerPackage/attestation/index`,
+        });
+      } else {
+        // 去到E签宝
+      }
     }
   }
 }

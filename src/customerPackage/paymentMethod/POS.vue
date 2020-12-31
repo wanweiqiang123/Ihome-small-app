@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 15:27:32
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-28 15:47:32
+ * @LastEditTime: 2020-12-31 11:23:10
 -->
 <template>
   <view class="box">
@@ -27,6 +27,7 @@
 import { getPaymentQRCodeInfoApi, getPayStatusApi } from "../../api/customer";
 import storageTool from '../../common/storageTool';
 import { getAllByTypeApi } from "../../api/index";
+import { currentEnvConfig } from "../../env-config.js";
 export default {
   components: {},
   data() {
@@ -83,7 +84,7 @@ export default {
         'Authorization': 'bearer ' + token
       };
       uni.request({
-        url: 'http://api.polyihome.develop/sales-api/sales-document-cover/file/qrcode',
+        url: `${currentEnvConfig['protocol']}://${currentEnvConfig['apiDomain']}/sales-api/sales-document-cover/file/qrcode`,
         method: 'POST',
         header: {
           ...header,
@@ -91,7 +92,7 @@ export default {
         },
         data: obj,
         success: res => {
-          this.url = `http://api.polyihome.develop/sales-api/sales-document-cover/file/browse/${res.data.data.fileId}`
+          this.url = `${currentEnvConfig['protocol']}://${currentEnvConfig['apiDomain']}/sales-api/sales-document-cover/file/browse/${res.data.data.fileId}`
         }
       })
     },
