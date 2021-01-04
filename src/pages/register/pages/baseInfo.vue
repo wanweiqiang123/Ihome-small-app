@@ -41,43 +41,11 @@
             v-model="baseForm.identityCode"
             placeholder="请输入您的身份证号码" :clearable="true" />
         </u-form-item>
-        <u-form-item label="密码" required prop="password">
-          <u-input
-            maxlength="32"
-            v-model="baseForm.password"
-            type="password"
-            placeholder="请设置您的初始登录密码" :clearable="true" />
-        </u-form-item>
-        <u-form-item label="确认密码" required prop="rePassword">
-          <u-input
-            maxlength="32"
-            v-model="baseForm.rePassword"
-            type="password"
-            placeholder="请再次确认您的登录密码" :clearable="true" />
-        </u-form-item>
-        <u-form-item label="邀请码" required prop="invitationCode">
-          <u-input
-            type="number"
-            maxlength="8"
-            :disabled="!!qrCode"
-            v-model="baseForm.invitationCode"
-            placeholder="请联系对接人获取并输入" :clearable="true" />
-        </u-form-item>
         <u-form-item label="邮箱" prop="email">
           <u-input
             maxlength="64"
             v-model="baseForm.email"
             placeholder="请输入您的邮箱" :clearable="true" />
-        </u-form-item>
-        <u-form-item label="短信验证码" required prop="verifyCode">
-          <view class="input-btn-flex">
-            <u-input
-              maxlength="6"
-              type="number"
-              v-model="baseForm.verifyCode"
-              placeholder="请输入短信验证码" :clearable="true" />
-            <u-button class="u-margin-left-8" type="success" size="mini" @click="sendMessage">{{codeBtn}}</u-button>
-          </view>
         </u-form-item>
       </u-form>
     </view>
@@ -212,11 +180,7 @@ export default {
         username: '',
         mobile: '',
         identityCode: '',
-        password: '',
-        rePassword: '',
-        invitationCode: '',
         email: '',
-        verifyCode: ''
       },
       rules: {
         companyName: [
@@ -234,24 +198,10 @@ export default {
         identityCode: [
           { validator: validIdentityCard, trigger: ['blur'] }
         ],
-        password: [
-          { validator: validPassword, trigger: ['blur'] }
-        ],
-        rePassword: [
-          { validator: validConfirmPassword, trigger: ['blur'] }
-        ],
-        invitationCode: [
-          { required: true, message: '请输入邀请码', trigger: ['blur'] }
-        ],
         email: [
           { validator: emailOrNullValidato, trigger: ['blur'] }
-        ],
-        verifyCode: [
-          { required: true, message: '请输入短信验证码', trigger: ['blur'] }
         ]
       },
-      codeBtn: '发送验证码',
-      timer: null, // 计时器
       fileUrl: `${currentEnvConfig['protocol']}://${currentEnvConfig['apiDomain']}/sales-api/sales-document-cover/static/channel/模版-委托书.docx`
     };
   },
@@ -262,6 +212,8 @@ export default {
     if (this.qrCode) {
       this.baseForm.invitationCode = this.qrCode;
     }
+    let sysInfo = uni.getSystemInfoSync();
+    console.log(sysInfo);
   },
   methods: {
     // 下一步
@@ -275,75 +227,6 @@ export default {
         }
       });
     },
-    // 点击发送短信
-    async sendMessage() {
-      let self = this;
-      let validFlag = false; // 手机号是否正确
-      let count = 60;  // 倒计时60秒
-      validFlag = this.validPhoneBySendCode(self.baseForm.mobile);
-      if (validFlag) {
-        if (!self.timer) {
-          uni.showToast({
-            icon: 'loading',
-            title: '正在获取验证码',
-            duration: 50000000
-          });
-          let postData = {
-            mobilePhone: this.baseForm.mobile,
-            smsCodeType: 'RegisterAndLogin'
-          }
-          const res = await getMessage(postData);
-          if (res) {
-            uni.showToast({
-              title: res,
-              icon: "none",
-              duration: 3000,
-            });
-          } else {
-            uni.showToast({
-              icon: 'none',
-              title: '验证码已发送'
-            });
-          }
-          self.timer = setInterval(() => {
-            if (count > 0 && count <= 60) {
-              self.codeBtn = `${count}后重新获取`;
-              count--;
-            } else {
-              self.timer = null;
-              self.codeBtn = '重新获取';
-              clearInterval(self.timer);
-            }
-          }, 1000);
-        } else {
-          uni.showToast({
-            icon: 'none',
-            title: '倒计时结束后再获取'
-          });
-        }
-      }
-    },
-    // 发送验证码前校验
-    validPhoneBySendCode(phone = '') {
-      const Reg = /^[1][3-9]\d{9}$|^([6|9])\d{7}$|^[0][9]\d{8}$|^[6]([8|6])\d{5}$/;
-      if (phone) {
-        if (!(Reg.test(phone))) {
-          uni.showToast({
-            icon: 'none',
-            title: '请输入有效手机号码!'
-          });
-          return false;
-        } else {
-          return true;
-        }
-      } else {
-        uni.showToast({
-          icon: 'none',
-          title: '请输入手机号!'
-        });
-        return false;
-      }
-    },
     // 下载授权确认函模板
     downTemplate() {
       let self = this;
@@ -352,13 +235,9 @@ export default {
         success: (res) => {
           if (res.statusCode === 200) {
             console.log('下载成功');
-            uni.showToast({
-              icon: 'success',
-              title: '下载成功',
-            });
-            // 预览下载的文件
             uni.openDocument({
               filePath: res.tempFilePath,
+              showMenu: true,
               success: (res) => {
                 console.log('打开文档成功');
               }
