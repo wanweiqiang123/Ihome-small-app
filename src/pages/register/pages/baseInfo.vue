@@ -262,6 +262,8 @@ export default {
     if (this.qrCode) {
       this.baseForm.invitationCode = this.qrCode;
     }
+    let sysInfo = uni.getSystemInfoSync();
+    console.log(sysInfo);
   },
   methods: {
     // 下一步
@@ -325,7 +327,7 @@ export default {
     },
     // 发送验证码前校验
     validPhoneBySendCode(phone = '') {
-      const Reg = /^[1][3-9]\d{9}$|^([6|9])\d{7}$|^[0][9]\d{8}$|^[6]([8|6])\d{5}$/;
+      const Reg = /^[1][3-9]\d{9}$|([6|9])\d{7}$|6\d{7}$|[0][9]\d{8}$/;
       if (phone) {
         if (!(Reg.test(phone))) {
           uni.showToast({
@@ -352,13 +354,9 @@ export default {
         success: (res) => {
           if (res.statusCode === 200) {
             console.log('下载成功');
-            uni.showToast({
-              icon: 'success',
-              title: '下载成功',
-            });
-            // 预览下载的文件
             uni.openDocument({
               filePath: res.tempFilePath,
+              showMenu: true,
               success: (res) => {
                 console.log('打开文档成功');
               }
