@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-31 16:24:27
+ * @LastEditTime: 2021-01-04 18:23:17
 -->
 <template>
   <view class="notice safe-area-inset-bottom">
@@ -574,6 +574,9 @@ export default {
               icon: "none",
             });
             if (this.form.templateType === "ElectronicTemplate") {
+              uni.navigateTo({
+                url: `/staffPackage/noticePreview/index?id=${res.noticeId}&tId=${res.templateId}&type=Notification`,
+              });
             } else {
               this.$tool.back(null, { type: "init", page: null });
             }

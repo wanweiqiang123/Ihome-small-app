@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 17:10:39
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-31 16:42:54
+ * @LastEditTime: 2021-01-04 14:44:39
 -->
 <template>
   <view class="notice">

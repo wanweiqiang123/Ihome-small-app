@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-30 18:40:26
+ * @LastEditTime: 2021-01-04 15:43:50
 -->
 <template>
   <view class="notice safe-area-inset-bottom">
@@ -178,6 +178,9 @@ export default {
         });
       } else {
         console.log("其他");
+        uni.navigateTo({
+          url: `/staffPackage/noticePreview/index?id=${item.id}&tId=${item.templateId}&type=${item.notificationType}`,
+        });
       }
       // switch () {
       //   case "WaitDetermine":
