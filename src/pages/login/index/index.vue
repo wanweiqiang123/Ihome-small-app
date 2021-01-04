@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-29 15:58:19
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-31 17:31:59
+ * @LastEditTime: 2021-01-04 15:27:16
 -->
 <template>
   <view class="page login-page-style">
@@ -165,6 +165,7 @@ import storageTool from "../../../common/storageTool";
 export default {
   data() {
     return {
+      redirect: null, //跳转路径
       codeBtnText: "发送验证码",
       second: 60,
       passwordType: true,
@@ -188,7 +189,8 @@ export default {
       },
     };
   },
-  onLoad() {
+  onLoad(options) {
+    this.redirect = options.options || null;
     uni.login({
       success: function (res) {
         // 获取code
@@ -262,7 +264,7 @@ export default {
       storageTool.setToken(res.access_token, res.expires_in);
       const userInfo = await getUserInfoApi();
       storageTool.setUserInfo(userInfo);
-      storageTool.goHome();
+      storageTool.goHome(this.redirect);
     },
     async loginPhone() {
       //验证码登录

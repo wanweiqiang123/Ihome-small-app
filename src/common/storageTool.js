@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 15:30:00
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-31 16:59:56
+ * @LastEditTime: 2021-01-04 15:26:00
  */
 const tokenKey = 'token';//token的key
 const expiresInKey = 'expires_in';//token的key的过期时间
@@ -111,11 +111,17 @@ const storageTool = {
     },
 
     /**根据用户类别跳转首页，未登录情况跳转登录页面*/
-    goHome() {
+    goHome(path) {
         const token = this.getToken();
         if (token) {
             // const userInfo = this.getUserInfo();
             // let userType = userInfo?.userType;
+            if (path && path.length > 0) {
+                uni.redirectTo({
+                    url: token,
+                });
+                return;
+            }
             const userType = 'Customer';
             //userType用户类别(Staff-员工、Channel-渠道、Customer-客户)
             switch (userType) {
