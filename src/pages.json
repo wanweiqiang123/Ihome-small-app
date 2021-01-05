@@ -86,21 +86,9 @@
 					}
 				},
 				{
-					"path": "paymentMethod/weChatPay",
-					"style": {
-						"navigationBarTitleText": "微信付款"
-					}
-				},
-				{
 					"path": "paymentMethod/POS",
 					"style": {
 						"navigationBarTitleText": "POS机扫码"
-					}
-				},
-				{
-					"path": "paymentMethod/friendPay",
-					"style": {
-						"navigationBarTitleText": "好友代付"
 					}
 				},
 				{

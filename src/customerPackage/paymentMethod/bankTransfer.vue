@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 15:28:17
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-28 14:26:01
+ * @LastEditTime: 2021-01-05 16:51:50
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
@@ -19,7 +19,12 @@
         <view class="pay-list">收款帐号
           <view class='pay-payeeAccount'>
             <text class="pay-payeeAccount-title">{{info.payeeAccount}}</text>
-            <u-icon name="file-text-fill" color="#2979ff" size="40" @click="copyPayNum"></u-icon>
+            <u-icon
+              name="file-text-fill"
+              color="#2979ff"
+              size="40"
+              @click="copyPayNum"
+            ></u-icon>
           </view>
         </view>
         <view class="pay-list">收款金额
@@ -42,6 +47,7 @@
           ref="uUpload"
           :action="action"
           @on-success="successChange"
+          @on-remove="removeChange"
           :show-upload-list="showUploadList"
           :header="header"
           :show-progress="false"
@@ -66,13 +72,17 @@ export default {
   data() {
     return {
       info: {},
-      payId: '',
+      payId: "",
       payNum: 0,
-      action: currentEnvConfig['protocol'] + '://' + currentEnvConfig['apiDomain'] + '/sales-api/sales-document-cover/file/upload',
+      action:
+        currentEnvConfig["protocol"] +
+        "://" +
+        currentEnvConfig["apiDomain"] +
+        "/sales-api/sales-document-cover/file/upload",
       lists: [],
       showUploadList: true,
       header: {
-        'Authorization': 'bearer '+ storageTool.getToken()
+        Authorization: "bearer " + storageTool.getToken(),
       },
       payData: {},
       uploadArr: [],
@@ -86,7 +96,7 @@ export default {
     this.payId = 3;
   },
   onReady() {
-		// 得到整个组件对象，内部图片列表变量为"lists"
+    // 得到整个组件对象，内部图片列表变量为"lists"
     // this.lists = this.$refs.uUpload.lists;
   },
   onShow() {
@@ -101,19 +111,22 @@ export default {
     copyPayNum() {
       uni.setClipboardData({
         data: this.info.payeeAccount,
-      })
+      });
     },
     async successChange(data, index, lists, name) {
-      this.uploadArr = lists.map(v => ({
+      this.uploadArr = lists.map((v) => ({
         fileId: v.response.data[0].fileId,
-        fileName: v.response.data[0].generateFileName + '.' + v.response.data[0].generateFileType,
-      }))
+        fileName:
+          v.response.data[0].generateFileName +
+          "." +
+          v.response.data[0].generateFileType,
+      }));
     },
     beforeUpload() {
       uni.showToast({
-        icon: 'loading',
-        title: '正在上传...',
-        duration: 500000000000
+        icon: "loading",
+        title: "正在上传...",
+        duration: 500000000000,
       });
       return true;
     },
@@ -123,15 +136,15 @@ export default {
       obj.businessId = this.payData.businessId;
       obj.groupId = this.payData.groupId;
       obj.operator = this.payData.operator;
-      obj.payType = 'Transfer';
-      obj.payer = 'Customer';
+      obj.payType = "Transfer";
+      obj.payer = "Customer";
       obj.proId = this.payData.projectId;
       obj.roomId = this.payData.roomNumberId;
       obj.serviceAmount = this.payData.paymentAmount;
       obj.serviceFeePaid = this.payData.paid;
       obj.termId = this.payData.cycleId;
       obj.unpaidServiceFee = this.payData.unpaid;
-      obj.terminal = 'WeChatApp';
+      obj.terminal = "WeChatApp";
       obj.attachments = this.uploadArr;
       obj.payeeAccount = this.info.payeeAccount;
       obj.payeeName = this.info.payeeName;
@@ -143,16 +156,15 @@ export default {
       const res = await postAddServiceApi(obj);
       if (res) {
         uni.showToast({
-          title: '提交成功',
-          icon: 'none'
-        })
+          title: "提交成功",
+          icon: "none",
+        });
       }
       uni.navigateTo({
         url: `/customerPackage/discountsInfo/index?id=${this.payData.businessId}`,
       });
-    }
+    },
   },
-  
 };
 </script>
 <style lang="scss" scoped>
