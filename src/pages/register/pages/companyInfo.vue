@@ -554,7 +554,7 @@ export default {
     // 注册
     async handleRegister(data) {
       const info = await channelRegister(data);
-      console.log(info);
+      // console.log(info);
       uni.showToast({
         icon: 'success',
         title: '注册成功'
@@ -579,14 +579,14 @@ export default {
     },
     // 确定选择日期
     confirmDate(value) {
-      console.log(value);
+      // console.log(value);
       if (value) {
         this.companyForm.setupTime = `${value.year}-${value.month}-${value.day}`
       }
     },
     // 确定选择地区
     confirmRegion(value) {
-      console.log(value);
+      // console.log(value);
       if (value && value.length > 0) {
         this.companyForm.province = value[0].value;
         this.companyForm.city = value[1].value;
@@ -596,7 +596,7 @@ export default {
     },
     // 确定选择公司类型
     confirmCompanyType(value) {
-      console.log(value);
+      // console.log(value);
       if (value && value.length > 0) {
         this.companyForm.type = value[0].value;
         this.companyForm.typeName = value[0].label;
@@ -604,7 +604,7 @@ export default {
     },
     // 确定选择银行
     handleSelectBank(item) {
-      console.log(item);
+      // console.log(item);
       if (item.id) {
         this.companyForm.branchName = item.bankName;
         this.companyForm.branchNo = item.branchNo;
