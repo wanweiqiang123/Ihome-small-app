@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-26 17:46:45
+ * @LastEditTime: 2021-01-04 18:25:10
 -->
 <template>
   <view>
@@ -31,16 +31,16 @@
         slot="body"
       >
         <view class="body-msg">
-          <view class="">项目名称</view>
-          <view class="color">保利大都会</view>
+          <view>项目名称</view>
+          <view class="color">{{form.proName}}</view>
         </view>
         <view class="body-msg">
-          <view class="">优惠方式</view>
-          <view class="color">5万抵10万优惠折扣</view>
+          <view>优惠方式</view>
+          <view class="color">{{form.explain}}</view>
         </view>
         <view class="body-msg">
-          <view class="">服务费金额</view>
-          <view class="color">¥50000.00</view>
+          <view>服务费金额</view>
+          <view class="color">¥{{form.paymentAmount?form.paymentAmount:0}}</view>
         </view>
       </view>
     </u-card>
@@ -49,36 +49,47 @@
       bg-color="#f3f4f6"
     ></u-gap>
     <view class="select">
-      <view class="select-msg">
-        <view class="">选择栋座</view>
-        <view
-          class="color"
-          @click="buildingBlockShow = true"
-        >{{buildingBlock}}
-          <u-icon
-            name="arrow-right"
-            size="28"
-          ></u-icon>
-        </view>
-      </view>
-      <view class="select-msg">
-        <view class="">选择房号</view>
-        <view
-          class="color"
-          @click="roomNoShow = true"
-        >{{roomNo}}
-          <u-icon
-            name="arrow-right"
-            size="28"
-          ></u-icon>
-        </view>
-      </view>
+      <u-form
+        class="select-msg"
+        :model="form"
+        ref="roomFrom"
+        label-width="190"
+      >
+        <u-form-item
+          label="选择栋座"
+          right-icon="arrow-right"
+          class="hide-icon"
+          prop="buyUnitName"
+        >
+          <u-input
+            v-model="form.buyUnitName"
+            type="select"
+            placeholder="请选择栋座"
+            @click="buildingBlockShow = true"
+          />
+        </u-form-item>
+        <u-form-item
+          label="选择房号"
+          right-icon="arrow-right"
+          class="hide-icon"
+          prop="roomNo"
+        >
+          <u-input
+            v-model="form.roomNo"
+            type="select"
+            placeholder="请选择房号"
+            @click="roomNoShow = true;getRoomList(this.form.buyUnit)"
+          />
+        </u-form-item>
+      </u-form>
       <u-select
         title="选择栋座"
         confirm-color="#dd524d"
         v-model="buildingBlockShow"
         :list="buildingBlockList"
         @confirm="buildingBlockClick"
+        value-name="buildingId"
+        label-name="buildingName"
       ></u-select>
       <u-select
         title="选择房号"
@@ -86,6 +97,8 @@
         v-model="roomNoShow"
         :list="roomNoList"
         @confirm="roomNoClick"
+        value-name="roomId"
+        label-name="roomNo"
       ></u-select>
     </view>
     <u-gap
@@ -103,7 +116,7 @@
           ”按钮新增
         </view>
       </view>
-      <template v-for="(item, i) in ownerInfo">
+      <template v-for="(item, i) in ownerList">
         <view
           class="owner-layout"
           :key="i"
@@ -112,15 +125,16 @@
             :model="item"
             :ref="`uForm`"
             class="owner-msg"
-            label-width="300"
+            label-width="190"
           >
             <u-form-item
               class="owner-msg-item"
               label="业主姓名"
-              prop="name"
+              required
+              prop="ownerName"
             >
               <u-input
-                v-model="item.name"
+                v-model="item.ownerName"
                 :auto-height="autoHeight"
                 placeholder="请输入姓名"
                 clearable
@@ -129,10 +143,11 @@
             <u-form-item
               class="owner-msg-item"
               label="手机号码"
-              prop="phone"
+              required
+              prop="ownerMobile"
             >
               <u-input
-                v-model="item.phone"
+                v-model="item.ownerMobile"
                 :auto-height="autoHeight"
                 placeholder="请输入手机号码"
                 clearable
@@ -141,10 +156,11 @@
             <u-form-item
               class="owner-msg-item"
               label="身份证号"
-              prop="identity"
+              required
+              prop="ownerCertificateNo"
             >
               <u-input
-                v-model="item.identity"
+                v-model="item.ownerCertificateNo"
                 :auto-height="autoHeight"
                 placeholder="请输入身份证号"
                 clearable
@@ -193,108 +209,33 @@
 
 <script>
 import { phoneValidator, validIdentityCard } from "../../common/validate.js";
+import { getDetailApi, postNoticeCreateApi } from "../../api/customer";
+import { postBuildByProId, postRoomByProId } from "../../api/staff";
 export default {
   data() {
     return {
-      title: "优惠信息",
       src: "http://pic2.sc.chinaz.com/Files/pic/pic9/202002/hpic2119_s.jpg",
-      buildingBlock: "请选择",
-      roomNo: "请选择",
       buildingBlockShow: false,
-      buildingBlockList: [
-        {
-          label: "1栋",
-          value: "1",
-        },
-        {
-          label: "2栋",
-          value: "2",
-        },
-        {
-          label: "3栋",
-          value: "3",
-        },
-        {
-          label: "4栋",
-          value: "4",
-        },
-        {
-          label: "5栋",
-          value: "5",
-        },
-        {
-          label: "6栋",
-          value: "6",
-        },
-        {
-          label: "7栋",
-          value: "7",
-        },
-        {
-          label: "8栋",
-          value: "8",
-        },
-        {
-          label: "9栋",
-          value: "9",
-        },
-      ],
+      buildingBlockList: [],
       roomNoShow: false,
-      roomNoList: [
+      roomNoList: [],
+      ownerList: [
         {
-          label: "001号",
-          value: "1",
-        },
-        {
-          label: "002号",
-          value: "2",
-        },
-        {
-          label: "003号",
-          value: "3",
-        },
-        {
-          label: "004号",
-          value: "4",
-        },
-        {
-          label: "005号",
-          value: "5",
-        },
-        {
-          label: "006号",
-          value: "6",
-        },
-        {
-          label: "007号",
-          value: "7",
-        },
-        {
-          label: "008号",
-          value: "8",
-        },
-        {
-          label: "009号",
-          value: "9",
-        },
-      ],
-      ownerInfo: [
-        {
-          name: "",
-          phone: "",
-          identity: "",
+          ownerName: "",
+          ownerMobile: "",
+          ownerCertificateNo: "",
         },
       ],
       arr: [],
       rules: {
-        name: [
+        ownerName: [
           {
             required: true,
             message: "请输入姓名",
             trigger: "change",
           },
         ],
-        phone: [
+        ownerMobile: [
           {
             required: true,
             message: "请输入手机号码",
@@ -302,7 +243,7 @@ export default {
           },
           { validator: phoneValidator, trigger: "change" },
         ],
-        identity: [
+        ownerCertificateNo: [
           {
             required: true,
             message: "请输入身份证号",
@@ -311,31 +252,88 @@ export default {
           { validator: validIdentityCard, trigger: "change" },
         ],
       },
+      noticeId: "",
+      proId: "",
+      form: {
+        buyUnitName: "",
+        roomNo: "",
+      },
+      roomRules: {
+        buyUnitName: [
+          { required: true, message: "请选择栋座", trigger: "change" },
+        ],
+        roomNo: [{ required: true, message: "请选择房号", trigger: "change" }],
+      },
     };
   },
-  onLoad() {},
+  onLoad(options) {
+    this.noticeId = options.id;
+  },
   onReady() {
     this.$refs.uForm[0].setRules(this.rules);
+    this.$refs.roomFrom.setRules(this.roomRules);
+  },
+  onShow() {
+    // if (this.noticeId) {
+    this.getInfo();
+    // }
   },
   methods: {
+    // 获取页面信息
+    async getInfo() {
+      const res = await getDetailApi("24");
+      this.form = {
+        channel: "Customer",
+        cycleId: res.termId,
+        explain: res.modeDescription,
+        noticeAttachmentList: [],
+        ownerList: [],
+        ownerType: "Personal",
+        paymentAmount: res.premiumReceived,
+        promotionMethod: "Automatic",
+        refundDays: res.partyARefundDays,
+        roomNumberId: "",
+        templateType: "ElectronicTemplate",
+        proName: res.proName,
+        buyUnit: "",
+        buyUnitName: "",
+        roomNo: "",
+        roomNumberId: "",
+      };
+      this.proId = res.proId;
+      this.buildingBlockList = await postBuildByProId({
+        proId: res.proId,
+      });
+      this.getRoomList();
+    },
+    // 获取房号
+    async getRoomList(buildNo) {
+      this.roomNoList = await postRoomByProId({
+        proId: this.proId,
+        buildingId: buildNo,
+      });
+    },
     buildingBlockClick(v) {
-      this.buildingBlock = v[0].label;
+      console.log(v);
+      this.form.buyUnitName = v[0].label;
+      this.form.buyUnit = v[0].value;
     },
     roomNoClick(v) {
-      this.roomNo = v[0].label;
+      this.form.roomNo = v[0].label;
+      this.form.roomNumberId = v[0].value;
     },
     addOwner() {
-      this.ownerInfo.push({
-        name: "",
-        phone: "",
-        identity: "",
+      this.ownerList.push({
+        ownerName: "",
+        ownerMobile: "",
+        ownerCertificateNo: "",
       });
       this.$nextTick(() => {
-        this.$refs.uForm[this.ownerInfo.length - 1].setRules(this.rules);
+        this.$refs.uForm[this.ownerList.length - 1].setRules(this.rules);
       });
     },
     subtractOwner(i) {
-      this.ownerInfo.splice(i, 1);
+      this.ownerList.splice(i, 1);
     },
     refForm(index, err) {
       let res = new Promise((resolve, reject) => {
@@ -351,15 +349,34 @@ export default {
     },
     submit() {
       this.arr = [];
-      this.ownerInfo.forEach((v, i) => {
-        this.refForm(i, this.ownerInfo[i]);
+      this.ownerList.forEach((v, i) => {
+        this.refForm(i, this.ownerList[i]);
       });
+      const roomRes = new Promise((resolve, reject) => {
+        this.$refs.roomFrom.validate((val) => {
+          val ? resolve() : reject(err);
+        });
+      });
+      this.arr.push(roomRes);
       Promise.all(this.arr)
-        .then(() => {
-          console.log("全部通过");
+        .then(async () => {
+          this.form.ownerList = [...this.ownerList];
+          const res = await postNoticeCreateApi(this.form);
+          uni.showToast({
+            title: "保存成功",
+            icon: "none",
+          });
+          getApp().noticeInfo = {
+            ...res,
+            notificationType: "Notification",
+            type: "view",
+          };
+          uni.navigateTo({
+            url: `/customerPackage/notification/index`,
+          });
         })
         .catch(() => {
-          console.log("不通过");
+          console.log("验证不通过");
         });
     },
   },
@@ -379,7 +396,7 @@ export default {
   &-title {
     margin-left: 30rpx;
     font-weight: bold;
-    font-size: 16px;
+    font-size: 32rpx;
   }
 }
 
@@ -393,12 +410,9 @@ export default {
 }
 
 .select {
-  padding: 0 50rpx;
+  padding: 0 40rpx;
   &-msg {
     height: 80rpx;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     & + & {
       border-top: 1px solid #f3f4f6;
     }
@@ -416,10 +430,11 @@ export default {
     justify-content: space-between;
     &-right {
       color: #d9001b;
+      font-size: 28rpx;
     }
   }
   &-layout {
-    padding: 0 30rpx 0 50rpx;
+    padding: 0 30rpx 0 40rpx;
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-between;

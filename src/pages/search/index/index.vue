@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-20 17:03:55
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-28 19:48:16
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-05 15:05:09
 -->
 <template>
   <PageingSearch
@@ -16,13 +16,13 @@
     :search-api="searchApi"
     :params-key="paramsKey"
   >
-    <template #searchlist="{ scrollData, label, value }">
+    <template #searchlist="{ scrollData, label }">
       <view
         class="list-item"
         :key="scrollData[paramsId]"
         @click="goBackPage(scrollData)"
       >
-        {{scrollData[label]}} {{scrollData[value]}}
+        {{scrollData[label]}}
       </view>
     </template>
   </PageingSearch>
@@ -38,12 +38,6 @@ export default {
       paramsId: "",
       type: "",
     };
-  },
-  onLoad(option) {
-    console.log(option);
-    this.searchApi = option.api;
-    this.paramsKey = option.key;
-    this.paramsId = option.idName;
   },
   onShow() {
     this.searchApi = getApp().globalData.searchParams.api;

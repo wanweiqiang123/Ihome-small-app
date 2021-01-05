@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-30 19:26:51
+ * @LastEditTime: 2021-01-04 11:27:42
 -->
 <script>
 export default {
@@ -15,6 +15,7 @@ export default {
     }, //初始化数据是否完成参数
     paidData: {}, // 支付信息
     attestationInfo: {}, // 认证信息
+    noticeInfo: {}, //优惠告知书签署预览信息
     searchParams: null, // 跳转分页查询页面携带的参数
     refreshListData: null, //列表缓存页面刷新存放数据
     userType: null,

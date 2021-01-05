@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-30 18:28:30
+ * @LastEditTime: 2021-01-05 11:57:32
 -->
 <template>
   <view>
@@ -35,7 +35,7 @@
             slot="foot"
           >
             <view class="font-text">
-              <text v-show="item.notificationStatus === 'WaitBeSigned'">您有一份协议待签署，请尽快处理</text> 
+              <text v-show="item.notificationStatus === 'WaitBeSigned'">您有一份协议待签署，请尽快处理</text>
             </view>
             <u-button
               class="home-button"
@@ -70,18 +70,21 @@ export default {
     this.getInfo();
   },
   async onShow() {
-    this.Property = await this.getDictAll('Property');
+    this.Property = await this.getDictAll("Property");
   },
   methods: {
     async getInfo() {
       const userInfo = storageTool.getUserInfo();
       this.info = await postWechatNoticeListApi({
         ownerMobile: userInfo.mobilePhone,
-      })
+      });
     },
     routerTo(id) {
+      // uni.navigateTo({
+      //   url: `/customerPackage/discountsInfo/index?id=${id}`,
+      // });
       uni.navigateTo({
-        url: `/customerPackage/discountsInfo/index?id=${id}`,
+        url: `/customerPackage/createRefund/index?id=${id}`,
       });
     },
     // 字典翻译
@@ -92,12 +95,12 @@ export default {
     // 字典匹配
     getDictName(code, list) {
       if (list.length) {
-        const { name } = list.find(v => v.code === code);
+        const { name } = list.find((v) => v.code === code);
         return name;
       }
-    }
+    },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>

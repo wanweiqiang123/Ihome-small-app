@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-30 17:07:02
+ * @LastEditTime: 2021-01-05 09:44:36
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -202,7 +202,7 @@
       </view>
     </view>
     <view>
-      <u-modal 
+      <u-modal
         v-model="show"
         @confirm="confirm(info.discountInformationResponseVo)"
         @cancel="cancel"
@@ -215,19 +215,19 @@
         :content="content"
       >
       </u-modal>
-    </view>  
+    </view>
   </view>
 </template>
 <script>
-import { 
-  getWechatNoticeInfoApi, 
+import {
+  getWechatNoticeInfoApi,
   getCheckIsExistNoPayApi,
   postDeleteByBusinessIdApi,
   getNotCheckNumApi,
-  getBusinessIdApi
+  getBusinessIdApi,
 } from "../../api/customer";
 import { getAllByTypeApi } from "../../api/index";
-import uImage from '../../uview-ui/components/u-image/u-image.vue';
+import uImage from "../../uview-ui/components/u-image/u-image.vue";
 export default {
   components: { uImage },
   data() {
@@ -235,15 +235,17 @@ export default {
       info: {
         discountInformationResponseVo: {},
         noticeId: null,
+        noticeNo: null,
         noticeList: [],
         purchaseInformation: {},
       },
       current: 0,
       currents: 0,
-      noticeId: '',
+      noticeId: "",
       show: false,
       payAuditNum: 0,
-      content: '您上次还有一笔待付款单未完成支付，您可以选择前往继续支付，也可以选择创建一笔新的付款。',
+      content:
+        "您上次还有一笔待付款单未完成支付，您可以选择前往继续支付，也可以选择创建一笔新的付款。",
       Property: [],
       NotificationType: [],
       NotificationStatus: [],
@@ -256,25 +258,25 @@ export default {
     if (this.noticeId) {
       this.getInfo();
     }
-    this.NotificationType = await this.getDictAll('NotificationType');
-    this.NotificationStatus = await this.getDictAll('NotificationStatus');
-    this.Property = await this.getDictAll('Property');
+    this.NotificationType = await this.getDictAll("NotificationType");
+    this.NotificationStatus = await this.getDictAll("NotificationStatus");
+    this.Property = await this.getDictAll("Property");
   },
   computed: {
     perceent() {
       if (this.obj?.discountInformationResponseVo?.paid) {
         const paid = Number(info.discountInformationResponseVo.paid);
-        const amount = paid / Number(info.discountInformationResponseVo.paymentAmount)
-        return amount*100;
+        const amount =
+          paid / Number(info.discountInformationResponseVo.paymentAmount);
+        return amount * 100;
       }
-      
-    }
+    },
   },
   methods: {
     async getInfo() {
       if (this.noticeId) {
         const res = await getWechatNoticeInfoApi({
-          noticeId: this.noticeId
+          noticeId: this.noticeId,
         });
         this.info = { ...res };
         this.payAuditNum = await getNotCheckNumApi(this.noticeId);
@@ -282,9 +284,10 @@ export default {
     },
     // 预览
     gotoNotice(val, type) {
+      getApp().noticeInfo = { ...val, type: type };
       if (val) {
         uni.navigateTo({
-          url: `/customerPackage/notification/index?templateId=${val.templateId}&&id=${val.id}&&type=${type}`,
+          url: `/customerPackage/notification/index`,
         });
       }
     },
@@ -293,23 +296,35 @@ export default {
       if (res) {
         this.show = true;
       } else {
-        getApp().paidData = { ...obj, businessId: this.noticeId };
+        getApp().paidData = {
+          ...obj,
+          businessId: this.noticeId,
+          businessCode: this.info.noticeNo,
+        };
         uni.navigateTo({
           url: `/customerPackage/paymentMethod/index`,
         });
       }
     },
-    confirm(obj){
-      getApp().paidData = { ...obj, businessId: this.noticeId };
+    confirm(obj) {
+      getApp().paidData = {
+        ...obj,
+        businessId: this.noticeId,
+        businessCode: this.info.noticeNo,
+      };
       uni.navigateTo({
         url: `/customerPackage/unpaid/index`,
       });
     },
     async cancel() {
       await postDeleteByBusinessIdApi({
-        businessId: this.noticeId
+        businessId: this.noticeId,
       });
-      getApp().paidData = { ...this.info.discountInformationResponseVo, businessId: this.noticeId };
+      getApp().paidData = {
+        ...this.info.discountInformationResponseVo,
+        businessId: this.noticeId,
+        businessCode: this.info.noticeNo,
+      };
       uni.navigateTo({
         url: `/customerPackage/paymentMethod/index`,
       });
@@ -338,10 +353,10 @@ export default {
     // 字典匹配
     getDictName(code, list) {
       if (list.length) {
-        const { name } = list.find(v => v.code === code);
+        const { name } = list.find((v) => v.code === code);
         return name;
       }
-    }
+    },
   },
 };
 </script>
@@ -575,7 +590,7 @@ export default {
             display: flex;
             flex-direction: column;
             border-radius: 14rpx;
-            height: 100%
+            height: 100%;
           }
 
           &-layout {

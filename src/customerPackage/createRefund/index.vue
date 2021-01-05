@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-17 09:23:15
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-17 18:08:50
+ * @LastEditTime: 2021-01-05 15:43:56
 -->
 <template>
   <view>
@@ -32,31 +32,62 @@
       >
         <view class="body-msg">
           <view class="">项目名称</view>
-          <view class="color">保利大都会</view>
+          <view class="color">{{info.projectName}}</view>
         </view>
         <view class="body-msg">
           <view class="">优惠方式</view>
-          <view class="color">5万抵10万优惠折扣</view>
+          <view class="color">{{info.explain}}</view>
         </view>
         <view class="body-msg">
           <view class="">服务费金额</view>
-          <view class="color">¥50000.00</view>
+          <view class="color">¥{{info.paymentAmount?info.paymentAmount: 0}}</view>
         </view>
         <view class="body-msg">
           <view class="">购买单位</view>
-          <view class="color">10栋601房</view>
+          <view class="color">{{info.buyUnitName + info.roomNumberName}}</view>
         </view>
-        <view class="body-msg">
-          <view class="">业主姓名</view>
-          <view class="color">皮小强</view>
-        </view>
-        <view class="body-msg">
-          <view class="">手机号码</view>
-          <view class="color">13855318999</view>
-        </view>
-        <view class="body-msg">
-          <view class="">身份证号码</view>
-          <view class="color">440221199902220666</view>
+        <view style="border-top: 1px solid #f1f1f1">
+          <swiper
+            class="swiper"
+            :autoplay="false"
+            circular
+            title
+            @change="change"
+          >
+            <swiper-item
+              class="swiper-item"
+              v-for="(item, i) in info.ownerList"
+              :key="i"
+            >
+              <view class="swiper-item-title">{{`业主${i+1}`}}</view>
+              <view class="swiper-item-msg">
+                <view class="swiper-item-detail">姓名
+                  <text class="swiper-item-name">{{item.ownerName}}</text>
+                </view>
+                <view
+                  class="swiper-item-detail"
+                  style="padding-top: 20rpx"
+                >身份证号
+                  <text class="swiper-item-identity">{{item.ownerCertificateNo}}</text>
+                </view>
+                <view
+                  class="swiper-item-detail"
+                  style="padding-top: 20rpx"
+                >手机号码
+                  <text class="swiper-item-phone">{{item.ownerMobile}}</text>
+                </view>
+              </view>
+            </swiper-item>
+          </swiper>
+          <view class="indicator-dots">
+            <view
+              v-for="(item, i) in info.ownerList"
+              :key="i"
+              class="indicator-dots-item"
+              :class="[current == i ? 'indicator-dots-active' : '']"
+            >
+            </view>
+          </view>
         </view>
       </view>
     </u-card>
@@ -71,69 +102,41 @@
         label-width="150"
       >
         <u-form-item
+          label="开户银行"
           required
-          label="开户人"
-          prop="name"
+          prop="bankName"
+          right-icon="arrow-right"
+          class="hide-icon"
         >
           <u-input
-            v-model="form.name"
+            v-model="form.bankName"
+            type="select"
+            placeholder="请选择开户银行"
+            @click="gotoSearch"
+          />
+        </u-form-item>
+        <u-form-item
+          required
+          label="开户人"
+          prop="accountHolderName"
+        >
+          <u-input
+            v-model="form.accountHolderName"
             placeholder="请输入开户人姓名"
           />
         </u-form-item>
         <u-form-item
           required
           label="银行帐号"
-          prop="zhanghao"
+          prop="account"
         >
           <u-input
-            v-model="form.zhanghao"
+            v-model="form.account"
             placeholder="请输入银行帐号"
-          />
-        </u-form-item>
-        <u-form-item
-          required
-          label="银行名称"
-          prop="yinhangname"
-        >
-          <u-input
-            v-model="form.yinhangname"
-            placeholder="请输入银行名称"
-          />
-        </u-form-item>
-        <u-form-item
-          required
-          label="银行省市"
-          prop="shenshi"
-          right-icon="arrow-right"
-        >
-          <u-input
-            class="hide-icon"
-            v-model="form.shenshi"
-            type="select"
-            placeholder="请选择开户银行省市"
-            @click="areaShow = true"
-          ></u-input>
-        </u-form-item>
-        <u-form-item
-          label="支行名称"
-          required
-          prop="zhihangmingcheng"
-        >
-          <u-input
-            v-model="form.zhihangmingcheng"
-            placeholder="请输入支行名称"
           />
         </u-form-item>
       </u-form>
     </view>
-    <u-select
-      title="请选择省市"
-      v-model="areaShow"
-      :list="list"
-      confirm-color="#dd524d"
-      mode="mutil-column-auto"
-      @confirm="confirm"
-    ></u-select>
     <view class="button">
       <u-button
         type="primary"
@@ -145,92 +148,109 @@
 </template>
 
 <script>
-import { getAreaApi } from "../../api/index";
+import { getNoticeRefundApi, postUpdateRefundApi } from "../../api/customer";
 export default {
   data() {
     return {
       src: "http://pic2.sc.chinaz.com/Files/pic/pic9/202002/hpic2119_s.jpg",
-      form: {
-        name: "",
-        zhanghao: "",
-        yinhangname: "",
-        shenshi: "",
-        zhihangmingcheng: "",
+      info: {
+        buyUnitName: "",
+        projectName: "",
+        explain: "",
+        paymentAmount: "",
+        roomNumberName: "",
+        ownerList: [],
       },
-      areaShow: false,
+      form: {
+        accountHolderName: "",
+        account: "",
+        bankName: "",
+        branchName: "",
+        cityName: "",
+        provinceName: "",
+        noticeId: "",
+      },
       list: [],
       rules: {
-        name: [
+        accountHolderName: [
           {
             required: true,
             message: "请输入开户人姓名",
             trigger: "change",
           },
         ],
-        zhanghao: [
+        account: [
           {
             required: true,
             message: "请输入银行帐号",
             trigger: "change",
           },
         ],
-        yinhangname: [
+        bankName: [
           {
             required: true,
             message: "请输入银行名称",
             trigger: "change",
           },
         ],
-        shenshi: [
-          {
-            required: true,
-            message: "请选择开户银行省市",
-            trigger: "change",
-          },
-        ],
-        zhihangmingcheng: [
-          {
-            required: true,
-            message: "请输入支行名称",
-            trigger: "change",
-          },
-        ],
       },
+      noticeId: "",
+      current: 0,
     };
-  },
-  onLoad() {
-    this.getAreaOption();
   },
   onReady() {
     this.$refs.uForm.setRules(this.rules);
   },
+  async onLoad(options) {
+    this.noticeId = options.id;
+    const res = await getNoticeRefundApi(this.noticeId);
+    this.info = { ...res };
+  },
+  onShow() {
+    let item = getApp().globalData.refreshListData;
+    if (item) {
+      switch (item.type) {
+        case "branch":
+          this.form.bankName = item.data.branchName;
+          this.form.branchName = item.data.branchName;
+          this.form.provinceName = item.data.provinceName;
+          this.form.cityName = item.data.cityName;
+          break;
+      }
+    }
+  },
   methods: {
-    async getAreaOption() {
-      let data = await getAreaApi();
-      let first = this.$u.deepClone(data[0]);
-      data.splice(0, 1);
-      data = data.map((v) => ({
-        ...v,
-        value: v.code,
-        label: v.name,
-      }));
-      data = data.filter((v) => v.level !== 3);
-      this.list = this.$tool.listToGruop(data, {
-        rootId: first.code,
-        children: "children",
-        parentId: "parentCode",
-        id: "value",
+    gotoSearch() {
+      getApp().globalData.searchParams = {
+        api: "postBankBranchApi",
+        key: "branchName",
+        id: "branchNo",
+        type: "branch",
+      };
+      uni.navigateTo({
+        url: "/pages/search/index/index",
       });
     },
-    confirm(e) {
-      if (e.length) {
-        this.form.shenshi = e[0].label + e[1].label;
-      }
+    change(e) {
+      this.current = e.detail.current;
     },
     submit() {
-      this.$refs.uForm.validate((valid) => {
+      this.$refs.uForm.validate(async (valid) => {
         if (valid) {
-          console.log("验证通过");
+          this.form.noticeId = Number(this.noticeId);
+          const res = await postUpdateRefundApi(this.form);
+          uni.showToast({
+            title: "保存成功",
+            icon: "none",
+          });
+          getApp().noticeInfo = {
+            ...res,
+            notificationType: "RefundApplication",
+            type: "view",
+          };
+          uni.navigateTo({
+            url: `/customerPackage/notification/index`,
+          });
         } else {
           console.log("验证失败");
         }
@@ -267,7 +287,7 @@ export default {
 }
 
 .owner {
-  padding: 0 50rpx;
+  padding: 0 40rpx;
 }
 
 .button {
@@ -277,5 +297,53 @@ export default {
 
 .color {
   color: #999999;
+}
+
+.swiper {
+  padding: 0 21rpx;
+  height: 360rpx;
+  &-item {
+    padding-right: 5rpx;
+    box-sizing: border-box;
+    &-title {
+      padding: 30rpx 0 28rpx 0;
+      text-align: center;
+      font-size: 32rpx;
+      font-weight: 600;
+    }
+    &-msg {
+      background-color: #e6f1fc;
+      box-sizing: border-box;
+      border-radius: 14rpx;
+      padding: 48rpx 56rpx 50rpx 29rpx;
+    }
+    &-detail {
+      position: relative;
+    }
+    &-name,
+    &-identity,
+    &-phone {
+      position: absolute;
+      left: 40%;
+    }
+  }
+}
+.indicator-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30rpx;
+}
+
+.indicator-dots-item {
+  background-color: $u-tips-color;
+  height: 16rpx;
+  width: 16rpx;
+  border-radius: 10px;
+  margin: 0 3px;
+}
+
+.indicator-dots-active {
+  background-color: #4881f9;
 }
 </style>

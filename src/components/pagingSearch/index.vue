@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-13 16:47:03
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-28 19:49:34
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-05 15:17:41
 -->
 <template>
   <view class="box">
@@ -75,7 +75,6 @@
               name="searchlist"
               :scrollData="item"
               :label="props.label"
-              :value="props.value"
             ></slot>
           </view>
           <view

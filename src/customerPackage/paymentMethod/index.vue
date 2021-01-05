@@ -4,17 +4,40 @@
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-31 11:41:20
+ * @LastEditTime: 2021-01-05 11:56:12
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
     <view class="pay-title margin-top">付款信息</view>
     <view class="pay-msg margin-top">
       <view class="pay-item">
-        <u-field label-width="150" v-model="payData.paymentAmount" label="应付服务费" disabled></u-field>
-        <u-field label-width="150" v-model="payData.paid" label="已付服务费" disabled></u-field>
-        <u-field label-width="150" v-model="payData.unpaid" label="未付服务费" disabled></u-field>
-        <u-field label-width="150" v-model="payNum" label="付款金额" :clearable="false" @blur="payNumChange" disabled @click="show = true"></u-field>
+        <u-field
+          label-width="150"
+          v-model="payData.paymentAmount"
+          label="应付服务费"
+          disabled
+        ></u-field>
+        <u-field
+          label-width="150"
+          v-model="payData.paid"
+          label="已付服务费"
+          disabled
+        ></u-field>
+        <u-field
+          label-width="150"
+          v-model="payData.unpaid"
+          label="未付服务费"
+          disabled
+        ></u-field>
+        <u-field
+          label-width="150"
+          v-model="payNum"
+          label="付款金额"
+          :clearable="false"
+          @blur="payNumChange"
+          disabled
+          @click="show = true"
+        ></u-field>
       </view>
     </view>
     <view class="pay-title">付款方式</view>
@@ -52,7 +75,7 @@
       付款成功后可能存在延迟，请耐心等待1~2分钟！
       如付款成功后长时间还未更新记录请及时联系工作人员。
     </view>
-    <u-keyboard 
+    <u-keyboard
       ref="uKeyboard"
       mode="number"
       v-model="show"
@@ -64,13 +87,14 @@
   </view>
 </template>
 <script>
-import { 
+import {
   postAddServiceApi,
   postUnionPayParameterApi,
   postUnionPayUrlApi,
+  getWeChatJsApi,
 } from "../../api/customer";
 import { getAllByTypeApi } from "../../api/index";
-import uImage from '../../uview-ui/components/u-image/u-image.vue';
+import uImage from "../../uview-ui/components/u-image/u-image.vue";
 export default {
   components: { uImage },
   data() {
@@ -90,8 +114,8 @@ export default {
   },
   async onShow() {
     this.payTypeOptions = await getAllByTypeApi({
-      type: 'PayType',
-      tag: 'Customer',
+      type: "PayType",
+      tag: "Customer",
     });
   },
   methods: {
@@ -103,120 +127,109 @@ export default {
     // 字典匹配
     getDictName(code, list) {
       if (list.length) {
-        const { name } = list.find(v => v.code === code);
+        const { name } = list.find((v) => v.code === code);
         return name;
       }
     },
     payNumChange(v) {
       let num = v.target.value;
-      let amount = this.payData.paymentAmount + '';
+      let amount = this.payData.paymentAmount + "";
       if (Number(num) > Number(this.payData.paymentAmount)) {
         this.payNum = num.substring(0, amount.length);
       }
     },
-    
     keyConfirm(e) {
-      console.log(e, 'e');
+      console.log(e, "e");
     },
     keyChange(e) {
       if (this.open) {
-        this.payNum = ''
-        this.open = false
+        this.payNum = "";
+        this.open = false;
       }
       this.payNum += e;
     },
     backspace(e) {
-      if (this.payNum.length) this.payNum = this.payNum.substr(0, this.payNum.length - 1);
+      if (this.payNum.length)
+        this.payNum = this.payNum.substr(0, this.payNum.length - 1);
     },
     radioChange(e) {
       this.payType = e;
     },
     async payGoto() {
       let obj = {};
-      obj.amount = this.payNum;
+      obj.amount = Number(this.payNum);
       obj.businessId = this.payData.businessId;
+      obj.businessCode = this.payData.businessCode;
       obj.groupId = this.payData.groupId;
       obj.operator = this.payData.operator;
       obj.payType = this.payType;
-      obj.payer = 'Customer';
+      obj.payer = "Customer";
       obj.proId = this.payData.projectId;
       obj.roomId = this.payData.roomNumberId;
       obj.serviceAmount = this.payData.paymentAmount;
       obj.serviceFeePaid = this.payData.paid;
       obj.termId = this.payData.cycleId;
       obj.unpaidServiceFee = this.payData.unpaid;
-      obj.terminal = 'WeChatApp';
+      obj.terminal = "WeChatApp";
       // 假数据
       obj.groupId = 15;
       obj.operator = 15;
       obj.proId = 1;
       obj.termId = 3;
       let res = {};
-      switch(this.payType) {
-        case 'UnionPay':
-        case 'Alipay':
+      switch (this.payType) {
+        case "UnionPay":
+        case "Alipay":
           res = await postAddServiceApi(obj);
           uni.navigateTo({
             url: `/customerPackage/paymentMethod/zhifubaoPay?id=${res.data}&type=${this.payType}`,
           });
           break;
-        case 'Pos':
+        case "Pos":
           res = await postAddServiceApi(obj);
           uni.navigateTo({
             url: `/customerPackage/paymentMethod/POS?id=${res.data}`,
           });
           break;
-        case 'Transfer':
+        case "Transfer":
           uni.navigateTo({
             url: `/customerPackage/paymentMethod/bankTransfer?id=${this.payData.cycleId}&payNum=${this.payNum}`,
           });
           break;
-        case 'WeChatPay':
-          // res = await postAddServiceApi(obj);
-          // const openId = uni.getStorageSync('openId');
-          // console.log(openId);
-          let wcPayData = {
-            appId: "wx663ccfdeb2c29d07",
-            pkg: "prepay_id=wx31101343252936c16bc89167f1199c0000",
-            signType: "RSA",
-            paySign: "Zvq+ScK4Da13uDkEkJplBx3VVjmd1SkSVYBb9QBIB+WdECo0341TGPBrb1v/NHbSLOWdjQicACW75ugjLesaeoPRmZpywIvVZkOwbqxB1hfUjs/XUL8/aDxgqFj4ExaOjTsX+J9FjKgCSWgaixjpHpit1vW1MstX26Sl8J8JSNIXqHVGmoQOUht1njAdCSb5bEfKty/vKR0ogIS9K6tgWkndke3FRgJ1uXvDVO4AAklEB37P65EcF6ygg2D3vVj/b8tEK9iTaLWHdsyV/k2lUszFEtK+nHMn/EVmO/TVF9kl1jPdEaOCC6QQFMd69yM/vtCwHXoKf6MsvCWKlUwdWg==",
-            nonceStr: "LHphVKmrMSfAcAWm7SgmvHYUgAE3W8Bb",
-            prepayId: "wx31101343252936c16bc89167f1199c0000",
-            timeStamp: "1609380823"
-          }
-          uni.requestPayment(wcPayData);
-          debugger
-          // async getUrl() {
-          //   const res = await postUnionPayUrlApi({
-          //     id: this.payId,
-          //   });
-          //   this.url = `alipays://platformapi/startapp?appId=20000067&url=` + res;
-          // }
-          // const item = await postUnionPayParameterApi({
-          //   id: res.data,
-          //   openId
-          // });
-          // let objs = {};
-          // objs.MerId = item.MerId;
-          // objs.OrderNo = item.OrderNo;
-          // objs.OrderAmount = item.OrderAmount;
-          // objs.CurrCode = item.CurrCode;
-          // objs.CallBackUrl = item.CallBackUrl;
-          // objs.OrderType = item.OrderType;
-          // objs.BankCode = item.BankCode;
-          // objs.LangType = item.LangType;
-          // objs.BuzType = item.BuzType;
-          // objs.Reserved01 = item.Reserved01;
-          // objs.Reserved02 = item.Reserved02;
-          // objs.SignMsg = item.SignMsg;
-          // uni.request({
-          //   url: 'http://test.gnetpg.com:8089/GneteMerchantAPI/api/PayV36',
-          //   method: 'POST',
-          //   data: objs,
-          //   success: aaa => {
-          //     console.log(aaa);
-          //   }
-          // })
+        case "WeChatPay":
+          res = await postAddServiceApi(obj);
+          const openId = uni.getStorageSync("openId");
+          const item = await getWeChatJsApi(res.data);
+          const weChatData = JSON.parse(item).response.msgBody.wcPayData;
+          uni.getProvider({
+            service: "payment",
+            success: (reson) => {
+              uni.requestPayment({
+                provider: reson.provider[0],
+                appId: weChatData.appId,
+                timeStamp: weChatData.timeStamp,
+                nonceStr: weChatData.nonceStr,
+                package: weChatData.pkg,
+                signType: weChatData.signType,
+                paySign: weChatData.paySign,
+                success: () => {
+                  uni.showToast({
+                    title: "支付成功",
+                    icon: "success",
+                  });
+                  uni.navigateTo({
+                    url: `/customerPackage/paySuccess/index`,
+                  });
+                },
+                fail: () => {
+                  uni.showToast({
+                    title: "支付失败",
+                    icon: "none",
+                  });
+                },
+              });
+            },
+          });
       }
     },
   },

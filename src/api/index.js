@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-10 10:09:50
- * @LastEditors: zyc
- * @LastEditTime: 2020-12-31 16:55:04
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-05 14:32:11
  */
 
 import { getApi, postApi } from '../common/http.js';
@@ -136,7 +136,12 @@ export async function getPdf2PicApi(data, option = {}) {
 
 /**获取微信手机号码*/
 export async function postGetPhoneNumberApi(data, option = {}) {
-    return await postApi('/sales-api/system/wx/getWxOauthToken',data,option)
+    return await postApi('/sales-api/system/wx/getWxOauthToken', data, option)
+}
+
+/**查询银行网点信息列表数据 */
+export async function postBankBranchApi(data, option = {}) {
+    return await postApi('/sales-api/finance/bankBranch/getList', data, option)
 }
 
 

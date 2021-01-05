@@ -4,15 +4,27 @@
  * @Author: wwq
  * @Date: 2020-12-30 10:23:11
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-31 10:40:45
+ * @LastEditTime: 2021-01-04 11:47:07
 -->
 <template>
   <view>
     <view class="imageview">
-      <image style="width: 100%;height: 100vh" mode="aspectFit" :src="src"></image>
+      <image
+        style="width: 100%;height: 100vh"
+        mode="aspectFit"
+        :src="src"
+        @click="showImage"
+      ></image>
     </view>
-    <view class="sign" v-if="type === 'sign'">
-      <u-button type="primary" :disabled="disabled" @click="gotoSign">{{tips}}</u-button>
+    <view
+      class="sign"
+      v-if="type === 'sign'"
+    >
+      <u-button
+        type="primary"
+        :disabled="disabled"
+        @click="gotoSign"
+      >{{tips}}</u-button>
     </view>
     <u-verification-code
       :seconds="10"
@@ -29,43 +41,67 @@
 import { currentEnvConfig } from "../../env-config.js";
 import { getPdf2PicApi } from "../../api/index";
 import { postSignApi } from "../../api/customer";
+import { getAllByTypeApi } from "../../api/index";
 export default {
   data() {
     return {
-      templateId: '',
-      noticeId: '',
-      src: '',
+      templateId: "",
+      noticeId: "",
+      src: "",
       isShow: true,
-      tips: '',
+      tips: "",
       disabled: true,
-      type: '',
-    }
+      type: "",
+      NotificationType: [],
+    };
   },
-  onLoad(options) {
-    this.templateId = options.templateId;
-    this.noticeId = options.id;
-    this.type = options.type;
-    if (this.type === 'sign') this.$refs.uCode.start();
-  },
-  async onShow() {
-    if (this.templateId) {
-      const res = await getPdf2PicApi(this.templateId);
-      this.src = `${currentEnvConfig['protocol']}://${currentEnvConfig['apiDomain']}/sales-api/sales-document-cover/file/browse/${res.fileId}`;
-    }
+  async onLoad() {
+    this.templateId = getApp().noticeInfo.templateId;
+    this.noticeId = getApp().noticeInfo.id;
+    this.type = getApp().noticeInfo.type;
+    this.NotificationType = await this.getDictAll("NotificationType");
+    uni.setNavigationBarTitle({
+      title: this.getDictName(
+        getApp().noticeInfo.notificationType,
+        this.NotificationType
+      ),
+    });
+    getApp().noticeInfo;
+    if (this.type === "sign") this.$refs.uCode.start();
+    const res = await getPdf2PicApi(this.templateId);
+    this.src = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${res.fileId}`;
   },
   methods: {
     end() {
-      this.tips = '签署';
+      this.tips = "签署";
       this.disabled = !this.disabled;
     },
     codeChange(text) {
       this.tips = text;
     },
+    showImage() {
+      uni.previewImage({
+        urls: [this.src],
+        current: 1,
+      });
+    },
+    // 字典翻译
+    async getDictAll(type) {
+      const dictList = await getAllByTypeApi({ type });
+      return dictList;
+    },
+    // 字典匹配
+    getDictName(code, list) {
+      if (list.length) {
+        const { name } = list.find((v) => v.code === code);
+        return name;
+      }
+    },
     async gotoSign() {
       // getApp().globalData.attestationInfo = {
-      //   ownerName: '皮小强',
-      //   ownerMobile: '15119337612',
-      //   ownerCertificateNo: '441424199302050553',
+      //   ownerName: "皮小强",
+      //   ownerMobile: "15119337612",
+      //   ownerCertificateNo: "441424199302050553",
       //   noticeId: this.noticeId,
       //   templateId: this.templateId,
       // };
@@ -75,7 +111,7 @@ export default {
       const res = await postSignApi({
         id: this.noticeId,
       });
-      if (res.certificationStatus === 'notCertified') {
+      if (res.certificationStatus === "notCertified") {
         getApp().globalData.attestationInfo = {
           ownerName: res.ownerName,
           ownerMobile: res.ownerMobile,
@@ -89,9 +125,9 @@ export default {
       } else {
         // 去到E签宝
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 <style lang="scss" scoped>
 .imageview {

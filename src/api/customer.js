@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-15 18:08:02
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-30 18:32:07
+ * @LastEditTime: 2021-01-05 15:16:27
  */
 import { getApi, postApi } from '../common/http.js';
 
@@ -78,7 +78,7 @@ export async function postUnionPayUrlApi(data = {}, option = {}) {
 }
 // 获取订单支付状态
 export async function getPayStatusApi(data = {}, option = {}) {
-  return await getApi(`/sales-api/finance/payment/getPayStatus/${data}`, data, option)
+  return await getApi(`/sales-api/finance/payment/getPayStatus/${data}`, option)
 }
 // 优惠告知书签署
 export async function postSignApi(data = {}, option = {}) {
@@ -91,4 +91,24 @@ export async function postVerificationApi(data = {}, option = {}) {
 // 实名认证
 export async function postCertificationApi(data = {}, option = {}) {
   return await postApi(`/sales-api/contract/notice/accounts/certification/check`, data, option)
+}
+// 扫码后获取优惠告知书信息
+export async function getDetailApi(data = {}, option = {}) {
+  return await getApi(`/sales-api/project/preferential/getDetail/${data}`, option)
+}
+// 优惠告知书申领
+export async function postNoticeCreateApi(data = {}, option = {}) {
+  return await postApi(`/sales-api/contract/notice/create`, data, option)
+}
+// 微信支付
+export async function getWeChatJsApi(data = {}, option = {}) {
+  return await getApi(`/sales-api/finance/payment/getWeChatJsApi/${data}`, option)
+}
+// 退款申请详情
+export async function getNoticeRefundApi(data = {}, option = {}) {
+  return await getApi(`/sales-api/contract/notice/refund/detail/${data}`, option)
+}
+// 更新退款申请书
+export async function postUpdateRefundApi(data = {}, option = {}) {
+  return await postApi(`/sales-api/contract/notice/update/refund`, data, option)
 }

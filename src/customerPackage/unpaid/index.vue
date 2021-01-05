@@ -4,15 +4,25 @@
  * @Author: wwq
  * @Date: 2020-12-16 14:19:14
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-30 10:11:41
+ * @LastEditTime: 2021-01-05 11:56:27
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
     <view class="pay-hint">付款信息</view>
     <view class="pay-msg margin-top">
       <view class="pay-item">
-        <u-field v-model="payRecod.payNo" label="订单号" placeholder="请输入付款金额" disabled></u-field>
-        <u-field v-model="payRecod.amount" label="支付金额" placeholder="请输入付款金额" disabled></u-field>
+        <u-field
+          v-model="payRecod.payNo"
+          label="订单号"
+          placeholder="请输入付款金额"
+          disabled
+        ></u-field>
+        <u-field
+          v-model="payRecod.amount"
+          label="支付金额"
+          placeholder="请输入付款金额"
+          disabled
+        ></u-field>
       </view>
     </view>
     <view class="pay-title">支付方式</view>
@@ -51,30 +61,31 @@
   </view>
 </template>
 <script>
-import { 
-  getBusinessIdApi, 
+import {
+  getBusinessIdApi,
   getIdApi,
   postDeleteByBusinessIdApi,
-  postUnionPayParameterApi
+  postUnionPayParameterApi,
+  getWeChatJsApi,
 } from "../../api/customer";
 import { getAllByTypeApi } from "../../api/index";
 export default {
   data() {
     return {
-      noticeId: '',
+      noticeId: "",
       payRecod: {
         amount: 0,
-        payType: 'WeChatPay',
+        payType: "WeChatPay",
       },
-      padId: '',
+      padId: "",
       PayType: [],
     };
   },
   async onShow() {
-    let paidData = {...getApp().paidData};
+    let paidData = { ...getApp().paidData };
     this.noticeId = paidData.businessId;
     this.getInfo();
-    this.PayType = await this.getDictAll('PayType');
+    this.PayType = await this.getDictAll("PayType");
   },
   methods: {
     // 字典翻译
@@ -85,7 +96,7 @@ export default {
     // 字典匹配
     getDictName(code, list) {
       if (list.length) {
-        const { name } = list.find(v => v.code === code);
+        const { name } = list.find((v) => v.code === code);
         return name;
       }
     },
@@ -101,7 +112,7 @@ export default {
     },
     async changePayType() {
       await postDeleteByBusinessIdApi({
-        businessId: this.noticeId
+        businessId: this.noticeId,
       });
       uni.navigateTo({
         url: `/customerPackage/paymentMethod/index`,
@@ -111,11 +122,38 @@ export default {
       switch (this.payRecod.payType) {
         // 微信支付
         case "WeChatPay":
-          // uni.navigateTo({
-          //   url: `/customerPackage/paymentMethod/weChatPay`,
-          // });
-          const openId = uni.getStorageSync('openId');
-          console.log(openId);
+          const openId = uni.getStorageSync("openId");
+          const res = await getWeChatJsApi(this.padId);
+          const weChatData = JSON.parse(res).response.msgBody.wcPayData;
+          uni.getProvider({
+            service: "payment",
+            success: (reson) => {
+              uni.requestPayment({
+                provider: reson.provider[0],
+                appId: weChatData.appId,
+                timeStamp: weChatData.timeStamp,
+                nonceStr: weChatData.nonceStr,
+                package: weChatData.pkg,
+                signType: weChatData.signType,
+                paySign: weChatData.paySign,
+                success: () => {
+                  uni.showToast({
+                    title: "支付成功",
+                    icon: "success",
+                  });
+                  uni.navigateTo({
+                    url: `/customerPackage/paySuccess/index`,
+                  });
+                },
+                fail: () => {
+                  uni.showToast({
+                    title: "支付失败",
+                    icon: "none",
+                  });
+                },
+              });
+            },
+          });
           break;
         // 支付宝,银联
         case "Alipay":
