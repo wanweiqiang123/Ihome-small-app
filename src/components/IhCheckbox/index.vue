@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-30 10:48:38
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-09 08:50:13
+ * @LastEditTime: 2021-01-05 14:51:00
 -->
 <template>
   <view class="check-container">
@@ -28,11 +28,11 @@ export default {
     },
     arr: {
       type: Array,
-      defalut: () => [],
+      default: () => [],
     },
     alias: {
       type: Object,
-      defalut: () => {
+      default: () => {
         return {
           name: "name",
           value: "value",
@@ -41,7 +41,7 @@ export default {
     },
     isObj: {
       type: Boolean,
-      defalut: false,
+      default: false,
     },
   },
   watch: {

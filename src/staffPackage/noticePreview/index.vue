@@ -4,57 +4,59 @@
  * @Author: ywl
  * @Date: 2021-01-04 11:20:06
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-04 17:10:04
+ * @LastEditTime: 2021-01-04 19:12:12
 -->
 <template>
-  <view class="safe-area-inset-bottom">
-    <u-image
-      :src="fileUrl"
-      mode="widthFix"
-      @click="preview(fileUrl)"
-    >
-      <u-loading slot="loading"></u-loading>
-    </u-image>
-    <view
-      class="fixed-btn"
-      v-if="option.type === 'Notification'"
-    >
-      <u-button
-        type="success"
-        open-type="share"
-        :custom-style="{
+  <LoginPage>
+    <view class="safe-area-inset-bottom">
+      <u-image
+        :src="fileUrl"
+        mode="widthFix"
+        @click="preview(fileUrl)"
+      >
+        <u-loading slot="loading"></u-loading>
+      </u-image>
+      <view
+        class="fixed-btn"
+        v-if="option.type === 'Notification'"
+      >
+        <u-button
+          type="success"
+          open-type="share"
+          :custom-style="{
           borderRadius: 'unset',
           marginBottom: '10rpx',
           padding: '0 20rpx'
         }"
-      >转发</u-button>
-      <u-button
-        type="primary"
-        :custom-style="{
+        >转发</u-button>
+        <u-button
+          type="primary"
+          :custom-style="{
           borderRadius: 'unset',
           marginBottom: '10rpx',
           padding: '0 20rpx'
         }"
-      >修改</u-button>
-      <u-button
-        type="error"
-        :custom-style="{
+        >修改</u-button>
+        <u-button
+          type="error"
+          :custom-style="{
           borderRadius: 'unset',
           marginBottom: '10rpx',
           padding: '0 20rpx'
         }"
-      >作废</u-button>
+        >作废</u-button>
+      </view>
+      <view
+        class="share-btn"
+        v-else
+      >
+        <u-button
+          type="primary"
+          open-type="share"
+        >转发</u-button>
+      </view>
     </view>
-    <view
-      class="share-btn"
-      v-else
-    >
-      <u-button
-        type="primary"
-        open-type="share"
-      >转发</u-button>
-    </view>
-  </view>
+  </LoginPage>
 </template>
 
 <script>

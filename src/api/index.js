@@ -1,10 +1,10 @@
 /*
- * @Descripttion: api接口
+ * @Description: api接口
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-10 10:09:50
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-05 14:32:11
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-01-05 15:52:27
  */
 
 import { getApi, postApi } from '../common/http.js';
@@ -93,6 +93,11 @@ export async function postdevepolersApi(data = {}, option = {}) {
 /* 查询周期列表 */
 export async function postTermApi(data = {}, option = {}) {
     return await postApi('/sales-api/project/term/getYdList', data, option);
+}
+
+/* 查询项目列表 */
+export async function postProjectsApi(data = {}, option = {}) {
+    return await postApi('/sales-api/project/project/getList', data, option)
 }
 
 /**字典列表，全部数据*/

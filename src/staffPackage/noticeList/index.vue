@@ -4,136 +4,143 @@
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-04 15:43:50
+ * @LastEditTime: 2021-01-05 16:22:21
 -->
 <template>
-  <view class="notice safe-area-inset-bottom">
-    <view class="item-container">
-      <view
-        class="notice-item"
-        v-for="(i, n) in tablePage"
-        :key="n"
-        @click="handleGoConfirm(i)"
-      >
-        <view class="notice-info">
-          <view class="notice-title">{{i.notificationType | filterNoticeDict(noticeTypes)}}{{`(${i.noticeNo})`}}</view>
-          <view>{{`${i.projectName} ${i.buyUnitName}栋-${i.roomNumberName}`}}</view>
-          <template v-for="(item, index) in i.ownerList">
-            <view :key="index">{{item.ownerName || '-'}}</view>
-          </template>
-        </view>
-        <view class="notice-identify">
-          <text :class="['notice-color', {
+  <LoginPage>
+    <view class="notice safe-area-inset-bottom">
+      <view class="item-container">
+        <view
+          class="notice-item"
+          v-for="(i, n) in tablePage"
+          :key="n"
+          @click="handleGoConfirm(i)"
+        >
+          <view class="notice-info">
+            <view class="notice-title">{{i.notificationType | filterNoticeDict(noticeTypes)}}{{`(${i.noticeNo})`}}</view>
+            <view>{{`${i.projectName} ${i.buyUnitName}栋-${i.roomNumberName}`}}</view>
+            <template v-for="(item, index) in i.ownerList">
+              <view :key="index">{{item.ownerName || '-'}}</view>
+            </template>
+          </view>
+          <view class="notice-identify">
+            <text :class="['notice-color', {
             'success': i.notificationStatus == 'BecomeEffective',
             'primary': i.notificationStatus === 'WaitDetermine'
           }]">{{i.notificationStatus | filterNoticeDict(noticeStatus)}}</text>
-          <u-icon
-            name="arrow-right"
-            color="#888"
-          ></u-icon>
+            <u-icon
+              name="arrow-right"
+              color="#888"
+            ></u-icon>
+          </view>
         </view>
       </view>
-    </view>
-    <view class="notice-btn safe-area-inset-bottom">
-      <u-button
-        shape="circle"
-        type="primary"
-        @click="handleGoCreate()"
-      >生成优惠告知书</u-button>
-    </view>
-    <!-- 筛选按钮 -->
-    <view
-      class="fliter"
-      @click="isShow = true"
-    >
-      <view>筛选</view>
-    </view>
-    <!-- 筛选弹出 -->
-    <PopupSearch
-      v-model="isShow"
-      @reset="handleReset()"
-      @confirm="handleConfirm()"
-    >
-      <u-form
-        ref="notice"
-        label-position="top"
-        :border-bottom="false"
+      <view class="notice-btn safe-area-inset-bottom">
+        <u-button
+          shape="circle"
+          type="primary"
+          @click="handleGoCreate()"
+        >生成优惠告知书</u-button>
+      </view>
+      <!-- 筛选按钮 -->
+      <view
+        class="fliter"
+        @click="isShow = true"
       >
-        <u-form-item
-          label="项目名称"
-          prop="name"
+        <view>筛选</view>
+      </view>
+      <!-- 筛选弹出 -->
+      <PopupSearch
+        width="100%"
+        :mask="false"
+        v-model="isShow"
+        @reset="handleReset()"
+        @confirm="handleConfirm()"
+      >
+        <u-form
+          ref="notice"
+          label-position="top"
           :border-bottom="false"
         >
-          <u-input
-            v-model="form.name"
-            border
-          />
-        </u-form-item>
-        <u-form-item
-          label="房号"
-          prop="intro"
-          :border-bottom="false"
-        >
-          <u-input
-            v-model="form.intro"
-            border
-          />
-        </u-form-item>
-        <u-form-item
-          label="客户姓名"
-          prop="intro"
-          :border-bottom="false"
-        >
-          <u-input
-            v-model="queryPageParameters.ownerName"
-            placeholder="请输入客户姓名"
-            border
-          />
-        </u-form-item>
-        <u-form-item
-          label="客户电话"
-          prop="intro"
-          :border-bottom="false"
-        >
-          <u-input
-            v-model="queryPageParameters.ownerMobile"
-            placeholder="请输入客户电话"
-            border
-          />
-        </u-form-item>
-        <u-form-item
-          label="优惠告知书编号"
-          :border-bottom="false"
-        >
-          <u-input
-            v-model="queryPageParameters.noticeNo"
-            placeholder="请输入优惠告知书编号"
-            border
-          />
-        </u-form-item>
-        <u-form-item
-          label="优惠告知书类型"
-          :border-bottom="false"
-        >
-          <IhCheckbox
-            v-model="queryPageParameters.notificationTypes"
-            :arr="noticeTypes"
-            :alias="{name:'name',value:'code'}"
-          ></IhCheckbox>
-        </u-form-item>
-        <u-form-item
-          label="状态"
-          :border-bottom="false"
-        >
-          <IhCheckbox
-            v-model="queryPageParameters.notificationStatuses"
-            :arr="noticeStatus"
-            :alias="{name:'name',value:'code'}"
-          ></IhCheckbox>
-        </u-form-item>
-      </u-form>
-    </PopupSearch>
-  </view>
+          <u-form-item
+            label="项目名称"
+            prop="name"
+            :border-bottom="false"
+          >
+            <u-input
+              v-model="queryPageParameters.proName"
+              @click="handleToSearch"
+              type="select"
+              border
+            />
+          </u-form-item>
+          <u-form-item
+            label="房号"
+            prop="intro"
+            :border-bottom="false"
+          >
+            <u-input
+              v-model="form.intro"
+              type="select"
+              border
+            />
+          </u-form-item>
+          <u-form-item
+            label="客户姓名"
+            prop="intro"
+            :border-bottom="false"
+          >
+            <u-input
+              v-model="queryPageParameters.ownerName"
+              placeholder="请输入客户姓名"
+              border
+            />
+          </u-form-item>
+          <u-form-item
+            label="客户电话"
+            prop="intro"
+            :border-bottom="false"
+          >
+            <u-input
+              v-model="queryPageParameters.ownerMobile"
+              placeholder="请输入客户电话"
+              border
+            />
+          </u-form-item>
+          <u-form-item
+            label="优惠告知书编号"
+            :border-bottom="false"
+          >
+            <u-input
+              v-model="queryPageParameters.noticeNo"
+              placeholder="请输入优惠告知书编号"
+              border
+            />
+          </u-form-item>
+          <u-form-item
+            label="优惠告知书类型"
+            :border-bottom="false"
+          >
+            <IhCheckbox
+              v-model="queryPageParameters.notificationTypes"
+              :arr="noticeTypes"
+              :alias="{name:'name',value:'code'}"
+            ></IhCheckbox>
+          </u-form-item>
+          <u-form-item
+            label="状态"
+            :border-bottom="false"
+          >
+            <IhCheckbox
+              v-model="queryPageParameters.notificationStatuses"
+              :arr="noticeStatus"
+              :alias="{name:'name',value:'code'}"
+            ></IhCheckbox>
+          </u-form-item>
+        </u-form>
+      </PopupSearch>
+    </view>
+  </LoginPage>
 </template>
 
 <script>
@@ -154,6 +161,8 @@ export default {
     return {
       isShow: false,
       queryPageParameters: {
+        proName: "",
+        projectId: null,
         ownerName: null,
         ownerMobile: null,
         noticeNo: null,
@@ -195,6 +204,17 @@ export default {
         url: "/staffPackage/noticeCreate/index",
       });
     },
+    handleToSearch() {
+      getApp().globalData.searchParams = {
+        api: "postProjectsApi",
+        key: "proName",
+        id: "proId",
+        type: "project",
+      };
+      uni.navigateTo({
+        url: "/pages/search/index/index",
+      });
+    },
     async handleConfirm() {
       this.tablePage = [];
       this.queryPageParameters.pageNum = 1;
@@ -213,6 +233,13 @@ export default {
     this.getListMixin();
     this.noticeTypes = await this.getDictName("NotificationType");
     this.noticeStatus = await this.getDictName("NotificationStatus");
+  },
+  onShow() {
+    let item = getApp().globalData.searchBackData;
+    if (item && item.type === "project") {
+      this.queryPageParameters.projectId = item.data.proId;
+      this.queryPageParameters.proName = item.data.proName;
+    }
   },
 };
 </script>

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 17:32:25
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-31 10:34:21
+ * @LastEditTime: 2021-01-05 11:54:37
 -->
 <template>
   <view class="notice">
@@ -116,6 +116,7 @@
       v-model="buildShow"
       :list="selectBuildList"
       safe-area-inset-bottom
+      title="选择栋座"
       value-name="buildingId"
       label-name="buildingName"
       @confirm="buildConfirm"
@@ -124,6 +125,7 @@
       v-model="roomShow"
       :list="roomSelectList"
       safe-area-inset-bottom
+      title="选择房号"
       value-name="roomId"
       label-name="roomNo"
       @confirm="roomConfirm"

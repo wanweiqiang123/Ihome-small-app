@@ -4,13 +4,14 @@
  * @Author: ywl
  * @Date: 2020-11-17 11:22:20
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-30 15:20:16
+ * @LastEditTime: 2021-01-05 14:49:49
 -->
 <template>
   <u-popup
     :value="value"
     mode="right"
-    width="80%"
+    :width="wdithCom"
+    :mask="maskCom"
     close-icon-pos="top-left"
     closeable
     safe-area-inset-bottom
@@ -48,6 +49,14 @@ export default {
   props: {
     value: {
       type: Boolean,
+    },
+    width: {
+      type: String,
+      default: "80%",
+    },
+    mask: {
+      type: Boolean,
+      default: true,
     },
   },
   methods: {

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-04 18:23:17
+ * @LastEditTime: 2021-01-05 16:17:19
 -->
 <template>
   <view class="notice safe-area-inset-bottom">
@@ -217,18 +217,30 @@
         </template>
         <view class="form-title u-border-bottom">
           <view>{{`切换为${isType ? '纸质' : '电子'}优惠告知书`}}</view>
-          <u-switch v-model="isType"></u-switch>
+          <u-switch
+            v-model="isType"
+            @change="form.noticeAttachmentList = []"
+          ></u-switch>
         </view>
         <view
           class="form-color"
           v-if="!isType"
         >
-          <u-form label-width="220">
+          <u-form
+            label-width="220"
+            label-position="top"
+          >
             <u-form-item label="优惠告知书附件">
               <u-upload
+                width="180"
+                height="180"
+                name="files"
                 :action="action"
-                :file-list="fileList"
-                max-count="1"
+                :header="header"
+                :show-progress="false"
+                :before-upload="beforeUpload"
+                @on-success="successChange"
+                @on-remove="removeChange"
               ></u-upload>
             </u-form-item>
           </u-form>
@@ -270,11 +282,20 @@
                 placeholder="请输入营业执照编号"
               />
             </u-form-item>
-            <u-form-item label="优惠告知书附件">
+            <u-form-item
+              label="优惠告知书附件"
+              label-position="top"
+            >
               <u-upload
+                width="180"
+                height="180"
+                name="files"
                 :action="action"
-                :file-list="fileList"
-                max-count="1"
+                :header="header"
+                :show-progress="false"
+                :before-upload="beforeUpload"
+                @on-success="successChange"
+                @on-remove="removeChange"
               ></u-upload>
             </u-form-item>
           </u-form>
@@ -293,6 +314,7 @@
       v-model="selectShow"
       :list="selectList"
       safe-area-inset-bottom
+      title="选择优惠折扣方式"
       value-name="premiumReceived"
       label-name="modeDescription"
       @confirm="selectConfirm"
@@ -301,6 +323,7 @@
       v-model="buildSelectShow"
       :list="buildSelectList"
       safe-area-inset-bottom
+      title="选择栋座"
       value-name="buildingId"
       label-name="buildingName"
       @confirm="buildConfirm"
@@ -309,6 +332,7 @@
       v-model="roomSelectShow"
       :list="roomSelectList"
       safe-area-inset-bottom
+      title="选择房号"
       value-name="roomId"
       label-name="roomNo"
       @confirm="roomConfirm"
@@ -318,6 +342,8 @@
 
 <script>
 import { phoneValidator, validIdentityCard } from "../../common/validate.js";
+import { currentEnvConfig } from "../../env-config.js";
+import storageTool from "../../common/storageTool.js";
 import {
   getMannerListByTermId,
   postBuildByProId,
@@ -426,7 +452,10 @@ export default {
           { validator: validIdentityCard, trigger: "change" },
         ],
       },
-      action: "",
+      action: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/upload`,
+      header: {
+        Authorization: "bearer " + storageTool.getToken(),
+      },
       fileList: [],
     };
   },
@@ -457,12 +486,12 @@ export default {
       this.arr.push(res);
     },
     changeOwner(val) {
-      console.log(val);
       if (val === "Enterprise") {
         this.$nextTick(() => {
           this.$refs.enterprise.setRules(this.enterpriseRules);
         });
       }
+      this.form.noticeAttachmentList = [];
     },
     handleClick() {
       getApp().globalData.searchParams = {
@@ -533,6 +562,27 @@ export default {
       });
       this.roomSelectShow = true;
     },
+    beforeUpload() {
+      uni.showToast({
+        icon: "loading",
+        title: "正在上传...",
+        duration: 500000000000,
+      });
+      return true;
+    },
+    successChange(data, index, lists, name) {
+      this.form.noticeAttachmentList[index] = {
+        fileNo: lists[index].response.data[0].fileId,
+        attachmentSuffix:
+          lists[index].response?.data[0].generateFileName +
+          "." +
+          lists[index].response?.data[0].generateFileType,
+        type: "NoticeAttachment",
+      };
+    },
+    removeChange(index, lists, name) {
+      this.form.noticeAttachmentList.splice(index, 1);
+    },
     submit() {
       this.arr = [];
       const baseRes = new Promise((resolve, reject) => {
@@ -599,7 +649,7 @@ export default {
     }
   },
   onShow() {
-    let item = getApp().globalData.refreshListData;
+    let item = getApp().globalData.searchBackData;
     if (item) {
       switch (item.type) {
         case "term":
