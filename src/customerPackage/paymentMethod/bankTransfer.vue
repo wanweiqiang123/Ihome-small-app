@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 15:28:17
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-05 16:51:50
+ * @LastEditTime: 2021-01-05 17:35:50
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
@@ -44,7 +44,8 @@
         <text class="upload-title">转账凭证</text>
         <u-upload
           class="upload"
-          ref="uUpload"
+          width="160"
+          height="160"
           :action="action"
           @on-success="successChange"
           @on-remove="removeChange"
@@ -95,10 +96,6 @@ export default {
     // 假数据
     this.payId = 3;
   },
-  onReady() {
-    // 得到整个组件对象，内部图片列表变量为"lists"
-    // this.lists = this.$refs.uUpload.lists;
-  },
   onShow() {
     if (this.payId) {
       this.getInfo();
@@ -114,13 +111,13 @@ export default {
       });
     },
     async successChange(data, index, lists, name) {
-      this.uploadArr = lists.map((v) => ({
-        fileId: v.response.data[0].fileId,
+      this.uploadArr[index] = {
+        fileId: lists[index].response.data[0].fileId,
         fileName:
-          v.response.data[0].generateFileName +
+          lists[index].response.data[0].generateFileName +
           "." +
-          v.response.data[0].generateFileType,
-      }));
+          lists[index].response.data[0].generateFileType,
+      };
     },
     beforeUpload() {
       uni.showToast({
@@ -130,10 +127,14 @@ export default {
       });
       return true;
     },
+    removeChange(index, lists, name) {
+      this.uploadArr.splice(index, 1);
+    },
     async submitMsg() {
       let obj = {};
       obj.amount = this.payNum;
       obj.businessId = this.payData.businessId;
+      obj.businessCode = this.payData.businessCode;
       obj.groupId = this.payData.groupId;
       obj.operator = this.payData.operator;
       obj.payType = "Transfer";
