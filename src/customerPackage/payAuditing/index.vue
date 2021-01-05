@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-25 11:42:30
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-28 18:32:42
+ * @LastEditTime: 2021-01-05 19:29:07
 -->
 <template>
   <view class="box">
@@ -34,21 +34,20 @@
           <view class="box-item-msg-title">付款时间
             <text class="box-item-msg-detail">{{item.payDate}}</text>
           </view>
-          <view class="box-item-msg-title">转账凭证
-            <view
-              class="box-item-msg-detail"
-              style="display: inline-block"
-            >
-              <u-upload
-                bg-color="#FFFFFF"
-                width="100rpx"
-                height="50rpx"
-                :file-list="item.fileIds"
-                upload-text=""
-                :show-progress="false"
-                :deletable="false"
-                :max-count="item.fileIds.length"
-              ></u-upload>
+          <view class="pingzheng">
+            <view class="pingzhengtitle">转账凭证</view>
+            <view class="imagelist">
+              <template v-for="(data, x) in item.fileIds">
+                <u-image
+                  class="images"
+                  :key="x"
+                  bg-color="#FFFFFF"
+                  width="100rpx"
+                  height="60rpx"
+                  :src="data.url"
+                  @click="showImage(item.fileIds, x)"
+                />
+              </template>
             </view>
           </view>
           <view
@@ -139,6 +138,12 @@ export default {
       });
       this.getInfo();
     },
+    showImage(data, index) {
+      uni.previewImage({
+        urls: data.map((v) => v.url),
+        current: index,
+      });
+    },
   },
 };
 </script>
@@ -182,5 +187,22 @@ export default {
       }
     }
   }
+}
+.pingzheng {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+}
+.pingzhengtitle {
+  width: 190rpx;
+}
+.imagelist {
+  display: flex;
+  flex-flow: row-reverse wrap;
+  flex: 1;
+}
+.images {
+  margin: 5rpx 0 0 5rpx;
 }
 </style>
