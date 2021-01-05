@@ -35,7 +35,10 @@
             <text class="box-item-msg-detail">{{item.payDate}}</text>
           </view>
           <view class="box-item-msg-title">转账凭证
-            <view class="box-item-msg-detail" style="display: inline-block">
+            <view
+              class="box-item-msg-detail"
+              style="display: inline-block"
+            >
               <u-upload
                 bg-color="#FFFFFF"
                 width="100rpx"
@@ -62,8 +65,13 @@
         </view>
       </view>
     </view>
-    <u-empty text="暂无数据" mode="list" v-if="!info.length" style="height: 80vh"></u-empty>
-    <u-modal 
+    <u-empty
+      text="暂无数据"
+      mode="list"
+      v-if="!info.length"
+      style="height: 80vh"
+    ></u-empty>
+    <u-modal
       v-model="show"
       content="是否确认删除?"
       :show-cancel-button="true"
@@ -79,10 +87,10 @@ export default {
   components: {},
   data() {
     return {
-      payId: '',
+      payId: "",
       info: [],
       show: false,
-      delId: '',
+      delId: "",
       PaymentStatus: [],
       PayType: [],
     };
@@ -94,8 +102,8 @@ export default {
     if (this.payId) {
       this.getInfo();
     }
-    this.PaymentStatus = await this.getDictAll('PaymentStatus');
-    this.PayType = await this.getDictAll('PayType');
+    this.PaymentStatus = await this.getDictAll("PaymentStatus");
+    this.PayType = await this.getDictAll("PayType");
   },
   methods: {
     // 字典翻译
@@ -106,18 +114,18 @@ export default {
     // 字典匹配
     getDictName(code, list) {
       if (list.length) {
-        const { name } = list.find(v => v.code === code);
+        const { name } = list.find((v) => v.code === code);
         return name;
       }
     },
     async getInfo() {
       const res = await getNotCheckListApi(this.payId);
-      this.info = res.map(v => ({
+      this.info = res.map((v) => ({
         ...v,
-        fileIds: v.fileIds.map(j => ({
-          url: `${currentEnvConfig['protocol']}://${currentEnvConfig['apiDomain']}/sales-api/sales-document-cover/file/browse/${j}`
-        }))
-      }))
+        fileIds: v.fileIds.map((j) => ({
+          url: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${j}`,
+        })),
+      }));
     },
     del(id) {
       this.delId = id;
@@ -126,11 +134,11 @@ export default {
     async delConfirm() {
       await paymentdeleteApi(this.delId);
       uni.showToast({
-        title: '删除成功',
-        icon: 'none'
-      })
+        title: "删除成功",
+        icon: "none",
+      });
       this.getInfo();
-    }
+    },
   },
 };
 </script>

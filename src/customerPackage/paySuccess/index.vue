@@ -9,7 +9,11 @@
 <template>
   <view class="success">
     <view class="list">
-      <u-icon name="checkmark-circle-fill" color="#0099ff" size="120"></u-icon>
+      <u-icon
+        name="checkmark-circle-fill"
+        color="#0099ff"
+        size="120"
+      ></u-icon>
       <view class="title">支付成功</view>
       <view class="init">您可以在我的购房详情查看付款记录</view>
     </view>
@@ -25,18 +29,16 @@
 <script>
 export default {
   data() {
-    return {
-      
-    }
+    return {};
   },
   methods: {
     goback() {
       uni.navigateTo({
         url: `/customerPackage/homeTab/index`,
       });
-    }
-  }
-}
+    },
+  },
+};
 </script>
 <style lang="scss" scoped>
 .success {
@@ -50,10 +52,10 @@ export default {
     margin-top: 50rpx;
 
     .title {
-    font-size: 40rpx;
-    font-weight: 600;
-    margin-top: 20rpx;
-  }
+      font-size: 40rpx;
+      font-weight: 600;
+      margin-top: 20rpx;
+    }
     .init {
       font-size: 25rpx;
       margin-top: 30rpx;

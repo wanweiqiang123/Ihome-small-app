@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-25 11:40:27
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-28 15:44:06
+ * @LastEditTime: 2021-01-05 16:56:36
 -->
 <template>
   <view class="box">
@@ -37,7 +37,12 @@
         </view>
       </view>
     </view>
-    <u-empty text="暂无数据" mode="list" v-if="!info.length" style="height: 80vh"></u-empty>
+    <u-empty
+      text="暂无数据"
+      mode="list"
+      v-if="!info.length"
+      style="height: 80vh"
+    ></u-empty>
   </view>
 </template>
 <script>
@@ -47,7 +52,7 @@ export default {
   components: {},
   data() {
     return {
-      payId: '',
+      payId: "",
       info: [],
       PayType: [],
     };
@@ -57,7 +62,7 @@ export default {
     this.getInfo();
   },
   async onShow() {
-    this.PayType = await this.getDictAll('PayType');
+    this.PayType = await this.getDictAll("PayType");
   },
   methods: {
     // 字典翻译
@@ -68,7 +73,7 @@ export default {
     // 字典匹配
     getDictName(code, list) {
       if (list.length) {
-        const { name } = list.find(v => v.code === code);
+        const { name } = list.find((v) => v.code === code);
         return name;
       }
     },
@@ -77,10 +82,10 @@ export default {
     },
     downLoad(id) {
       uni.showToast({
-        title: '接口未提供',
-        icon: 'none'
-      })
-    }
+        title: "接口未提供",
+        icon: "none",
+      });
+    },
   },
 };
 </script>

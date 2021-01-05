@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:17:34
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-30 10:06:41
+ * @LastEditTime: 2021-01-05 16:56:22
 -->
 <template>
   <CustomerTabBar>
@@ -60,7 +60,7 @@ export default {
     };
   },
   onShow() {
-    this.userInfo = uni.getStorageSync('userInfo');
+    this.userInfo = uni.getStorageSync("userInfo");
   },
   methods: {
     // 退出登录

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 15:26:47
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-28 20:15:52
+ * @LastEditTime: 2021-01-05 16:56:14
 -->
 <template>
   <view class="box">
@@ -17,7 +17,11 @@
     </view>
     <view>点击复制链接打开浏览器已完成支付</view>
     <view class="router">
-      <u-parse :html="url" :selectable="true" style="width: min-content"></u-parse>
+      <u-parse
+        :html="url"
+        :selectable="true"
+        style="width: min-content"
+      ></u-parse>
     </view>
   </view>
 </template>
@@ -27,16 +31,16 @@ import { currentEnvConfig } from "../../env-config.js";
 export default {
   data() {
     return {
-      payId: '',
-      payType: '',
-      url: '',
-      timer: '',
-    }
+      payId: "",
+      payType: "",
+      url: "",
+      timer: "",
+    };
   },
   onLoad(options) {
     this.payId = options.id;
     this.payType = options.type;
-    this.url = `${currentEnvConfig['protocol']}://${currentEnvConfig['h5Domain']}/sales-h5/${this.payType}?id=${this.payId}`
+    this.url = `${currentEnvConfig["protocol"]}://${currentEnvConfig["h5Domain"]}/sales-h5/${this.payType}?id=${this.payId}`;
   },
   onShow() {
     this.timer = setInterval(this.getInfo, 3000);
@@ -48,25 +52,19 @@ export default {
     clearInterval(this.timer);
   },
   methods: {
-    // async getUrl() {
-    //   const res = await postUnionPayUrlApi({
-    //     id: this.payId,
-    //   });
-    //   this.url = `alipays://platformapi/startapp?appId=20000067&url=` + res;
-    // }
     async getInfo() {
       const item = await getPayStatusApi(this.payId, {
-        hideLoading: true
+        hideLoading: true,
       });
-      if (item === 'Paid') {
+      if (item === "Paid") {
         uni.navigateTo({
           url: `/customerPackage/paySuccess/index`,
         });
         clearInterval(this.timer);
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 <style lang="scss" scoped>
 .box {

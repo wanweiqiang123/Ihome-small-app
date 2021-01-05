@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 15:27:32
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-31 11:23:10
+ * @LastEditTime: 2021-01-05 16:52:03
 -->
 <template>
   <view class="box">
@@ -25,22 +25,22 @@
 </template>
 <script>
 import { getPaymentQRCodeInfoApi, getPayStatusApi } from "../../api/customer";
-import storageTool from '../../common/storageTool';
+import storageTool from "../../common/storageTool";
 import { getAllByTypeApi } from "../../api/index";
 import { currentEnvConfig } from "../../env-config.js";
 export default {
   components: {},
   data() {
     return {
-      payId: '',
-      url: '',
-      timer: '',
+      payId: "",
+      url: "",
+      timer: "",
       payMsg: {
         transAmount: 0,
-        billNo: '',
+        billNo: "",
       },
       PaymentStatus: [],
-    }
+    };
   },
   onLoad(options) {
     this.payId = options.id;
@@ -50,7 +50,7 @@ export default {
       this.getInfo();
       this.timer = setInterval(this.getStatus, 3000);
     }
-    this.PaymentStatus = await this.getDictAll('PaymentStatus');
+    this.PaymentStatus = await this.getDictAll("PaymentStatus");
   },
   onHide() {
     clearInterval(this.timer);
@@ -67,48 +67,48 @@ export default {
     // 字典匹配
     getDictName(code, list) {
       if (list.length) {
-        const { name } = list.find(v => v.code === code);
+        const { name } = list.find((v) => v.code === code);
         return name;
       }
     },
     async getInfo() {
       const item = await getPaymentQRCodeInfoApi(this.payId);
-      this.payMsg = {...item};
-      let o = { ...item};
-      delete o.status
+      this.payMsg = { ...item };
+      let o = { ...item };
+      delete o.status;
       let obj = {
         content: JSON.stringify(o),
       };
       const token = storageTool.getToken();
       let header = {
-        'Authorization': 'bearer ' + token
+        Authorization: "bearer " + token,
       };
       uni.request({
-        url: `${currentEnvConfig['protocol']}://${currentEnvConfig['apiDomain']}/sales-api/sales-document-cover/file/qrcode`,
-        method: 'POST',
+        url: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/qrcode`,
+        method: "POST",
         header: {
           ...header,
           "Content-Type": "application/json",
         },
         data: obj,
-        success: res => {
-          this.url = `${currentEnvConfig['protocol']}://${currentEnvConfig['apiDomain']}/sales-api/sales-document-cover/file/browse/${res.data.data.fileId}`
-        }
-      })
+        success: (res) => {
+          this.url = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${res.data.data.fileId}`;
+        },
+      });
     },
     async getStatus() {
       const item = await getPayStatusApi(this.payId, {
-        hideLoading: true
+        hideLoading: true,
       });
-      if (item === 'Paid') {
+      if (item === "Paid") {
         uni.navigateTo({
           url: `/customerPackage/paySuccess/index`,
         });
         clearInterval(this.timer);
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 <style lang="scss" scoped>
 .box {
