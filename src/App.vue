@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-04 11:27:42
+ * @LastEditTime: 2021-01-05 16:12:37
 -->
 <script>
 export default {
@@ -18,6 +18,7 @@ export default {
     noticeInfo: {}, //优惠告知书签署预览信息
     searchParams: null, // 跳转分页查询页面携带的参数
     refreshListData: null, //列表缓存页面刷新存放数据
+    searchBackData: null, // 搜索返回数据
     userType: null,
     tabList: [
       {

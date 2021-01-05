@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-17 09:23:15
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-05 15:43:56
+ * @LastEditTime: 2021-01-05 16:19:14
 -->
 <template>
   <view>
@@ -207,7 +207,8 @@ export default {
     this.info = { ...res };
   },
   onShow() {
-    let item = getApp().globalData.refreshListData;
+    let item = getApp().globalData.searchBackData;
+    console.log(item);
     if (item) {
       switch (item.type) {
         case "branch":

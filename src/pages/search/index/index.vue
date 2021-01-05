@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-20 17:03:55
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-05 15:05:09
+ * @LastEditTime: 2021-01-05 16:18:22
 -->
 <template>
   <PageingSearch
@@ -48,7 +48,8 @@ export default {
   mounted() {},
   methods: {
     goBackPage(data) {
-      this.$tool.back(null, { type: this.type, data });
+      getApp().globalData.searchBackData = { type: this.type, data };
+      uni.navigateBack();
     },
   },
 };

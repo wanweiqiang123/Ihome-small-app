@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 16:47:03
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-05 15:17:41
+ * @LastEditTime: 2021-01-05 16:18:49
 -->
 <template>
   <view class="box">
@@ -230,8 +230,9 @@ export default {
       }
     },
     // 返回到上一页
-    goBackPage(v) {
-      this.$tool.back(null, { type: "init", data: v });
+    goBackPage(data) {
+      getApp().globalData.searchBackData = { type: this.type, data };
+      uni.navigateBack();
     },
     async getListMixin() {
       if (this.keyword) {
