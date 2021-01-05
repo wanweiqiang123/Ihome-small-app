@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-05 16:22:21
+ * @LastEditTime: 2021-01-05 17:27:39
 -->
 <template>
   <LoginPage>
@@ -54,8 +54,8 @@
         width="100%"
         :mask="false"
         v-model="isShow"
-        @reset="handleReset()"
-        @confirm="handleConfirm()"
+        @reset="reset()"
+        @confirm="confirm()"
       >
         <u-form
           ref="notice"
@@ -64,30 +64,44 @@
         >
           <u-form-item
             label="项目名称"
-            prop="name"
             :border-bottom="false"
           >
             <u-input
               v-model="queryPageParameters.proName"
               @click="handleToSearch"
+              placeholder="请选择项目"
+              type="select"
+              border
+            />
+          </u-form-item>
+          <u-form-item
+            label="栋座"
+            :border-bottom="false"
+          >
+            <u-input
+              v-model="queryPageParameters.unitName"
+              placeholder="请选择栋座"
+              :select-open="buildSelectShow"
+              @click="handleShowBuild()"
               type="select"
               border
             />
           </u-form-item>
           <u-form-item
             label="房号"
-            prop="intro"
             :border-bottom="false"
           >
             <u-input
-              v-model="form.intro"
+              v-model="queryPageParameters.roomNo"
+              :select-open="roomSelectShow"
+              placeholder="请选择房号"
+              @click="handleShowRoom()"
               type="select"
               border
             />
           </u-form-item>
           <u-form-item
             label="客户姓名"
-            prop="intro"
             :border-bottom="false"
           >
             <u-input
@@ -98,7 +112,6 @@
           </u-form-item>
           <u-form-item
             label="客户电话"
-            prop="intro"
             :border-bottom="false"
           >
             <u-input
@@ -139,6 +152,25 @@
           </u-form-item>
         </u-form>
       </PopupSearch>
+      <!-- 下拉框 -->
+      <u-select
+        v-model="buildSelectShow"
+        :list="buildSelectList"
+        safe-area-inset-bottom
+        title="选择栋座"
+        value-name="buildingId"
+        label-name="buildingName"
+        @confirm="buildConfirm"
+      ></u-select>
+      <u-select
+        v-model="roomSelectShow"
+        :list="roomSelectList"
+        safe-area-inset-bottom
+        title="选择房号"
+        value-name="roomId"
+        label-name="roomNo"
+        @confirm="roomConfirm"
+      ></u-select>
     </view>
   </LoginPage>
 </template>
@@ -148,7 +180,11 @@ import PopupSearch from "../../components/PopupSearch/index.vue";
 import IhCheckbox from "../../components/IhCheckbox/index.vue";
 import pagination from "../../mixins/pagination";
 import { getAllByTypeApi } from "../../api/index";
-import { postNoticeList } from "../../api/staff";
+import {
+  postNoticeList,
+  postBuildByProId,
+  postRoomByProId,
+} from "../../api/staff";
 
 export default {
   name: "notice-list",
@@ -163,6 +199,10 @@ export default {
       queryPageParameters: {
         proName: "",
         projectId: null,
+        unitName: "",
+        buyUnit: null,
+        roomNo: "",
+        roomNumberId: null,
         ownerName: null,
         ownerMobile: null,
         noticeNo: null,
@@ -171,6 +211,10 @@ export default {
       },
       noticeTypes: [],
       noticeStatus: [],
+      buildSelectShow: false,
+      buildSelectList: [],
+      roomSelectShow: false,
+      roomSelectList: [],
     };
   },
   filters: {
@@ -215,7 +259,55 @@ export default {
         url: "/pages/search/index/index",
       });
     },
-    async handleConfirm() {
+    buildConfirm(val) {
+      let item = val[0];
+      this.queryPageParameters.unitName = item.label;
+      this.queryPageParameters.buyUnit = item.value;
+      this.queryPageParameters.roomNumberId = null;
+      this.queryPageParameters.roomNo = "";
+    },
+    async handleShowBuild() {
+      if (!this.queryPageParameters.projectId) {
+        this.$u.toast("请先选择项目");
+        return;
+      }
+      this.buildSelectList = await postBuildByProId({
+        proId: this.queryPageParameters.projectId,
+      });
+      this.buildSelectShow = true;
+    },
+    roomConfirm(val) {
+      let item = val[0];
+      this.queryPageParameters.roomNumberId = item.value;
+      this.queryPageParameters.roomNo = item.label;
+    },
+    async handleShowRoom() {
+      if (!this.queryPageParameters.projectId) {
+        this.$u.toast("请先选择项目");
+        return;
+      }
+      this.roomSelectList = await postRoomByProId({
+        proId: this.queryPageParameters.projectId,
+        buildingId: this.queryPageParameters.buyUnit,
+      });
+      this.roomSelectShow = true;
+    },
+    reset() {
+      Object.assign(this.queryPageParameters, {
+        proName: "",
+        projectId: null,
+        unitName: "",
+        buyUnit: null,
+        roomNo: "",
+        roomNumberId: null,
+        ownerName: null,
+        ownerMobile: null,
+        noticeNo: null,
+        notificationStatuses: [],
+        notificationTypes: [],
+      });
+    },
+    async confirm() {
       this.tablePage = [];
       this.queryPageParameters.pageNum = 1;
       this.setPageDataMixin(await postNoticeList(this.queryPageParameters));
