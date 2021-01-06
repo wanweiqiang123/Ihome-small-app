@@ -673,6 +673,17 @@ export default {
       this.companyTypeList = [];
       let list = await getDictByType(postData);
       console.log(list);
+      if (list && list.length) {
+        list.forEach((item) => {
+          let obj = {
+            value: item.code,
+            label: item.name
+          }
+          this.companyTypeList.push(obj);
+        })
+      } else {
+        this.companyTypeList = [];
+      }
     },
     // 获取附件类型
     async getChannelAttachmentList() {

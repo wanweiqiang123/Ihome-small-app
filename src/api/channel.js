@@ -50,6 +50,11 @@ export async function getChannelInfo(id = '', data = {}, option = {}) {
   return await getApi(`/sales-api/channel/channel/get/${id}`, data, option);
 }
 
+// 渠道商公司状态变为草稿
+export async function backToDraft(id = '', data = {}, option = {}) {
+  return await getApi(`/sales-api/channel/channel/backToDraft/${id}`, data, option);
+}
+
 // 获取推荐的项目列表
 export async function getRecommendItemList(data = {}, option = {}) {
   return await postApi('/sales-api/project/project/getRecommendProjectList', data, option);
