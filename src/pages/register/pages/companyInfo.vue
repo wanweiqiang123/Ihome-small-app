@@ -158,10 +158,12 @@
 </template>
 
 <script>
-import { getAreaList, getChannelAttachment, getBankBranchList, channelRegister } from '@/api/channel';
+import { getAreaList, getDictByType, getBankBranchList, channelRegister } from '@/api/channel';
 import { validIdentityCard } from '@/common/validate';
 import { getTempToken, getImgUrl } from '@/api/channel';
 import { currentEnvConfig } from '@/env-config';
+import {getUserInfoApi, userSwitchApi} from "@/api";
+import storageTool from "@/common/storageTool";
 
 // 防抖
 const debounce = (function () {
@@ -559,7 +561,19 @@ export default {
         icon: 'success',
         title: '注册成功'
       });
+      await this.getUserInfo();
       this.$emit('next');
+    },
+    // 重新获取用户信息 --- 注册成功后
+    async getUserInfo() {
+      const res = await userSwitchApi({
+        change_type: 'Channel',
+        access_token: storageTool.getToken(),
+      });
+      // console.log(res);
+      storageTool.setToken(res.access_token, res.expires_in);
+      const userInfo = await getUserInfoApi();
+      storageTool.setUserInfo(userInfo);
     },
     // 校验附件
     validAnnex() {
@@ -579,14 +593,14 @@ export default {
     },
     // 确定选择日期
     confirmDate(value) {
-      console.log(value);
+      // console.log(value);
       if (value) {
         this.companyForm.setupTime = `${value.year}-${value.month}-${value.day}`
       }
     },
     // 确定选择地区
     confirmRegion(value) {
-      console.log(value);
+      // console.log(value);
       if (value && value.length > 0) {
         this.companyForm.province = value[0].value;
         this.companyForm.city = value[1].value;
@@ -596,7 +610,7 @@ export default {
     },
     // 确定选择公司类型
     confirmCompanyType(value) {
-      console.log(value);
+      // console.log(value);
       if (value && value.length > 0) {
         this.companyForm.type = value[0].value;
         this.companyForm.typeName = value[0].label;
@@ -604,7 +618,7 @@ export default {
     },
     // 确定选择银行
     handleSelectBank(item) {
-      console.log(item);
+      // console.log(item);
       if (item.id) {
         this.companyForm.branchName = item.bankName;
         this.companyForm.branchNo = item.branchNo;
@@ -657,7 +671,7 @@ export default {
         valid: "Valid"
       }
       this.companyTypeList = [];
-      let list = await getChannelAttachment(postData);
+      let list = await getDictByType(postData);
       console.log(list);
       if (list && list.length) {
         list.forEach((item) => {
@@ -678,7 +692,7 @@ export default {
         valid: "Valid"
       }
       this.annexInfo = [];
-      let list = await getChannelAttachment(postData);
+      let list = await getDictByType(postData);
       if (list && list.length > 0) {
         list.forEach((item) => {
           this.$set(item, 'fileList', []);

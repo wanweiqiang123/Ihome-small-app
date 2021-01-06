@@ -32,6 +32,7 @@
           <u-input
             maxlength="16"
             type="number"
+            :disabled="!!userInfo.mobilePhone"
             v-model="baseForm.mobile"
             placeholder="请输入您的手机号码" :clearable="true" />
         </u-form-item>
@@ -40,6 +41,14 @@
             maxlength="18"
             v-model="baseForm.identityCode"
             placeholder="请输入您的身份证号码" :clearable="true" />
+        </u-form-item>
+        <u-form-item label="邀请码" required prop="invitationCode">
+          <u-input
+            type="number"
+            maxlength="8"
+            :disabled="!!qrCode"
+            v-model="baseForm.invitationCode"
+            placeholder="请联系对接人获取并输入" :clearable="true" />
         </u-form-item>
         <u-form-item label="邮箱" prop="email">
           <u-input
@@ -60,10 +69,9 @@
 </template>
 
 <script>
-import { getMessage } from '@/api/channel';
 import { phoneValidator, validIdentityCard, emailOrNullValidato } from '@/common/validate';
 import { currentEnvConfig } from '@/env-config';
-import {getSessionUserSendSmsApi} from "@/api";
+import storageTool from "@/common/storageTool";
 
 export default {
   props: {
@@ -73,113 +81,15 @@ export default {
     }
   },
   data() {
-    const validPassword = (rule, value, callback) => {
-      // const reg = /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z_]+$)(?![a-z0-9]+$)(?![a-z_]+$)(?![0-9_]+$)[a-zA-Z0-9_]{8,}$/;
-      // const reg = /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\\W_]+$)(?![a-z0-9]+$)(?![a-z\\W_]+$)(?![0-9\\W_]+$)[a-zA-Z0-9\\W_]{8,}$/;
-      // const reg = /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\W@#$%^&.]+$)(?![a-z0-9]+$)(?![a-z\W@#$%^&.]+$)(?![0-9\W@#$%^&.]+$)[a-zA-Z0-9\W@#$%^&.]{8,}$/;
-      let rC = {
-        lW:'[a-z]', // 小写字母
-        uW:'[A-Z]', // 大写字母
-        nW:'[0-9]', // 数字
-        sW:'[@#$%^&.]'// 特殊字符
-      };
-      function Reg(str, rStr){
-        let reg = new RegExp(rStr);
-        if(reg.test(str)) return true;
-        else return false;
-      }
-      if (!value) {
-        callback(new Error('请输入密码'));
-        return;
-      } else {
-        if(value.length < 8){
-          callback(new Error('请至少输入8位及以上密码'));
-          return;
-        }else{
-          let tR = {
-            l: Reg(value, rC.lW),
-            u: Reg(value, rC.uW),
-            n: Reg(value, rC.nW),
-            s: Reg(value, rC.sW)
-          };
-          if((tR.l && tR.u && tR.n) || (tR.l && tR.u && tR.s) || (tR.s && tR.u && tR.n) ||                                     (tR.s && tR.l && tR.n)){
-            // 密码符合要求
-            callback();
-          }else{
-            callback(new Error('密码必须是数字、大写字母、小写字母、符号4类中包含3类且长度不能少于8位。'));
-            return;
-          }
-        }
-        // if (!reg.test(value)) {
-        //   callback(new Error('密码必须是数字、大写字母、小写字母、符号4类中包含3类且长度不能少于8位。'));
-        //   return;
-        // } else {
-        //   callback();
-        // }
-      }
-    }
-    const validConfirmPassword = (rule, value, callback) => {
-      if (!this.baseForm.password) {
-        callback(new Error('请先输入密码'));
-        return;
-      }
-      // const reg = /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\\W_]+$)(?![a-z0-9]+$)(?![a-z\\W_]+$)(?![0-9\\W_]+$)[a-zA-Z0-9\\W_]{8,}$/;
-      let rC = {
-        lW:'[a-z]', // 小写字母
-        uW:'[A-Z]', // 大写字母
-        nW:'[0-9]', // 数字
-        sW:'[@#$%^&.]'// 特殊字符
-      };
-      function Reg(str, rStr){
-        let reg = new RegExp(rStr);
-        if(reg.test(str)) return true;
-        else return false;
-      }
-      if (!value) {
-        callback(new Error('请输入确认密码'));
-        return;
-      } else {
-        // if (!reg.test(value)) {
-        //   callback(new Error('密码必须是数字、大写字母、小写字母、符号4类中包含3类且长度不能少于8位。'));
-        //   return;
-        // } else {
-        //   if (this.baseForm.password !== value) {
-        //     callback(new Error('两次输入的密码不一致'));
-        //     return;
-        //   }
-        //   callback();
-        // }
-        if(value.length < 8){
-          callback(new Error('请至少输入8位及以上密码'));
-          return;
-        }else{
-          if (this.baseForm.password !== value) {
-            callback(new Error('两次输入的密码不一致'));
-            return;
-          }
-          let tR = {
-            l: Reg(value, rC.lW),
-            u: Reg(value, rC.uW),
-            n: Reg(value, rC.nW),
-            s: Reg(value, rC.sW)
-          };
-          if((tR.l && tR.u && tR.n) || (tR.l && tR.u && tR.s) || (tR.s && tR.u && tR.n) ||                                     (tR.s && tR.l && tR.n)){
-            // 密码符合要求
-            callback();
-          }else{
-            callback(new Error('密码必须是数字、大写字母、小写字母、符号4类中包含3类且长度不能少于8位。'));
-            return;
-          }
-        }
-      }
-    }
     return {
+      userInfo: null,
       baseForm: {
         companyName: '',
         creditCode: '',
         username: '',
         mobile: '',
         identityCode: '',
+        invitationCode: '',
         email: '',
       },
       rules: {
@@ -198,6 +108,9 @@ export default {
         identityCode: [
           { validator: validIdentityCard, trigger: ['blur'] }
         ],
+        invitationCode: [
+          { required: true, message: '请输入邀请码', trigger: ['blur'] }
+        ],
         email: [
           { validator: emailOrNullValidato, trigger: ['blur'] }
         ]
@@ -208,12 +121,12 @@ export default {
   onReady() {
     // 必须要在onReady生命周期，因为onLoad生命周期组件可能尚未创建完毕
     this.$refs.baseForm.setRules(this.rules);
-    console.log('qrCode - onReady', this.qrCode);
+    // console.log('qrCode - onReady', this.qrCode);
     if (this.qrCode) {
       this.baseForm.invitationCode = this.qrCode;
     }
-    let sysInfo = uni.getSystemInfoSync();
-    console.log(sysInfo);
+    this.userInfo = storageTool.getUserInfo();
+    this.baseForm.mobile = this.userInfo.mobilePhone;
   },
   methods: {
     // 下一步
@@ -221,7 +134,7 @@ export default {
       this.$refs.baseForm.validate(valid => {
         if (valid) {
           console.log('验证通过');
-          this.$emit('next', this.baseForm);
+          this.$emit('next', this.baseForm, true);
         } else {
           console.log('验证失败');
         }

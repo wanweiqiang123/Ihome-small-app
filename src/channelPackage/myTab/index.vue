@@ -177,7 +177,7 @@ export default {
     // 跳转到具体页面
     goToItem(item) {
       if (!item.url) {
-        return
+        return;
       }
       uni.navigateTo({
         url: item.url

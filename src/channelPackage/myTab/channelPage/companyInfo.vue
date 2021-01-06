@@ -10,11 +10,14 @@
   <view class="company-information-wrapper">
     <view class="company-name">
       <view class="name">
-        <view class="code">信用代码 1234567890DE</view>
-        <view>广州市星星电子商务有限责任公司</view>
-        <view>（广州星星）</view>
+        <view class="code">信用代码 {{companyInfo.creditCode}}</view>
+        <view>{{companyInfo.name}}</view>
+        <view>
+          （{{companyInfo.shortName}}）
+          <u-tag text="审核中" mode="dark" size="mini" type="error"/>
+        </view>
       </view>
-      <view class="btn-wrapper" @click="editCompanyInfo">
+      <view class="btn-wrapper" @click="editCompanyInfo" v-if="['DRAFT', 'ToBeConfirmed'].includes(companyInfo.status)">
         <u-icon name="edit-pen" color="$u-type-primary" size="30"></u-icon>编辑
       </view>
     </view>
@@ -25,44 +28,29 @@
           :model="form"
           ref="uForm"
           label-width="210">
-          <u-form-item label="公司类型" class="hide-icon" right-icon="arrow-right">
-            <u-input
-              v-model="form.companyType"
-              type="select"
-              placeholder="请选择公司类型"/>
+          <u-form-item label="公司类型">
+            <view>{{companyInfo.typeName}}</view>
           </u-form-item>
           <u-form-item label="注册资本">
-            <u-input v-model="form.companySignMoney" placeholder="请输入注册资本" />
+            <view>{{companyInfo.capital}}</view>
           </u-form-item>
-          <u-form-item label="营业期限" class="hide-icon" right-icon="arrow-right">
-            <u-input
-              v-model="form.companyTime"
-              type="select"
-              placeholder="请选择营业期限"/>
+          <u-form-item label="营业期限">
+            <view>{{companyInfo.businessTime}}</view>
           </u-form-item>
-          <u-form-item label="成立时间" class="hide-icon" right-icon="arrow-right">
-            <u-input
-              v-model="form.companyTime"
-              type="select"
-              placeholder="请选择成立时间"/>
+          <u-form-item label="成立时间">
+            <view>{{companyInfo.setupTime}}</view>
           </u-form-item>
           <u-form-item label="法人身份证号码">
-            <u-input v-model="form.companySignMoney" placeholder="请输入法人身份证号码" />
+            <view>{{companyInfo.legalIdentityCode}}</view>
           </u-form-item>
           <u-form-item label="法定代表人">
-            <u-input v-model="form.companySignMoney" placeholder="请输入法定代表人" />
+            <view>{{companyInfo.legalPerson}}</view>
           </u-form-item>
-          <u-form-item label="地区" class="hide-icon" right-icon="arrow-right">
-            <u-input
-              v-model="form.companyTime"
-              type="select"
-              placeholder="请选择地区"/>
+          <u-form-item label="地区">
+            <view>{{companyInfo.provinceName}}{{companyInfo.cityName}}{{companyInfo.countyName}}</view>
           </u-form-item>
-          <u-form-item label="住所" class="hide-icon" right-icon="arrow-right">
-            <u-input
-              v-model="form.companyTime"
-              type="select"
-              placeholder="请选择住所"/>
+          <u-form-item label="住所">
+            <view>{{companyInfo.address}}</view>
           </u-form-item>
         </u-form>
       </view>
@@ -73,36 +61,42 @@
           ref="uForm"
           label-width="210">
           <u-form-item label="负责人姓名">
-            <u-input v-model="form.companySignMoney" placeholder="请输入负责人姓名" />
+            <view>{{channelPersons.name}}</view>
           </u-form-item>
           <u-form-item label="负责人手机号">
-            <u-input v-model="form.companySignMoney" placeholder="请输入负责人手机号" />
+            <view>{{channelPersons.mobile}}</view>
           </u-form-item>
           <u-form-item label="身份证号码">
-            <u-input v-model="form.companySignMoney" placeholder="请输入身份证号码" />
+            <view>{{channelPersons.identityCode}}</view>
           </u-form-item>
           <u-form-item label="邮箱">
-            <u-input v-model="form.companySignMoney" placeholder="请输入邮箱" />
+            <view>{{channelPersons.email ? channelPersons.email : ""}}</view>
           </u-form-item>
         </u-form>
       </view>
       <view class="info-item">
         <view class="form-title u-border-bottom">公司附件</view>
-        <view class="annex-list-wrapper" v-for="item in annexInfo" :key="item.id">
-          <view class="annex-type">{{item.type}}</view>
-          <view>
-            <u-upload :action="action" :file-list="fileList" ></u-upload>
+        <view class="annex-list-wrapper" v-for="(item, itemIndex) in annexList" :key="itemIndex">
+          <view class="annex-type">{{item.name}}</view>
+          <view class="annex-image">
+            <u-image
+              v-for="(srcItem, srcIndex) in item.fileList"
+              :key="srcIndex"
+              @click="previewImg(srcItem)"
+              width="200rpx"
+              height="200rpx"
+              :src="srcItem.fileSrc"></u-image>
           </view>
         </view>
       </view>
       <view class="info-item">
         <view class="form-title u-border-bottom">公司备注</view>
-        <view class="remark">盼望着，盼望着，东风来了，春天的脚步近了。</view>
+        <view class="remark">{{companyInfo.remark ? companyInfo.remark : ""}}</view>
       </view>
       <view class="info-item">
         <view class="form-title u-border-bottom form-count">
           <view>公司结佣帐号</view>
-          <view class="count" @click="goToCountList">全部({{bankCodeList.length}})</view>
+          <view class="count">全部({{companyInfo.channelBanks.length}})</view>
         </view>
         <view class="swiper-wrapper">
           <swiper
@@ -113,23 +107,18 @@
             @change="changeCount">
             <swiper-item
               class="swiper-item"
-              v-for="(item, index) in bankCodeList"
+              v-for="(bankItem, index) in companyInfo.channelBanks"
               :key="index">
-              <view class="swiper-item-msg" v-if="!!item.name">
-                <view class="name">{{item.name}}</view>
-                <view class="local">{{item.local}}</view>
-                <view class="code">{{item.code}}</view>
-              </view>
-              <view class="swiper-item-msg" v-else>
-                <view class="more" @click="goToCountList">
-                  查看更多<u-icon name="more-circle-fill" color="$u-type-primary" size="32"></u-icon>
-                </view>
+              <view class="swiper-item-msg">
+                <view class="name">{{bankItem.accountName}}</view>
+                <view class="local">{{bankItem.branchName}}</view>
+                <view class="code">{{bankItem.accountNo}}</view>
               </view>
             </swiper-item>
           </swiper>
           <view class="indicator-dots">
             <view
-              v-for="(item, index) in bankCodeList"
+              v-for="(item, index) in companyInfo.channelBanks"
               :key="index"
               class="indicator-dots-item"
               :class="[currentDots === index ? 'indicator-dots-active' : '']">
@@ -138,52 +127,36 @@
         </view>
       </view>
     </view>
+    <u-modal
+      v-model="showChange"
+      :mask-close-able="true"
+      :show-confirm-button="true"
+      :show-cancel-button="true"
+      @confirm="handleChangeStatus"
+      @cancel="showChange = false"
+      content="信息正在审核中，是否需要修改公司信息？"></u-modal>
   </view>
 </template>
 
 <script>
+  import storageTool from "@/common/storageTool";
+  import {getAreaList, getChannelInfo, getImgUrl, backToDraft} from "@/api/channel"
+  import { getAllByTypeApi } from "@/api/index";
+
   export default {
     data() {
       return {
+        userInfo: null,
+        companyInfo: {
+          channelBanks: []
+        }, // 公司基本信息
+        channelPersons: {}, // 负责人信息
         form: {
           companyType: null,
           companySignMoney: null,
           companyTime: null,
         },
-        action: '',
-        fileList: [],
-        annexInfo: [
-          {
-            id: 1,
-            type: '营业执照',
-            imgUrl: ['https://cdn.uviewui.com/uview/example/fade.jpg', 'https://cdn.uviewui.com/uview/example/fade.jpg']
-          },
-          {
-            id: 2,
-            type: '开户许可证',
-            imgUrl: ['https://cdn.uviewui.com/uview/example/fade.jpg', 'https://cdn.uviewui.com/uview/example/fade.jpg']
-          },
-          {
-            id: 3,
-            type: '法人身份证正反面复印件',
-            imgUrl: ['https://cdn.uviewui.com/uview/example/fade.jpg', 'https://cdn.uviewui.com/uview/example/fade.jpg']
-          },
-          {
-            id: 4,
-            type: '签约授权确认函',
-            imgUrl: ['https://cdn.uviewui.com/uview/example/fade.jpg', 'https://cdn.uviewui.com/uview/example/fade.jpg']
-          },
-          {
-            id: 5,
-            type: '被委托人身份证复印件',
-            imgUrl: ['https://cdn.uviewui.com/uview/example/fade.jpg', 'https://cdn.uviewui.com/uview/example/fade.jpg']
-          },
-          {
-            id: 6,
-            type: '综合查询被执行人查询结果',
-            imgUrl: ['https://cdn.uviewui.com/uview/example/fade.jpg', 'https://cdn.uviewui.com/uview/example/fade.jpg']
-          }
-        ],
+        annexList: [], // 附件类型
         bankCodeList: [
           {
             name: '广州择食电子商务有限责任公司',
@@ -201,27 +174,108 @@
             code: ''
           }
         ],
-        currentDots: 0
+        currentDots: 0,
+        showChange: false
       };
     },
-    onLoad() {
+    async onLoad() {
+      await this.getChannelAttachmentList();
+      this.userInfo = storageTool.getUserInfo();
+      if (this.userInfo.channelId) {
+        await this.init(this.userInfo.channelId);
+      }
     },
     methods: {
       // 修改公司信息
       editCompanyInfo() {
+        // 根据公司的审核情况做调整
+        if (this.companyInfo.status === 'DRAFT') {
+          // 草稿状态直接可以修改
+          uni.navigateTo({
+            url: `/channelPackage/myTab/channelPage/editCompany?id=${this.companyInfo.id}`
+          });
+        } else if (this.companyInfo.status === 'ToBeConfirmed') {
+          // 待审核状态 --- 提示修改 --- 点击确认后改变状态 --- 跳转到修改页面
+          this.showChange = true;
+        }
+      },
+      // 确定改变公司状态
+      async handleChangeStatus() {
+        await backToDraft(this.companyInfo.id);
         uni.navigateTo({
-          url: `/channelPackage/myTab/channelPage/editCompany`
+          url: `/channelPackage/myTab/channelPage/editCompany?id=${this.companyInfo.id}`
+        });
+      },
+      // 查看附件
+      previewImg(item) {
+        // console.log(item);
+        if (!item.fileId) return;
+        uni.previewImage({
+          urls: [item.fileSrc]
         });
       },
       // 公司结佣账号切换
       changeCount(e) {
         this.currentDots = e.detail.current;
       },
-      // 跳转到结佣账号列表
-      goToCountList() {
-        uni.navigateTo({
-          url: `/channelPackage/myTab/channelPage/commissionAccount`
+      // 初始化公司信息页面
+      async init(id) {
+        let info = await getChannelInfo(id);
+        // console.log(info);
+        this.companyInfo = info;
+        if (info.channelPersons && info.channelPersons.length) {
+          this.channelPersons = info.channelPersons[0];
+        }
+        // 附件类型
+        if (this.annexList.length && info.channelAttachments && info.channelAttachments.length) {
+          this.annexList.forEach((list) => {
+            list.fileList = [];
+            info.channelAttachments.forEach((item) => {
+              if (item.type === list.code) {
+                list.fileList.push(
+                  {
+                    ...item,
+                    fileSrc: getImgUrl(item.fileId)
+                  }
+                );
+              }
+            });
+          });
+        }
+        this.annexList = this.annexList.filter((list) => {
+          return list.fileList.length > 0;
         });
+        console.log('123123123', this.annexList);
+      },
+      // 获取对应字典name
+      async getDictName(code, type) {
+        const dictList = await getAllByTypeApi({ type });
+        if (dictList.length) {
+          const { name } = dictList.find(v => v.code === code);
+          return name;
+        } else {
+          return '';
+        }
+      },
+      // 获取省市区
+      async getArea() {
+        let areaList = await getAreaList();
+        return areaList;
+      },
+      // 获取附件类型
+      async getChannelAttachmentList() {
+        let postData = {
+          type: "ChannelAttachment",
+          valid: "Valid"
+        }
+        this.annexList = [];
+        let list = await getAllByTypeApi(postData);
+        if (list && list.length > 0) {
+          list.forEach((item) => {
+            this.$set(item, 'fileList', []);
+          });
+          this.annexList = list;
+        }
       },
     }
   };
@@ -305,6 +359,17 @@
           .annex-type {
             font-size: 30rpx;
             padding: 20rpx 0rpx 10rpx 0rpx;
+          }
+
+          .annex-image {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-items: center;
+
+            /deep/.u-image {
+              margin-right: 10rpx;
+            }
           }
         }
 
