@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-05 16:17:19
+ * @LastEditTime: 2021-01-06 17:02:25
 -->
 <template>
   <view class="notice safe-area-inset-bottom">
@@ -100,10 +100,10 @@
             class="hide-icon"
             right-icon="arrow-right"
             required
-            prop="unitName"
+            prop="buyUnitName"
           >
             <u-input
-              v-model="form.unitName"
+              v-model="form.buyUnitName"
               type="select"
               :placeholder="`${isRecognize ? '认筹阶段可不选择房号': '请选择栋座'}`"
               @click="handleShowBuild"
@@ -114,10 +114,10 @@
             class="hide-icon"
             right-icon="arrow-right"
             required
-            prop="roomName"
+            prop="roomNumberName"
           >
             <u-input
-              v-model="form.roomName"
+              v-model="form.roomNumberName"
               type="select"
               :placeholder="`${isRecognize ? '认筹阶段可不选择房号':'请选择房号'}`"
               @click="handleShowRoom"
@@ -307,7 +307,14 @@
         shape="circle"
         type="primary"
         @click="submit()"
+        v-if="isSubmit"
       >保存并预览优惠告知书</u-button>
+      <u-button
+        shape="circle"
+        type="primary"
+        @click="update()"
+        v-else
+      >保 存</u-button>
     </view>
     <!-- 选择器 -->
     <u-select
@@ -349,12 +356,15 @@ import {
   postBuildByProId,
   postRoomByProId,
   postNoticeCreate,
+  getNoticeInfo,
+  postNoticeUpdate,
 } from "../../api/staff";
 
 export default {
   name: "notice-create",
   data() {
     return {
+      isSubmit: true,
       proId: null,
       selectShow: false,
       isRecognize: false,
@@ -374,9 +384,9 @@ export default {
         explain: "",
         paymentAmount: "",
         buyUnit: "",
-        unitName: "",
+        buyUnitName: "",
         roomNumberId: "",
-        roomName: "",
+        roomNumberName: "",
         ownerType: "Personal",
         templateType: null,
         ownerList: [],
@@ -397,10 +407,10 @@ export default {
         ],
       },
       roomRules: {
-        unitName: [
+        buyUnitName: [
           { required: true, message: "请选择栋座", trigger: "change" },
         ],
-        roomName: [
+        roomNumberName: [
           { required: true, message: "请选择房号", trigger: "change" },
         ],
       },
@@ -530,13 +540,17 @@ export default {
       }
       const list = [{ modeDescription: "自定义", premiumReceived: "other" }];
       this.selectList = await getMannerListByTermId({ id: this.form.cycleId });
-      this.selectList = this.selectList.concat(list);
+      if (this.form.channel === "CustomerService") {
+        this.selectList = this.selectList.concat(list);
+      }
       this.selectShow = true;
     },
     buildConfirm(val) {
       let item = val[0];
-      this.form.unitName = item.label;
+      this.form.buyUnitName = item.label;
       this.form.buyUnit = item.value;
+      this.form.roomNumberName = "";
+      this.form.roomNumberId = null;
     },
     async handleShowBuild() {
       if (!this.proId) {
@@ -549,7 +563,7 @@ export default {
     roomConfirm(val) {
       let item = val[0];
       this.form.roomNumberId = item.value;
-      this.form.roomName = item.label;
+      this.form.roomNumberName = item.label;
     },
     async handleShowRoom() {
       if (!this.proId) {
@@ -583,7 +597,7 @@ export default {
     removeChange(index, lists, name) {
       this.form.noticeAttachmentList.splice(index, 1);
     },
-    submit() {
+    dataVerify() {
       this.arr = [];
       const baseRes = new Promise((resolve, reject) => {
         this.$refs.baseFrom.validate((val) => {
@@ -614,7 +628,11 @@ export default {
         this.form.templateType = "PaperTemplate";
         this.form.ownerList = [{ ...this.enterpriseFrom }];
       }
-      Promise.all(this.arr)
+      return this.arr;
+    },
+    submit() {
+      let verifyArr = this.dataVerify();
+      Promise.all(verifyArr)
         .then(async () => {
           console.log("全部通过", this.form);
           try {
@@ -637,6 +655,55 @@ export default {
         .catch(() => {
           console.log("不通过");
         });
+    },
+    update() {
+      let verifyArr = this.dataVerify();
+      Promise.all(verifyArr)
+        .then(async () => {
+          console.log("全部通过", this.form);
+          this.form.ownerEditList = this.form.ownerList;
+          try {
+            const res = await postNoticeUpdate(this.form);
+            this.$u.toast("保存成功");
+            this.$tool.back(
+              {
+                delta: 2,
+              },
+              { type: "update", data: { ...this.form, id: this.form.noticeId } }
+            );
+          } catch (err) {
+            console.log(err);
+          }
+        })
+        .catch(() => {
+          console.log("不通过");
+        });
+    },
+    async getInfo(id) {
+      const info = await getNoticeInfo({ id });
+      console.log(info);
+      this.form = {
+        channel: info.channel,
+        cycleId: info.cycleId,
+        cycleName: info.cycleName,
+        promotionMethod: info.promotionMethod,
+        manner: info.explain,
+        explain: info.explain,
+        paymentAmount: info.paymentAmount,
+        buyUnit: info.buyUnit,
+        buyUnitName: info.buyUnitName,
+        roomNumberId: info.roomNumberId,
+        roomNumberName: info.roomNumberName,
+        ownerType: info.ownerType,
+        templateType: info.templateType,
+        ownerList: info.ownerList,
+        noticeId: info.id,
+      };
+      info.ownerType === "Personal"
+        ? (this.ownerInfo = info.ownerList)
+        : (this.enterpriseFrom = info.ownerList[0]);
+      this.proId = info.projectId;
+      this.isType = info.templateType === "ElectronicTemplate";
     },
   },
   onReady() {
@@ -662,9 +729,9 @@ export default {
           // this.form.paymentAmount = null;
           Object.assign(this.form, {
             buyUnit: "",
-            unitName: "",
+            buyUnitName: "",
             roomNumberId: "",
-            roomName: "",
+            roomNumberName: "",
             manner: "",
             explain: "",
             paymentAmount: "",
@@ -675,6 +742,17 @@ export default {
         default:
           break;
       }
+    }
+  },
+  onLoad(option) {
+    this.isSubmit = true;
+    console.log(option);
+    if (option.id) {
+      this.getInfo(option.id);
+      uni.setNavigationBarTitle({
+        title: "修改优惠告知书",
+      });
+      this.isSubmit = false;
     }
   },
 };

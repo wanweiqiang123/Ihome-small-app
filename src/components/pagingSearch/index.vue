@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-13 16:47:03
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-05 16:18:49
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-01-06 17:15:51
 -->
 <template>
   <view class="box">
@@ -16,7 +16,7 @@
           v-model="keyword"
           clearabled
           action-text="搜索"
-          :focus="focus"
+          :focus="true"
           @search="searchSomething"
           @custom="searchSomething"
         ></u-search>

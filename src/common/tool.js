@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-10 15:29:08
- * @LastEditors: wwq
- * @LastEditTime: 2020-11-16 11:41:57
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-01-06 16:33:25
  */
 
 const tool = {
@@ -21,7 +21,7 @@ const tool = {
         }
         getApp().globalData.refreshListData = config;
         if (options) {
-            uni.navigateBack(p);
+            uni.navigateBack(options);
         } else {
             uni.navigateBack();
         }

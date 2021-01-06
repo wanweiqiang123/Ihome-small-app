@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-30 10:48:38
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-05 14:51:00
+ * @LastEditTime: 2021-01-05 18:08:58
 -->
 <template>
   <view class="check-container">
@@ -65,6 +65,16 @@ export default {
             isCheck: check,
           };
         });
+      },
+    },
+    value: {
+      deep: true,
+      handler(newVal) {
+        if (!newVal.length) {
+          this.checkList.forEach((i) => {
+            i.isCheck = false;
+          });
+        }
       },
     },
   },

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-04 11:20:06
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-04 19:12:12
+ * @LastEditTime: 2021-01-06 11:27:25
 -->
 <template>
   <LoginPage>
@@ -24,26 +24,28 @@
           type="success"
           open-type="share"
           :custom-style="{
-          borderRadius: 'unset',
-          marginBottom: '10rpx',
-          padding: '0 20rpx'
-        }"
+            borderRadius: 'unset',
+            marginBottom: '10rpx',
+            padding: '0 20rpx'
+          }"
         >转发</u-button>
         <u-button
           type="primary"
           :custom-style="{
-          borderRadius: 'unset',
-          marginBottom: '10rpx',
-          padding: '0 20rpx'
-        }"
+            borderRadius: 'unset',
+            marginBottom: '10rpx',
+            padding: '0 20rpx'
+          }"
+          @click="handleTo"
         >修改</u-button>
         <u-button
           type="error"
           :custom-style="{
-          borderRadius: 'unset',
-          marginBottom: '10rpx',
-          padding: '0 20rpx'
-        }"
+            borderRadius: 'unset',
+            marginBottom: '10rpx',
+            padding: '0 20rpx'
+          }"
+          @click="isShow = true"
         >作废</u-button>
       </view>
       <view
@@ -56,17 +58,28 @@
         >转发</u-button>
       </view>
     </view>
+    <!-- 模态框 -->
+    <u-modal
+      v-model="isShow"
+      content="是否确认作废?"
+      show-cancel-button
+      confirm-color="#fa3534"
+      :async-close="true"
+      @confirm="confirm"
+    ></u-modal>
   </LoginPage>
 </template>
 
 <script>
 import { currentEnvConfig } from "../../env-config.js";
 import { getPdf2PicApi, getAllByTypeApi } from "../../api/index";
+import { postNoticeDelete } from "../../api/staff";
 
 export default {
   name: "notice-preview",
   data() {
     return {
+      isShow: false,
       fileUrl: "",
       option: {
         type: null,
@@ -86,6 +99,23 @@ export default {
         urls: [url],
         current: 1,
       });
+    },
+    handleTo() {
+      uni.navigateTo({
+        url: `/staffPackage/noticeCreate/index?id=${this.option.id}`,
+      });
+    },
+    async confirm() {
+      try {
+        await postNoticeDelete({ id: this.option.id });
+        this.isShow = false;
+        this.$u.toast("作废成功");
+        this.$tool.back(null, { type: "init", page: null });
+      } catch (error) {
+        console.log(error);
+        this.isShow = false;
+        this.$u.toast("作废失败");
+      }
     },
     async pdf2Pic(tId) {
       const { fileId } = await getPdf2PicApi(tId);

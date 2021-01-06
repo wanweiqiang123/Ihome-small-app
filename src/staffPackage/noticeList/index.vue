@@ -4,12 +4,15 @@
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-05 17:27:39
+ * @LastEditTime: 2021-01-06 17:51:47
 -->
 <template>
   <LoginPage>
     <view class="notice safe-area-inset-bottom">
-      <view class="item-container">
+      <view
+        class="item-container"
+        v-if="tablePage.length"
+      >
         <view
           class="notice-item"
           v-for="(i, n) in tablePage"
@@ -18,7 +21,7 @@
         >
           <view class="notice-info">
             <view class="notice-title">{{i.notificationType | filterNoticeDict(noticeTypes)}}{{`(${i.noticeNo})`}}</view>
-            <view>{{`${i.projectName} ${i.buyUnitName}栋-${i.roomNumberName}`}}</view>
+            <view>{{`${i.projectName} ${i.buyUnitName}-${i.roomNumberName}`}}</view>
             <template v-for="(item, index) in i.ownerList">
               <view :key="index">{{item.ownerName || '-'}}</view>
             </template>
@@ -34,6 +37,15 @@
             ></u-icon>
           </view>
         </view>
+      </view>
+      <view
+        v-else
+        style="height: 100vh"
+      >
+        <u-empty
+          text="列表为空"
+          mode="list"
+        ></u-empty>
       </view>
       <view class="notice-btn safe-area-inset-bottom">
         <u-button
@@ -230,18 +242,14 @@ export default {
           url: `/staffPackage/noticeConfirm/index?id=${item.id}`,
         });
       } else {
-        console.log("其他");
-        uni.navigateTo({
-          url: `/staffPackage/noticePreview/index?id=${item.id}&tId=${item.templateId}&type=${item.notificationType}`,
-        });
+        if (item.notificationStatuses === "WaitPay") {
+          // 客户待支付
+        } else {
+          uni.navigateTo({
+            url: `/staffPackage/noticePreview/index?id=${item.id}&tId=${item.templateId}&type=${item.notificationType}`,
+          });
+        }
       }
-      // switch () {
-      //   case "WaitDetermine":
-
-      //     break;
-      //   default:
-      //     break;
-      // }
     },
     handleGoCreate() {
       uni.navigateTo({

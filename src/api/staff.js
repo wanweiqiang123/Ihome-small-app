@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-10 15:30:58
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-30 17:54:05
+ * @LastEditTime: 2021-01-06 15:34:16
  */
 import { getApi, postApi } from '../common/http.js';
 
@@ -66,6 +66,30 @@ export async function postNoticeCreate(data = {}, option = {}) {
 export async function getNoticeInfo(data = {}, option = {}) {
   return await getApi(`/sales-api/contract/notice/detail/${data.id}`, null, option)
 }
+/**
+ * @description: 确认优惠告知书
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
 export async function postNoticeStatus(data = {}, option = {}) {
   return await postApi('/sales-api/contract/notice/Information/status', data, option)
+}
+/**
+ * @description: 优惠告知书作废
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function postNoticeDelete(data = {}, option = {}) {
+  return await postApi(`/sales-api/contract/notice/invalid/${data.id}`, null, option)
+}
+/**
+ * @description: 优惠告知书编辑
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function postNoticeUpdate(data = {}, option = {}) {
+  return await postApi('/sales-api/contract/notice/update', data, option)
 }
