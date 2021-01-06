@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-30 10:23:11
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-04 11:47:07
+ * @LastEditTime: 2021-01-06 17:17:40
 -->
 <template>
   <view>
@@ -35,6 +35,9 @@
       @change="codeChange"
       start-text="签署"
     ></u-verification-code>
+    <!-- <view>
+      <web-view src="https://smlt.tsign.cn"></web-view>
+    </view> -->
   </view>
 </template>
 <script>
@@ -98,24 +101,14 @@ export default {
       }
     },
     async gotoSign() {
-      // getApp().globalData.attestationInfo = {
-      //   ownerName: "皮小强",
-      //   ownerMobile: "15119337612",
-      //   ownerCertificateNo: "441424199302050553",
-      //   noticeId: this.noticeId,
-      //   templateId: this.templateId,
-      // };
-      // uni.navigateTo({
-      //   url: `/customerPackage/attestation/index`,
-      // });
       const res = await postSignApi({
         id: this.noticeId,
       });
       if (res.certificationStatus === "notCertified") {
         getApp().globalData.attestationInfo = {
-          ownerName: res.ownerName,
-          ownerMobile: res.ownerMobile,
-          ownerCertificateNo: res.ownerCertificateNo,
+          ownerName: res.certificationResponseVO.ownerName,
+          ownerMobile: res.certificationResponseVO.ownerMobile,
+          ownerCertificateNo: res.certificationResponseVO.ownerCertificateNo,
           noticeId: this.noticeId,
           templateId: this.templateId,
         };
@@ -123,7 +116,9 @@ export default {
           url: `/customerPackage/attestation/index`,
         });
       } else {
-        // 去到E签宝
+        uni.showToast({
+          title: "E签宝域名尚未配置",
+        });
       }
     },
   },

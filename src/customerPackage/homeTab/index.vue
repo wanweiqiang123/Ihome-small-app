@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-05 16:51:40
+ * @LastEditTime: 2021-01-06 17:17:54
 -->
 <template>
   <view>
@@ -77,6 +77,7 @@ export default {
       const userInfo = storageTool.getUserInfo();
       this.info = await postWechatNoticeListApi({
         ownerMobile: userInfo.mobilePhone,
+        // ownerMobile: "13581470188",
       });
     },
     routerTo(id) {
@@ -84,7 +85,7 @@ export default {
         url: `/customerPackage/discountsInfo/index?id=${id}`,
       });
       // uni.navigateTo({
-      //   url: `/customerPackage/createRefund/index?id=${id}`,
+      //   url: `/customerPackage/createDiscounts/index?id=${id}`,
       // });
     },
     // 字典翻译
