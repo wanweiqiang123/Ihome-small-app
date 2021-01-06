@@ -190,7 +190,8 @@ export default {
     };
   },
   onLoad(options) {
-    this.redirect = options.options || null;
+    this.redirect = options.redirect || null;
+    console.log('this.redirect', this.redirect);
     uni.login({
       success: function (res) {
         // 获取code

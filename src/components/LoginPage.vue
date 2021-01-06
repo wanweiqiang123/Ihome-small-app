@@ -42,10 +42,12 @@ export default {
       let redirect;
       let url;
       if (parameter) {
-        redirect = redirect + "?" + parameter;
+        redirect = curRoute + "?" + parameter;
         if (redirect.endsWith("&")) {
           redirect.substring(0, redirect.length - 1);
         }
+      } else {
+        redirect = curRoute;
       }
       if (redirect) {
         url = "/pages/login/index/index?redirect=" + redirect;

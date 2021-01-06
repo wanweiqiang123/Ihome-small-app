@@ -114,15 +114,15 @@ const storageTool = {
     goHome(path) {
         const token = this.getToken();
         if (token) {
-            // const userInfo = this.getUserInfo();
-            // let userType = userInfo?.userType;
+            const userInfo = this.getUserInfo();
+            let userType = userInfo?.userType;
             if (path && path.length > 0) {
                 uni.redirectTo({
-                    url: token,
+                    url: `/${path}`,
                 });
                 return;
             }
-            const userType = 'Customer';
+            // const userType = 'Customer';
             //userType用户类别(Staff-员工、Channel-渠道、Customer-客户)
             switch (userType) {
                 case 'Customer':
