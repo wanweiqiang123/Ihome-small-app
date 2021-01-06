@@ -35,14 +35,24 @@ export async function getAreaList(data = {}, option = {}) {
   return await getApi('/sales-api/system/area/getAll', data, option);
 }
 
-// 获取附件类型
-export async function getChannelAttachment(data = {}, option = {}) {
+// 获取
+export async function getDictByType(data = {}, option = {}) {
   return await postApi('/sales-api/system/dict/getAllByType', data, option);
 }
 
 // 渠道公司注册 --- 注册
 export async function channelRegister(data = {}, option = {}) {
   return await postApi('/sales-api/channel/channelRegistUser/regist', data, option);
+}
+
+// 获取渠道商公司信息
+export async function getChannelInfo(id = '', data = {}, option = {}) {
+  return await getApi(`/sales-api/channel/channel/get/${id}`, data, option);
+}
+
+// 渠道商公司状态变为草稿
+export async function backToDraft(id = '', data = {}, option = {}) {
+  return await getApi(`/sales-api/channel/channel/backToDraft/${id}`, data, option);
 }
 
 // 获取推荐的项目列表

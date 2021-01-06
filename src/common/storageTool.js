@@ -118,7 +118,7 @@ const storageTool = {
             let userType = userInfo?.userType;
             if (path && path.length > 0) {
                 uni.redirectTo({
-                    url: token,
+                    url: `/${path}`,
                 });
                 return;
             }

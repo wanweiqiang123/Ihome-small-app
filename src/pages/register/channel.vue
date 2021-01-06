@@ -7,36 +7,38 @@
  * @LastEditTime: 2020-12-23 16:32:37
 -->
 <template>
-  <view class="channel-register-wrapper">
-    <view class="register-steps-wrapper">
-      <view
-        v-for="(item, index) in stepList"
-        :key="index"
-        @click="handleChangeTab(index)"
-        :class="currentStep === index ? `${item.className} color` : item.className"
+  <LoginPage>
+    <view class="channel-register-wrapper">
+      <view class="register-steps-wrapper">
+        <view
+          v-for="(item, index) in stepList"
+          :key="index"
+          @click="handleChangeTab(index)"
+          :class="currentStep === index ? `${item.className} color` : item.className"
         >{{ item.name }}</view>
-    </view>
-    <view class="component-wrapper">
-      <BaseInfo :qrCode="qrScene" @next="nextStep" v-show="currentStep === 0"></BaseInfo>
-      <CompanyInfo :baseForm="baseForm" @next="nextStep" v-show="currentStep === 1"></CompanyInfo>
-    </view>
-    <view v-if="currentStep === 2" class="u-margin-top-30">
-      <view class="tips-wrapper">
-        <view class="tips-icon">
-          <u-icon
-            name="checkmark-circle-fill"
-            size="120"
-            color="#007aff"
-          ></u-icon>
+      </view>
+      <view class="component-wrapper">
+        <BaseInfo :qrCode="qrScene" @next="nextStep" v-show="currentStep === 0"></BaseInfo>
+        <CompanyInfo :baseForm="baseForm" @next="nextStep" v-show="currentStep === 1"></CompanyInfo>
+      </view>
+      <view v-if="currentStep === 2" class="u-margin-top-30">
+        <view class="tips-wrapper">
+          <view class="tips-icon">
+            <u-icon
+              name="checkmark-circle-fill"
+              size="120"
+              color="#007aff"
+            ></u-icon>
+          </view>
+          <view class="tips-success">注册成功</view>
+          <view class="tips-detail">您可以通过我的-公司信息查看公司详情</view>
         </view>
-        <view class="tips-success">注册成功</view>
-        <view class="tips-detail">您可以通过我的-公司信息查看公司详情</view>
+      </view>
+      <view class="btn" v-if="currentStep === 2">
+        <u-button type="primary" @click="handleView">查看个人中心</u-button>
       </view>
     </view>
-    <view class="btn" v-if="currentStep === 2">
-      <u-button type="primary" @click="handleView">查看个人中心</u-button>
-    </view>
-  </view>
+  </LoginPage>
 </template>
 
 <script>
@@ -65,7 +67,8 @@ export default {
       ],
       currentStep: 0,
       qrScene: '',
-      baseForm: {}
+      baseForm: {},
+      isValidFlag: false
     };
   },
   onLoad(query) {
@@ -80,24 +83,28 @@ export default {
   },
   methods: {
     // 下一步
-    nextStep(data) {
-      // console.log(data);
+    nextStep(data, flag = false) {
+      console.log(flag);
       if (data) {
         this.baseForm = data;
       }
+      this.isValidFlag = flag;
       this.currentStep = this.currentStep + 1;
     },
-    // 切换Tab
+    // 切换Tab --- 注册信息通过校验后才能切换
     handleChangeTab(index) {
-      console.log(index);
-      if (index !== 2) {
+      // console.log(index);
+      if (index !== 2 && this.isValidFlag) {
         this.currentStep = index;
       }
     },
     // 查看个人中心
     handleView() {
       // this.currentStep = 0;
-      this.loginByPhone();
+      // this.loginByPhone();
+      uni.redirectTo({
+        url: "/channelPackage/homeTab/index",
+      });
     },
     // 自动登录
     async loginByPhone() {
