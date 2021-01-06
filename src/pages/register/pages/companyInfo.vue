@@ -158,10 +158,12 @@
 </template>
 
 <script>
-import { getAreaList, getChannelAttachment, getBankBranchList, channelRegister } from '@/api/channel';
+import { getAreaList, getDictByType, getBankBranchList, channelRegister } from '@/api/channel';
 import { validIdentityCard } from '@/common/validate';
 import { getTempToken, getImgUrl } from '@/api/channel';
 import { currentEnvConfig } from '@/env-config';
+import {getUserInfoApi, userSwitchApi} from "@/api";
+import storageTool from "@/common/storageTool";
 
 // 防抖
 const debounce = (function () {
@@ -554,12 +556,24 @@ export default {
     // 注册
     async handleRegister(data) {
       const info = await channelRegister(data);
-      // console.log(info);
+      console.log(info);
       uni.showToast({
         icon: 'success',
         title: '注册成功'
       });
+      await this.getUserInfo();
       this.$emit('next');
+    },
+    // 重新获取用户信息 --- 注册成功后
+    async getUserInfo() {
+      const res = await userSwitchApi({
+        change_type: 'Channel',
+        access_token: storageTool.getToken(),
+      });
+      // console.log(res);
+      storageTool.setToken(res.access_token, res.expires_in);
+      const userInfo = await getUserInfoApi();
+      storageTool.setUserInfo(userInfo);
     },
     // 校验附件
     validAnnex() {
@@ -657,19 +671,8 @@ export default {
         valid: "Valid"
       }
       this.companyTypeList = [];
-      let list = await getChannelAttachment(postData);
+      let list = await getDictByType(postData);
       console.log(list);
-      if (list && list.length) {
-        list.forEach((item) => {
-          let obj = {
-            value: item.code,
-            label: item.name
-          }
-          this.companyTypeList.push(obj);
-        })
-      } else {
-        this.companyTypeList = [];
-      }
     },
     // 获取附件类型
     async getChannelAttachmentList() {
@@ -678,7 +681,7 @@ export default {
         valid: "Valid"
       }
       this.annexInfo = [];
-      let list = await getChannelAttachment(postData);
+      let list = await getDictByType(postData);
       if (list && list.length > 0) {
         list.forEach((item) => {
           this.$set(item, 'fileList', []);

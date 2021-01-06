@@ -32,6 +32,7 @@
           <u-input
             maxlength="16"
             type="number"
+            :disabled="!!userInfo.mobilePhone"
             v-model="baseForm.mobile"
             placeholder="请输入您的手机号码" :clearable="true" />
         </u-form-item>
@@ -70,6 +71,7 @@
 <script>
 import { phoneValidator, validIdentityCard, emailOrNullValidato } from '@/common/validate';
 import { currentEnvConfig } from '@/env-config';
+import storageTool from "@/common/storageTool";
 
 export default {
   props: {
@@ -80,6 +82,7 @@ export default {
   },
   data() {
     return {
+      userInfo: null,
       baseForm: {
         companyName: '',
         creditCode: '',
@@ -118,12 +121,12 @@ export default {
   onReady() {
     // 必须要在onReady生命周期，因为onLoad生命周期组件可能尚未创建完毕
     this.$refs.baseForm.setRules(this.rules);
-    console.log('qrCode - onReady', this.qrCode);
+    // console.log('qrCode - onReady', this.qrCode);
     if (this.qrCode) {
       this.baseForm.invitationCode = this.qrCode;
     }
-    let sysInfo = uni.getSystemInfoSync();
-    console.log(sysInfo);
+    this.userInfo = storageTool.getUserInfo();
+    this.baseForm.mobile = this.userInfo.mobilePhone;
   },
   methods: {
     // 下一步
