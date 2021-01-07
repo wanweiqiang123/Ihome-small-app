@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-05 11:56:12
+ * @LastEditTime: 2021-01-07 20:11:15
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
@@ -172,10 +172,10 @@ export default {
       obj.unpaidServiceFee = this.payData.unpaid;
       obj.terminal = "WeChatApp";
       // 假数据
-      obj.groupId = 15;
-      obj.operator = 15;
-      obj.proId = 1;
-      obj.termId = 3;
+      // obj.groupId = 15;
+      // obj.operator = 15;
+      // obj.proId = 1;
+      // obj.termId = 3;
       let res = {};
       switch (this.payType) {
         case "UnionPay":

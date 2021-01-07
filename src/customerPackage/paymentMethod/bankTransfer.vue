@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 15:28:17
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-05 17:35:50
+ * @LastEditTime: 2021-01-07 20:11:07
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
@@ -94,7 +94,7 @@ export default {
     this.payNum = options.payNum;
     this.payData = { ...getApp().paidData };
     // 假数据
-    this.payId = 3;
+    // this.payId = 3;
   },
   onShow() {
     if (this.payId) {
@@ -150,10 +150,10 @@ export default {
       obj.payeeAccount = this.info.payeeAccount;
       obj.payeeName = this.info.payeeName;
       // 假数据
-      obj.groupId = 15;
-      obj.operator = 15;
-      obj.proId = 1;
-      obj.termId = 3;
+      // obj.groupId = 15;
+      // obj.operator = 15;
+      // obj.proId = 1;
+      // obj.termId = 3;
       const res = await postAddServiceApi(obj);
       if (res) {
         uni.showToast({

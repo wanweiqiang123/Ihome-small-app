@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-05 16:12:37
+ * @LastEditTime: 2021-01-07 19:57:11
 -->
 <script>
 export default {
@@ -20,6 +20,7 @@ export default {
     refreshListData: null, //列表缓存页面刷新存放数据
     searchBackData: null, // 搜索返回数据
     userType: null,
+    webViewSrc: null,
     tabList: [
       {
         pagePath: "/pages/home/index/index",

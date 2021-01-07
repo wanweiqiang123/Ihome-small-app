@@ -138,6 +138,12 @@
 					"style": {
 						"navigationBarTitleText": "认证信息"
 					}
+				},
+				{
+					"path": "webView/index",
+					"style": {
+						"navigationBarTitleText": "E签宝"
+					}
 				}
 			]
 		},

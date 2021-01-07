@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-30 10:23:11
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-06 17:17:40
+ * @LastEditTime: 2021-01-07 19:52:17
 -->
 <template>
   <view>
@@ -35,9 +35,6 @@
       @change="codeChange"
       start-text="签署"
     ></u-verification-code>
-    <!-- <view>
-      <web-view src="https://smlt.tsign.cn"></web-view>
-    </view> -->
   </view>
 </template>
 <script>
@@ -116,8 +113,9 @@ export default {
           url: `/customerPackage/attestation/index`,
         });
       } else {
-        uni.showToast({
-          title: "E签宝域名尚未配置",
+        getApp().globalData.webViewSrc = res.signedAddress;
+        uni.navigateTo({
+          url: `/customerPackage/webView/index`,
         });
       }
     },
