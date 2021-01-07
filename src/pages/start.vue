@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-30 14:22:01
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-04 15:28:18
+ * @LastEditTime: 2021-01-07 10:45:46
 -->
 <template>
   <view style="padding-top: 100px">
@@ -49,75 +49,58 @@ export default {
     };
   },
   onLoad() {
-    uni.login({
-      success: async function (res) {
-        console.log(res);
-        storageTool.setWxCode(res.code);
-        getOpenidApi(res.code, {
-          hideLoading: true,
-        }).then((infoRes) => {
-          storageTool.setOpenId(infoRes.openId);
-          storageTool.setSessionKey(infoRes.sessionKey);
-
-          getUserInfoApi(
-            { terminalType: "WechatApp" },
-            { hideMsg: true, hideLoading: true }
-          )
-            .then((userInfo) => {
-              storageTool.setUserInfo(userInfo);
-            })
-            .finally(() => {
-              storageTool.goHome();
-            });
-        });
+    let that = this;
+    uni.checkSession({
+      success() {
+        //session_key 未过期，并且在本生命周期一直有效
+        let openId = storageTool.getOpenId();
+        let sessionKey = storageTool.getSessionKey();
+        if (openId && sessionKey) {
+          that.requestUserInfo();
+        } else {
+          that.wxLogin();
+        }
+      },
+      fail() {
+        // session_key 已经失效，需要重新执行登录流程
+        that.wxLogin();
       },
     });
   },
 
   methods: {
-    async init() {
-      uni.showLoading({
-        title: "启动程序中...",
-        mask: true,
+    wxLogin() {
+      let that = this;
+      uni.login({
+        success: async function (res) {
+          console.log(res);
+          storageTool.setWxCode(res.code);
+          getOpenidApi(res.code, {
+            hideLoading: true,
+          }).then((infoRes) => {
+            storageTool.setOpenId(infoRes.openId);
+            storageTool.setSessionKey(infoRes.sessionKey);
+            that.requestUserInfo();
+          });
+        },
       });
-      try {
-        const userInfo = await getUserInfoApi(null, {
-          hideMsg: true,
-          hideLoading: true,
+    },
+    requestUserInfo() {
+      getUserInfoApi(
+        { terminalType: "WechatApp" },
+        { hideMsg: true, hideLoading: true }
+      )
+        .then((userInfo) => {
+          storageTool.setUserInfo(userInfo);
+        })
+        .catch((err) => {
+          if (err.statusCode == 401) {
+            storageTool.removeToken();
+          }
+        })
+        .finally(() => {
+          storageTool.goHome();
         });
-        console.log(userInfo);
-        debugger;
-        storageTool.setUserInfo(userInfo);
-      } catch (error) {
-      } finally {
-        uni.login({
-          success: async function (res) {
-            console.log(res);
-            try {
-              const { openId, sessionKey } = await getOpenidApi(res.code, {
-                hideLoading: true,
-              });
-              uni.hideLoading();
-              storageTool.setOpenId(openId);
-
-              // 获取用户信息
-              uni.getUserInfo({
-                provider: "weixin",
-                success: function (infoRes) {
-                  console.log("用户昵称为：" + infoRes.userInfo.nickName);
-                  storageTool.goHome();
-                },
-                fail: function (err) {
-                  console.log(err);
-                  storageTool.goHome();
-                },
-              });
-            } catch (error) {
-              storageTool.goHome();
-            }
-          },
-        });
-      }
     },
     getPhoneNumber: function (e) {
       console.log(e);
