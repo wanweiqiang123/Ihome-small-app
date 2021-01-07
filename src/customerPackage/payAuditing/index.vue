@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-25 11:42:30
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-05 19:29:07
+ * @LastEditTime: 2021-01-07 09:54:29
 -->
 <template>
   <view class="box">
@@ -199,7 +199,8 @@ export default {
 }
 .imagelist {
   display: flex;
-  flex-flow: row-reverse wrap;
+  flex-flow: row wrap;
+  justify-content: flex-end;
   flex: 1;
 }
 .images {
