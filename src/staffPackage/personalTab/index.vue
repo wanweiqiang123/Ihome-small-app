@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-11-23 11:22:52
- * @LastEditors: zyc
- * @LastEditTime: 2020-12-30 14:41:39
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-07 09:08:55
 -->
 <template>
   <StaffTabBar>
@@ -39,9 +39,11 @@
       </view>
 
       <view class="btn-container">
-        <u-button shape="circle" type="primary" @click="handleLoginOut"
-          >退出账号</u-button
-        >
+        <u-button
+          shape="circle"
+          type="primary"
+          @click="handleLoginOut"
+        >退出账号</u-button>
       </view>
     </view>
     <u-action-sheet
@@ -108,7 +110,7 @@ export default {
       let item = this.switchList[index];
       console.log(index, item);
       const res = await userSwitchApi({
-        change_type: item.userType,
+        change_type: item.loginUserType,
         access_token: storageTool.getToken(),
       });
       console.log(res);
@@ -132,16 +134,16 @@ export default {
         for (let index = 0; index < userTypeList.length; index++) {
           const element = userTypeList[index];
           let color =
-            userInfo.userType == element.userType ? "#4881f9" : "#666";
+            userInfo.loginUserType == element.userType ? "#4881f9" : "#666";
           let userTypeName =
-            userInfo.userType == element.userType
+            userInfo.loginUserType == element.userType
               ? element.userTypeName + " √"
               : element.userTypeName;
           this.switchList.push({
             text: userTypeName,
             color: color,
             fontSize: 28,
-            userType: element.userType,
+            loginUserType: element.userType,
           });
         }
 

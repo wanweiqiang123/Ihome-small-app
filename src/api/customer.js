@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-15 18:08:02
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-05 15:16:27
+ * @LastEditTime: 2021-01-06 18:18:31
  */
 import { getApi, postApi } from '../common/http.js';
 
@@ -78,7 +78,7 @@ export async function postUnionPayUrlApi(data = {}, option = {}) {
 }
 // 获取订单支付状态
 export async function getPayStatusApi(data = {}, option = {}) {
-  return await getApi(`/sales-api/finance/payment/getPayStatus/${data}`, option)
+  return await getApi(`/sales-api/finance/payment/getPayStatus/${data}`, null, option)
 }
 // 优惠告知书签署
 export async function postSignApi(data = {}, option = {}) {
