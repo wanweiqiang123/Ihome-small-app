@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-29 15:58:19
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-04 15:27:16
+ * @LastEditTime: 2021-01-07 10:18:59
 -->
 <template>
   <view class="page login-page-style">
@@ -14,7 +14,7 @@
     </view>
     <view style="margin: 70rpx"></view>
 
-    <view style="padding: 10rpx 70rpx">
+    <view style="padding: 10rpx 70rpx" v-show="!loginWechat">
       <view class="page-tab">
         <view
           class="page-tab-item"
@@ -85,17 +85,22 @@
       </view>
       <view class="form-container" v-show="current == 1">
         <view class="form-container-item">
-          <image
-            class="form-container-item-ico-all"
-            src="../../../static/login/user.png"
-            mode="scaleToFill"
-          ></image>
-          <input
-            v-model="form.account"
-            class="uni-input form-container-item-input"
-            placeholder="账号"
-            placeholder-style="color:#C2C2C2;"
-          />
+          <u-row gutter="12">
+            <u-col span="11">
+              <image
+                class="form-container-item-ico-all"
+                src="../../../static/login/user.png"
+                mode="scaleToFill"
+              ></image>
+              <input
+                v-model="form.account"
+                class="uni-input form-container-item-input"
+                placeholder="账号"
+                placeholder-style="color:#C2C2C2;"
+              />
+            </u-col>
+            <u-col span="1"> </u-col>
+          </u-row>
         </view>
         <view class="form-container-item">
           <u-row gutter="12">
@@ -129,16 +134,47 @@
           >
         </view>
       </view>
+      <view style="margin-top: 40rpx">
+        <u-button
+          hover-class="none"
+          :custom-style="customStyle"
+          type="primary"
+          shape="circle"
+          @click="otherLogin(true)"
+          >微信登录</u-button
+        >
+      </view>
     </view>
-    <view class="register-wrapper">
+    <!-- <view class="register-wrapper">
       <u-button shape="circle" @click="handleRegister">渠道商注册</u-button>
-    </view>
-    <view class="register-wrapper">
+    </view> -->
+    <view
+      class="register-wrapper"
+      v-show="loginWechat"
+      style="margin-top: 120rpx"
+    >
       <u-button
+        type="primary"
         shape="circle"
         open-type="getPhoneNumber"
         @getphonenumber="getPhoneNumber"
-        >微信登录</u-button
+      >
+        <image
+          style="width: 49rpx; height: 40rpx"
+          src="../../../static/login/wechat.png"
+          mode="scaleToFill"
+        ></image>
+        <text style="padding-left: 12rpx"> 微信登录 </text>
+      </u-button>
+    </view>
+    <view class="register-wrapper" v-show="loginWechat">
+      <u-button
+        shape="circle"
+        hover-class="none"
+        :custom-style="customStyle"
+        type="primary"
+        @click="otherLogin(false)"
+        >其他登录方式</u-button
       >
     </view>
 
@@ -165,6 +201,12 @@ import storageTool from "../../../common/storageTool";
 export default {
   data() {
     return {
+      customStyle: {
+        border: "1px solid  #4881f9",
+        background: "#fff",
+        color: " #4881f9",
+      },
+      loginWechat: true,
       redirect: null, //跳转路径
       codeBtnText: "发送验证码",
       second: 60,
@@ -191,7 +233,7 @@ export default {
   },
   onLoad(options) {
     this.redirect = options.redirect || null;
-    console.log('this.redirect', this.redirect);
+    console.log("this.redirect", this.redirect);
     uni.login({
       success: function (res) {
         // 获取code
@@ -201,6 +243,10 @@ export default {
   },
 
   methods: {
+    otherLogin(type) {
+      console.log(type);
+      this.loginWechat = type;
+    },
     async getPhoneNumber(e) {
       console.log(e);
       if (e.detail.errMsg == "getPhoneNumber:fail user deny") {
@@ -218,6 +264,7 @@ export default {
           console.log(p);
           const res = await postGetPhoneNumberApi(p);
           console.log(res);
+          this.loginSuccess(res);
         } catch (error) {
           console.log(error);
           uni.showToast({
