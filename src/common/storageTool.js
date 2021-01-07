@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-10 15:30:00
- * @LastEditors: ywl
- * @LastEditTime: 2021-01-05 16:25:22
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-07 09:06:24
  */
 const tokenKey = 'token';//token的key
 const expiresInKey = 'expires_in';//token的key的过期时间
@@ -115,16 +115,15 @@ const storageTool = {
         const token = this.getToken();
         if (token) {
             const userInfo = this.getUserInfo();
-            let userType = userInfo?.userType;
+            let loginUserType = userInfo?.loginUserType;
             if (path && path.length > 0) {
                 uni.redirectTo({
                     url: `/${path}`,
                 });
                 return;
             }
-            // const userType = 'Customer';
             //userType用户类别(Staff-员工、Channel-渠道、Customer-客户)
-            switch (userType) {
+            switch (loginUserType) {
                 case 'Customer':
                     uni.redirectTo({
                         url: "/customerPackage/homeTab/index",
