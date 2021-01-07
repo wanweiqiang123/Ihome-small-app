@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 17:10:39
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-04 14:44:39
+ * @LastEditTime: 2021-01-07 10:15:14
 -->
 <template>
   <view class="notice">
@@ -135,7 +135,7 @@ export default {
     },
   },
   onShow() {
-    let item = getApp().globalData.refreshListData;
+    let item = getApp().globalData.searchBackData;
     if (item && item.type === "term") {
       this.termId = item.data.termId;
       this.termName = item.data.termName;
