@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-11-23 11:22:52
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-07 09:08:55
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-01-08 17:40:51
 -->
 <template>
   <StaffTabBar>
@@ -15,11 +15,11 @@
             width="150rpx"
             height="150rpx"
             shape="circle"
-            src="https://cdn.uviewui.com/uview/swiper/2.jpg"
+            :src="photo"
           ></u-image>
         </view>
-        <view>张小凡</view>
-        <view>18600002222</view>
+        <view>{{userInfo.name}}</view>
+        <view>{{userInfo.mobilePhone}}</view>
       </view>
       <view class="person-item-wrapper">
         <u-cell-group>
@@ -92,6 +92,8 @@ export default {
         color: "#000",
       },
       switchList: [],
+      userInfo: {},
+      photo: require("@/static/img/photo.png"),
     };
   },
   methods: {
@@ -155,6 +157,9 @@ export default {
         });
       }
     },
+  },
+  onShow() {
+    this.userInfo = uni.getStorageSync("userInfo");
   },
 };
 </script>

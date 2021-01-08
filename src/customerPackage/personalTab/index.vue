@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-12 10:17:34
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-05 16:56:22
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-01-08 17:41:18
 -->
 <template>
   <CustomerTabBar>
@@ -15,7 +15,7 @@
             width="150rpx"
             height="150rpx"
             shape="circle"
-            src="https://cdn.uviewui.com/uview/swiper/2.jpg"
+            :src="photo"
           ></u-image>
         </view>
         <view>{{userInfo.name}}</view>
@@ -57,6 +57,7 @@ export default {
         },
       ],
       userInfo: {},
+      photo: require("@/static/img/photo.png"),
     };
   },
   onShow() {
