@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-29 15:58:19
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-08 14:21:22
+ * @LastEditTime: 2021-01-08 18:06:37
 -->
 <template>
   <view class="page login-page-style">
@@ -135,13 +135,6 @@
         </view>
       </view>
       <view style="margin-top: 40rpx; text-align: right">
-        <!-- <image
-          @click="otherLogin(true)"
-          style="width: 50rpx; height: 40rpx"
-          src="../../../static/login/wechat-blue.png"
-          mode="scaleToFill"
-          >微信登录</image
-        > -->
         <u-button
           hover-class="none"
           :custom-style="customStyleNone"
@@ -266,13 +259,12 @@ export default {
         //用户拒绝
       } else {
         try {
-          let code = storageTool.getWxCode();
-          let sessionKey = storageTool.getSessionKey();
+          let uuid = storageTool.getUUID();
+
           let p = {
-            code: code,
+            uuid: uuid,
             encryptedData: e.detail.encryptedData,
             iv: e.detail.iv,
-            sessionKey: sessionKey,
           };
           console.log(p);
           const res = await postGetPhoneNumberApi(p);
@@ -280,8 +272,9 @@ export default {
           this.loginSuccess(res);
         } catch (error) {
           console.log(error);
+          storageTool.removeUUID();
+
           let title = "[登陆失败，请重新进入小程序]" + error?.msg;
-          storageTool.removeSessionKey();
           console.log(title);
           uni.showToast({
             title: title,
@@ -317,9 +310,11 @@ export default {
         });
         return;
       }
+      let uuid = storageTool.getUUID();
       const res = await loginApi({
         username: this.form.account,
         password: this.form.password,
+        uuid: uuid,
       });
       this.loginSuccess(res);
     },
@@ -349,9 +344,12 @@ export default {
         return;
       }
       //
+      let uuid = storageTool.getUUID();
+      console.log(uuid);
       const res = await loginPhoneApi({
         phone: this.phoneForm.phone,
         code: this.phoneForm.code,
+        uuid: uuid,
       });
       this.loginSuccess(res);
     },
@@ -404,17 +402,6 @@ export default {
       }
     },
 
-    async submitUser() {
-      const that = this;
-      const res = await loginApi({
-        username: that.form.account,
-        password: that.form.password,
-      });
-      storageTool.setToken(res.access_token, res.expires_in);
-      const userInfo = await getUserInfoApi();
-      storageTool.setUserInfo(userInfo);
-      storageTool.goHome();
-    },
     async eye() {
       this.passwordType = !this.passwordType;
     },

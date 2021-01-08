@@ -4,16 +4,14 @@
  * @Author: zyc
  * @Date: 2020-11-10 15:30:00
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-08 11:44:56
+ * @LastEditTime: 2021-01-08 18:07:50
  */
 const tokenKey = 'token';//token的key
 const expiresInKey = 'expires_in';//token的key的过期时间
 const userInfoKey = 'userInfo';//用户信息的key
 const loginUserTypeLogKey = 'loginUserTypeLog';//登录类别记录
 
-const sessionKeyKey = 'sessionKey';
-const openIdKey = 'openId';
-const wxCodeKey = 'wxcode';
+const UUIDKey = "uuid";//微信code换取uuid
 
 const storageTool = {
     /**设置token*/
@@ -89,29 +87,18 @@ const storageTool = {
             url: "/pages/start",
         });
     },
-    /**存储openId*/
-    setOpenId(openId) {
-        uni.setStorageSync(openIdKey, openId);
+
+
+    setUUID(uuid) {
+        uni.setStorageSync(UUIDKey, uuid);
     },
-    getOpenId() {
-        return uni.getStorageSync(openIdKey);
+    getUUID() {
+        return uni.getStorageSync(UUIDKey);
     },
-    /**存储setSessionKey*/
-    setSessionKey(sessionKey) {
-        uni.setStorageSync(sessionKeyKey, sessionKey);
+    removeUUID() {
+        return uni.getStorageSync(UUIDKey);
     },
-    getSessionKey() {
-        return uni.getStorageSync(sessionKeyKey);
-    },
-    removeSessionKey() {
-        return uni.getStorageSync(sessionKeyKey);
-    },
-    getWxCode() {
-        return uni.getStorageSync(wxCodeKey);
-    },
-    setWxCode(code) {
-        uni.setStorageSync(wxCodeKey, code);
-    },
+
 
     /**根据用户类别跳转首页，未登录情况跳转登录页面*/
     goHome(path) {

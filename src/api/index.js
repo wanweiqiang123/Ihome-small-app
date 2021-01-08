@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-10 10:09:50
- * @LastEditors: ywl
- * @LastEditTime: 2021-01-05 15:52:27
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-01-08 18:05:23
  */
 
 import { getApi, postApi } from '../common/http.js';
@@ -48,16 +48,14 @@ export async function testPageApi(data = {
 }
 
 /**登录接口,账号密码*/
-export async function loginApi(data = { username: '', password: '' }, option = {}) {
-    //let url = '/sales-api/sales-oauth2/oauth/token?grant_type=password&client_id=sales-client-dev&client_secret=sales-dev&username=' + data.username + '&password=' + data.password;
-    let url = '/sales-api/sales-oauth2/oauth/token?grant_type=password&username=' + data.username + '&password=' + data.password + '&auth_client=V2VjaGF0QXBwOnNhbGVzITIwMjA='
+export async function loginApi(data = { username: '', password: '', uuid: '' }, option = {}) {
+    let url = '/sales-api/sales-oauth2/oauth/token?grant_type=password&username=' + data.username + '&password=' + data.password + '&auth_client=V2VjaGF0QXBwOnNhbGVzITIwMjA=' + '&uuid=' + data.uuid;
     return await postApi(url, {}, option);
 }
 /**登录接口,手机验证码*/
-export async function loginPhoneApi(data = { phone: '', code: '' }, option = {}) {
+export async function loginPhoneApi(data = { phone: '', code: '', uuid: '' }, option = {}) {
     //验证码登录
-    // /sales-api/oauth/token?grant_type=sms&mobile_phone=18800000001&sms_code=640720&auth_client=UGM6c2FsZXMhMjAyMA==
-    let url = '/sales-api/sales-oauth2/oauth/token?grant_type=sms&mobile_phone=' + data.phone + '&sms_code=' + data.code + '&auth_client=UGM6c2FsZXMhMjAyMA==';
+    let url = '/sales-api/sales-oauth2/oauth/token?grant_type=sms&mobile_phone=' + data.phone + '&sms_code=' + data.code + '&auth_client=UGM6c2FsZXMhMjAyMA==' + '&uuid=' + data.uuid;
     return await postApi(url, {}, option);
 }
 

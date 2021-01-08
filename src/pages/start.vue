@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-30 14:22:01
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-08 14:20:10
+ * @LastEditTime: 2021-01-08 18:09:27
 -->
 <template>
   <view style="padding-top: 100px">
@@ -50,30 +50,7 @@ export default {
   },
   onLoad() {
     let that = this;
-    let openId = storageTool.getOpenId();
-    let sessionKey = storageTool.getSessionKey();
     that.wxLogin();
-    // if (sessionKey) {
-    //   uni.checkSession({
-    //     success() {
-    //       //session_key 未过期，并且在本生命周期一直有效
-    //       console.log("sessionKey有效-启动页", sessionKey);
-
-    //       if (openId && sessionKey) {
-    //         that.requestUserInfo();
-    //       } else {
-    //         that.wxLogin();
-    //       }
-    //     },
-    //     fail() {
-    //       // session_key 已经失效，需要重新执行登录流程
-    //       storageTool.removeSessionKey();
-    //       that.wxLogin();
-    //     },
-    //   });
-    // } else {
-    //   that.wxLogin();
-    // }
   },
 
   methods: {
@@ -82,14 +59,11 @@ export default {
       uni.login({
         success: async function (res) {
           console.log(res);
-          storageTool.setWxCode(res.code);
           getOpenidApi(res.code, {
             hideLoading: true,
           })
             .then((infoRes) => {
-              storageTool.setOpenId(infoRes.openId);
-              storageTool.setSessionKey(infoRes.sessionKey);
-              console.log("sessionKey刷新-启动页", infoRes.sessionKey);
+              storageTool.setUUID(infoRes.uuid);
             })
             .catch((err) => {
               uni.showToast({
