@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-10 15:30:00
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-07 09:06:24
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-01-08 11:44:56
  */
 const tokenKey = 'token';//token的key
 const expiresInKey = 'expires_in';//token的key的过期时间
@@ -101,6 +101,9 @@ const storageTool = {
         uni.setStorageSync(sessionKeyKey, sessionKey);
     },
     getSessionKey() {
+        return uni.getStorageSync(sessionKeyKey);
+    },
+    removeSessionKey() {
         return uni.getStorageSync(sessionKeyKey);
     },
     getWxCode() {

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-29 15:58:19
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-07 10:18:59
+ * @LastEditTime: 2021-01-08 14:21:22
 -->
 <template>
   <view class="page login-page-style">
@@ -134,15 +134,30 @@
           >
         </view>
       </view>
-      <view style="margin-top: 40rpx">
+      <view style="margin-top: 40rpx; text-align: right">
+        <!-- <image
+          @click="otherLogin(true)"
+          style="width: 50rpx; height: 40rpx"
+          src="../../../static/login/wechat-blue.png"
+          mode="scaleToFill"
+          >微信登录</image
+        > -->
         <u-button
           hover-class="none"
-          :custom-style="customStyle"
-          type="primary"
-          shape="circle"
+          :custom-style="customStyleNone"
+          size="mini"
           @click="otherLogin(true)"
-          >微信登录</u-button
+          :plain="true"
+          class="wechat-blue-login"
         >
+          <image
+            style="width: 50rpx; height: 40rpx; padding-right: 10rpx"
+            src="../../../static/login/wechat-blue.png"
+            mode="scaleToFill"
+          >
+            微信登录
+          </image>
+        </u-button>
       </view>
     </view>
     <!-- <view class="register-wrapper">
@@ -206,6 +221,10 @@ export default {
         background: "#fff",
         color: " #4881f9",
       },
+      customStyleNone: {
+        border: "none",
+        color: " #4881f9",
+      },
       loginWechat: true,
       redirect: null, //跳转路径
       codeBtnText: "发送验证码",
@@ -234,12 +253,6 @@ export default {
   onLoad(options) {
     this.redirect = options.redirect || null;
     console.log("this.redirect", this.redirect);
-    uni.login({
-      success: function (res) {
-        // 获取code
-        console.log(res);
-      },
-    });
   },
 
   methods: {
@@ -267,14 +280,16 @@ export default {
           this.loginSuccess(res);
         } catch (error) {
           console.log(error);
+          let title = "[登陆失败，请重新进入小程序]" + error?.msg;
+          storageTool.removeSessionKey();
+          console.log(title);
           uni.showToast({
-            title: "登陆失败",
+            title: title,
+            icon: "none",
+            duration: 3000,
           });
         }
       }
-
-      //              console.log(JSON.stringify(e.encryptedData));
-      //              console.log(JSON.stringify(e.iv));
     },
     activeTab(index) {
       this.current = index;
@@ -509,6 +524,12 @@ export default {
     height: 50rpx;
     position: relative;
     top: 56rpx;
+  }
+  .wechat-blue-login {
+    border: none !important;
+  }
+  .wechat-blue-login button::after {
+    border: none !important;
   }
 }
 </style>
