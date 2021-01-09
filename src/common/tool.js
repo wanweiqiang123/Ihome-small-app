@@ -3,11 +3,22 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-10 15:29:08
- * @LastEditors: ywl
- * @LastEditTime: 2021-01-06 16:33:25
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-01-09 15:57:58
  */
 
 const tool = {
+    /**uni.showToast   icon: "none"
+     * @param {*} title
+     * @return {*}
+     */
+    toast(title) {
+        uni.showToast({
+            title: title,
+            icon: "none",
+            duration: 3000
+        });
+    },
     /**页面返回事件，刷新列表
      * @param {*} options
      * @param {*} config config.page=指定页面（跨多个页面时指定）；config.data=数据；config.type=指定类型
@@ -52,6 +63,7 @@ const tool = {
             }
         }
         return tree;
-    }
+    },
+    
 };
 export default tool;

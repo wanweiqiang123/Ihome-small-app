@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-11-23 11:22:52
- * @LastEditors: ywl
- * @LastEditTime: 2021-01-08 17:40:51
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-01-09 16:08:02
 -->
 <template>
   <StaffTabBar>
@@ -18,8 +18,8 @@
             :src="photo"
           ></u-image>
         </view>
-        <view>{{userInfo.name}}</view>
-        <view>{{userInfo.mobilePhone}}</view>
+        <view>{{ userInfo.name }}</view>
+        <view>{{ userInfo.mobilePhone }}</view>
       </view>
       <view class="person-item-wrapper">
         <u-cell-group>
@@ -39,13 +39,12 @@
       </view>
 
       <view class="btn-container">
-        <u-button
-          shape="circle"
-          type="primary"
-          @click="handleLoginOut"
-        >退出账号</u-button>
+        <u-button shape="circle" type="primary" @click="handleLoginOut"
+          >退出账号</u-button
+        >
       </view>
     </view>
+    <!-- 退出 -->
     <u-action-sheet
       v-model="isShow"
       :list="list"
@@ -53,7 +52,7 @@
       @click="submit"
       safe-area-inset-bottom
     ></u-action-sheet>
-
+    <!-- 切换用户 -->
     <u-action-sheet
       v-model="showSwitchUser"
       :list="switchList"
@@ -67,99 +66,19 @@
 <script>
 import storageTool from "../../common/storageTool";
 import { userSwitchApi, getUserInfoApi } from "../../api/index";
+import switchUser from "../../mixins/switchUser";
 export default {
+  mixins: [switchUser],
   name: "personal-tab",
   data() {
     return {
-      userSwitchShow: false,
-      userTypeList: [],
-      isShow: false,
-      tips: {
-        text: "确定要退出当前账号？",
-        color: "#909399",
-      },
-      list: [
-        {
-          text: "退出登录",
-          color: "#fa3534",
-          fontSize: 28,
-        },
-      ],
-
-      showSwitchUser: false,
-      switchUseTips: {
-        text: "请选择需要切换的用户",
-        color: "#000",
-      },
-      switchList: [],
       userInfo: {},
       photo: require("@/static/img/photo.png"),
     };
   },
-  methods: {
-    // 退出登录
-    handleLoginOut() {
-      this.isShow = true;
-    },
-    submit(index) {
-      switch (index) {
-        case 0:
-          storageTool.loginOut();
-          break;
-      }
-    },
-    async submitSwitchUser(index) {
-      let item = this.switchList[index];
-      console.log(index, item);
-      const res = await userSwitchApi({
-        change_type: item.loginUserType,
-        access_token: storageTool.getToken(),
-      });
-      console.log(res);
-
-      storageTool.setToken(res.access_token, res.expires_in);
-      const userInfo = await getUserInfoApi();
-      storageTool.setUserInfo(userInfo);
-      uni.showToast({
-        title: "切换成功",
-      });
-      setTimeout(() => {
-        storageTool.goHome();
-      }, 500);
-    },
-    userSwitchClick() {
-      let userInfo = storageTool.getUserInfo();
-      let userTypeList = userInfo?.userTypeList || [];
-      console.log(userTypeList);
-      if (userTypeList && userTypeList.length > 0) {
-        this.switchList = [];
-        for (let index = 0; index < userTypeList.length; index++) {
-          const element = userTypeList[index];
-          let color =
-            userInfo.loginUserType == element.userType ? "#4881f9" : "#666";
-          let userTypeName =
-            userInfo.loginUserType == element.userType
-              ? element.userTypeName + " √"
-              : element.userTypeName;
-          this.switchList.push({
-            text: userTypeName,
-            color: color,
-            fontSize: 28,
-            loginUserType: element.userType,
-          });
-        }
-
-        this.showSwitchUser = true;
-      } else {
-        uni.showToast({
-          title: "暂无用户可切换",
-          icon: "none",
-        });
-      }
-    },
-  },
+  methods: {},
   onShow() {
-    this.userInfo = uni.getStorageSync("userInfo");
+    this.userInfo = storageTool.getUserInfo();
   },
 };
 </script>

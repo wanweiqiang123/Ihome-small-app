@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-29 15:58:19
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-08 18:06:37
+ * @LastEditTime: 2021-01-09 15:26:41
 -->
 <template>
   <view class="page login-page-style">
@@ -134,7 +134,18 @@
           >
         </view>
       </view>
-      <view style="margin-top: 40rpx; text-align: right">
+      <view style="margin-top: 40rpx; text-align: right" class="view-bottom">
+        <u-button
+          hover-class="none"
+          :custom-style="customStyleNone"
+          size="mini"
+          @click="goResetPassword()"
+          :plain="true"
+          class="wechat-blue-login password-reset"
+        >
+          忘记密码
+        </u-button>
+
         <u-button
           hover-class="none"
           :custom-style="customStyleNone"
@@ -205,7 +216,7 @@ import {
   postGetPhoneNumberApi,
 } from "../../../api/index";
 import storageTool from "../../../common/storageTool";
-
+import tool from "../../../common/tool";
 export default {
   data() {
     return {
@@ -276,11 +287,8 @@ export default {
 
           let title = "[登陆失败，请重新进入小程序]" + error?.msg;
           console.log(title);
-          uni.showToast({
-            title: title,
-            icon: "none",
-            duration: 3000,
-          });
+
+          tool.toast(title);
         }
       }
     },
@@ -296,18 +304,12 @@ export default {
 
       if (this.form.account && this.form.account.length > 0) {
       } else {
-        uni.showToast({
-          title: "账号必填",
-          icon: "none",
-        });
+        tool.toast("账号必填");
         return;
       }
       if (this.form.password && this.form.password.length > 0) {
       } else {
-        uni.showToast({
-          title: "密码必填",
-          icon: "none",
-        });
+        tool.toast("密码必填");
         return;
       }
       let uuid = storageTool.getUUID();
@@ -329,18 +331,12 @@ export default {
       console.log(this.phoneForm);
       if (this.phoneForm.phone && this.phoneForm.phone.length > 0) {
       } else {
-        uni.showToast({
-          title: "手机号码必填",
-          icon: "none",
-        });
+        tool.toast("手机号码必填");
         return;
       }
       if (this.phoneForm.code && this.phoneForm.code.length > 0) {
       } else {
-        uni.showToast({
-          title: "验证码必填",
-          icon: "none",
-        });
+        tool.toast("验证码必填");
         return;
       }
       //
@@ -357,24 +353,13 @@ export default {
       console.log("sendCode");
       //发送验证码
       if (this.phoneForm.phone == "") {
-        uni.showToast({
-          title: "请选输入手机号码",
-          icon: "none",
-        });
+        tool.toast("请选输入手机号码");
         return;
       }
       if (this.checkPhone(this.phoneForm.phone)) {
         const res = await getSessionUserSendSmsApi(this.phoneForm.phone);
         console.log(res);
-        uni.showToast({
-          title: res,
-          icon: "none",
-          duration: 3000,
-        });
-        // uni.showToast({
-        //   title: "发送成功",
-        //   icon: "none",
-        // });
+        tool.toast(res);
         //倒计时
         let timer = setInterval(() => {
           this.second--;
@@ -386,10 +371,7 @@ export default {
           }
         }, 1000);
       } else {
-        uni.showToast({
-          title: "手机号码格式有误",
-          icon: "none",
-        });
+        tool.toast("手机号码格式有误");
       }
     },
     //检查手机号码格式
@@ -407,8 +389,13 @@ export default {
     },
     // 渠道商注册
     handleRegister() {
-      uni.redirectTo({
+      uni.navigateTo({
         url: "/pages/register/channel",
+      });
+    },
+    goResetPassword() {
+      uni.navigateTo({
+        url: "/pages/login/resetPassword/index",
       });
     },
   },
@@ -512,11 +499,20 @@ export default {
     position: relative;
     top: 56rpx;
   }
-  .wechat-blue-login {
-    border: none !important;
-  }
+
   .wechat-blue-login button::after {
     border: none !important;
+  }
+  .view-bottom {
+    display: flex;
+  }
+  .wechat-blue-login {
+    border: none !important;
+    flex: 1;
+  }
+  .password-reset {
+    text-align: left;
+    flex: 1;
   }
 }
 </style>

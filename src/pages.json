@@ -26,6 +26,16 @@
 			}
 		},
 		{
+			"path": "pages/login/resetPassword/index",
+			"style": {
+				"navigationBarTitleText": "找回密码",
+				"app-plus": {
+					"titleNView": false
+				},
+				"navigationBarBackgroundColor": "#fff"
+			}
+		},
+		{
 			"path": "pages/customer/index/index",
 			"style": {
 				"navigationBarTitleText": "客户",

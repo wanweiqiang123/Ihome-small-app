@@ -4,22 +4,15 @@
  * @Author: zyc
  * @Date: 2020-11-10 10:17:55
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-31 10:24:03
+ * @LastEditTime: 2021-01-09 15:15:34
  */
-
 import storageTool from './storageTool'
+import tool from './tool'
 import { baseUrl } from '../env-config'
 
 console.log(baseUrl);
 // const baseUrl = 'http://api.polyihome.develop';
 
-const showToast = (title) => {
-    uni.showToast({
-        title: title,
-        icon: 'none',
-        duration: 3000
-    })
-}
 
 /**请求接口
  * @method http
@@ -57,7 +50,7 @@ const api = (url, data = {}, option = {}) => {
                 if (!hideLoading) uni.hideLoading();
             },
             success: res => { // 服务器成功返回的回调函数
- 
+
                 if (res.statusCode === 200) {
                     let result = res.data;
                     // if (url.startsWith('/sales-api/sales-oauth2/oauth/token') || url.startsWith('/sales-oauth2/oauth/token')) {
@@ -69,14 +62,15 @@ const api = (url, data = {}, option = {}) => {
                         return
                     } else {
                         if (!hideMsg) {
-                            showToast(result.msg);
+                            tool.toast(result.msg);
                         }
                         reject(result);
                     }
 
                 } else { // 返回值非 200，强制显示提示信息
                     if (!hideMsg) {
-                        showToast('[' + res.statusCode + '] 系统处理失败')
+
+                        tool.toast('[' + res.statusCode + '] 系统处理失败');
                     }
 
                     reject(res)
@@ -84,14 +78,15 @@ const api = (url, data = {}, option = {}) => {
             },
             fail: (err) => { // 接口调用失败的回调函数
                 console.log(err.errMsg);
-               
+
                 if (err.errMsg == 'request:fail url not in domain list') {
-                    showToast('服务器域名未配置');
+                    tool.toast('服务器域名未配置');
                 } else if (err.errMsg.includes('CONNECTION_TIMED_OUT')) {
-                    showToast('网络连接超时');
+
+                    tool.toast('网络连接超时');
                 }
                 else {
-                    showToast("网络异常：" + err.errMsg);
+                    tool.toast("网络异常：" + err.errMsg);
                 }
                 reject(err.errMsg);
 
