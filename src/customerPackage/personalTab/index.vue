@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-12 10:17:34
- * @LastEditors: ywl
- * @LastEditTime: 2021-01-08 17:41:18
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-09 17:31:07
 -->
 <template>
   <CustomerTabBar>
@@ -18,9 +18,20 @@
             :src="photo"
           ></u-image>
         </view>
-        <view>{{userInfo.name}}</view>
-        <view>{{userInfo.mobilePhone}}</view>
+        <view>{{ userInfo.name }}</view>
+        <view>{{ userInfo.mobilePhone }}</view>
       </view>
+      <view class="person-item-wrapper">
+        <u-cell-group>
+          <u-cell-item
+            @click="userSwitchClick()"
+            icon="account"
+            title="切换用户"
+            :arrow="true"
+          ></u-cell-item>
+        </u-cell-group>
+      </view>
+
       <view class="btn-container">
         <u-button
           shape="circle"
@@ -29,6 +40,7 @@
         >退出账号</u-button>
       </view>
     </view>
+    <!-- 退出 -->
     <u-action-sheet
       v-model="isShow"
       :list="list"
@@ -36,45 +48,32 @@
       @click="submit"
       safe-area-inset-bottom
     ></u-action-sheet>
+    <!-- 切换用户 -->
+    <u-action-sheet
+      v-model="showSwitchUser"
+      :list="switchList"
+      :tips="switchUseTips"
+      @click="submitSwitchUser"
+      safe-area-inset-bottom
+    ></u-action-sheet>
   </CustomerTabBar>
 </template>
 
 <script>
+import storageTool from "../../common/storageTool";
+import switchUser from "../../mixins/switchUser";
 export default {
   name: "personal-tab",
+  mixins: [switchUser],
   data() {
     return {
       isShow: false,
-      tips: {
-        text: "确定要退出当前账号？",
-        color: "#909399",
-      },
-      list: [
-        {
-          text: "退出登录",
-          color: "#fa3534",
-          fontSize: 28,
-        },
-      ],
       userInfo: {},
       photo: require("@/static/img/photo.png"),
     };
   },
   onShow() {
-    this.userInfo = uni.getStorageSync("userInfo");
-  },
-  methods: {
-    // 退出登录
-    handleLoginOut() {
-      this.isShow = true;
-    },
-    submit(index) {
-      switch (index) {
-        case 0:
-          this.$storageTool.loginOut();
-          break;
-      }
-    },
+    this.userInfo = storageTool.getUserInfo();
   },
 };
 </script>
@@ -105,10 +104,16 @@ export default {
       margin-bottom: 8rpx;
     }
   }
+  .person-item-wrapper {
+    width: 90%;
+    box-sizing: border-box;
+    margin-top: -50rpx;
+    background: #fff;
+  }
 
   .btn-container {
     width: 90%;
-    margin-top: 50rpx;
+    margin-top: 100rpx;
   }
 }
 </style>
