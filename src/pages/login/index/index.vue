@@ -164,9 +164,6 @@
         </u-button>
       </view>
     </view>
-    <!-- <view class="register-wrapper">
-      <u-button shape="circle" @click="handleRegister">渠道商注册</u-button>
-    </view> -->
     <view
       class="register-wrapper"
       v-show="loginWechat"
@@ -196,7 +193,9 @@
         >其他登录方式</u-button
       >
     </view>
-
+    <view class="register-wrapper">
+      <u-button shape="circle" @click="handleRegister">渠道商注册</u-button>
+    </view>
     <view class="img-bottom">
       <image
         style="width: 100%"
