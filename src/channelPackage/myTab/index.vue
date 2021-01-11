@@ -45,7 +45,7 @@
         </view>
         <u-gap height="20" bg-color="#F1F1F1"></u-gap>
         <view class="my-item-wrapper">
-          <view class="my-item" v-for="item in myBuyList" :key="item.id" @click="goToItem(item)">
+          <view class="my-item" v-for="item in myBuyList" :key="item.id" @click="userSwitchClick">
             <view class="item-icon">
               <u-image width="40rpx" height="40rpx" :src="item.icon"></u-image>
             </view>
@@ -74,12 +74,22 @@
         <view @click="handleSubmit">确定</view>
       </view>
     </u-popup>
+    <!-- 切换用户 -->
+    <u-action-sheet
+      v-model="showSwitchUser"
+      :list="switchList"
+      :tips="switchUseTips"
+      @click="submitSwitchUser"
+      safe-area-inset-bottom
+    ></u-action-sheet>
   </ChannelTabBar>
 </template>
 
 <script>
 import storageTool from "@/common/storageTool";
+import switchUser from "@/mixins/switchUser";
 export default {
+  mixins: [switchUser],
   data() {
     return {
       myAvatar: require('@/channelPackage/common/icon/avatar.png'),
@@ -142,11 +152,17 @@ export default {
         },
       ],
       myBuyList: [
+        // {
+        //   id: 1,
+        //   icon: require('@/channelPackage/common/icon/myHouse.png'),
+        //   name: '我的购房信息',
+        //   url: '/customerPackage/homeTab/index'
+        // },
         {
-          id: 1,
+          id: 2,
           icon: require('@/channelPackage/common/icon/myHouse.png'),
-          name: '我的购房信息',
-          url: '/customerPackage/homeTab/index'
+          name: '切换用户',
+          url: ''
         }
       ],
       showPopup: false,
