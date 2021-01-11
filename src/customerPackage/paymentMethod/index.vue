@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-07 20:11:15
+ * @LastEditTime: 2021-01-11 17:12:42
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
@@ -161,7 +161,7 @@ export default {
       obj.businessId = this.payData.businessId;
       obj.businessCode = this.payData.businessCode;
       obj.groupId = this.payData.groupId;
-      obj.operator = this.payData.operator;
+      obj.operator = this.payData.agentId;
       obj.payType = this.payType;
       obj.payer = "Customer";
       obj.proId = this.payData.projectId;
