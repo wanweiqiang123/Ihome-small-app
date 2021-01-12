@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-29 15:58:19
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-12 10:15:20
+ * @LastEditTime: 2021-01-12 15:36:25
 -->
 <template>
   <view class="page login-page-style">
@@ -124,19 +124,23 @@ export default {
         smsCode: this.phoneForm.code,
         smsCodeType: "RestPassword",
       };
-      await postSessionUserCheckSmsApi(p);
-      uni.showToast({
-        title: "验证成功",
-      });
-      let url =
-        "/pages/login/resetPassword/second?phone=" +
-        this.phoneForm.phone +
-        "&code=" +
-        this.phoneForm.code;
-      console.log(url);
-      uni.navigateTo({
-        url: url,
-      });
+      const res = await postSessionUserCheckSmsApi(p);
+      if (res) {
+        uni.showToast({
+          title: "验证成功",
+        });
+        let url =
+          "/pages/login/resetPassword/second?phone=" +
+          this.phoneForm.phone +
+          "&code=" +
+          this.phoneForm.code;
+        console.log(url);
+        uni.navigateTo({
+          url: url,
+        });
+      } else {
+        tool.toast("验证码有误");
+      }
     },
     async sendCode() {
       console.log("sendCode");

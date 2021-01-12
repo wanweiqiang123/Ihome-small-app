@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-05 09:44:36
+ * @LastEditTime: 2021-01-12 12:06:13
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -201,7 +201,7 @@
         </view>
       </view>
     </view>
-    <view>
+    <!-- <view>
       <u-modal
         v-model="show"
         @confirm="confirm(info.discountInformationResponseVo)"
@@ -211,11 +211,11 @@
         show-confirm-button
         :show-cancel-button="true"
         confirm-text="继续支付"
-        cancel-text="重新创建"
+        cancel-text="取消"
         :content="content"
       >
       </u-modal>
-    </view>
+    </view> -->
   </view>
 </template>
 <script>
@@ -242,10 +242,10 @@ export default {
       current: 0,
       currents: 0,
       noticeId: "",
-      show: false,
+      // show: false,
       payAuditNum: 0,
-      content:
-        "您上次还有一笔待付款单未完成支付，您可以选择前往继续支付，也可以选择创建一笔新的付款。",
+      // content:
+      //   "您上次还有一笔待付款单未完成支付，您可以选择前往继续支付，也可以选择创建一笔新的付款。",
       Property: [],
       NotificationType: [],
       NotificationStatus: [],
@@ -292,43 +292,35 @@ export default {
       }
     },
     async gotoPay(obj) {
-      const res = await getBusinessIdApi(this.noticeId);
-      if (res) {
-        this.show = true;
-      } else {
-        getApp().paidData = {
-          ...obj,
-          businessId: this.noticeId,
-          businessCode: this.info.noticeNo,
-        };
-        uni.navigateTo({
-          url: `/customerPackage/paymentMethod/index`,
-        });
-      }
-    },
-    confirm(obj) {
       getApp().paidData = {
         ...obj,
         businessId: this.noticeId,
         businessCode: this.info.noticeNo,
       };
-      uni.navigateTo({
-        url: `/customerPackage/unpaid/index`,
-      });
+      const res = await getBusinessIdApi(this.noticeId);
+      if (res) {
+        uni.navigateTo({
+          url: `/customerPackage/paymentMethod/index?id=${res}&&type=update`,
+        });
+      } else {
+        uni.navigateTo({
+          url: `/customerPackage/paymentMethod/index?type=add`,
+        });
+      }
     },
-    async cancel() {
-      await postDeleteByBusinessIdApi({
-        businessId: this.noticeId,
-      });
-      getApp().paidData = {
-        ...this.info.discountInformationResponseVo,
-        businessId: this.noticeId,
-        businessCode: this.info.noticeNo,
-      };
-      uni.navigateTo({
-        url: `/customerPackage/paymentMethod/index`,
-      });
-    },
+    // confirm(obj) {
+    //   getApp().paidData = {
+    //     ...obj,
+    //     businessId: this.noticeId,
+    //     businessCode: this.info.noticeNo,
+    //   };
+    //   uni.navigateTo({
+    //     url: `/customerPackage/unpaid/index`,
+    //   });
+    // },
+    // async cancel() {
+    //   this.show = false;
+    // },
     change(e) {
       this.current = e.detail.current;
     },

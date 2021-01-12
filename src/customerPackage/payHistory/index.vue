@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-25 11:40:27
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-05 16:56:36
+ * @LastEditTime: 2021-01-12 16:14:23
 -->
 <template>
   <view class="box">
@@ -15,11 +15,12 @@
     >
       <view class="box-item-title">
         <view style="font-weight: bold;">付款金额：{{item.amount}}</view>
-        <view>
+        <view v-if="item.payType !== 'Transfer'">
           <u-button
             type="primary"
             size="mini"
-            @click="downLoad(item.id)"
+            :loading="loading"
+            @click="downLoad(item.attachments[0].fileId)"
           >下载电子回单</u-button>
         </view>
       </view>
@@ -31,8 +32,8 @@
           <view class="box-item-msg-title">付款方式
             <text class="box-item-msg-detail">{{getDictName(item.payType, PayType)}}</text>
           </view>
-          <view class="box-item-msg-title">付款时间
-            <text class="box-item-msg-detail">{{item.payDate}}</text>
+          <view class="box-item-msg-title">支付时间
+            <text class="box-item-msg-detail">{{item.payTime}}</text>
           </view>
         </view>
       </view>
@@ -48,6 +49,7 @@
 <script>
 import { getAppListApi } from "../../api/customer";
 import { getAllByTypeApi } from "../../api/index";
+import { currentEnvConfig } from "../../env-config.js";
 export default {
   components: {},
   data() {
@@ -55,6 +57,8 @@ export default {
       payId: "",
       info: [],
       PayType: [],
+      loading: false,
+      codeUrl: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/download/`,
     };
   },
   onLoad(options) {
@@ -81,9 +85,20 @@ export default {
       this.info = await getAppListApi(this.payId);
     },
     downLoad(id) {
-      uni.showToast({
-        title: "接口未提供",
-        icon: "none",
+      this.loading = true;
+      uni.downloadFile({
+        url: `${this.codeUrl}${id}`,
+        success: (res) => {
+          let filePath = res.tempFilePath;
+          console.log(filePath);
+          uni.saveImageToPhotosAlbum({
+            filePath: filePath,
+            success: () => {
+              this.$tool.toast("保存成功");
+              this.loading = false;
+            },
+          });
+        },
       });
     },
   },
