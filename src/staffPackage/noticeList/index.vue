@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-12 12:04:14
+ * @LastEditTime: 2021-01-12 18:15:53
 -->
 <template>
   <LoginPage>
@@ -246,7 +246,7 @@ export default {
           // 客户待支付
         } else {
           uni.navigateTo({
-            url: `/staffPackage/noticePreview/index?id=${item.id}&tId=${item.templateId}&type=${item.notificationType}`,
+            url: `/staffPackage/noticePreview/index?id=${item.id}&tId=${item.templateId}&type=${item.notificationType}&sign=${item.notificationStatus}`,
           });
         }
       }

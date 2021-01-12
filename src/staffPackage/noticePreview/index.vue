@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-04 11:20:06
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-12 14:34:08
+ * @LastEditTime: 2021-01-12 18:17:42
 -->
 <template>
   <LoginPage>
@@ -88,7 +88,7 @@ export default {
       },
       share: {
         title: "居恒小程序", //不设置为主体名称
-        path: `/staffPackage/noticePreview/index`, //不设置为转发时的路径
+        path: `/customerPackage/notification/index`, //不设置为转发时的路径
         imageUrl: "/static/logo.png", //不设置为转发时页面截图
       },
     };
@@ -134,7 +134,11 @@ export default {
     this.option = option;
     this.share = {
       title: "居恒小程序", //不设置为主体名称
-      path: `/staffPackage/noticePreview/index?id=${option.id}&tId=${option.tId}&type=${option.type}`, //不设置为转发时的路径
+      path: `/customerPackage/notification/index?id=${option.id}&templateId=${
+        option.tId
+      }&notificationType=${option.type}&type=${
+        option.sign === "WaitBeSigned" ? "sign" : "view"
+      }`, //不设置为转发时的路径
       imageUrl: "/static/logo.png", //不设置为转发时页面截图
     };
     this.pdf2Pic(option.tId);
