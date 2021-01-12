@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 15:28:17
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-12 15:42:45
+ * @LastEditTime: 2021-01-12 17:42:29
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
@@ -140,11 +140,11 @@ export default {
     },
     async submitMsg() {
       let obj = {};
-      obj.amount = this.payNum;
+      obj.amount = Number(this.payNum);
       obj.businessId = this.payData.businessId;
       obj.businessCode = this.payData.businessCode;
       obj.groupId = this.payData.groupId;
-      obj.operator = this.payData.operator;
+      obj.operator = this.payData.agentId;
       obj.payType = "Transfer";
       obj.payer = "Customer";
       obj.proId = this.payData.projectId;

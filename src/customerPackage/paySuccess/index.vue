@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-16 14:21:01
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-21 15:16:58
+ * @LastEditTime: 2021-01-12 17:59:27
 -->
 <template>
   <view class="success">
@@ -21,20 +21,40 @@
       <u-button
         shape="square"
         @click="goback"
-      >返回
+      >{{tips}}
       </u-button>
+      <u-verification-code
+        :seconds="5"
+        @end="goback"
+        ref="uCode"
+        @change="codeChange"
+        unique-key="paySuccess"
+        change-text="返回 (x)"
+        start-text="返回"
+        end-text="返回"
+      ></u-verification-code>
     </view>
   </view>
 </template>
 <script>
 export default {
   data() {
-    return {};
+    return {
+      payId: "",
+      tips: "",
+    };
   },
   methods: {
+    onLoad(options) {
+      this.payId = options.id;
+      this.$refs.uCode.start();
+    },
+    codeChange(text) {
+      this.tips = text;
+    },
     goback() {
-      uni.navigateTo({
-        url: `/customerPackage/homeTab/index`,
+      uni.reLaunch({
+        url: `/customerPackage/discountsInfo/index?id=${this.payId}`,
       });
     },
   },

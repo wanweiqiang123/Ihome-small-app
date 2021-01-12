@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 15:26:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-05 16:56:14
+ * @LastEditTime: 2021-01-12 17:35:10
 -->
 <template>
   <view class="box">
@@ -56,11 +56,13 @@ export default {
       const item = await getPayStatusApi(this.payId, {
         hideLoading: true,
       });
-      if (item === "Paid") {
-        uni.navigateTo({
-          url: `/customerPackage/paySuccess/index`,
-        });
-        clearInterval(this.timer);
+      switch (item.status) {
+        case "Paid":
+          uni.navigateTo({
+            url: `/customerPackage/paySuccess/index?id=${item.businessId}`,
+          });
+          clearInterval(this.timer);
+          break;
       }
     },
   },
