@@ -4,14 +4,14 @@
  * @Author: ywl
  * @Date: 2020-11-17 11:22:20
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-05 14:49:49
+ * @LastEditTime: 2021-01-12 16:18:57
 -->
 <template>
   <u-popup
     :value="value"
     mode="right"
-    :width="wdithCom"
-    :mask="maskCom"
+    :width="width"
+    :mask="mask"
     close-icon-pos="top-left"
     closeable
     safe-area-inset-bottom

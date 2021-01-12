@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:53:18
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-11 11:38:31
+ * @LastEditTime: 2021-01-12 15:11:54
 -->
 <template>
   <view>
@@ -27,8 +27,8 @@ let tablePage = [
     iconPath: require("@/staffPackage/common/icon/tabicon/home.png"),
     selectedIconPath: require("@/staffPackage/common/icon/tabicon/homeactive.png"),
     text: "主页",
-    count: 2,
-    isDot: true,
+    // count: 2,
+    // isDot: true,
     customIcon: false,
   },
   {
@@ -43,8 +43,8 @@ let tablePage = [
     iconPath: require("@/staffPackage/common/icon/tabicon/me.png"),
     selectedIconPath: require("@/staffPackage/common/icon/tabicon/meactive.png"),
     text: "个人中心",
-    count: 23,
-    isDot: false,
+    // count: 23,
+    // isDot: false,
     customIcon: false,
   },
 ];
