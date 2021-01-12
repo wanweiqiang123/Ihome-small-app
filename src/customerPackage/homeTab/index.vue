@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-12 17:44:23
+ * @LastEditTime: 2021-01-12 18:07:39
 -->
 <template>
   <view :class="{ 'box-height': !info.length }">
@@ -86,12 +86,12 @@ export default {
       });
     },
     routerTo(id) {
-      // uni.navigateTo({
-      //   url: `/customerPackage/discountsInfo/index?id=${id}`,
-      // });
       uni.navigateTo({
-        url: `/customerPackage/paySuccess/index?id=${id}`,
+        url: `/customerPackage/discountsInfo/index?id=${id}`,
       });
+      // uni.navigateTo({
+      //   url: `/customerPackage/paySuccess/index?id=${id}`,
+      // });
     },
     // 字典翻译
     async getDictAll(type) {

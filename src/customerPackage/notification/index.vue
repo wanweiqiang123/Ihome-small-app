@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-30 10:23:11
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-12 08:42:15
+ * @LastEditTime: 2021-01-12 18:12:56
 -->
 <template>
   <view>
@@ -53,20 +53,25 @@ export default {
       disabled: true,
       type: "",
       NotificationType: [],
+      notificationType: "",
     };
   },
-  async onLoad() {
-    this.templateId = getApp().noticeInfo.templateId;
-    this.noticeId = getApp().noticeInfo.id;
-    this.type = getApp().noticeInfo.type;
+  async onLoad(options) {
+    if (options.id) {
+      this.templateId = options.templateId;
+      this.noticeId = options.noticeId;
+      this.type = options.type;
+      this.notificationType = options.notificationType;
+    } else {
+      this.templateId = getApp().noticeInfo.templateId;
+      this.noticeId = getApp().noticeInfo.id;
+      this.type = getApp().noticeInfo.type;
+      this.notificationType = getApp().noticeInfo.notificationType;
+    }
     this.NotificationType = await this.getDictAll("NotificationType");
     uni.setNavigationBarTitle({
-      title: this.getDictName(
-        getApp().noticeInfo.notificationType,
-        this.NotificationType
-      ),
+      title: this.getDictName(this.notificationType, this.NotificationType),
     });
-    getApp().noticeInfo;
     if (this.type === "sign") this.$refs.uCode.start();
     const res = await getPdf2PicApi(this.templateId);
     this.src = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${res.fileId}`;
@@ -108,7 +113,7 @@ export default {
           ownerCertificateNo: res.certificationResponseVO.ownerCertificateNo,
           noticeId: this.noticeId,
           templateId: this.templateId,
-          notificationType: getApp().noticeInfo.notificationType,
+          notificationType: this.notificationType,
         };
         uni.navigateTo({
           url: `/customerPackage/attestation/index`,
