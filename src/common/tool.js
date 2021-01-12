@@ -8,7 +8,7 @@
  */
 
 const tool = {
-    /**uni.showToast   icon: "none"
+    /**弹出提示 uni.showToast   icon: "none"
      * @param {*} title
      * @return {*}
      */
