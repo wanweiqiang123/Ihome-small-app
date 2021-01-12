@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 10:09:50
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-08 18:05:23
+ * @LastEditTime: 2021-01-12 10:22:10
  */
 
 import { getApi, postApi } from '../common/http.js';
@@ -54,7 +54,6 @@ export async function loginApi(data = { username: '', password: '', uuid: '' }, 
 }
 /**登录接口,手机验证码*/
 export async function loginPhoneApi(data = { phone: '', code: '', uuid: '' }, option = {}) {
-    //验证码登录
     let url = '/sales-api/sales-oauth2/oauth/token?grant_type=sms&mobile_phone=' + data.phone + '&sms_code=' + data.code + '&auth_client=UGM6c2FsZXMhMjAyMA==' + '&uuid=' + data.uuid;
     return await postApi(url, {}, option);
 }
@@ -112,10 +111,22 @@ export async function getSystemParamApi(data = {}, option = {}) {
     return await getApi('/sales-api/system/sessionUser/getSystemParam', data, option);
 }
 
-/**发送手机验证码，用于登录*/
-export async function getSessionUserSendSmsApi(mobilePhone, option = {}) {
-    return await getApi('/sales-api/system/sessionUser/sendSms/' + mobilePhone, {}, option);
+/**发送手机验证码，枚举：Login, Register, RegisterAndLogin, RestPassword*/
+export async function postSessionUserSendSmsApi(data = {}, option = {}) {
+    return await postApi('/sales-api/system/sessionUser/sendSms', data, option);
 }
+/**验证短信验证码，枚举：Login, Register, RegisterAndLogin, RestPassword*/
+export async function postSessionUserCheckSmsApi(data = {}, option = {}) {
+    return await postApi('/sales-api/system/sessionUser/checkSms', data, option);
+}
+/** 重新设置密码*/
+export async function postSessionUserGetBackPasswordApi(data = {}, option = {}) {
+    return await postApi('/sales-api/system/sessionUser/getBackPassword', data, option);
+}
+
+
+
+
 
 /**测试接口睡眠时间*/
 export async function getTestApi(time = 2000) {

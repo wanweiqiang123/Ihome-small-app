@@ -26,9 +26,19 @@
 			}
 		},
 		{
-			"path": "pages/login/resetPassword/index",
+			"path": "pages/login/resetPassword/first",
 			"style": {
 				"navigationBarTitleText": "找回密码",
+				"app-plus": {
+					"titleNView": false
+				},
+				"navigationBarBackgroundColor": "#fff"
+			}
+		},
+		{
+			"path": "pages/login/resetPassword/second",
+			"style": {
+				"navigationBarTitleText": "重置密码",
 				"app-plus": {
 					"titleNView": false
 				},

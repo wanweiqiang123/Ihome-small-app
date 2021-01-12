@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-29 15:58:19
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-09 15:26:41
+ * @LastEditTime: 2021-01-12 11:42:18
 -->
 <template>
   <view class="page login-page-style">
@@ -150,6 +150,16 @@
           hover-class="none"
           :custom-style="customStyleNone"
           size="mini"
+          :plain="true"
+          class="wechat-blue-login password-reset"
+          @click="handleRegister"
+          >渠道商注册</u-button
+        >
+
+        <u-button
+          hover-class="none"
+          :custom-style="customStyleNone"
+          size="mini"
           @click="otherLogin(true)"
           :plain="true"
           class="wechat-blue-login"
@@ -193,9 +203,9 @@
         >其他登录方式</u-button
       >
     </view>
-    <view class="register-wrapper">
+    <!-- <view class="register-wrapper">
       <u-button shape="circle" @click="handleRegister">渠道商注册</u-button>
-    </view>
+    </view> -->
     <view class="img-bottom">
       <image
         style="width: 100%"
@@ -211,7 +221,7 @@ import {
   loginApi,
   loginPhoneApi,
   getUserInfoApi,
-  getSessionUserSendSmsApi,
+  postSessionUserSendSmsApi,
   postGetPhoneNumberApi,
 } from "../../../api/index";
 import storageTool from "../../../common/storageTool";
@@ -241,7 +251,7 @@ export default {
           name: "账号密码登录",
         },
       ],
-      current: 1,
+      current: 0,
       show: false,
       form: {
         account: "",
@@ -283,10 +293,8 @@ export default {
         } catch (error) {
           console.log(error);
           storageTool.removeUUID();
-
-          let title = "[登陆失败，请重新进入小程序]" + error?.msg;
+          let title = error?.msg||'登录失败!请重新进入小程序';
           console.log(title);
-
           tool.toast(title);
         }
       }
@@ -356,7 +364,11 @@ export default {
         return;
       }
       if (this.checkPhone(this.phoneForm.phone)) {
-        const res = await getSessionUserSendSmsApi(this.phoneForm.phone);
+        let p = {
+          mobilePhone: this.phoneForm.phone,
+          smsCodeType: "Login",
+        };
+        const res = await postSessionUserSendSmsApi(p);
         console.log(res);
         tool.toast(res);
         //倒计时
@@ -394,7 +406,7 @@ export default {
     },
     goResetPassword() {
       uni.navigateTo({
-        url: "/pages/login/resetPassword/index",
+        url: "/pages/login/resetPassword/first",
       });
     },
   },
@@ -504,6 +516,9 @@ export default {
   }
   .view-bottom {
     display: flex;
+  }
+  .view-bottom button {
+    background: rgba(255, 255, 255, 0);
   }
   .wechat-blue-login {
     border: none !important;

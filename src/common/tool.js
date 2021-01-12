@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 15:29:08
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-09 15:57:58
+ * @LastEditTime: 2021-01-12 11:49:28
  */
 
 const tool = {
@@ -12,12 +12,18 @@ const tool = {
      * @param {*} title
      * @return {*}
      */
-    toast(title) {
-        uni.showToast({
-            title: title,
-            icon: "none",
-            duration: 3000
-        });
+    toast(titleOrObj) {
+        if (typeof titleOrObj == 'string') {
+            uni.showToast({
+                title: title,
+                icon: "none",
+                duration: 3000
+            });
+        } else {
+            titleOrObj.duration = 3000;
+            uni.showToast(titleOrObj);
+        }
+
     },
     /**页面返回事件，刷新列表
      * @param {*} options
@@ -64,6 +70,6 @@ const tool = {
         }
         return tree;
     },
-    
+
 };
 export default tool;
