@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 15:29:08
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-12 11:49:28
+ * @LastEditTime: 2021-01-12 14:13:30
  */
 
 const tool = {
@@ -15,7 +15,7 @@ const tool = {
     toast(titleOrObj) {
         if (typeof titleOrObj == 'string') {
             uni.showToast({
-                title: title,
+                title: titleOrObj,
                 icon: "none",
                 duration: 3000
             });
