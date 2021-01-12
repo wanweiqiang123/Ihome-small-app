@@ -4,133 +4,135 @@
  * @Author: ywl
  * @Date: 2020-11-23 17:32:25
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-12 12:03:34
+ * @LastEditTime: 2021-01-12 14:36:04
 -->
 <template>
-  <view class="notice">
-    <view class="notice-info">
-      <view class="title u-border-bottom">
-        <u-image
-          width="80rpx"
-          height="80rpx"
-          src="http://pics.sc.chinaz.com/files/pic/pic9/201912/hpic1886.jpg"
+  <LoginPage>
+    <view class="notice">
+      <view class="notice-info">
+        <view class="title u-border-bottom">
+          <u-image
+            width="80rpx"
+            height="80rpx"
+            src="http://pics.sc.chinaz.com/files/pic/pic9/201912/hpic1886.jpg"
+            shape="circle"
+          ></u-image>
+          <text class="title-text">优惠信息</text>
+        </view>
+        <view class="info">
+          <text>项目名称</text>
+          <text class="info-content">{{form.projectName}}</text>
+        </view>
+        <view class="info">
+          <text>优惠方式</text>
+          <text class="info-content">{{form.explain}}</text>
+        </view>
+        <view class="info">
+          <text>服务费金额</text>
+          <text class="info-content">¥{{form.paymentAmount}}</text>
+        </view>
+      </view>
+      <view class="form-content">
+        <view class="form-color">
+          <u-form
+            :model="form"
+            ref="uForm"
+            label-width="150"
+          >
+            <u-form-item
+              label="选择栋座"
+              class="hide-icon"
+              right-icon="arrow-right"
+            >
+              <u-input
+                v-model="form.buyUnitName"
+                type="select"
+                placeholder="请选择栋座"
+                @click="buildShow = true"
+              />
+            </u-form-item>
+            <u-form-item
+              label="选择房号"
+              class="hide-icon"
+              right-icon="arrow-right"
+            >
+              <u-input
+                v-model="form.roomNumberName"
+                type="select"
+                placeholder="请选择房号"
+                @click="handleShowRoom"
+              />
+            </u-form-item>
+            <template v-for="(i, n) in form.ownerList">
+              <u-gap
+                height="20"
+                bg-color="#f1f1f1"
+                :key="n"
+              ></u-gap>
+              <view
+                :key="n"
+                class="form-title u-border-bottom"
+              >业主信息</view>
+              <u-form-item
+                :key="n"
+                label="业主姓名"
+              >
+                <u-input
+                  v-model="i.ownerName"
+                  placeholder="请输入业主姓名"
+                />
+              </u-form-item>
+              <u-form-item
+                :key="n"
+                label="手机号码"
+              >
+                <u-input
+                  v-model="i.ownerMobile"
+                  placeholder="请输入手机号码"
+                />
+              </u-form-item>
+              <u-form-item
+                :key="n"
+                label="身份证号"
+              >
+                <u-input
+                  v-model="i.ownerCertificateNo"
+                  placeholder="请输入身份证号"
+                />
+              </u-form-item>
+            </template>
+          </u-form>
+        </view>
+      </view>
+      <view class="btn-container safe-area-inset-bottom">
+        <u-button
+          size="default"
+          type="primary"
           shape="circle"
-        ></u-image>
-        <text class="title-text">优惠信息</text>
+          @click="submit"
+        >确认</u-button>
       </view>
-      <view class="info">
-        <text>项目名称</text>
-        <text class="info-content">{{form.projectName}}</text>
-      </view>
-      <view class="info">
-        <text>优惠方式</text>
-        <text class="info-content">{{form.explain}}</text>
-      </view>
-      <view class="info">
-        <text>服务费金额</text>
-        <text class="info-content">¥{{form.paymentAmount}}</text>
-      </view>
+      <!-- 选择器 -->
+      <u-select
+        v-model="buildShow"
+        :list="selectBuildList"
+        safe-area-inset-bottom
+        title="选择栋座"
+        value-name="buildingId"
+        label-name="buildingName"
+        @confirm="buildConfirm"
+      ></u-select>
+      <u-select
+        v-model="roomShow"
+        :list="roomSelectList"
+        safe-area-inset-bottom
+        title="选择房号"
+        value-name="roomId"
+        label-name="roomNo"
+        @confirm="roomConfirm"
+      ></u-select>
     </view>
-    <view class="form-content">
-      <view class="form-color">
-        <u-form
-          :model="form"
-          ref="uForm"
-          label-width="150"
-        >
-          <u-form-item
-            label="选择栋座"
-            class="hide-icon"
-            right-icon="arrow-right"
-          >
-            <u-input
-              v-model="form.buyUnitName"
-              type="select"
-              placeholder="请选择栋座"
-              @click="buildShow = true"
-            />
-          </u-form-item>
-          <u-form-item
-            label="选择房号"
-            class="hide-icon"
-            right-icon="arrow-right"
-          >
-            <u-input
-              v-model="form.roomNumberName"
-              type="select"
-              placeholder="请选择房号"
-              @click="handleShowRoom"
-            />
-          </u-form-item>
-          <template v-for="(i, n) in form.ownerList">
-            <u-gap
-              height="20"
-              bg-color="#f1f1f1"
-              :key="n"
-            ></u-gap>
-            <view
-              :key="n"
-              class="form-title u-border-bottom"
-            >业主信息</view>
-            <u-form-item
-              :key="n"
-              label="业主姓名"
-            >
-              <u-input
-                v-model="i.ownerName"
-                placeholder="请输入业主姓名"
-              />
-            </u-form-item>
-            <u-form-item
-              :key="n"
-              label="手机号码"
-            >
-              <u-input
-                v-model="i.ownerMobile"
-                placeholder="请输入手机号码"
-              />
-            </u-form-item>
-            <u-form-item
-              :key="n"
-              label="身份证号"
-            >
-              <u-input
-                v-model="i.ownerCertificateNo"
-                placeholder="请输入身份证号"
-              />
-            </u-form-item>
-          </template>
-        </u-form>
-      </view>
-    </view>
-    <view class="btn-container safe-area-inset-bottom">
-      <u-button
-        size="default"
-        type="primary"
-        shape="circle"
-        @click="submit"
-      >确认</u-button>
-    </view>
-    <!-- 选择器 -->
-    <u-select
-      v-model="buildShow"
-      :list="selectBuildList"
-      safe-area-inset-bottom
-      title="选择栋座"
-      value-name="buildingId"
-      label-name="buildingName"
-      @confirm="buildConfirm"
-    ></u-select>
-    <u-select
-      v-model="roomShow"
-      :list="roomSelectList"
-      safe-area-inset-bottom
-      title="选择房号"
-      value-name="roomId"
-      label-name="roomNo"
-      @confirm="roomConfirm"
-    ></u-select>
-  </view>
+  </LoginPage>
 </template>
 
 <script>

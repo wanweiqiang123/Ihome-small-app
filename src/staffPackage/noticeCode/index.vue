@@ -4,74 +4,76 @@
  * @Author: ywl
  * @Date: 2020-11-24 17:10:39
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-12 12:03:11
+ * @LastEditTime: 2021-01-12 14:36:17
 -->
 <template>
-  <view class="notice">
-    <view class="notice-select">
-      <u-cell-group>
-        <u-cell-item
-          title="项目周期"
-          :value="termName || '请选择项目周期'"
-          :arrow="true"
-          @click="handleToSearch()"
-        ></u-cell-item>
-      </u-cell-group>
-    </view>
-    <view class="notice-list">
-      <u-card
-        :border="false"
-        :show-foot="false"
-        class="ih-card"
-        v-for="(i, n) in codeList"
-        :key="n"
-        @click="handleCode(i)"
-      >
-        <view
-          slot="head"
-          class="ih-card-head"
+  <LoginPage>
+    <view class="notice">
+      <view class="notice-select">
+        <u-cell-group>
+          <u-cell-item
+            title="项目周期"
+            :value="termName || '请选择项目周期'"
+            :arrow="true"
+            @click="handleToSearch()"
+          ></u-cell-item>
+        </u-cell-group>
+      </view>
+      <view class="notice-list">
+        <u-card
+          :border="false"
+          :show-foot="false"
+          class="ih-card"
+          v-for="(i, n) in codeList"
+          :key="n"
+          @click="handleCode(i)"
         >
-          <view>{{`优惠套餐${n+1}`}}</view>
-          <view class="sub-title">查看优惠二维码
-            <u-icon name="arrow-right" />
+          <view
+            slot="head"
+            class="ih-card-head"
+          >
+            <view>{{`优惠套餐${n+1}`}}</view>
+            <view class="sub-title">查看优惠二维码
+              <u-icon name="arrow-right" />
+            </view>
+          </view>
+          <view
+            slot="body"
+            class="ih-card-content"
+          >
+            <view>优惠方式说明：{{i.modeDescription}}</view>
+            <view>需支付服务费：{{i.premiumReceived}}元</view>
+          </view>
+        </u-card>
+      </view>
+      <!-- 二维码弹出层 -->
+      <u-popup
+        v-model="isShow"
+        mode="center"
+        closeable
+        width="600rpx"
+        class="ih-popup"
+      >
+        <view>
+          <view class="head">优惠二维码</view>
+          <view class="code">
+            <u-image
+              width="100%"
+              height="100%"
+              :src="src"
+            ></u-image>
+          </view>
+          <view class="btn">
+            <u-button
+              type="primary"
+              :loading="loading"
+              @click="downloadCode()"
+            >下载二维码</u-button>
           </view>
         </view>
-        <view
-          slot="body"
-          class="ih-card-content"
-        >
-          <view>优惠方式说明：{{i.modeDescription}}</view>
-          <view>需支付服务费：{{i.premiumReceived}}元</view>
-        </view>
-      </u-card>
+      </u-popup>
     </view>
-    <!-- 二维码弹出层 -->
-    <u-popup
-      v-model="isShow"
-      mode="center"
-      closeable
-      width="600rpx"
-      class="ih-popup"
-    >
-      <view>
-        <view class="head">优惠二维码</view>
-        <view class="code">
-          <u-image
-            width="100%"
-            height="100%"
-            :src="src"
-          ></u-image>
-        </view>
-        <view class="btn">
-          <u-button
-            type="primary"
-            :loading="loading"
-            @click="downloadCode()"
-          >下载二维码</u-button>
-        </view>
-      </view>
-    </u-popup>
-  </view>
+  </LoginPage>
 </template>
 
 <script>
