@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-04 11:20:06
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-06 11:27:25
+ * @LastEditTime: 2021-01-12 14:34:08
 -->
 <template>
   <LoginPage>
@@ -109,12 +109,12 @@ export default {
       try {
         await postNoticeDelete({ id: this.option.id });
         this.isShow = false;
-        this.$u.toast("作废成功");
+        this.$tool.toast("作废成功");
         this.$tool.back(null, { type: "init", page: null });
       } catch (error) {
         console.log(error);
         this.isShow = false;
-        this.$u.toast("作废失败");
+        this.$tool.toast("作废失败");
       }
     },
     async pdf2Pic(tId) {

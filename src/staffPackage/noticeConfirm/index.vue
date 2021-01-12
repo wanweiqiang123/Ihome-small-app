@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 17:32:25
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-05 11:54:37
+ * @LastEditTime: 2021-01-12 12:03:34
 -->
 <template>
   <view class="notice">
@@ -196,7 +196,7 @@ export default {
       };
       try {
         await postNoticeStatus(params);
-        this.$u.toast("确认成功");
+        this.$tool.toast("确认成功");
         this.$tool.back(null, {
           type: "update",
           data: { ...this.form, notificationStatus: "WaitBeSigned" },

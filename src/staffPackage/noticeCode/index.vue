@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 17:10:39
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-07 10:15:14
+ * @LastEditTime: 2021-01-12 12:03:11
 -->
 <template>
   <view class="notice">
@@ -108,7 +108,7 @@ export default {
           uni.saveImageToPhotosAlbum({
             filePath: filePath,
             success: () => {
-              this.$u.toast("保存成功");
+              this.$tool.toast("保存成功");
               this.loading = false;
             },
           });

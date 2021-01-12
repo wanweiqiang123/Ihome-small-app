@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-06 17:02:25
+ * @LastEditTime: 2021-01-12 14:33:58
 -->
 <template>
   <view class="notice safe-area-inset-bottom">
@@ -532,10 +532,7 @@ export default {
     },
     async handleShowSelect() {
       if (!this.form.cycleId) {
-        uni.showToast({
-          title: "请先选择联动周期",
-          icon: "none",
-        });
+        this.$tool.toast("请先选择联动周期");
         return;
       }
       const list = [{ modeDescription: "自定义", premiumReceived: "other" }];
@@ -554,7 +551,7 @@ export default {
     },
     async handleShowBuild() {
       if (!this.proId) {
-        this.$u.toast("请先选择联动周期");
+        this.$tool.toast("请先选择联动周期");
         return;
       }
       this.buildSelectList = await postBuildByProId({ proId: this.proId });
@@ -567,7 +564,7 @@ export default {
     },
     async handleShowRoom() {
       if (!this.proId) {
-        this.$u.toast("请先选择联动周期");
+        this.$tool.toast("请先选择联动周期");
         return;
       }
       this.roomSelectList = await postRoomByProId({
@@ -664,7 +661,7 @@ export default {
           this.form.ownerEditList = this.form.ownerList;
           try {
             const res = await postNoticeUpdate(this.form);
-            this.$u.toast("保存成功");
+            this.$tool.toast("保存成功");
             this.$tool.back(
               {
                 delta: 2,

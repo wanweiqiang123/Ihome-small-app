@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-06 17:51:47
+ * @LastEditTime: 2021-01-12 12:04:14
 -->
 <template>
   <LoginPage>
@@ -276,7 +276,7 @@ export default {
     },
     async handleShowBuild() {
       if (!this.queryPageParameters.projectId) {
-        this.$u.toast("请先选择项目");
+        this.$tool.toast("请先选择项目");
         return;
       }
       this.buildSelectList = await postBuildByProId({
@@ -291,7 +291,7 @@ export default {
     },
     async handleShowRoom() {
       if (!this.queryPageParameters.projectId) {
-        this.$u.toast("请先选择项目");
+        this.$tool.toast("请先选择项目");
         return;
       }
       this.roomSelectList = await postRoomByProId({
