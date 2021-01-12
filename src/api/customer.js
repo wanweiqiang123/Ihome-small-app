@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-15 18:08:02
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-06 18:18:31
+ * @LastEditTime: 2021-01-12 12:11:51
  */
 import { getApi, postApi } from '../common/http.js';
 
@@ -111,4 +111,8 @@ export async function getNoticeRefundApi(data = {}, option = {}) {
 // 更新退款申请书
 export async function postUpdateRefundApi(data = {}, option = {}) {
   return await postApi(`/sales-api/contract/notice/update/refund`, data, option)
+}
+// 修改付款记录
+export async function postPaymentupdateApi(data = {}, option = {}) {
+  return await postApi(`/sales-api/finance/payment/update`, data, option)
 }

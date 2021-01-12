@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 15:28:17
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-07 20:11:07
+ * @LastEditTime: 2021-01-12 15:42:45
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
@@ -66,7 +66,11 @@
   </view>
 </template>
 <script>
-import { getBankInfoApi, postAddServiceApi } from "../../api/customer";
+import {
+  getBankInfoApi,
+  postAddServiceApi,
+  postPaymentupdateApi,
+} from "../../api/customer";
 import { currentEnvConfig } from "../../env-config.js";
 import storageTool from "../../common/storageTool.js";
 export default {
@@ -87,11 +91,15 @@ export default {
       },
       payData: {},
       uploadArr: [],
+      addOrUpdate: "",
+      continueId: "",
     };
   },
-  onLoad(options) {
-    this.payId = options.id;
-    this.payNum = options.payNum;
+  onLoad() {
+    this.payId = getApp().bankTransferData.id;
+    this.payNum = getApp().bankTransferData.payNum;
+    this.addOrUpdate = getApp().bankTransferData.addOrUpdate;
+    this.continueId = getApp().bankTransferData.continueId;
     this.payData = { ...getApp().paidData };
     // 假数据
     // this.payId = 3;
@@ -149,18 +157,23 @@ export default {
       obj.attachments = this.uploadArr;
       obj.payeeAccount = this.info.payeeAccount;
       obj.payeeName = this.info.payeeName;
+      if (this.addOrUpdate === "update") {
+        obj.id = this.continueId;
+      }
       // 假数据
       // obj.groupId = 15;
       // obj.operator = 15;
       // obj.proId = 1;
       // obj.termId = 3;
-      const res = await postAddServiceApi(obj);
-      if (res) {
-        uni.showToast({
-          title: "提交成功",
-          icon: "none",
-        });
+      if (this.addOrUpdate === "add") {
+        await postAddServiceApi(obj);
+      } else {
+        await postPaymentupdateApi(obj);
       }
+      uni.showToast({
+        title: "提交成功",
+        icon: "none",
+      });
       uni.navigateTo({
         url: `/customerPackage/discountsInfo/index?id=${this.payData.businessId}`,
       });

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-30 17:20:45
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-05 16:56:58
+ * @LastEditTime: 2021-01-12 08:42:29
 -->
 <template>
   <view class="base-info-wrapper">
@@ -76,6 +76,7 @@ export default {
         verificationCode: "",
         noticeId: "",
         templateId: "",
+        notificationType: "",
       },
       codeText: "",
     };
@@ -109,8 +110,14 @@ export default {
       obj = { ...this.info };
       delete obj.templateId;
       await postCertificationApi(obj);
+      getApp().noticeInfo = {
+        templateId: this.info.templateId,
+        id: this.info.noticeId,
+        notificationType: this.info.notificationType,
+        type: "sign",
+      };
       uni.navigateTo({
-        url: `/customerPackage/notification/index?templateId=${this.info.templateId}&&id=${this.info.noticeId}&&type=sign`,
+        url: `/customerPackage/notification/index`,
       });
     },
   },

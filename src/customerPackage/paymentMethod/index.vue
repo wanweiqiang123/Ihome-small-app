@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-11 17:12:42
+ * @LastEditTime: 2021-01-12 15:26:24
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
@@ -69,7 +69,8 @@
       <u-button
         shape="square"
         @click="payGoto"
-      >{{`${getDictName(payType, payTypeOptions)}支付 ￥${payNum?payNum:0}`}}</u-button>
+      >{{`${getDictName(payType, payTypeOptions)} ￥${payNum?payNum:0}`}}
+      </u-button>
     </view>
     <view class="pay-hint">
       付款成功后可能存在延迟，请耐心等待1~2分钟！
@@ -92,6 +93,8 @@ import {
   postUnionPayParameterApi,
   postUnionPayUrlApi,
   getWeChatJsApi,
+  getIdApi,
+  postPaymentupdateApi,
 } from "../../api/customer";
 import { getAllByTypeApi } from "../../api/index";
 import uImage from "../../uview-ui/components/u-image/u-image.vue";
@@ -106,11 +109,18 @@ export default {
       payParam: {},
       show: false,
       open: true,
+      addOrUpdate: "",
     };
   },
-  onLoad() {
+  onLoad(options) {
     this.payData = { ...getApp().paidData };
-    this.payNum = this.payData.unpaid;
+    if (options.type === "update") {
+      this.continueId = options.id;
+      this.continueMsg(options.id);
+    } else {
+      this.payNum = this.payData.unpaid;
+    }
+    this.addOrUpdate = options.type;
   },
   async onShow() {
     this.payTypeOptions = await getAllByTypeApi({
@@ -155,6 +165,12 @@ export default {
     radioChange(e) {
       this.payType = e;
     },
+    // 如果存在未支付订单
+    async continueMsg(id) {
+      const res = await getIdApi({ id });
+      this.payNum = res.amount;
+      this.payType = res.payType;
+    },
     async payGoto() {
       let obj = {};
       obj.amount = Number(this.payNum);
@@ -171,6 +187,9 @@ export default {
       obj.termId = this.payData.cycleId;
       obj.unpaidServiceFee = this.payData.unpaid;
       obj.terminal = "WeChatApp";
+      if (this.addOrUpdate === "update") {
+        obj.id = this.continueId;
+      }
       // 假数据
       // obj.groupId = 15;
       // obj.operator = 15;
@@ -180,25 +199,43 @@ export default {
       switch (this.payType) {
         case "UnionPay":
         case "Alipay":
-          res = await postAddServiceApi(obj);
+          if (this.addOrUpdate === "add") {
+            res = await postAddServiceApi(obj);
+          } else {
+            res = await postPaymentupdateApi(obj);
+          }
           uni.navigateTo({
             url: `/customerPackage/paymentMethod/zhifubaoPay?id=${res.data}&type=${this.payType}`,
           });
           break;
         case "Pos":
-          res = await postAddServiceApi(obj);
+          if (this.addOrUpdate === "add") {
+            res = await postAddServiceApi(obj);
+          } else {
+            res = await postPaymentupdateApi(obj);
+          }
           uni.navigateTo({
             url: `/customerPackage/paymentMethod/POS?id=${res.data}`,
           });
           break;
         case "Transfer":
+          getApp().bankTransferData = {
+            id: this.payData.cycleId,
+            payNum: this.payNum,
+            addOrUpdate: this.addOrUpdate,
+            continueId: this.continueId,
+          };
           uni.navigateTo({
-            url: `/customerPackage/paymentMethod/bankTransfer?id=${this.payData.cycleId}&payNum=${this.payNum}`,
+            url: `/customerPackage/paymentMethod/bankTransfer`,
           });
           break;
         case "WeChatPay":
-          res = await postAddServiceApi(obj);
-          const openId = uni.getStorageSync("openId");
+          if (this.addOrUpdate === "add") {
+            res = await postAddServiceApi(obj);
+          } else {
+            res = await postPaymentupdateApi(obj);
+          }
+          // const openId = uni.getStorageSync("openId");
           const item = await getWeChatJsApi(res.data);
           const weChatData = JSON.parse(item).response.msgBody.wcPayData;
           uni.getProvider({

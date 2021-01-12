@@ -4,11 +4,11 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-06 17:17:54
+ * @LastEditTime: 2021-01-12 15:41:40
 -->
 <template>
-  <view>
-    <CustomerTabBar>
+  <view :class="{ 'box-height': !info.length }">
+    <CustomerTabBar v-if="info.length">
       <view class="box">
         <u-card
           :border="false"
@@ -49,6 +49,12 @@
         </u-card>
       </view>
     </CustomerTabBar>
+    <u-empty
+      text="暂无数据"
+      mode="list"
+      v-else
+      style="height: 80vh"
+    ></u-empty>
   </view>
 </template>
 
@@ -77,7 +83,6 @@ export default {
       const userInfo = storageTool.getUserInfo();
       this.info = await postWechatNoticeListApi({
         ownerMobile: userInfo.mobilePhone,
-        // ownerMobile: "13581470188",
       });
     },
     routerTo(id) {
@@ -135,5 +140,8 @@ export default {
     height: 60rpx;
     line-height: 60rpx;
   }
+}
+.box-height {
+  height: 80vh;
 }
 </style>

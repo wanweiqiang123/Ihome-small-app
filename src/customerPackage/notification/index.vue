@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-30 10:23:11
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-07 19:52:17
+ * @LastEditTime: 2021-01-12 08:42:15
 -->
 <template>
   <view>
@@ -108,6 +108,7 @@ export default {
           ownerCertificateNo: res.certificationResponseVO.ownerCertificateNo,
           noticeId: this.noticeId,
           templateId: this.templateId,
+          notificationType: getApp().noticeInfo.notificationType,
         };
         uni.navigateTo({
           url: `/customerPackage/attestation/index`,
