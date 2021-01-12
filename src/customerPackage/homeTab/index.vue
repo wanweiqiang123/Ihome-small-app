@@ -4,12 +4,15 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-12 18:07:39
+ * @LastEditTime: 2021-01-12 18:46:11
 -->
 <template>
-  <view :class="{ 'box-height': !info.length }">
-    <CustomerTabBar v-if="info.length">
-      <view class="box">
+  <view>
+    <CustomerTabBar>
+      <view
+        class="box"
+        v-if="info.length"
+      >
         <u-card
           :border="false"
           v-for="(item, i) in info"
@@ -48,13 +51,16 @@
           </view>
         </u-card>
       </view>
+      <view
+        v-else
+        style="height: 80vh;"
+      >
+        <u-empty
+          text="暂无数据"
+          mode="list"
+        ></u-empty>
+      </view>
     </CustomerTabBar>
-    <u-empty
-      text="暂无数据"
-      mode="list"
-      v-else
-      style="height: 80vh"
-    ></u-empty>
   </view>
 </template>
 
@@ -140,8 +146,5 @@ export default {
     height: 60rpx;
     line-height: 60rpx;
   }
-}
-.box-height {
-  height: 80vh;
 }
 </style>

@@ -4,38 +4,40 @@
  * @Author: wwq
  * @Date: 2020-12-30 10:23:11
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-12 18:12:56
+ * @LastEditTime: 2021-01-12 18:51:50
 -->
 <template>
-  <view>
-    <view class="imageview">
-      <image
-        style="width: 100%;height: 100vh"
-        mode="aspectFit"
-        :src="src"
-        @click="showImage"
-      ></image>
+  <LoginPage>
+    <view>
+      <view class="imageview">
+        <image
+          style="width: 100%;height: 100vh"
+          mode="aspectFit"
+          :src="src"
+          @click="showImage"
+        ></image>
+      </view>
+      <view
+        class="sign"
+        v-if="type === 'sign'"
+      >
+        <u-button
+          type="primary"
+          :disabled="disabled"
+          @click="gotoSign"
+        >{{tips}}</u-button>
+      </view>
+      <u-verification-code
+        :seconds="10"
+        @end="end"
+        ref="uCode"
+        unique-key="notification"
+        change-text="请仔细阅读协议(x)"
+        @change="codeChange"
+        start-text="签署"
+      ></u-verification-code>
     </view>
-    <view
-      class="sign"
-      v-if="type === 'sign'"
-    >
-      <u-button
-        type="primary"
-        :disabled="disabled"
-        @click="gotoSign"
-      >{{tips}}</u-button>
-    </view>
-    <u-verification-code
-      :seconds="10"
-      @end="end"
-      ref="uCode"
-      unique-key="notification"
-      change-text="请仔细阅读协议(x)"
-      @change="codeChange"
-      start-text="签署"
-    ></u-verification-code>
-  </view>
+  </LoginPage>
 </template>
 <script>
 import { currentEnvConfig } from "../../env-config.js";
