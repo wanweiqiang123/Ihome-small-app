@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-13 16:47:03
- * @LastEditors: ywl
- * @LastEditTime: 2021-01-06 17:15:51
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-12 20:57:31
 -->
 <template>
   <view class="box">
@@ -190,6 +190,7 @@ export default {
     if (this.isArea && !this.areaList?.length) {
       this.getAreaOption();
     }
+    this.getListMixin();
   },
   methods: {
     async getAreaOption() {
@@ -235,20 +236,20 @@ export default {
       uni.navigateBack();
     },
     async getListMixin() {
+      let params = { ...this.queryPageParameters };
+      console.log(params);
       if (this.keyword) {
-        let params = { ...this.queryPageParameters };
         params[this.key] = this.keyword;
-        let item = await apiList[this.searchApi](params);
-        this.setPageDataMixin(item);
-        this.total = item.total;
-        console.log(this.tablePage);
-        if (this.tablePage.length) {
-          this.searchNull = false;
-        } else {
-          this.searchNull = true;
-        }
       } else {
-        return;
+        params[this.key] = "";
+      }
+      let item = await apiList[getApp().globalData.searchParams.api](params);
+      this.setPageDataMixin(item);
+      this.total = item.total;
+      if (this.tablePage.length) {
+        this.searchNull = false;
+      } else {
+        this.searchNull = true;
       }
     },
   },
@@ -292,9 +293,7 @@ export default {
 }
 .list-item {
   text-align: left;
-  padding-left: 20rpx;
-  height: 80rpx;
-  line-height: 80rpx;
+  padding: 20rpx 10rpx 20rpx 20rpx;
   border-bottom: 1px solid #e4e7ed;
 }
 .searchNull {

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-12 15:26:24
+ * @LastEditTime: 2021-01-12 20:21:23
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
@@ -34,6 +34,7 @@
           v-model="payNum"
           label="付款金额"
           :clearable="false"
+          focus
           @blur="payNumChange"
           disabled
           @click="show = true"
@@ -80,7 +81,9 @@
       ref="uKeyboard"
       mode="number"
       v-model="show"
+      :mask="false"
       @change="keyChange"
+      safe-area-inset-bottom
       @backspace="backspace"
       :show-tips="false"
       :cancel-btn="false"
@@ -112,13 +115,21 @@ export default {
       addOrUpdate: "",
     };
   },
+  watch: {
+    payNum(v) {
+      console.log(v, "watch");
+      if (Number(v) > Number(this.payData.unpaid)) {
+        this.payNum = this.payData.unpaid + "";
+      }
+    },
+  },
   onLoad(options) {
     this.payData = { ...getApp().paidData };
     if (options.type === "update") {
       this.continueId = options.id;
       this.continueMsg(options.id);
     } else {
-      this.payNum = this.payData.unpaid;
+      this.payNum = this.payData.unpaid + "";
     }
     this.addOrUpdate = options.type;
   },
@@ -148,9 +159,6 @@ export default {
         this.payNum = num.substring(0, amount.length);
       }
     },
-    keyConfirm(e) {
-      console.log(e, "e");
-    },
     keyChange(e) {
       if (this.open) {
         this.payNum = "";
@@ -158,9 +166,10 @@ export default {
       }
       this.payNum += e;
     },
-    backspace(e) {
-      if (this.payNum.length)
+    backspace() {
+      if (this.payNum.length) {
         this.payNum = this.payNum.substr(0, this.payNum.length - 1);
+      }
     },
     radioChange(e) {
       this.payType = e;
@@ -168,7 +177,7 @@ export default {
     // 如果存在未支付订单
     async continueMsg(id) {
       const res = await getIdApi({ id });
-      this.payNum = res.amount;
+      this.payNum = res.amount + "";
       this.payType = res.payType;
     },
     async payGoto() {

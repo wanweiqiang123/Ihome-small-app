@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-12 12:06:13
+ * @LastEditTime: 2021-01-12 20:23:28
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -47,6 +47,7 @@
           <text>付款明细</text>
         </view>
         <view
+          v-if="payAuditNum"
           class="info-first-audit"
           @click="payAuditing(noticeId)"
         >

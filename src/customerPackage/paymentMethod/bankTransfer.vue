@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 15:28:17
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-12 17:42:29
+ * @LastEditTime: 2021-01-12 20:25:26
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
@@ -43,6 +43,7 @@
       <view class="pay-upload">
         <text class="upload-title">转账凭证</text>
         <u-upload
+          max-count="10"
           class="upload"
           width="160"
           height="160"
