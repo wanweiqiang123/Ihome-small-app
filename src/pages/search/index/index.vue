@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-20 17:03:55
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-12 20:58:51
+ * @LastEditTime: 2021-01-13 20:51:33
 -->
 <template>
   <PageingSearch
@@ -13,7 +13,6 @@
       label: paramsKey,
       value: paramsId
     }"
-    :search-api="searchApi"
     :params-key="paramsKey"
   >
     <template #searchlist="{ scrollData, label }">
@@ -33,14 +32,12 @@ export default {
   components: { PageingSearch },
   data() {
     return {
-      searchApi: "",
       paramsKey: "",
       paramsId: "",
       type: "",
     };
   },
   onLoad() {
-    this.searchApi = getApp().globalData.searchParams.api;
     this.paramsKey = getApp().globalData.searchParams.key;
     this.paramsId = getApp().globalData.searchParams.id;
     this.type = getApp().globalData.searchParams.type;

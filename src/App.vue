@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-12 15:24:36
+ * @LastEditTime: 2021-01-13 20:59:13
 -->
 <script>
 export default {
@@ -16,7 +16,13 @@ export default {
     paidData: {}, // 支付信息
     attestationInfo: {}, // 认证信息
     noticeInfo: {}, //优惠告知书签署预览信息
-    searchParams: null, // 跳转分页查询页面携带的参数
+    searchParams: {
+      api: null, // 搜索的api
+      key: null, // 搜索的关键字
+      id: null, //  搜索的关键字id
+      type: null, //  当页面出现多个分页搜索时区分标识
+      other: {}, // 其他条件,如需过滤
+    },
     refreshListData: null, //列表缓存页面刷新存放数据
     searchBackData: null, // 搜索返回数据
     bankTransferData: null, // 银行转账数据
