@@ -322,6 +322,7 @@ export default {
                 return;
               }
               // 上传
+              tool.toast(self.uploadAction);
               res.tempFilePaths.forEach((path) => {
                 uni.uploadFile({
                   url: self.uploadAction, //仅为示例，非真实的接口地址
