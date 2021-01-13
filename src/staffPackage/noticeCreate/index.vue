@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-12 14:35:33
+ * @LastEditTime: 2021-01-13 21:11:59
 -->
 <template>
   <LoginPage>
@@ -259,6 +259,7 @@
               <u-form-item
                 label="公司名称"
                 prop="ownerName"
+                required
               >
                 <u-input
                   v-model="enterpriseFrom.ownerName"
@@ -268,6 +269,7 @@
               <u-form-item
                 label="经办人号码"
                 prop="ownerMobile"
+                required
               >
                 <u-input
                   v-model="enterpriseFrom.ownerMobile"
@@ -277,6 +279,7 @@
               <u-form-item
                 label="营业执照编号"
                 prop="ownerCertificateNo"
+                required
               >
                 <u-input
                   v-model="enterpriseFrom.ownerCertificateNo"
@@ -427,9 +430,11 @@ export default {
         ],
         ownerMobile: [
           { required: true, message: "请输入经办人号码", trigger: "change" },
+          { validator: phoneValidator, trigger: "change" },
         ],
         ownerCertificateNo: [
           { required: true, message: "请输入营业执照编号", trigger: "change" },
+          { validator: validIdentityCard, trigger: "change" },
         ],
       },
       ownerInfo: [
