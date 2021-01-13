@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-12 20:21:23
+ * @LastEditTime: 2021-01-13 15:47:42
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
@@ -118,7 +118,7 @@ export default {
   watch: {
     payNum(v) {
       console.log(v, "watch");
-      if (Number(v) > Number(this.payData.unpaid)) {
+      if (Number(v) >= Number(this.payData.unpaid)) {
         this.payNum = this.payData.unpaid + "";
       }
     },

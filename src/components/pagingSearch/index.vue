@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 16:47:03
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-12 20:57:31
+ * @LastEditTime: 2021-01-13 20:54:38
 -->
 <template>
   <view class="box">
@@ -117,10 +117,6 @@ const debounce = (function () {
 export default {
   mixins: [pagination],
   props: {
-    searchApi: {
-      type: String,
-      default: "",
-    },
     value: {
       type: String,
       default: () => "",
@@ -169,7 +165,7 @@ export default {
   watch: {
     keyword(v) {
       if (v) {
-        debounce(this.getListMixin, 500);
+        debounce(this.searchData, 500);
       } else {
         this.queryPageParameters = {
           pageNum: 1,
@@ -227,8 +223,17 @@ export default {
     },
     searchSomething(e) {
       if (e) {
-        this.getListMixin();
+        this.searchData();
       }
+    },
+    // 搜索方法与加载分开
+    searchData() {
+      this.tablePage = [];
+      this.queryPageParameters = {
+        pageNum: 1,
+        pageSize: 20,
+      };
+      this.getListMixin();
     },
     // 返回到上一页
     goBackPage(data) {
@@ -236,8 +241,10 @@ export default {
       uni.navigateBack();
     },
     async getListMixin() {
-      let params = { ...this.queryPageParameters };
-      console.log(params);
+      let params = {
+        ...this.queryPageParameters,
+        ...getApp().globalData.searchParams.other,
+      };
       if (this.keyword) {
         params[this.key] = this.keyword;
       } else {

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-25 11:40:27
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-12 16:14:23
+ * @LastEditTime: 2021-01-13 15:50:45
 -->
 <template>
   <view class="box">
@@ -15,12 +15,12 @@
     >
       <view class="box-item-title">
         <view style="font-weight: bold;">付款金额：{{item.amount}}</view>
-        <view v-if="item.payType !== 'Transfer'">
+        <view v-if="item.fileIds.length">
           <u-button
             type="primary"
             size="mini"
             :loading="loading"
-            @click="downLoad(item.attachments[0].fileId)"
+            @click="downLoad(item.fileIds[0])"
           >下载电子回单</u-button>
         </view>
       </view>
