@@ -311,7 +311,7 @@ export default {
       let self = this;
       if (index === 0) {
         uni.chooseImage({
-          count: 9, // 默认9
+          count: 1, // 默认9
           success: (res) => {
             // console.log(res);
             if (res && res.tempFiles && res.tempFiles.length > 0) {
@@ -343,6 +343,7 @@ export default {
                     });
                   },
                   fail: (error) => {
+                    tool.toast('上传失败，请重新上传' + error);
                     console.log(error);
                   }
                 });
@@ -352,7 +353,7 @@ export default {
         });
       } else {
         wx.chooseMessageFile({
-          count: 10, // 最大可选
+          count: 1, // 最大可选
           type: 'file',
           success: (res) => {
             // console.log(res);
@@ -385,6 +386,7 @@ export default {
                     });
                   },
                   fail: (error) => {
+                    tool.toast('上传失败，请重新上传' + error);
                     console.log(error);
                   }
                 });
