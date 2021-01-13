@@ -160,7 +160,7 @@
 <script>
 import { getAreaList, getDictByType, getBankBranchList, channelRegister } from '@/api/channel';
 import { validIdentityCard } from '@/common/validate';
-import { getTempToken, getImgUrl } from '@/api/channel';
+import { getImgUrl } from '@/api/channel';
 import { currentEnvConfig } from '@/env-config';
 import {getUserInfoApi, userSwitchApi} from "@/api";
 import storageTool from "@/common/storageTool";
@@ -264,7 +264,6 @@ export default {
         bankName: null
       },
       bankList: [],
-      tempToke: '',
       isMore: false,
       actionList: [
         {
@@ -294,7 +293,7 @@ export default {
     this.$refs.companyForm.setRules(this.rules);
   },
   async created() {
-    await this.getTempToken();
+    await this.getToken();
     await this.getArea();
     await this.getChannelAttachmentList();
     await this.getCompanyTypeList();
@@ -322,8 +321,6 @@ export default {
                 return;
               }
               // 上传
-              tool.toast(self.uploadAction);
-              alert(self.uploadAction);
               res.tempFilePaths.forEach((path) => {
                 uni.uploadFile({
                   url: self.uploadAction, //仅为示例，非真实的接口地址
@@ -482,25 +479,12 @@ export default {
       }
       return url;
     },
-    // 获取临时token
-    getTempToken() {
-      let self = this;
-      uni.login({
-        success: async (res) => {
-          console.log('123onLoad:', res);
-          try {
-            let token = await getTempToken(res.code);
-            self.tempToke = token;
-            this.uploadHeader = {
-              'Content-Type': 'multipart/form-data',
-              Authorization: `bearer ${token}`
-            };
-          } catch (error) {
-            console.log(error);
-            self.tempToke = '';
-          }
-        }
-      });
+    // 获取token
+    getToken() {
+      this.uploadHeader = {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `bearer ${storageTool.getToken()}`
+      };
     },
     // 保存并注册
     async handleSave() {
