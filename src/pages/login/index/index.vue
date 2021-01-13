@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-29 15:58:19
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-12 11:42:18
+ * @LastEditTime: 2021-01-13 15:01:11
 -->
 <template>
   <view class="page login-page-style">

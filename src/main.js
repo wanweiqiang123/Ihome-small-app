@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-04 15:30:00
+ * @LastEditTime: 2021-01-13 14:40:24
  */
 import Vue from 'vue'
 import App from './App'
@@ -38,8 +38,9 @@ import StaffTabBar from './components/TabBar/StaffTabBar.vue'
 
 import LoginPage from './components/LoginPage.vue'
 
+import EmptyLoading from './components/EmptyLoading.vue'
 Vue.component('LoginPage', LoginPage);
-
+Vue.component('EmptyLoading', EmptyLoading);
 
 Vue.component('TabBarPage', TabBarPage);
 Vue.component('CustomerTabBar', CustomerTabBar);

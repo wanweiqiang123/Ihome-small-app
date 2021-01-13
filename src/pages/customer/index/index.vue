@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-09 14:38:31
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-13 15:05:08
+ * @LastEditTime: 2021-01-13 15:00:01
 -->
 <template>
   <TabBarPage>
@@ -44,6 +44,7 @@
             </view>
           </view>
         </view>
+        <!-- <EmptyLoading :total="tableTotal"></EmptyLoading> -->
         <u-loadmore :status="loadingStatus" />
       </view>
     </view>
@@ -60,6 +61,7 @@ export default {
       // loadingStatus: "loadmore",
       // tableTotal: null,
       // tablePage: [],
+
       queryPageParameters: {
         // pageNum: 1,
         // pageSize: 10,
