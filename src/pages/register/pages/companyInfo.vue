@@ -164,6 +164,7 @@ import { getTempToken, getImgUrl } from '@/api/channel';
 import { currentEnvConfig } from '@/env-config';
 import {getUserInfoApi, userSwitchApi} from "@/api";
 import storageTool from "@/common/storageTool";
+import tool from '@/common/tool';
 
 // 防抖
 const debounce = (function () {
@@ -317,10 +318,7 @@ export default {
               let flag = false;
               flag = self.validFileSizeAndType(res.tempFiles, 'img');
               if (!flag) {
-                uni.showToast({
-                  icon: 'none',
-                  title: '图片大小不能超过10M!',
-                });
+                tool.toast('图片大小不能超过10M!');
                 return;
               }
               // 上传
@@ -362,10 +360,7 @@ export default {
               let flag = false;
               flag = self.validFileSizeAndType(res.tempFiles, 'file');
               if (!flag) {
-                uni.showToast({
-                  icon: 'none',
-                  title: '请上传符合要求的文件！',
-                });
+                tool.toast('请上传符合要求的文件！');
                 return;
               }
               // 上传
@@ -411,10 +406,7 @@ export default {
       this.annexInfo[this.deleteIndex].fileList = this.annexInfo[this.deleteIndex].fileList.filter((list) => {
         return list.fileId !== this.deleteItem.fileId;
       });
-      uni.showToast({
-        icon: 'none',
-        title: '移除成功',
-      });
+      tool.toast('移除成功');
     },
     // 预览图片
     viewImg(file) {
@@ -513,10 +505,7 @@ export default {
       // 校验附件是否有值
       flag = self.validAnnex(self.annexInfo);
       if (!flag) {
-        uni.showToast({
-          icon: 'none',
-          title: '请上传公司附件'
-        });
+        tool.toast('请上传具体附件');
       }
       this.$refs.companyForm.validate(valid => {
         if (valid && flag) {
