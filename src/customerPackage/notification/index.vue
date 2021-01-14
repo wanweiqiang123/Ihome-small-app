@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-30 10:23:11
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-12 18:51:50
+ * @LastEditTime: 2021-01-14 09:23:39
 -->
 <template>
   <LoginPage>
@@ -12,7 +12,7 @@
       <view class="imageview">
         <image
           style="width: 100%;height: 100vh"
-          mode="aspectFit"
+          mode="widthFix"
           :src="src"
           @click="showImage"
         ></image>

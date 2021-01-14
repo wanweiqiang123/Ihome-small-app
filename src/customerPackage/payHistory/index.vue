@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-25 11:40:27
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-13 15:50:45
+ * @LastEditTime: 2021-01-14 09:51:32
 -->
 <template>
   <view class="box">
@@ -19,8 +19,8 @@
           <u-button
             type="primary"
             size="mini"
-            :loading="loading"
-            @click="downLoad(item.fileIds[0])"
+            :loading="item.loading"
+            @click="downLoad(item)"
           >下载电子回单</u-button>
         </view>
       </view>
@@ -57,7 +57,6 @@ export default {
       payId: "",
       info: [],
       PayType: [],
-      loading: false,
       codeUrl: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/download/`,
     };
   },
@@ -82,22 +81,31 @@ export default {
       }
     },
     async getInfo() {
-      this.info = await getAppListApi(this.payId);
+      const res = await getAppListApi(this.payId);
+      this.info = res.map((v) => ({
+        ...v,
+        loading: false,
+      }));
     },
-    downLoad(id) {
-      this.loading = true;
+    downLoad(item) {
+      item.loading = true;
       uni.downloadFile({
-        url: `${this.codeUrl}${id}`,
+        url: `${this.codeUrl}${item.fileIds[0]}`,
         success: (res) => {
           let filePath = res.tempFilePath;
-          console.log(filePath);
           uni.saveImageToPhotosAlbum({
             filePath: filePath,
             success: () => {
               this.$tool.toast("保存成功");
-              this.loading = false;
+              item.loading = false;
+            },
+            complete: () => {
+              item.loading = false;
             },
           });
+        },
+        complete: () => {
+          item.loading = false;
         },
       });
     },
