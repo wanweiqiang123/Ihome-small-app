@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-13 21:11:59
+ * @LastEditTime: 2021-01-14 17:58:34
 -->
 <template>
   <LoginPage>
@@ -434,7 +434,11 @@ export default {
         ],
         ownerCertificateNo: [
           { required: true, message: "请输入营业执照编号", trigger: "change" },
-          { validator: validIdentityCard, trigger: "change" },
+          {
+            pattern: /^[A-Za-z0-9]{18}$/,
+            message: "请输入正确的18位营业执照编号",
+            trigger: "change",
+          },
         ],
       },
       ownerInfo: [
