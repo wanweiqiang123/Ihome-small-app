@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-25 11:40:27
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-14 09:51:32
+ * @LastEditTime: 2021-01-14 11:10:04
 -->
 <template>
   <view class="box">
@@ -15,14 +15,15 @@
     >
       <view class="box-item-title">
         <view style="font-weight: bold;">付款金额：{{item.amount}}</view>
-        <view v-if="item.fileIds.length">
+        <template v-if="item.fileIds.length">
           <u-button
+            class="downButton"
             type="primary"
             size="mini"
             :loading="item.loading"
             @click="downLoad(item)"
           >下载电子回单</u-button>
-        </view>
+        </template>
       </view>
       <view class="box-item-msg">
         <view class="box-item-msg-item">
@@ -152,6 +153,13 @@ export default {
         right: 0;
       }
     }
+  }
+}
+
+.downButton {
+  /deep/ .u-loading::before {
+    width: 20rpx;
+    height: 20rpx;
   }
 }
 </style>
