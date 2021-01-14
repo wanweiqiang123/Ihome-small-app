@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 15:28:17
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-12 20:25:26
+ * @LastEditTime: 2021-01-14 09:42:52
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
@@ -62,6 +62,7 @@
       <u-button
         shape="square"
         @click="submitMsg"
+        :loading="buttonLoading"
       >提交</u-button>
     </view>
   </view>
@@ -94,6 +95,7 @@ export default {
       uploadArr: [],
       addOrUpdate: "",
       continueId: "",
+      buttonLoading: false,
     };
   },
   onLoad() {
@@ -167,15 +169,25 @@ export default {
       // obj.proId = 1;
       // obj.termId = 3;
       if (this.addOrUpdate === "add") {
-        await postAddServiceApi(obj);
+        try {
+          await postAddServiceApi(obj);
+          this.buttonLoading = false;
+        } catch (err) {
+          this.buttonLoading = false;
+        }
       } else {
-        await postPaymentupdateApi(obj);
+        try {
+          await postPaymentupdateApi(obj);
+          this.buttonLoading = false;
+        } catch (error) {
+          this.buttonLoading = false;
+        }
       }
       uni.showToast({
         title: "提交成功",
         icon: "none",
       });
-      uni.navigateTo({
+      uni.redirectTo({
         url: `/customerPackage/discountsInfo/index?id=${this.payData.businessId}`,
       });
     },

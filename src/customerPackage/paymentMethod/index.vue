@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-13 15:47:42
+ * @LastEditTime: 2021-01-14 09:41:09
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
@@ -70,6 +70,7 @@
       <u-button
         shape="square"
         @click="payGoto"
+        :loading="buttonLoading"
       >{{`${getDictName(payType, payTypeOptions)} ￥${payNum?payNum:0}`}}
       </u-button>
     </view>
@@ -113,6 +114,7 @@ export default {
       show: false,
       open: true,
       addOrUpdate: "",
+      buttonLoading: false,
     };
   },
   watch: {
@@ -181,6 +183,7 @@ export default {
       this.payType = res.payType;
     },
     async payGoto() {
+      this.buttonLoading = true;
       let obj = {};
       obj.amount = Number(this.payNum);
       obj.businessId = this.payData.businessId;
@@ -209,23 +212,47 @@ export default {
         case "UnionPay":
         case "Alipay":
           if (this.addOrUpdate === "add") {
-            res = await postAddServiceApi(obj);
+            try {
+              res = await postAddServiceApi(obj);
+              this.buttonLoading = false;
+            } catch (err) {
+              this.buttonLoading = false;
+            }
           } else {
-            res = await postPaymentupdateApi(obj);
+            try {
+              res = await postPaymentupdateApi(obj);
+              this.buttonLoading = false;
+            } catch (err) {
+              this.buttonLoading = false;
+            }
           }
-          uni.navigateTo({
-            url: `/customerPackage/paymentMethod/zhifubaoPay?id=${res.data}&type=${this.payType}`,
-          });
+          if (res.data) {
+            uni.navigateTo({
+              url: `/customerPackage/paymentMethod/zhifubaoPay?id=${res.data}&type=${this.payType}`,
+            });
+          }
           break;
         case "Pos":
           if (this.addOrUpdate === "add") {
-            res = await postAddServiceApi(obj);
+            try {
+              res = await postAddServiceApi(obj);
+              this.buttonLoading = false;
+            } catch (err) {
+              this.buttonLoading = false;
+            }
           } else {
-            res = await postPaymentupdateApi(obj);
+            try {
+              res = await postPaymentupdateApi(obj);
+              this.buttonLoading = false;
+            } catch (err) {
+              this.buttonLoading = false;
+            }
           }
-          uni.navigateTo({
-            url: `/customerPackage/paymentMethod/POS?id=${res.data}`,
-          });
+          if (res.data) {
+            uni.navigateTo({
+              url: `/customerPackage/paymentMethod/POS?id=${res.data}`,
+            });
+          }
           break;
         case "Transfer":
           getApp().bankTransferData = {
@@ -234,48 +261,60 @@ export default {
             addOrUpdate: this.addOrUpdate,
             continueId: this.continueId,
           };
+          this.buttonLoading = false;
           uni.navigateTo({
             url: `/customerPackage/paymentMethod/bankTransfer`,
           });
           break;
         case "WeChatPay":
           if (this.addOrUpdate === "add") {
-            res = await postAddServiceApi(obj);
+            try {
+              res = await postAddServiceApi(obj);
+              this.buttonLoading = false;
+            } catch (err) {
+              this.buttonLoading = false;
+            }
           } else {
-            res = await postPaymentupdateApi(obj);
+            try {
+              res = await postPaymentupdateApi(obj);
+              this.buttonLoading = false;
+            } catch (err) {
+              this.buttonLoading = false;
+            }
           }
-          // const openId = uni.getStorageSync("openId");
-          const item = await getWeChatJsApi(res.data);
-          const weChatData = JSON.parse(item).response.msgBody.wcPayData;
-          uni.getProvider({
-            service: "payment",
-            success: (reson) => {
-              uni.requestPayment({
-                provider: reson.provider[0],
-                appId: weChatData.appId,
-                timeStamp: weChatData.timeStamp,
-                nonceStr: weChatData.nonceStr,
-                package: weChatData.pkg,
-                signType: weChatData.signType,
-                paySign: weChatData.paySign,
-                success: () => {
-                  uni.showToast({
-                    title: "支付成功",
-                    icon: "success",
-                  });
-                  uni.navigateTo({
-                    url: `/customerPackage/paySuccess/index`,
-                  });
-                },
-                fail: () => {
-                  uni.showToast({
-                    title: "支付失败",
-                    icon: "none",
-                  });
-                },
-              });
-            },
-          });
+          if (res.data) {
+            const item = await getWeChatJsApi(res.data);
+            const weChatData = JSON.parse(item).response.msgBody.wcPayData;
+            uni.getProvider({
+              service: "payment",
+              success: (reson) => {
+                uni.requestPayment({
+                  provider: reson.provider[0],
+                  appId: weChatData.appId,
+                  timeStamp: weChatData.timeStamp,
+                  nonceStr: weChatData.nonceStr,
+                  package: weChatData.pkg,
+                  signType: weChatData.signType,
+                  paySign: weChatData.paySign,
+                  success: () => {
+                    uni.showToast({
+                      title: "支付成功",
+                      icon: "success",
+                    });
+                    uni.navigateTo({
+                      url: `/customerPackage/paySuccess/index`,
+                    });
+                  },
+                  fail: () => {
+                    uni.showToast({
+                      title: "支付失败",
+                      icon: "none",
+                    });
+                  },
+                });
+              },
+            });
+          }
       }
     },
   },

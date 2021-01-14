@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-12 10:53:18
- * @LastEditors: zyc
- * @LastEditTime: 2020-11-12 15:44:39
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-14 10:06:50
 -->
 <template>
   <view>
@@ -24,17 +24,16 @@
 let tablePage = [
   {
     pagePath: "/customerPackage/homeTab/index",
-    iconPath: "home",
-    selectedIconPath: "home-fill",
+    iconPath: require("@/customerPackage/common/icon/tabicon/home.png"),
+    selectedIconPath: require("@/customerPackage/common/icon/tabicon/homeactive.png"),
     text: "我的购房优惠",
-    count: 2,
     isDot: true,
     customIcon: false,
   },
   {
     pagePath: "/customerPackage/personalTab/index",
-    iconPath: "photo",
-    selectedIconPath: "photo-fill",
+    iconPath: require("@/customerPackage/common/icon/tabicon/me.png"),
+    selectedIconPath: require("@/customerPackage/common/icon/tabicon/meactive.png"),
     text: "个人中心",
     customIcon: false,
   },
