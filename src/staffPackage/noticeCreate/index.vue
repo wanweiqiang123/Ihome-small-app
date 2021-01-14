@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-14 17:58:34
+ * @LastEditTime: 2021-01-14 18:17:15
 -->
 <template>
   <LoginPage>
@@ -100,7 +100,7 @@
               label="选择栋座"
               class="hide-icon"
               right-icon="arrow-right"
-              required
+              :required="!isRecognize"
               prop="buyUnitName"
             >
               <u-input
@@ -114,7 +114,7 @@
               label="选择房号"
               class="hide-icon"
               right-icon="arrow-right"
-              required
+              :required="!isRecognize"
               prop="roomNumberName"
             >
               <u-input
@@ -413,10 +413,18 @@ export default {
       },
       roomRules: {
         buyUnitName: [
-          { required: true, message: "请选择栋座", trigger: "change" },
+          {
+            required: true,
+            message: "请选择栋座",
+            trigger: "change",
+          },
         ],
         roomNumberName: [
-          { required: true, message: "请选择房号", trigger: "change" },
+          {
+            required: true,
+            message: "请选择房号",
+            trigger: "change",
+          },
         ],
       },
       enterpriseFrom: {
@@ -639,6 +647,7 @@ export default {
       return this.arr;
     },
     submit() {
+      this.$refs.roomFrom.setRules(this.roomRules);
       let verifyArr = this.dataVerify();
       Promise.all(verifyArr)
         .then(async () => {
@@ -732,6 +741,22 @@ export default {
           this.form.cycleName = item.data.termName;
           this.proId = item.data.proId;
           this.isRecognize = item.data.termStageEnum === "Recognize";
+          this.roomRules = {
+            buyUnitName: [
+              {
+                required: !this.isRecognize,
+                message: "请选择栋座",
+                trigger: "change",
+              },
+            ],
+            roomNumberName: [
+              {
+                required: !this.isRecognize,
+                message: "请选择房号",
+                trigger: "change",
+              },
+            ],
+          };
           // this.form.manner = null;
           // this.form.explain = null;
           // this.form.paymentAmount = null;
