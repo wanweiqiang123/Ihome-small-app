@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 17:10:39
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-14 11:12:01
+ * @LastEditTime: 2021-01-14 11:46:01
 -->
 <template>
   <LoginPage>
@@ -111,7 +111,7 @@ export default {
             uni.authorize({
               scope: "scope.writePhotosAlbum",
               success: () => {
-                this.saveImageToPhotosAlbum();
+                this.downloadCode();
               },
               fail: () => {
                 uni.showToast({
