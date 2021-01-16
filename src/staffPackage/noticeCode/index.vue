@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 17:10:39
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-12 14:36:17
+ * @LastEditTime: 2021-01-14 11:46:01
 -->
 <template>
   <LoginPage>
@@ -67,7 +67,7 @@
             <u-button
               type="primary"
               :loading="loading"
-              @click="downloadCode()"
+              @click="savePoster()"
             >下载二维码</u-button>
           </view>
         </view>
@@ -100,6 +100,39 @@ export default {
       this.fileId = item.preferentialAddr;
       this.isShow = true;
     },
+    savePoster() {
+      uni.getSetting({
+        success: (res) => {
+          if (res.authSetting["scope.writePhotosAlbum"]) {
+            //验证用户是否授权可以访问相册
+            this.downloadCode();
+          } else {
+            //如果没有授权，向用户发起请求
+            uni.authorize({
+              scope: "scope.writePhotosAlbum",
+              success: () => {
+                this.downloadCode();
+              },
+              fail: () => {
+                uni.showToast({
+                  title: "请打开保存相册权限，再点击保存相册分享",
+                  icon: "none",
+                  duration: 3000,
+                });
+                setTimeout(() => {
+                  uni.openSetting({
+                    //调起客户端小程序设置界面,让用户开启访问相册
+                    success: (res2) => {
+                      // console.log(res2.authSetting)
+                    },
+                  });
+                }, 3000);
+              },
+            });
+          }
+        },
+      });
+    },
     downloadCode() {
       this.loading = true;
       uni.downloadFile({
@@ -111,6 +144,10 @@ export default {
             filePath: filePath,
             success: () => {
               this.$tool.toast("保存成功");
+              this.loading = false;
+            },
+            fail: () => {
+              this.$tool.toast("保存失败");
               this.loading = false;
             },
           });
