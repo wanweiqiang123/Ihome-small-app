@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-12 20:23:28
+ * @LastEditTime: 2021-01-16 10:11:25
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -225,7 +225,6 @@ import {
   getCheckIsExistNoPayApi,
   postDeleteByBusinessIdApi,
   getNotCheckNumApi,
-  getBusinessIdApi,
 } from "../../api/customer";
 import { getAllByTypeApi } from "../../api/index";
 import uImage from "../../uview-ui/components/u-image/u-image.vue";
@@ -298,16 +297,9 @@ export default {
         businessId: this.noticeId,
         businessCode: this.info.noticeNo,
       };
-      const res = await getBusinessIdApi(this.noticeId);
-      if (res) {
-        uni.navigateTo({
-          url: `/customerPackage/paymentMethod/index?id=${res}&&type=update`,
-        });
-      } else {
-        uni.navigateTo({
-          url: `/customerPackage/paymentMethod/index?type=add`,
-        });
-      }
+      uni.navigateTo({
+        url: `/customerPackage/paymentMethod/index`,
+      });
     },
     // confirm(obj) {
     //   getApp().paidData = {

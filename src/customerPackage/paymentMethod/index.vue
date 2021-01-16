@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-14 09:41:09
+ * @LastEditTime: 2021-01-16 10:10:34
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
@@ -97,8 +97,9 @@ import {
   postUnionPayParameterApi,
   postUnionPayUrlApi,
   getWeChatJsApi,
-  getIdApi,
+  getUnpaidOrderOrAmountPaidApi,
   postPaymentupdateApi,
+  getBusinessIdApi,
 } from "../../api/customer";
 import { getAllByTypeApi } from "../../api/index";
 import uImage from "../../uview-ui/components/u-image/u-image.vue";
@@ -113,7 +114,6 @@ export default {
       payParam: {},
       show: false,
       open: true,
-      addOrUpdate: "",
       buttonLoading: false,
     };
   },
@@ -125,21 +125,21 @@ export default {
       }
     },
   },
-  onLoad(options) {
+  async onLoad() {
     this.payData = { ...getApp().paidData };
-    if (options.type === "update") {
-      this.continueId = options.id;
-      this.continueMsg(options.id);
-    } else {
-      this.payNum = this.payData.unpaid + "";
-    }
-    this.addOrUpdate = options.type;
-  },
-  async onShow() {
     this.payTypeOptions = await getAllByTypeApi({
       type: "PayType",
       tag: "Customer",
     });
+  },
+  async onShow() {
+    const res = await getUnpaidOrderOrAmountPaidApi(this.payData.businessId);
+    this.payData.paid = res.amountPaid;
+    this.payData.unpaid =
+      Number(this.payData.paymentAmount) - Number(res.amountPaid);
+    this.payNum =
+      Number(this.payData.paymentAmount) - Number(res.amountPaid) + "";
+    this.payType = res.payType ? res.payType : "WeChatPay";
   },
   methods: {
     // 字典翻译
@@ -150,8 +150,8 @@ export default {
     // 字典匹配
     getDictName(code, list) {
       if (list.length) {
-        const { name } = list.find((v) => v.code === code);
-        return name;
+        const item = list.find((v) => v.code === code);
+        return item?.name;
       }
     },
     payNumChange(v) {
@@ -176,12 +176,6 @@ export default {
     radioChange(e) {
       this.payType = e;
     },
-    // 如果存在未支付订单
-    async continueMsg(id) {
-      const res = await getIdApi({ id });
-      this.payNum = res.amount + "";
-      this.payType = res.payType;
-    },
     async payGoto() {
       this.buttonLoading = true;
       let obj = {};
@@ -199,19 +193,22 @@ export default {
       obj.termId = this.payData.cycleId;
       obj.unpaidServiceFee = this.payData.unpaid;
       obj.terminal = "WeChatApp";
-      if (this.addOrUpdate === "update") {
-        obj.id = this.continueId;
-      }
       // 假数据
       // obj.groupId = 15;
       // obj.operator = 15;
       // obj.proId = 1;
       // obj.termId = 3;
+
+      // 判断是否存在待支付订单
+      const isPay = await getBusinessIdApi(this.payData.businessId);
+      if (isPay) {
+        obj.id = isPay;
+      }
       let res = {};
       switch (this.payType) {
         case "UnionPay":
         case "Alipay":
-          if (this.addOrUpdate === "add") {
+          if (!isPay) {
             try {
               res = await postAddServiceApi(obj);
               this.buttonLoading = false;
@@ -233,7 +230,7 @@ export default {
           }
           break;
         case "Pos":
-          if (this.addOrUpdate === "add") {
+          if (!isPay) {
             try {
               res = await postAddServiceApi(obj);
               this.buttonLoading = false;
@@ -256,18 +253,17 @@ export default {
           break;
         case "Transfer":
           getApp().bankTransferData = {
-            id: this.payData.cycleId,
+            cycleId: this.payData.cycleId,
             payNum: this.payNum,
-            addOrUpdate: this.addOrUpdate,
-            continueId: this.continueId,
+            addOrUpdate: isPay ? "update" : "add",
           };
           this.buttonLoading = false;
           uni.navigateTo({
-            url: `/customerPackage/paymentMethod/bankTransfer`,
+            url: `/customerPackage/paymentMethod/bankTransfer?id=${isPay}`,
           });
           break;
         case "WeChatPay":
-          if (this.addOrUpdate === "add") {
+          if (!isPay) {
             try {
               res = await postAddServiceApi(obj);
               this.buttonLoading = false;

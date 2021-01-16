@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 15:28:17
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-14 09:42:52
+ * @LastEditTime: 2021-01-16 09:59:39
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
@@ -79,7 +79,7 @@ export default {
   data() {
     return {
       info: {},
-      payId: "",
+      cycleId: "",
       payNum: 0,
       action:
         currentEnvConfig["protocol"] +
@@ -98,23 +98,23 @@ export default {
       buttonLoading: false,
     };
   },
-  onLoad() {
-    this.payId = getApp().bankTransferData.id;
+  onLoad(options) {
+    this.cycleId = getApp().bankTransferData.cycleId;
     this.payNum = getApp().bankTransferData.payNum;
     this.addOrUpdate = getApp().bankTransferData.addOrUpdate;
-    this.continueId = getApp().bankTransferData.continueId;
+    this.continueId = options.id;
     this.payData = { ...getApp().paidData };
     // 假数据
-    // this.payId = 3;
+    // this.cycleId = 3;
   },
   onShow() {
-    if (this.payId) {
+    if (this.cycleId) {
       this.getInfo();
     }
   },
   methods: {
     async getInfo() {
-      this.info = await getBankInfoApi(this.payId);
+      this.info = await getBankInfoApi(this.cycleId);
     },
     copyPayNum() {
       uni.setClipboardData({

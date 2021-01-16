@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-15 18:08:02
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-12 12:11:51
+ * @LastEditTime: 2021-01-16 09:47:49
  */
 import { getApi, postApi } from '../common/http.js';
 
@@ -115,4 +115,8 @@ export async function postUpdateRefundApi(data = {}, option = {}) {
 // 修改付款记录
 export async function postPaymentupdateApi(data = {}, option = {}) {
   return await postApi(`/sales-api/finance/payment/update`, data, option)
+}
+// 查询待付款订单或者已付金额,没有待付款订单则只返回已付金额
+export async function getUnpaidOrderOrAmountPaidApi(data = {}, option = {}) {
+  return await getApi(`/sales-api/finance/payment/getUnpaidOrderOrAmountPaid/${data}`, option)
 }
