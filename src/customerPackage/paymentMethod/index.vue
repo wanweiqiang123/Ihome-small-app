@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-16 10:10:34
+ * @LastEditTime: 2021-01-18 09:49:47
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
