@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 15:29:56
+ * @LastEditTime: 2021-01-18 17:52:23
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -63,7 +63,7 @@
         </view>
         <view
           class="info-first-btn"
-          v-if="isShowPayButton"
+          v-if="true"
         >
           <u-button
             type="primary"
