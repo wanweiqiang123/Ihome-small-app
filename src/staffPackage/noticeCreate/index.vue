@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-18 20:40:40
+ * @LastEditTime: 2021-01-18 21:20:30
 -->
 <template>
   <LoginPage>
@@ -420,6 +420,7 @@ export default {
         roomNumberId: "",
         roomNumberName: "",
         ownerType: "Personal",
+        refundDays: null,
         templateType: null,
         ownerList: [],
         noticeAttachmentList: [],
@@ -710,7 +711,8 @@ export default {
           // } catch (err) {
           //   console.log(err);
           // }
-          if (this.isShowTis(this.form.roomNumberId)) {
+          let isBool = await this.isShowTis(this.form.roomNumberId);
+          if (isBool) {
             this.submieMethod();
           } else {
             this.isShowRoomTip = true;
@@ -726,31 +728,8 @@ export default {
       Promise.all(verifyArr)
         .then(async () => {
           console.log("全部通过", this.form);
-          // this.form.ownerEditList = this.form.ownerList;
-          // try {
-          //   const res = await postNoticeUpdate({
-          //     ...this.form,
-          //     notificationStatus: "WaitBeSigned",
-          //   });
-          //   this.$tool.toast("保存成功");
-          //   if (this.form.templateType === "ElectronicTemplate") {
-          //     uni.navigateTo({
-          //       url: `/staffPackage/noticePreview/index?id=${this.form.noticeId}&tId=${this.form.templateId}&type=Notification`,
-          //     });
-          //   } else {
-          //     this.$tool.back(null, {
-          //       type: "update",
-          //       data: {
-          //         ...this.form,
-          //         id: this.form.noticeId,
-          //         notificationStatus: "WaitBeSigned",
-          //       },
-          //     });
-          //   }
-          // } catch (err) {
-          //   console.log(err);
-          // }
-          if (this.isShowTis(this.form.roomNumberId)) {
+          let isBool = await this.isShowTis(this.form.roomNumberId);
+          if (isBool) {
             this.updateMethod();
           } else {
             this.isShowRoomTip = true;
@@ -867,6 +846,7 @@ export default {
           this.form.cycleId = item.data.termId;
           this.form.cycleName = item.data.termName;
           this.proId = item.data.proId;
+          this.form.refundDays = item.data.partyARefundDays;
           this.isRecognize = item.data.termStageEnum === "Recognize";
           this.roomRules = {
             buyUnitName: [
