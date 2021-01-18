@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-12 18:15:53
+ * @LastEditTime: 2021-01-18 10:59:21
 -->
 <template>
   <LoginPage>
@@ -237,18 +237,32 @@ export default {
   },
   methods: {
     handleGoConfirm(item) {
-      if (item.notificationStatus === "WaitDetermine") {
+      // if (item.notificationStatus === "WaitDetermine") {
+      //   uni.navigateTo({
+      //     url: `/staffPackage/noticeConfirm/index?id=${item.id}`,
+      //   });
+      // } else {
+      //   if (item.notificationStatuses === "WaitPay") {
+      //     // 客户待支付
+      //   } else {
+      //     uni.navigateTo({
+      //       url: `/staffPackage/noticePreview/index?id=${item.id}&tId=${item.templateId}&type=${item.notificationType}&sign=${item.notificationStatus}`,
+      //     });
+      //   }
+      // }
+      if (
+        item.notificationStatus === "WaitDetermine" ||
+        item.notificationStatus === "WaitBeSigned"
+      ) {
         uni.navigateTo({
-          url: `/staffPackage/noticeConfirm/index?id=${item.id}`,
+          url: `/staffPackage/noticeCreate/index?id=${item.id}`,
         });
+      } else if (item.notificationStatus === "WaitPay") {
+        // 客户待支付
       } else {
-        if (item.notificationStatuses === "WaitPay") {
-          // 客户待支付
-        } else {
-          uni.navigateTo({
-            url: `/staffPackage/noticePreview/index?id=${item.id}&tId=${item.templateId}&type=${item.notificationType}&sign=${item.notificationStatus}`,
-          });
-        }
+        uni.navigateTo({
+          url: `/staffPackage/noticePreview/index?id=${item.id}&tId=${item.templateId}&type=${item.notificationType}&sign=${item.notificationStatus}`,
+        });
       }
     },
     handleGoCreate() {
