@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 15:33:26
+ * @LastEditTime: 2021-01-18 17:46:01
 -->
 <template>
   <view>
@@ -79,9 +79,6 @@ export default {
     };
   },
   onLoad() {
-    uni.navigateTo({
-      url: `/customerPackage/paymentMethod/index`,
-    });
     this.getInfo();
   },
   async onShow() {
