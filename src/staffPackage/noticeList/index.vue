@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-18 15:51:37
+ * @LastEditTime: 2021-01-18 20:42:17
 -->
 <template>
   <LoginPage>
@@ -21,7 +21,8 @@
         >
           <view class="notice-info">
             <view class="notice-title">{{i.notificationType | filterNoticeDict(noticeTypes)}}{{`(${i.noticeNo})`}}</view>
-            <view>{{`${i.projectName} ${i.buyUnitName}-${i.roomNumberName}`}}</view>
+            <view v-if="i.buyUnitName && i.roomNumberName">{{`${i.projectName} ${i.buyUnitName}-${i.roomNumberName}`}}</view>
+            <view v-else>{{`${i.projectName}`}}</view>
             <template v-for="(item, index) in i.ownerList">
               <view :key="index">{{item.ownerName || '-'}}</view>
             </template>
@@ -240,15 +241,24 @@ export default {
       switch (item.notificationStatus) {
         case "WaitDetermine":
         case "WaitBeSigned":
-          uni.navigateTo({
-            url: `/staffPackage/noticeCreate/index?id=${item.id}`,
-          });
+          if (item.notificationType === "Notification") {
+            uni.navigateTo({
+              url: `/staffPackage/noticeCreate/index?id=${item.id}`,
+            });
+          } else {
+            uni.navigateTo({
+              url: `/staffPackage/noticePreview/index?id=${item.id}&tId=${item.templateId}&type=${item.notificationType}&sign=${item.notificationStatus}`,
+            });
+          }
           break;
         case "WaitPay":
           // 客户待支付
           break;
-        case "":
+        case "WaitReview":
           // 分公司业管待审核
+          uni.navigateTo({
+            url: `/staffPackage/noticeConfirm/index?id=${item.id}`,
+          });
           break;
         case "BecomeEffective":
           if (item.notificationType === "Notification") {

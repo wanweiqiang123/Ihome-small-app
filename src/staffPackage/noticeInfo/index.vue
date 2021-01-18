@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-18 11:38:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-18 17:52:56
+ * @LastEditTime: 2021-01-18 19:39:27
 -->
 <template>
   <LoginPage>
@@ -37,7 +37,7 @@
           <u-form
             :model="form"
             ref="uForm"
-            label-width="150"
+            label-width="220"
           >
             <u-form-item label="选择栋座">
               <view class="text-right">{{form.buyUnitName}}</view>
@@ -167,7 +167,6 @@ export default {
           .filter((i) => i.type === "NoticeAttachment")
           .map((val) => ({
             url: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${val.fileNo}`,
-            isRemove: true,
           }));
         console.log(this.fileList);
       }
@@ -187,12 +186,11 @@ export default {
     },
     beforeRemove(index, lists) {
       console.log(index, lists);
-      // if (lists[index].isRemove) {
-      //   return false;
-      // } else {
-      //   return true;
-      // }
-      return false;
+      if (lists[index].response) {
+        return true;
+      } else {
+        return false;
+      }
     },
     successChange(data, index, lists, name) {
       this.noticeAttachmentList[index] = {

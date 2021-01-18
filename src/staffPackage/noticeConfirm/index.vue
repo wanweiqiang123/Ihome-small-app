@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 17:32:25
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-12 14:36:04
+ * @LastEditTime: 2021-01-18 19:40:38
 -->
 <template>
   <LoginPage>
@@ -37,31 +37,13 @@
           <u-form
             :model="form"
             ref="uForm"
-            label-width="150"
+            label-width="220"
           >
-            <u-form-item
-              label="选择栋座"
-              class="hide-icon"
-              right-icon="arrow-right"
-            >
-              <u-input
-                v-model="form.buyUnitName"
-                type="select"
-                placeholder="请选择栋座"
-                @click="buildShow = true"
-              />
+            <u-form-item label="选择栋座">
+              <view class="text-right">{{form.buyUnitName}}</view>
             </u-form-item>
-            <u-form-item
-              label="选择房号"
-              class="hide-icon"
-              right-icon="arrow-right"
-            >
-              <u-input
-                v-model="form.roomNumberName"
-                type="select"
-                placeholder="请选择房号"
-                @click="handleShowRoom"
-              />
+            <u-form-item label="选择房号">
+              <view class="text-right">{{form.roomNumberName}}</view>
             </u-form-item>
             <template v-for="(i, n) in form.ownerList">
               <u-gap
@@ -77,30 +59,38 @@
                 :key="n"
                 label="业主姓名"
               >
-                <u-input
-                  v-model="i.ownerName"
-                  placeholder="请输入业主姓名"
-                />
+                <view class="text-right">{{i.ownerName}}</view>
               </u-form-item>
               <u-form-item
                 :key="n"
                 label="手机号码"
               >
-                <u-input
-                  v-model="i.ownerMobile"
-                  placeholder="请输入手机号码"
-                />
+                <view class="text-right">{{i.ownerMobile}}</view>
               </u-form-item>
               <u-form-item
                 :key="n"
                 label="身份证号"
               >
-                <u-input
-                  v-model="i.ownerCertificateNo"
-                  placeholder="请输入身份证号"
-                />
+                <view class="text-right">{{i.ownerCertificateNo}}</view>
               </u-form-item>
             </template>
+            <u-gap
+              height="20"
+              bg-color="#f1f1f1"
+            ></u-gap>
+            <u-form-item
+              label="优惠告知书附件"
+              label-position="top"
+              v-if="fileList.length"
+            >
+              <u-upload
+                width="180"
+                height="180"
+                name="files"
+                :file-list="fileList"
+                :deletable="fasle"
+              ></u-upload>
+            </u-form-item>
           </u-form>
         </view>
       </view>
@@ -138,7 +128,7 @@
 <script>
 import {
   getNoticeInfo,
-  postNoticeStatus,
+  postNoticeManagement,
   postBuildByProId,
   postRoomByProId,
 } from "../../api/staff";
@@ -162,6 +152,7 @@ export default {
       selectBuildList: [],
       roomShow: false,
       roomSelectList: [],
+      fileList: [],
     };
   },
   methods: {
@@ -169,6 +160,11 @@ export default {
       if (id) {
         const res = await getNoticeInfo({ id });
         Object.assign(this.form, res);
+        this.fileList = res.noticeAttachmentList
+          .filter((i) => i.type === "NoticeAttachment")
+          .map((val) => ({
+            url: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${val.fileNo}`,
+          }));
       }
     },
     roomConfirm(val) {
@@ -190,14 +186,8 @@ export default {
       this.form.roomNumberName = "";
     },
     async submit() {
-      let params = {
-        buyUnit: this.form.buyUnit,
-        noticeId: this.form.id,
-        ownerList: this.form.ownerList,
-        roomNumberId: this.form.roomNumberId,
-      };
       try {
-        await postNoticeStatus(params);
+        await postNoticeManagement(this.form.id);
         this.$tool.toast("确认成功");
         this.$tool.back(null, {
           type: "update",
@@ -273,12 +263,7 @@ export default {
   padding-right: 30rpx;
   background: #fff;
 }
-</style>
-<style lang="scss">
-.form-color {
-  .u-form-item {
-    padding-left: 20rpx !important;
-    padding-right: 20rpx !important;
-  }
+.text-right {
+  text-align: right;
 }
 </style>
