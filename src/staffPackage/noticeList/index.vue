@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 15:48:26
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-01-18 15:51:37
 -->
 <template>
   <LoginPage>
@@ -237,32 +237,33 @@ export default {
   },
   methods: {
     handleGoConfirm(item) {
-      // if (item.notificationStatus === "WaitDetermine") {
-      //   uni.navigateTo({
-      //     url: `/staffPackage/noticeConfirm/index?id=${item.id}`,
-      //   });
-      // } else {
-      //   if (item.notificationStatuses === "WaitPay") {
-      //     // 客户待支付
-      //   } else {
-      //     uni.navigateTo({
-      //       url: `/staffPackage/noticePreview/index?id=${item.id}&tId=${item.templateId}&type=${item.notificationType}&sign=${item.notificationStatus}`,
-      //     });
-      //   }
-      // }
-      if (
-        item.notificationStatus === "WaitDetermine" ||
-        item.notificationStatus === "WaitBeSigned"
-      ) {
-        uni.navigateTo({
-          url: `/staffPackage/noticeCreate/index?id=${item.id}`,
-        });
-      } else if (item.notificationStatus === "WaitPay") {
-        // 客户待支付
-      } else {
-        uni.navigateTo({
-          url: `/staffPackage/noticePreview/index?id=${item.id}&tId=${item.templateId}&type=${item.notificationType}&sign=${item.notificationStatus}`,
-        });
+      switch (item.notificationStatus) {
+        case "WaitDetermine":
+        case "WaitBeSigned":
+          uni.navigateTo({
+            url: `/staffPackage/noticeCreate/index?id=${item.id}`,
+          });
+          break;
+        case "WaitPay":
+          // 客户待支付
+          break;
+        case "":
+          // 分公司业管待审核
+          break;
+        case "BecomeEffective":
+          if (item.notificationType === "Notification") {
+            // 优惠告知书
+            uni.navigateTo({
+              url: `/staffPackage/noticeInfo/index?id=${item.id}&tempType=${item.templateType}`,
+            });
+          } else {
+            uni.navigateTo({
+              url: `/staffPackage/noticePreview/index?id=${item.id}&tId=${item.templateId}&type=${item.notificationType}&sign=${item.notificationStatus}`,
+            });
+          }
+          break;
+        default:
+          break;
       }
     },
     handleGoCreate() {

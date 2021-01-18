@@ -4,9 +4,10 @@
  * @Author: ywl
  * @Date: 2020-12-10 15:30:58
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-06 15:34:16
+ * @LastEditTime: 2021-01-18 15:56:14
  */
 import { getApi, postApi } from '../common/http.js';
+import { async } from 'regenerator-runtime';
 
 // 报备确认列表
 export async function postReportList(data = {}, option = {}) {
@@ -92,4 +93,13 @@ export async function postNoticeDelete(data = {}, option = {}) {
  */
 export async function postNoticeUpdate(data = {}, option = {}) {
   return await postApi('/sales-api/contract/notice/update', data, option)
+}
+/**
+ * @description: 优惠告知书增加附件
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function postUploadAnnex(data = {}, option = {}) {
+  return await postApi('/sales-api/contract/notice/annex', data, option)
 }

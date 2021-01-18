@@ -405,6 +405,12 @@
 					}
 				},
 				{
+					"path": "noticeInfo/index",
+					"style": {
+						"navigationBarTitleText": "优惠告知书详情"
+					}
+				},
+				{
 					"path": "noticeCreate/index",
 					"style": {
 						"navigationBarTitleText": "生成优惠告知书"

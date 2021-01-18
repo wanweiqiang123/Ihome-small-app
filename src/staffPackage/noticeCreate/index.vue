@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-18 11:17:49
+ * @LastEditTime: 2021-01-18 17:52:19
 -->
 <template>
   <LoginPage>
@@ -628,7 +628,7 @@ export default {
       );
     },
     beforeUpload() {
-      uni.showToast({
+      this.$tool.toast({
         icon: "loading",
         title: "正在上传...",
         duration: 500000000000,
@@ -689,10 +689,7 @@ export default {
           console.log("全部通过", this.form);
           try {
             const res = await postNoticeCreate(this.form);
-            uni.showToast({
-              title: "保存成功",
-              icon: "none",
-            });
+            this.$tool.toast("保存成功");
             if (this.form.templateType === "ElectronicTemplate") {
               uni.navigateTo({
                 url: `/staffPackage/noticePreview/index?id=${res.noticeId}&tId=${res.templateId}&type=Notification`,
@@ -715,14 +712,15 @@ export default {
           console.log("全部通过", this.form);
           this.form.ownerEditList = this.form.ownerList;
           try {
-            const res = await postNoticeUpdate(this.form);
+            const res = await postNoticeUpdate({
+              ...this.form,
+              notificationStatus: "WaitBeSigned",
+            });
             this.$tool.toast("保存成功");
-            this.$tool.back(
-              {
-                delta: 2,
-              },
-              { type: "update", data: { ...this.form, id: this.form.noticeId } }
-            );
+            this.$tool.back(null, {
+              type: "update",
+              data: { ...this.form, id: this.form.noticeId },
+            });
           } catch (err) {
             console.log(err);
           }
@@ -768,6 +766,9 @@ export default {
         : (this.enterpriseFrom = info.ownerList[0]);
       this.proId = info.projectId;
       this.isType = info.templateType === "ElectronicTemplate";
+      this.getMannerList();
+      this.getBuildList();
+      this.getRoomList();
     },
   },
   onReady() {
@@ -817,14 +818,8 @@ export default {
           this.getMannerList();
           this.getBuildList();
           this.getRoomList();
-          // 清空搜索周期条件
-          getApp().globalData.searchParams = {
-            api: null,
-            key: null,
-            id: null,
-            type: null,
-            other: {},
-          };
+          // 清空搜索出来周期
+          getApp().globalData.searchBackData = {};
           break;
 
         default:
