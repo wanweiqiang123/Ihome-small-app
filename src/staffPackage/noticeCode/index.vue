@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 17:10:39
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-14 11:46:01
+ * @LastEditTime: 2021-01-15 16:51:46
 -->
 <template>
   <LoginPage>
@@ -160,6 +160,9 @@ export default {
         key: "termName",
         id: "termId",
         type: "term",
+        other: {
+          auditEnums: ["ConstractAdopt"],
+        },
       };
       uni.navigateTo({
         url: "/pages/search/index/index",

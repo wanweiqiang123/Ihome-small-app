@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-13 16:47:03
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-13 20:54:38
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-01-15 16:30:04
 -->
 <template>
   <view class="box">
@@ -19,6 +19,7 @@
           :focus="true"
           @search="searchSomething"
           @custom="searchSomething"
+          @clear="searchData"
         ></u-search>
       </view>
       <view
