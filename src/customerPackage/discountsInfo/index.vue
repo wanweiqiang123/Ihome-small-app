@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-16 10:11:25
+ * @LastEditTime: 2021-01-18 09:55:59
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -61,7 +61,10 @@
             笔付款正在审核中
           </text>
         </view>
-        <view class="info-first-btn">
+        <view
+          class="info-first-btn"
+          v-if="isShowPayButton"
+        >
           <u-button
             type="primary"
             size="medium"
@@ -249,6 +252,8 @@ export default {
       Property: [],
       NotificationType: [],
       NotificationStatus: [],
+      PayOpenFlag: [],
+      isShowPayButton: false,
     };
   },
   onLoad(options) {
@@ -261,6 +266,9 @@ export default {
     this.NotificationType = await this.getDictAll("NotificationType");
     this.NotificationStatus = await this.getDictAll("NotificationStatus");
     this.Property = await this.getDictAll("Property");
+    this.PayOpenFlag = await this.getDictAll("PayOpenFlag");
+    this.isShowPayButton =
+      this.PayOpenFlag.find((v) => v.code === "OpenFlag").tag === "On";
   },
   computed: {
     perceent() {
