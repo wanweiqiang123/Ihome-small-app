@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-18 21:20:30
+ * @LastEditTime: 2021-01-18 21:49:05
 -->
 <template>
   <LoginPage>
@@ -603,6 +603,7 @@ export default {
       this.form.buyUnit = item.value;
       this.form.roomNumberName = "";
       this.form.roomNumberId = null;
+      this.getRoomList();
     },
     handleShowBuild() {
       if (!this.proId) {
@@ -624,7 +625,6 @@ export default {
         this.$tool.toast("请先选择联动周期");
         return;
       }
-      this.getRoomList();
       this.roomSelectShow = true;
     },
     async getRoomList() {
