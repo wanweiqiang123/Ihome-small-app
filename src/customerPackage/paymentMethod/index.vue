@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 09:49:47
+ * @LastEditTime: 2021-01-18 15:46:25
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
@@ -131,6 +131,10 @@ export default {
       type: "PayType",
       tag: "Customer",
     });
+    // console.log(res);
+    // this.payTypeOptions = res.filter(
+    //   (v) => !["WeChatPay", "Alipay"].includes(v.code)
+    // );
   },
   async onShow() {
     const res = await getUnpaidOrderOrAmountPaidApi(this.payData.businessId);

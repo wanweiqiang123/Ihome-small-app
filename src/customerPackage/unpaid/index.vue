@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-16 14:19:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-05 11:56:27
+ * @LastEditTime: 2021-01-18 15:36:12
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
@@ -96,8 +96,8 @@ export default {
     // 字典匹配
     getDictName(code, list) {
       if (list.length) {
-        const { name } = list.find((v) => v.code === code);
-        return name;
+        const item = list.find((v) => v.code === code);
+        return item?.name;
       }
     },
     async getInfo() {
@@ -155,7 +155,6 @@ export default {
             },
           });
           break;
-        // 支付宝,银联
         case "Alipay":
         case "UnionPay":
           uni.navigateTo({

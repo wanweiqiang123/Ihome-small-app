@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2021-01-04 11:20:06
- * @LastEditors: ywl
- * @LastEditTime: 2021-01-12 18:17:42
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-18 15:19:43
 -->
 <template>
   <LoginPage>
@@ -123,9 +123,9 @@ export default {
     },
     async getDict(type) {
       const list = await getAllByTypeApi({ type: "NotificationType" });
-      const { name } = list.find((i) => i.code === type);
+      const item = list.find((i) => i.code === type);
       uni.setNavigationBarTitle({
-        title: name,
+        title: item?.name,
       });
     },
   },

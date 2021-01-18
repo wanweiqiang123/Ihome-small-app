@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 09:55:59
+ * @LastEditTime: 2021-01-18 15:29:56
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -346,8 +346,8 @@ export default {
     // 字典匹配
     getDictName(code, list) {
       if (list.length) {
-        const { name } = list.find((v) => v.code === code);
-        return name;
+        const item = list.find((v) => v.code === code);
+        return item?.name;
       }
     },
   },

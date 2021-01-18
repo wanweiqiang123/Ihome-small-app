@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-25 11:40:27
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-14 11:10:04
+ * @LastEditTime: 2021-01-18 15:17:03
 -->
 <template>
   <view class="box">
@@ -77,8 +77,8 @@ export default {
     // 字典匹配
     getDictName(code, list) {
       if (list.length) {
-        const { name } = list.find((v) => v.code === code);
-        return name;
+        const item = list.find((v) => v.code === code);
+        return item?.name;
       }
     },
     async getInfo() {

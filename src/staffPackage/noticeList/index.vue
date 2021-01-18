@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
- * @LastEditors: ywl
- * @LastEditTime: 2021-01-12 18:15:53
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-18 15:19:26
 -->
 <template>
   <LoginPage>
@@ -231,8 +231,8 @@ export default {
   },
   filters: {
     filterNoticeDict(type, data) {
-      const { name } = data.find((i) => i.code === type);
-      return name;
+      const item = data.find((i) => i.code === type);
+      return item?.name;
     },
   },
   methods: {
