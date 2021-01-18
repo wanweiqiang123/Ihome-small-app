@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2021-01-04 11:20:06
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 15:19:43
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-01-18 11:02:14
 -->
 <template>
   <LoginPage>
@@ -16,7 +16,7 @@
       >
         <u-loading slot="loading"></u-loading>
       </u-image>
-      <view
+      <!-- <view
         class="fixed-btn"
         v-if="option.type === 'Notification'"
       >
@@ -47,11 +47,8 @@
           }"
           @click="isShow = true"
         >作废</u-button>
-      </view>
-      <view
-        class="share-btn"
-        v-else
-      >
+      </view> -->
+      <view class="share-btn">
         <u-button
           type="primary"
           open-type="share"

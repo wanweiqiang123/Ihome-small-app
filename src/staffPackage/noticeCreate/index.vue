@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-15 16:24:29
+ * @LastEditTime: 2021-01-18 11:17:49
 -->
 <template>
   <LoginPage>
@@ -313,12 +313,22 @@
           @click="submit()"
           v-if="isSubmit"
         >保存并预览优惠告知书</u-button>
-        <u-button
-          shape="circle"
-          type="primary"
-          @click="update()"
-          v-else
-        >保 存</u-button>
+        <template v-else>
+          <view class="edit-btn">
+            <u-button
+              shape="circle"
+              type="error"
+              class="ih-btn"
+              @click="isRemoveShow = true"
+            >删 除</u-button>
+            <u-button
+              shape="circle"
+              type="primary"
+              class="ih-btn"
+              @click="update()"
+            >保 存</u-button>
+          </view>
+        </template>
       </view>
       <!-- 选择器 -->
       <u-select
@@ -348,6 +358,15 @@
         label-name="roomNo"
         @confirm="roomConfirm"
       ></u-select>
+      <!-- 模态框 -->
+      <u-modal
+        v-model="isRemoveShow"
+        content="是否确认作废?"
+        show-cancel-button
+        confirm-color="#fa3534"
+        :async-close="true"
+        @confirm="removeConfirm"
+      ></u-modal>
     </view>
   </LoginPage>
 </template>
@@ -486,6 +505,7 @@ export default {
         Authorization: "bearer " + storageTool.getToken(),
       },
       fileList: [],
+      isRemoveShow: false,
     };
   },
   methods: {
@@ -552,17 +572,19 @@ export default {
         this.form.paymentAmount = item.value;
       }
     },
-    async handleShowSelect() {
+    handleShowSelect() {
       if (!this.form.cycleId) {
         this.$tool.toast("请先选择联动周期");
         return;
       }
+      this.selectShow = true;
+    },
+    async getMannerList() {
       const list = [{ modeDescription: "自定义", premiumReceived: "other" }];
       this.selectList = await getMannerListByTermId({ id: this.form.cycleId });
       if (this.form.channel === "CustomerService") {
         this.selectList = this.selectList.concat(list);
       }
-      this.selectShow = true;
     },
     buildConfirm(val) {
       let item = val[0];
@@ -571,29 +593,39 @@ export default {
       this.form.roomNumberName = "";
       this.form.roomNumberId = null;
     },
-    async handleShowBuild() {
+    handleShowBuild() {
       if (!this.proId) {
         this.$tool.toast("请先选择联动周期");
         return;
       }
-      this.buildSelectList = await postBuildByProId({ proId: this.proId });
       this.buildSelectShow = true;
+    },
+    async getBuildList() {
+      this.buildSelectList = await postBuildByProId({ proId: this.proId });
     },
     roomConfirm(val) {
       let item = val[0];
       this.form.roomNumberId = item.value;
       this.form.roomNumberName = item.label;
     },
-    async handleShowRoom() {
+    handleShowRoom() {
       if (!this.proId) {
         this.$tool.toast("请先选择联动周期");
         return;
       }
-      this.roomSelectList = await postRoomByProId({
-        proId: this.proId,
-        buildingId: this.form.buyUnit,
-      });
+      this.getRoomList();
       this.roomSelectShow = true;
+    },
+    async getRoomList() {
+      this.roomSelectList = await postRoomByProId(
+        {
+          proId: this.proId,
+          buildingId: this.form.buyUnit,
+        },
+        {
+          hideLoading: true,
+        }
+      );
     },
     beforeUpload() {
       uni.showToast({
@@ -699,6 +731,18 @@ export default {
           console.log("不通过");
         });
     },
+    async removeConfirm() {
+      try {
+        await postNoticeDelete({ id: this.option.id });
+        this.isShow = false;
+        this.$tool.toast("作废成功");
+        this.$tool.back(null, { type: "init", page: null });
+      } catch (error) {
+        console.log(error);
+        this.isShow = false;
+        this.$tool.toast("作废失败");
+      }
+    },
     async getInfo(id) {
       const info = await getNoticeInfo({ id });
       console.log(info);
@@ -760,9 +804,7 @@ export default {
               },
             ],
           };
-          // this.form.manner = null;
-          // this.form.explain = null;
-          // this.form.paymentAmount = null;
+          // 根据周期的不同 清空根据周期刷选的条件
           Object.assign(this.form, {
             buyUnit: "",
             buyUnitName: "",
@@ -772,7 +814,17 @@ export default {
             explain: "",
             paymentAmount: "",
           });
-          console.log(this.form);
+          this.getMannerList();
+          this.getBuildList();
+          this.getRoomList();
+          // 清空搜索周期条件
+          getApp().globalData.searchParams = {
+            api: null,
+            key: null,
+            id: null,
+            type: null,
+            other: {},
+          };
           break;
 
         default:
@@ -791,6 +843,15 @@ export default {
       this.isSubmit = false;
     }
   },
+  // onHide() {
+  //   getApp().globalData.searchParams = {
+  //     api: null,
+  //     key: null,
+  //     id: null,
+  //     type: null,
+  //     other: {},
+  //   };
+  // },
 };
 </script>
 
@@ -867,6 +928,15 @@ export default {
   padding-right: 30rpx;
   background: #fff;
   z-index: 10;
+}
+.edit-btn {
+  display: flex;
+  .ih-btn {
+    flex: 1;
+  }
+  .ih-btn + .ih-btn {
+    padding-left: 20rpx;
+  }
 }
 </style>
 <style lang="scss">
