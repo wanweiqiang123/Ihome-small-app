@@ -251,8 +251,8 @@
       async getDictName(code, type) {
         const dictList = await getAllByTypeApi({ type });
         if (dictList.length) {
-          const { name } = dictList.find(v => v.code === code);
-          return name;
+          const item = dictList.find(v => v.code === code);
+          return item?.name;
         } else {
           return '';
         }
