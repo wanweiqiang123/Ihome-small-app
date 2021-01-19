@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 14:10:55
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-19 19:16:23
+ * @LastEditTime: 2021-01-19 19:52:23
 -->
 <template>
   <view class="receipt safe-area-inset-bottom">
@@ -30,10 +30,16 @@
         >
           <view>
             <view class="receipt-title">{{i.projectName}}</view>
-            <view v-if="i.buyUnitName && i.roomNumberName">{{i.propertyType | filterDict(property)}}-{{i.buyUnitName}}-{{i.roomNumberName}}</view>
-            <view v-else>{{i.propertyType | filterDict(property)}}</view>
+            <view
+              class="receipt-text"
+              v-if="i.buyUnitName && i.roomNumberName"
+            >{{i.propertyType | filterDict(property)}}-{{i.buyUnitName}}-{{i.roomNumberName}}</view>
+            <view
+              class="receipt-text"
+              v-else
+            >{{i.propertyType | filterDict(property)}}</view>
+            <view>优惠方式: {{i.explain}}</view>
           </view>
-          <view>{{i.explain}}</view>
         </view>
         <view
           slot="foot"
@@ -311,15 +317,18 @@ export default {
 }
 .ih-card {
   &-content {
-    display: flex;
-    justify-content: space-between;
+    // display: flex;
+    // justify-content: space-between;
     // align-items: center;
     font-size: 26rpx;
+  }
+  .receipt-text {
+    padding-bottom: 10rpx;
   }
   .receipt-title {
     font-weight: bold;
     font-size: 32rpx;
-    margin-bottom: 16rpx;
+    margin-bottom: 10rpx;
   }
   &-foot {
     display: flex;
