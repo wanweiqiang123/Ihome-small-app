@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-25 11:40:27
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 15:17:03
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-01-19 17:37:21
 -->
 <template>
   <view class="box">
@@ -125,7 +125,7 @@ export default {
   &-item {
     background-color: #fff;
     width: 100%;
-    padding: 0 20rpx;
+    padding: 0 20rpx 20rpx;
     & + & {
       margin-top: 20rpx;
     }

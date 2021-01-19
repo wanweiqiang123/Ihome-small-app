@@ -465,6 +465,12 @@
 					}
 				},
 				{
+					"path": "receiptInfo/index",
+					"style": {
+						"navigationBarTitleText": "购房优惠收款详情"
+					}
+				},
+				{
 					"path": "noticeCode/index",
 					"style": {
 						"navigationBarTitleText": "查询购房优惠码"

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-19 11:14:11
+ * @LastEditTime: 2021-01-19 16:20:13
 -->
 <template>
   <LoginPage>
@@ -21,8 +21,14 @@
         >
           <view class="notice-info">
             <view class="notice-title">{{i.notificationType | filterNoticeDict(noticeTypes)}}{{`(${i.noticeNo})`}}</view>
-            <view v-if="i.buyUnitName && i.roomNumberName">{{`${i.projectName} ${i.buyUnitName}-${i.roomNumberName}`}}</view>
-            <view v-else>{{`${i.projectName}`}}</view>
+            <view
+              v-if="i.buyUnitName && i.roomNumberName"
+              class="notice-text"
+            >{{`${i.projectName} ${i.buyUnitName}-${i.roomNumberName}`}}</view>
+            <view
+              v-else
+              class="notice-text"
+            >{{`${i.projectName}`}}</view>
             <template v-for="(item, index) in i.ownerList">
               <view :key="index">{{item.ownerName || '-'}}</view>
             </template>
@@ -394,29 +400,38 @@ export default {
 .item-container {
   padding: 20rpx 30rpx 116rpx;
   .notice-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    // display: flex;
+    // justify-content: space-between;
+    // align-items: center;
     position: relative;
     padding: 20rpx;
     background: #fff;
+    .notice-text {
+      padding-bottom: 20rpx;
+      word-break: break-word;
+    }
     .notice-info {
       color: #606265;
-      line-height: 50rpx;
       font-size: 26rpx;
       font-family: "Source Han Sans CN";
     }
     .notice-title {
+      padding-bottom: 20rpx;
       font-size: 30rpx;
       font-weight: bold;
       color: #333333;
     }
     .notice-identify {
-      position: absolute;
+      margin-top: 20rpx;
+      padding-top: 20rpx;
+      font-size: 24rpx;
+      text-align: right;
+      border-top: 1px solid $u-border-color;
+      // position: absolute;
       // z-index: 100;
-      right: 20rpx;
-      top: 50%;
-      transform: translateY(-50%);
+      // right: 20rpx;
+      // top: 50%;
+      // transform: translateY(-50%);
     }
     .notice-color {
       color: #f91c11;

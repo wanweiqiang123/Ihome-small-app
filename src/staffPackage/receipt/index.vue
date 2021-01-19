@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 14:10:55
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-19 14:47:01
+ * @LastEditTime: 2021-01-19 16:40:02
 -->
 <template>
   <view class="receipt safe-area-inset-bottom">
@@ -47,6 +47,7 @@
             type="primary"
             shape="circle"
             :custom-style="{ padding: '0 40rpx' }"
+            @click="handleGoto(i.noticeId)"
           >查看</u-button>
         </view>
       </u-card>
@@ -209,6 +210,11 @@ export default {
       };
       uni.navigateTo({
         url: "/pages/search/index/index",
+      });
+    },
+    handleGoto(id) {
+      uni.navigateTo({
+        url: `/staffPackage/receiptInfo/index?id=${id}`,
       });
     },
     handleShowBuild() {

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 17:10:39
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-19 14:52:26
+ * @LastEditTime: 2021-01-19 15:42:04
 -->
 <template>
   <LoginPage>
@@ -16,6 +16,12 @@
             :value="termName || '请选择项目周期'"
             :arrow="true"
             @click="handleToSearch()"
+            :value-style="{
+              overflow: 'hidden',
+              textOverflow:'ellipsis',
+              whiteSpace: 'nowrap',
+              marginLeft: '10rpx'
+            }"
           ></u-cell-item>
         </u-cell-group>
       </view>
@@ -60,7 +66,7 @@
             <u-image
               width="100%"
               height="100%"
-              mode="heightFix"
+              mode="scaleToFill"
               :src="src"
               @click="preview(src)"
             ></u-image>
@@ -233,7 +239,7 @@ export default {
   .code {
     // background: #f1f1f1;
     width: 100%;
-    height: 500rpx;
+    height: 540rpx;
     // margin: 0 auto 20rpx;
   }
   .btn {
