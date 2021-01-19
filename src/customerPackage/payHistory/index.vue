@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-25 11:40:27
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-19 14:57:23
+ * @LastEditTime: 2021-01-19 15:15:07
 -->
 <template>
   <view class="box">
@@ -99,11 +99,10 @@ export default {
           uni.saveImageToPhotosAlbum({
             filePath: filePath,
             success: () => {
-              this.$tool.toast("保存成功");
+              this.$tool.toast("电子回单已保存到相册");
               item.loading = false;
             },
             fail: (err) => {
-              console.log(err, "xxxxxx");
               this.$tool.toast("保存失败");
               item.loading = false;
             },
