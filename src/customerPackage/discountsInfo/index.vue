@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 17:52:23
+ * @LastEditTime: 2021-01-19 09:04:04
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -78,7 +78,7 @@
       <view class="info-second-title">购房信息</view>
       <view class="info-second-msg">
         <view class="info-second-top">{{info.purchaseInformation.projectName}}</view>
-        <view class="info-second-bottom">{{`${getDictName(info.purchaseInformation.propertyType, Property)}-${info.purchaseInformation.buyUnit}-${info.purchaseInformation.roomNumberName}`}}</view>
+        <view class="info-second-bottom">{{`${getDictName(info.purchaseInformation.propertyType, Property)}-${info.purchaseInformation.buyUnitName}-${info.purchaseInformation.roomNumberName}`}}</view>
       </view>
       <view class="info-second-wrap">
         <swiper
