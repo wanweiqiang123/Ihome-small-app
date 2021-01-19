@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-19 09:04:04
+ * @LastEditTime: 2021-01-19 19:38:43
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -61,11 +61,9 @@
             笔付款正在审核中
           </text>
         </view>
-        <view
-          class="info-first-btn"
-          v-if="true"
-        >
+        <view class="info-first-btn">
           <u-button
+            v-if="Number(info.discountInformationResponseVo.paid) !== Number(info.discountInformationResponseVo.paymentAmount)"
             type="primary"
             size="medium"
             shape="circle"
@@ -236,7 +234,9 @@ export default {
   data() {
     return {
       info: {
-        discountInformationResponseVo: {},
+        discountInformationResponseVo: {
+          paid: 0,
+        },
         noticeId: null,
         noticeNo: null,
         noticeList: [],
@@ -258,11 +258,11 @@ export default {
   },
   onLoad(options) {
     this.noticeId = options.id;
-  },
-  async onShow() {
     if (this.noticeId) {
       this.getInfo();
     }
+  },
+  async onShow() {
     this.NotificationType = await this.getDictAll("NotificationType");
     this.NotificationStatus = await this.getDictAll("NotificationStatus");
     this.Property = await this.getDictAll("Property");
@@ -271,11 +271,11 @@ export default {
       this.PayOpenFlag.find((v) => v.code === "OpenFlag").tag === "On";
   },
   computed: {
-    perceent() {
-      if (this.obj?.discountInformationResponseVo?.paid) {
-        const paid = Number(info.discountInformationResponseVo.paid);
+    percent() {
+      if (this.info?.discountInformationResponseVo?.paid) {
+        const paid = Number(this.info.discountInformationResponseVo.paid);
         const amount =
-          paid / Number(info.discountInformationResponseVo.paymentAmount);
+          paid / Number(this.info.discountInformationResponseVo.paymentAmount);
         return amount * 100;
       }
     },

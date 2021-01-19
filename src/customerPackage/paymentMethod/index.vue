@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 15:46:25
+ * @LastEditTime: 2021-01-19 19:49:36
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
@@ -119,7 +119,6 @@ export default {
   },
   watch: {
     payNum(v) {
-      console.log(v, "watch");
       if (Number(v) >= Number(this.payData.unpaid)) {
         this.payNum = this.payData.unpaid + "";
       }
@@ -139,10 +138,12 @@ export default {
   async onShow() {
     const res = await getUnpaidOrderOrAmountPaidApi(this.payData.businessId);
     this.payData.paid = res.amountPaid;
-    this.payData.unpaid =
-      Number(this.payData.paymentAmount) - Number(res.amountPaid);
+    this.payData.unpaid = (
+      Number(this.payData.paymentAmount) - Number(res.amountPaid)
+    ).toFixed(2);
     this.payNum =
-      Number(this.payData.paymentAmount) - Number(res.amountPaid) + "";
+      (Number(this.payData.paymentAmount) - Number(res.amountPaid)).toFixed(2) +
+      "";
     this.payType = res.payType ? res.payType : "WeChatPay";
   },
   methods: {
