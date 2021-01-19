@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-19 16:20:13
+ * @LastEditTime: 2021-01-19 18:28:28
 -->
 <template>
   <LoginPage>
@@ -259,6 +259,9 @@ export default {
           break;
         case "WaitPay":
           // 客户待支付
+          uni.navigateTo({
+            url: `/staffPackage/receiptInfo/index?id=${item.id}`,
+          });
           break;
         case "WaitReview":
           // 分公司业管待审核
