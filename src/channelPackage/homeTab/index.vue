@@ -71,9 +71,12 @@
             </view>
           </view>
         </view>
-        <view class="loading-wrapper">
+        <view class="loading-wrapper" v-if="tablePage.length">
           <!-- <u-loadmore status="loading" />-->
           <u-divider half-width="100%">没有更多了</u-divider>
+        </view>
+        <view class="empty-wrapper" v-else>
+          <u-empty text="暂无数据" mode="list"></u-empty>
         </view>
       </view>
     </view>
@@ -344,6 +347,11 @@
         width: 100%;
         box-sizing: border-box;
         margin: 20rpx 0rpx;
+      }
+
+      .empty-wrapper {
+        width: 100%;
+        height: 300rpx;
       }
     }
   }
