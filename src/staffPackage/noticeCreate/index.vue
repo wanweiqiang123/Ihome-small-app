@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-18 21:49:05
+ * @LastEditTime: 2021-01-19 10:16:25
 -->
 <template>
   <LoginPage>
@@ -200,7 +200,7 @@
                 <u-icon
                   name="plus-circle"
                   color="#2979ff"
-                  size="32"
+                  size="48"
                 ></u-icon>
               </view>
               <view
@@ -211,7 +211,7 @@
                 <u-icon
                   name="close-circle"
                   color="#2979ff"
-                  size="32"
+                  size="48"
                 ></u-icon>
               </view>
             </view>
@@ -818,6 +818,7 @@ export default {
         ownerList: info.ownerList,
         noticeId: info.id,
         templateId: info.templateId,
+        refundDays: info.refundDays,
       };
       info.ownerType === "Personal"
         ? (this.ownerInfo = info.ownerList)

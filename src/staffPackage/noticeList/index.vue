@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-18 20:42:17
+ * @LastEditTime: 2021-01-19 11:14:11
 -->
 <template>
   <LoginPage>
@@ -292,21 +292,22 @@ export default {
         url: "/pages/search/index/index",
       });
     },
-    buildConfirm(val) {
+    async buildConfirm(val) {
       let item = val[0];
       this.queryPageParameters.unitName = item.label;
       this.queryPageParameters.buyUnit = item.value;
       this.queryPageParameters.roomNumberId = null;
       this.queryPageParameters.roomNo = "";
+      this.roomSelectList = await postRoomByProId({
+        proId: this.queryPageParameters.projectId,
+        buildingId: this.queryPageParameters.buyUnit,
+      });
     },
-    async handleShowBuild() {
+    handleShowBuild() {
       if (!this.queryPageParameters.projectId) {
         this.$tool.toast("请先选择项目");
         return;
       }
-      this.buildSelectList = await postBuildByProId({
-        proId: this.queryPageParameters.projectId,
-      });
       this.buildSelectShow = true;
     },
     roomConfirm(val) {
@@ -314,15 +315,11 @@ export default {
       this.queryPageParameters.roomNumberId = item.value;
       this.queryPageParameters.roomNo = item.label;
     },
-    async handleShowRoom() {
+    handleShowRoom() {
       if (!this.queryPageParameters.projectId) {
         this.$tool.toast("请先选择项目");
         return;
       }
-      this.roomSelectList = await postRoomByProId({
-        proId: this.queryPageParameters.projectId,
-        buildingId: this.queryPageParameters.buyUnit,
-      });
       this.roomSelectShow = true;
     },
     reset() {
@@ -359,11 +356,15 @@ export default {
     this.noticeTypes = await this.getDictName("NotificationType");
     this.noticeStatus = await this.getDictName("NotificationStatus");
   },
-  onShow() {
+  async onShow() {
     let item = getApp().globalData.searchBackData;
     if (item && item.type === "project") {
       this.queryPageParameters.projectId = item.data.proId;
       this.queryPageParameters.proName = item.data.proName;
+      this.buildSelectList = await postBuildByProId({
+        proId: this.queryPageParameters.projectId,
+      });
+      getApp().globalData.searchBackData = {};
     }
   },
 };
@@ -400,7 +401,7 @@ export default {
     padding: 20rpx;
     background: #fff;
     .notice-info {
-      color: #ccc;
+      color: #606265;
       line-height: 50rpx;
       font-size: 26rpx;
       font-family: "Source Han Sans CN";

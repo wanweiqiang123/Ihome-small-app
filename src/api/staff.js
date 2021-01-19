@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-10 15:30:58
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-18 19:46:13
+ * @LastEditTime: 2021-01-19 09:37:23
  */
 import { getApi, postApi } from '../common/http.js';
 
@@ -110,4 +110,13 @@ export async function postUploadAnnex(data = {}, option = {}) {
  */
 export async function postCheckRoom(data = {}, option = {}) {
   return await postApi(`/sales-api/contract/notice/check/${data}`, null, option)
+}
+/**
+ * @description: 小程序查询优惠告知书列表
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function postWechatNotice(data = {}, option = {}) {
+  return await postApi('/sales-api/contract/notice/wechat/notices', data, option)
 }
