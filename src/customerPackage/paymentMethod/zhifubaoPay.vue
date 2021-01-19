@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 15:26:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-19 17:08:01
+ * @LastEditTime: 2021-01-19 17:57:56
 -->
 <template>
   <view class="box">
@@ -16,16 +16,17 @@
       ></u-icon>
     </view>
     <view>点击复制链接打开浏览器已完成支付</view>
-    <view
-      class="router"
-      @click="gotoWebView"
-    >
+    <view class="router">
       <u-parse
         :html="url"
         :selectable="true"
         style="width: min-content"
       ></u-parse>
     </view>
+    <u-button
+      type="primary"
+      @click="copyUrl"
+    >复制链接</u-button>
   </view>
 </template>
 <script>
@@ -68,10 +69,9 @@ export default {
           break;
       }
     },
-    gotoWebView() {
-      getApp().globalData.webViewSrc = this.url;
-      uni.navigateTo({
-        url: `/customerPackage/webView/index`,
+    copyUrl() {
+      uni.setClipboardData({
+        data: this.url,
       });
     },
   },
