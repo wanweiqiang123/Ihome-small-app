@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 14:10:55
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-19 16:40:02
+ * @LastEditTime: 2021-01-19 19:16:23
 -->
 <template>
   <view class="receipt safe-area-inset-bottom">
@@ -197,7 +197,7 @@ export default {
   filters: {
     filterDict(type, data) {
       const item = data.find((i) => i.code === type);
-      return item ? item.name : "--";
+      return item ? item.name : "-";
     },
   },
   methods: {

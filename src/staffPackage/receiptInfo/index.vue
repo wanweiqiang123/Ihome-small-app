@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-19 15:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-19 18:10:53
+ * @LastEditTime: 2021-01-19 19:02:23
 -->
 <template>
   <view class="receipt info">
@@ -69,6 +69,7 @@
             type="primary"
             size="medium"
             shape="circle"
+            @click="handleGoto()"
           >添加收款</u-button>
         </view>
       </view>
@@ -254,6 +255,11 @@ export default {
           url: `/staffPackage/noticePreview/index?id=${val.id}&tId=${val.templateId}&type=${val.notificationType}&sign=${val.notificationStatus}`,
         });
       }
+    },
+    handleGoto() {
+      uni.navigateTo({
+        url: `/staffPackage/receiptAdd/index`,
+      });
     },
     change(e) {
       this.current = e.detail.current;
