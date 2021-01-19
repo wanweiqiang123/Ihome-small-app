@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 14:10:55
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-19 14:47:01
+ * @LastEditTime: 2021-01-19 19:16:23
 -->
 <template>
   <view class="receipt safe-area-inset-bottom">
@@ -47,6 +47,7 @@
             type="primary"
             shape="circle"
             :custom-style="{ padding: '0 40rpx' }"
+            @click="handleGoto(i.noticeId)"
           >查看</u-button>
         </view>
       </u-card>
@@ -196,7 +197,7 @@ export default {
   filters: {
     filterDict(type, data) {
       const item = data.find((i) => i.code === type);
-      return item ? item.name : "--";
+      return item ? item.name : "-";
     },
   },
   methods: {
@@ -209,6 +210,11 @@ export default {
       };
       uni.navigateTo({
         url: "/pages/search/index/index",
+      });
+    },
+    handleGoto(id) {
+      uni.navigateTo({
+        url: `/staffPackage/receiptInfo/index?id=${id}`,
       });
     },
     handleShowBuild() {

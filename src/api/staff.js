@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-10 15:30:58
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-19 09:37:23
+ * @LastEditTime: 2021-01-19 17:38:49
  */
 import { getApi, postApi } from '../common/http.js';
 
@@ -112,11 +112,29 @@ export async function postCheckRoom(data = {}, option = {}) {
   return await postApi(`/sales-api/contract/notice/check/${data}`, null, option)
 }
 /**
- * @description: 小程序查询优惠告知书列表
+ * @description: 小程序查询优惠告知书列表(购房优惠收款列表)
  * @param {*} data
  * @param {*} option
  * @return {*} Promise
  */
 export async function postWechatNotice(data = {}, option = {}) {
   return await postApi('/sales-api/contract/notice/wechat/notices', data, option)
+}
+/**
+ * @description: 优惠告知书详情(购房优惠收款详情)
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function getWechatNoticeInfoApi(data = {}, option = {}) {
+  return await getApi(`/sales-api/contract/notice/wechat/detail/${data.noticeId}`, null, option)
+}
+/**
+ * @description: 查询待审核数据数量
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function getNotCheckNumApi(data = {}, option = {}) {
+  return await getApi(`/sales-api/finance/payment/getNotCheckNum/${data.noticeId}`, null, option)
 }
