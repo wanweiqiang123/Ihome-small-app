@@ -217,8 +217,8 @@ export default {
     // 获取对应字典name
     getDictName(code, list) {
       if (list.length) {
-        const { name } = list.find(v => v.code === code);
-        return name;
+        const item = list.find(v => v.code === code);
+        return item?.name;
       } else {
         return '';
       }

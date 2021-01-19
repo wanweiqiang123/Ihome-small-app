@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 15:48:26
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-01-19 11:14:11
 -->
 <template>
   <LoginPage>
@@ -21,7 +21,8 @@
         >
           <view class="notice-info">
             <view class="notice-title">{{i.notificationType | filterNoticeDict(noticeTypes)}}{{`(${i.noticeNo})`}}</view>
-            <view>{{`${i.projectName} ${i.buyUnitName}-${i.roomNumberName}`}}</view>
+            <view v-if="i.buyUnitName && i.roomNumberName">{{`${i.projectName} ${i.buyUnitName}-${i.roomNumberName}`}}</view>
+            <view v-else>{{`${i.projectName}`}}</view>
             <template v-for="(item, index) in i.ownerList">
               <view :key="index">{{item.ownerName || '-'}}</view>
             </template>
@@ -237,32 +238,42 @@ export default {
   },
   methods: {
     handleGoConfirm(item) {
-      // if (item.notificationStatus === "WaitDetermine") {
-      //   uni.navigateTo({
-      //     url: `/staffPackage/noticeConfirm/index?id=${item.id}`,
-      //   });
-      // } else {
-      //   if (item.notificationStatuses === "WaitPay") {
-      //     // 客户待支付
-      //   } else {
-      //     uni.navigateTo({
-      //       url: `/staffPackage/noticePreview/index?id=${item.id}&tId=${item.templateId}&type=${item.notificationType}&sign=${item.notificationStatus}`,
-      //     });
-      //   }
-      // }
-      if (
-        item.notificationStatus === "WaitDetermine" ||
-        item.notificationStatus === "WaitBeSigned"
-      ) {
-        uni.navigateTo({
-          url: `/staffPackage/noticeCreate/index?id=${item.id}`,
-        });
-      } else if (item.notificationStatus === "WaitPay") {
-        // 客户待支付
-      } else {
-        uni.navigateTo({
-          url: `/staffPackage/noticePreview/index?id=${item.id}&tId=${item.templateId}&type=${item.notificationType}&sign=${item.notificationStatus}`,
-        });
+      switch (item.notificationStatus) {
+        case "WaitDetermine":
+        case "WaitBeSigned":
+          if (item.notificationType === "Notification") {
+            uni.navigateTo({
+              url: `/staffPackage/noticeCreate/index?id=${item.id}`,
+            });
+          } else {
+            uni.navigateTo({
+              url: `/staffPackage/noticePreview/index?id=${item.id}&tId=${item.templateId}&type=${item.notificationType}&sign=${item.notificationStatus}`,
+            });
+          }
+          break;
+        case "WaitPay":
+          // 客户待支付
+          break;
+        case "WaitReview":
+          // 分公司业管待审核
+          uni.navigateTo({
+            url: `/staffPackage/noticeConfirm/index?id=${item.id}`,
+          });
+          break;
+        case "BecomeEffective":
+          if (item.notificationType === "Notification") {
+            // 优惠告知书
+            uni.navigateTo({
+              url: `/staffPackage/noticeInfo/index?id=${item.id}&tempType=${item.templateType}`,
+            });
+          } else {
+            uni.navigateTo({
+              url: `/staffPackage/noticePreview/index?id=${item.id}&tId=${item.templateId}&type=${item.notificationType}&sign=${item.notificationStatus}`,
+            });
+          }
+          break;
+        default:
+          break;
       }
     },
     handleGoCreate() {
@@ -281,21 +292,22 @@ export default {
         url: "/pages/search/index/index",
       });
     },
-    buildConfirm(val) {
+    async buildConfirm(val) {
       let item = val[0];
       this.queryPageParameters.unitName = item.label;
       this.queryPageParameters.buyUnit = item.value;
       this.queryPageParameters.roomNumberId = null;
       this.queryPageParameters.roomNo = "";
+      this.roomSelectList = await postRoomByProId({
+        proId: this.queryPageParameters.projectId,
+        buildingId: this.queryPageParameters.buyUnit,
+      });
     },
-    async handleShowBuild() {
+    handleShowBuild() {
       if (!this.queryPageParameters.projectId) {
         this.$tool.toast("请先选择项目");
         return;
       }
-      this.buildSelectList = await postBuildByProId({
-        proId: this.queryPageParameters.projectId,
-      });
       this.buildSelectShow = true;
     },
     roomConfirm(val) {
@@ -303,15 +315,11 @@ export default {
       this.queryPageParameters.roomNumberId = item.value;
       this.queryPageParameters.roomNo = item.label;
     },
-    async handleShowRoom() {
+    handleShowRoom() {
       if (!this.queryPageParameters.projectId) {
         this.$tool.toast("请先选择项目");
         return;
       }
-      this.roomSelectList = await postRoomByProId({
-        proId: this.queryPageParameters.projectId,
-        buildingId: this.queryPageParameters.buyUnit,
-      });
       this.roomSelectShow = true;
     },
     reset() {
@@ -348,11 +356,15 @@ export default {
     this.noticeTypes = await this.getDictName("NotificationType");
     this.noticeStatus = await this.getDictName("NotificationStatus");
   },
-  onShow() {
+  async onShow() {
     let item = getApp().globalData.searchBackData;
     if (item && item.type === "project") {
       this.queryPageParameters.projectId = item.data.proId;
       this.queryPageParameters.proName = item.data.proName;
+      this.buildSelectList = await postBuildByProId({
+        proId: this.queryPageParameters.projectId,
+      });
+      getApp().globalData.searchBackData = {};
     }
   },
 };
@@ -389,7 +401,7 @@ export default {
     padding: 20rpx;
     background: #fff;
     .notice-info {
-      color: #ccc;
+      color: #606265;
       line-height: 50rpx;
       font-size: 26rpx;
       font-family: "Source Han Sans CN";

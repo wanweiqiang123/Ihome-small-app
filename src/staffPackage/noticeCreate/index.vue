@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-18 11:17:49
+ * @LastEditTime: 2021-01-19 10:16:25
 -->
 <template>
   <LoginPage>
@@ -200,7 +200,7 @@
                 <u-icon
                   name="plus-circle"
                   color="#2979ff"
-                  size="32"
+                  size="48"
                 ></u-icon>
               </view>
               <view
@@ -211,7 +211,7 @@
                 <u-icon
                   name="close-circle"
                   color="#2979ff"
-                  size="32"
+                  size="48"
                 ></u-icon>
               </view>
             </view>
@@ -367,6 +367,13 @@
         :async-close="true"
         @confirm="removeConfirm"
       ></u-modal>
+      <u-modal
+        v-model="isShowRoomTip"
+        content="已有相同房号的优惠告知书，是否要继续生成?"
+        show-cancel-button
+        confirm-color="#fa3534"
+        @confirm="isUpdate ? updateMethod() : submieMethod()"
+      ></u-modal>
     </view>
   </LoginPage>
 </template>
@@ -382,6 +389,7 @@ import {
   postNoticeCreate,
   getNoticeInfo,
   postNoticeUpdate,
+  postCheckRoom,
 } from "../../api/staff";
 
 export default {
@@ -412,6 +420,7 @@ export default {
         roomNumberId: "",
         roomNumberName: "",
         ownerType: "Personal",
+        refundDays: null,
         templateType: null,
         ownerList: [],
         noticeAttachmentList: [],
@@ -506,6 +515,8 @@ export default {
       },
       fileList: [],
       isRemoveShow: false,
+      isShowRoomTip: false,
+      isUpdate: false,
     };
   },
   methods: {
@@ -592,6 +603,7 @@ export default {
       this.form.buyUnit = item.value;
       this.form.roomNumberName = "";
       this.form.roomNumberId = null;
+      this.getRoomList();
     },
     handleShowBuild() {
       if (!this.proId) {
@@ -613,7 +625,6 @@ export default {
         this.$tool.toast("请先选择联动周期");
         return;
       }
-      this.getRoomList();
       this.roomSelectShow = true;
     },
     async getRoomList() {
@@ -687,21 +698,25 @@ export default {
       Promise.all(verifyArr)
         .then(async () => {
           console.log("全部通过", this.form);
-          try {
-            const res = await postNoticeCreate(this.form);
-            uni.showToast({
-              title: "保存成功",
-              icon: "none",
-            });
-            if (this.form.templateType === "ElectronicTemplate") {
-              uni.navigateTo({
-                url: `/staffPackage/noticePreview/index?id=${res.noticeId}&tId=${res.templateId}&type=Notification`,
-              });
-            } else {
-              this.$tool.back(null, { type: "init", page: null });
-            }
-          } catch (err) {
-            console.log(err);
+          // try {
+          //   const res = await postNoticeCreate(this.form);
+          //   this.$tool.toast("保存成功");
+          //   if (this.form.templateType === "ElectronicTemplate") {
+          //     uni.navigateTo({
+          //       url: `/staffPackage/noticePreview/index?id=${res.noticeId}&tId=${res.templateId}&type=Notification`,
+          //     });
+          //   } else {
+          //     this.$tool.back(null, { type: "init", page: null });
+          //   }
+          // } catch (err) {
+          //   console.log(err);
+          // }
+          let isBool = await this.isShowTis(this.form.roomNumberId);
+          if (isBool) {
+            this.submieMethod();
+          } else {
+            this.isShowRoomTip = true;
+            this.isUpdate = false;
           }
         })
         .catch(() => {
@@ -713,23 +728,62 @@ export default {
       Promise.all(verifyArr)
         .then(async () => {
           console.log("全部通过", this.form);
-          this.form.ownerEditList = this.form.ownerList;
-          try {
-            const res = await postNoticeUpdate(this.form);
-            this.$tool.toast("保存成功");
-            this.$tool.back(
-              {
-                delta: 2,
-              },
-              { type: "update", data: { ...this.form, id: this.form.noticeId } }
-            );
-          } catch (err) {
-            console.log(err);
+          let isBool = await this.isShowTis(this.form.roomNumberId);
+          if (isBool) {
+            this.updateMethod();
+          } else {
+            this.isShowRoomTip = true;
+            this.isUpdate = true;
           }
         })
         .catch(() => {
           console.log("不通过");
         });
+    },
+    async submieMethod() {
+      try {
+        const res = await postNoticeCreate(this.form);
+        this.$tool.toast("保存成功");
+        if (this.form.templateType === "ElectronicTemplate") {
+          uni.navigateTo({
+            url: `/staffPackage/noticePreview/index?id=${res.noticeId}&tId=${res.templateId}&type=Notification`,
+          });
+        } else {
+          this.$tool.back(null, { type: "init", page: null });
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async updateMethod() {
+      this.form.ownerEditList = this.form.ownerList;
+      try {
+        const res = await postNoticeUpdate({
+          ...this.form,
+          notificationStatus: "WaitBeSigned",
+        });
+        this.$tool.toast("保存成功");
+        if (this.form.templateType === "ElectronicTemplate") {
+          uni.navigateTo({
+            url: `/staffPackage/noticePreview/index?id=${this.form.noticeId}&tId=${this.form.templateId}&type=Notification`,
+          });
+        } else {
+          this.$tool.back(null, {
+            type: "update",
+            data: {
+              ...this.form,
+              id: this.form.noticeId,
+              notificationStatus: "WaitBeSigned",
+            },
+          });
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async isShowTis(roomNumberId) {
+      const is = await postCheckRoom(roomNumberId);
+      return is;
     },
     async removeConfirm() {
       try {
@@ -743,6 +797,7 @@ export default {
         this.$tool.toast("作废失败");
       }
     },
+
     async getInfo(id) {
       const info = await getNoticeInfo({ id });
       console.log(info);
@@ -762,12 +817,17 @@ export default {
         templateType: info.templateType,
         ownerList: info.ownerList,
         noticeId: info.id,
+        templateId: info.templateId,
+        refundDays: info.refundDays,
       };
       info.ownerType === "Personal"
         ? (this.ownerInfo = info.ownerList)
         : (this.enterpriseFrom = info.ownerList[0]);
       this.proId = info.projectId;
       this.isType = info.templateType === "ElectronicTemplate";
+      this.getMannerList();
+      this.getBuildList();
+      this.getRoomList();
     },
   },
   onReady() {
@@ -787,6 +847,7 @@ export default {
           this.form.cycleId = item.data.termId;
           this.form.cycleName = item.data.termName;
           this.proId = item.data.proId;
+          this.form.refundDays = item.data.partyARefundDays;
           this.isRecognize = item.data.termStageEnum === "Recognize";
           this.roomRules = {
             buyUnitName: [
@@ -817,14 +878,8 @@ export default {
           this.getMannerList();
           this.getBuildList();
           this.getRoomList();
-          // 清空搜索周期条件
-          getApp().globalData.searchParams = {
-            api: null,
-            key: null,
-            id: null,
-            type: null,
-            other: {},
-          };
+          // 清空搜索出来周期
+          getApp().globalData.searchBackData = {};
           break;
 
         default:
@@ -834,7 +889,6 @@ export default {
   },
   onLoad(option) {
     this.isSubmit = true;
-    console.log(option);
     if (option.id) {
       this.getInfo(option.id);
       uni.setNavigationBarTitle({
@@ -844,13 +898,8 @@ export default {
     }
   },
   // onHide() {
-  //   getApp().globalData.searchParams = {
-  //     api: null,
-  //     key: null,
-  //     id: null,
-  //     type: null,
-  //     other: {},
-  //   };
+  //   // 清空搜索出来周期
+  //   getApp().globalData.searchBackData = {};
   // },
 };
 </script>

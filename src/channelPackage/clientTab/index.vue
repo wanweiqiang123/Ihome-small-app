@@ -35,6 +35,9 @@
             <view class="client-time">录入时间：{{ item.inputTime }}</view>
           </view>
         </view>
+        <view class="empty-wrapper" v-if="tablePage.length === 0">
+          <u-empty text="暂无数据" mode="list"></u-empty>
+        </view>
       </view>
       <u-mask
         @click="showAddWin = false"
@@ -200,6 +203,11 @@ export default {
             color: #1C1C1C;
           }
         }
+      }
+
+      .empty-wrapper {
+        width: 100%;
+        height: calc(100vh - 90rpx);
       }
     }
 

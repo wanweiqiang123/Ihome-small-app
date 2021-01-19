@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 17:10:39
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-15 16:51:46
+ * @LastEditTime: 2021-01-19 14:52:26
 -->
 <template>
   <LoginPage>
@@ -60,7 +60,9 @@
             <u-image
               width="100%"
               height="100%"
+              mode="heightFix"
               :src="src"
+              @click="preview(src)"
             ></u-image>
           </view>
           <view class="btn">
@@ -95,6 +97,12 @@ export default {
     };
   },
   methods: {
+    preview(url) {
+      uni.previewImage({
+        urls: [url],
+        current: 1,
+      });
+    },
     handleCode(item) {
       this.src = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${item.preferentialAddr}`;
       this.fileId = item.preferentialAddr;
@@ -182,6 +190,7 @@ export default {
       this.termId = item.data.termId;
       this.termName = item.data.termName;
       this.getCodeList(item.data.termId);
+      getApp().globalData.searchBackData = {};
     }
   },
 };
@@ -222,7 +231,7 @@ export default {
     line-height: 90rpx;
   }
   .code {
-    background: #f1f1f1;
+    // background: #f1f1f1;
     width: 100%;
     height: 500rpx;
     // margin: 0 auto 20rpx;

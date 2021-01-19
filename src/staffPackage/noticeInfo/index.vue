@@ -1,10 +1,10 @@
 <!--
- * @Description: 确认优惠告知书
+ * @Description: 查看优惠告知书信息
  * @version: 
  * @Author: ywl
- * @Date: 2020-11-23 17:32:25
+ * @Date: 2021-01-18 11:38:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-18 19:40:38
+ * @LastEditTime: 2021-01-18 19:39:27
 -->
 <template>
   <LoginPage>
@@ -79,59 +79,59 @@
               bg-color="#f1f1f1"
             ></u-gap>
             <u-form-item
+              label="优惠告知书预览"
+              v-if="!isPaper"
+            >
+              <view class="text-right">
+                <u-button
+                  size="mini"
+                  type="success"
+                  @click="handleGoto"
+                >预览</u-button>
+              </view>
+            </u-form-item>
+            <u-form-item
               label="优惠告知书附件"
               label-position="top"
-              v-if="fileList.length"
+              v-else
             >
               <u-upload
                 width="180"
                 height="180"
                 name="files"
                 :file-list="fileList"
-                :deletable="fasle"
+                :action="action"
+                :header="header"
+                :show-progress="false"
+                :before-upload="beforeUpload"
+                :before-remove="beforeRemove"
+                @on-success="successChange"
+                @on-remove="removeChange"
               ></u-upload>
             </u-form-item>
           </u-form>
         </view>
+        <template v-if="isPaper">
+          <u-gap
+            height="20"
+            bg-color="#f1f1f1"
+          ></u-gap>
+          <u-button
+            shape="circle"
+            type="primary"
+            class="ih-btn"
+            @click="submitFile()"
+          >提交附件</u-button>
+        </template>
       </view>
-      <view class="btn-container safe-area-inset-bottom">
-        <u-button
-          size="default"
-          type="primary"
-          shape="circle"
-          @click="submit"
-        >确认</u-button>
-      </view>
-      <!-- 选择器 -->
-      <u-select
-        v-model="buildShow"
-        :list="selectBuildList"
-        safe-area-inset-bottom
-        title="选择栋座"
-        value-name="buildingId"
-        label-name="buildingName"
-        @confirm="buildConfirm"
-      ></u-select>
-      <u-select
-        v-model="roomShow"
-        :list="roomSelectList"
-        safe-area-inset-bottom
-        title="选择房号"
-        value-name="roomId"
-        label-name="roomNo"
-        @confirm="roomConfirm"
-      ></u-select>
     </view>
   </LoginPage>
 </template>
 
 <script>
-import {
-  getNoticeInfo,
-  postNoticeManagement,
-  postBuildByProId,
-  postRoomByProId,
-} from "../../api/staff";
+import { currentEnvConfig } from "../../env-config.js";
+import storageTool from "../../common/storageTool.js";
+import { getNoticeInfo, postUploadAnnex } from "../../api/staff";
 
 export default {
   name: "notice-confirm",
@@ -148,11 +148,14 @@ export default {
         buyUnit: "",
         buyUnitName: "",
       },
-      buildShow: false,
-      selectBuildList: [],
-      roomShow: false,
-      roomSelectList: [],
+      option: {},
+      isPaper: false,
+      action: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/upload`,
+      header: {
+        Authorization: "bearer " + storageTool.getToken(),
+      },
       fileList: [],
+      noticeAttachmentList: [],
     };
   },
   methods: {
@@ -165,44 +168,62 @@ export default {
           .map((val) => ({
             url: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${val.fileNo}`,
           }));
+        console.log(this.fileList);
       }
     },
-    roomConfirm(val) {
-      let item = val[0];
-      this.form.roomNumberId = item.value;
-      this.form.roomNumberName = item.label;
-    },
-    async handleShowRoom() {
-      this.roomSelectList = await postRoomByProId({
-        proId: this.form.projectId,
-        buildingId: this.form.buyUnit,
+    handleGoto() {
+      uni.navigateTo({
+        url: `/staffPackage/noticePreview/index?id=${this.form.id}&tId=${this.form.templateId}&type=${this.form.notificationType}&sign=${this.form.notificationStatus}`,
       });
-      this.roomShow = true;
     },
-    buildConfirm(val) {
-      let item = val[0];
-      this.form.buyUnit = item.value;
-      this.form.buyUnitName = item.label;
-      this.form.roomNumberName = "";
+    beforeUpload() {
+      uni.showToast({
+        icon: "loading",
+        title: "正在上传...",
+        duration: 500000000000,
+      });
+      return true;
     },
-    async submit() {
+    beforeRemove(index, lists) {
+      console.log(index, lists);
+      if (lists[index].response) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    successChange(data, index, lists, name) {
+      this.noticeAttachmentList[index] = {
+        fileNo: lists[index].response.data[0].fileId,
+        attachmentSuffix:
+          lists[index].response?.data[0].generateFileName +
+          "." +
+          lists[index].response?.data[0].generateFileType,
+        type: "NoticeAttachment",
+        contractId: this.option.id,
+      };
+    },
+    removeChange(index, lists, name) {
+      this.noticeAttachmentList.splice(index, 1);
+    },
+    async submitFile() {
       try {
-        await postNoticeManagement(this.form.id);
-        this.$tool.toast("确认成功");
-        this.$tool.back(null, {
-          type: "update",
-          data: { ...this.form, notificationStatus: "WaitBeSigned" },
-        });
+        if (this.noticeAttachmentList.length) {
+          await postUploadAnnex(this.noticeAttachmentList);
+          this.$tool.toast("上传成功");
+          this.$tool.back(null, { type: "update", page: null });
+        } else {
+          this.$tool.toast("请先上传附件");
+        }
       } catch (error) {
         console.log(error);
       }
     },
   },
-  async onLoad(option) {
-    await this.getInfo(option.id);
-    this.selectBuildList = await postBuildByProId({
-      proId: this.form.projectId,
-    });
+  onLoad(option) {
+    this.getInfo(option.id);
+    this.option = option;
+    this.isPaper = option.tempType === "PaperTemplate";
   },
 };
 </script>
@@ -236,7 +257,7 @@ export default {
   }
 }
 .form-content {
-  padding: 20rpx 30rpx 106rpx;
+  padding: 20rpx 30rpx;
   .form-color {
     background: #fff;
   }
