@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-25 11:40:27
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-19 17:37:21
+ * @LastEditTime: 2021-01-19 18:14:48
 -->
 <template>
   <view class="box">
@@ -49,7 +49,7 @@
 </template>
 <script>
 import { getAppListApi } from "../../api/customer";
-import { getAllByTypeApi } from "../../api/index";
+import { getAllByTypeApi, getPdf2PicApi } from "../../api/index";
 import { currentEnvConfig } from "../../env-config.js";
 export default {
   components: {},
@@ -88,19 +88,22 @@ export default {
         loading: false,
       }));
     },
-    downLoad(item) {
+    async downLoad(item) {
       item.loading = true;
+      const file = await getPdf2PicApi(item.fileIds[0]);
       uni.downloadFile({
-        url: `${this.codeUrl}${item.fileIds[0]}`,
+        url: `${this.codeUrl}${file.fileId}`,
         success: (res) => {
+          console.log(res, "succrss");
           let filePath = res.tempFilePath;
           uni.saveImageToPhotosAlbum({
             filePath: filePath,
             success: () => {
-              this.$tool.toast("保存成功");
+              this.$tool.toast("电子回单已保存到相册");
               item.loading = false;
             },
-            complete: () => {
+            fail: (err) => {
+              this.$tool.toast("保存失败");
               item.loading = false;
             },
           });
