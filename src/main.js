@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-13 14:40:24
+ * @LastEditTime: 2021-01-20 09:01:36
  */
 import Vue from 'vue'
 import App from './App'
@@ -73,6 +73,26 @@ Vue.prototype.$has = function (key) {
   console.log(result, key, list)
   return result;
 }
+const app = new Vue({
+  ...App,
+  store,
+  methods: {}
+})
+app.$mount();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /**  字典数据，省市区数据方法（已弃用，取name值让后端接口返回）
 Vue.prototype.$dict = {
@@ -213,12 +233,7 @@ Vue.prototype.$dict = {
 // initGlobalData();
 
 
-const app = new Vue({
-  ...App,
-  store,
-  methods: {}
-})
-app.$mount();
+
 
 
 

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-19 15:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-19 19:02:23
+ * @LastEditTime: 2021-01-19 19:33:04
 -->
 <template>
   <view class="receipt info">
@@ -233,11 +233,11 @@ export default {
     };
   },
   computed: {
-    perceent() {
-      if (this.obj?.discountInformationResponseVo?.paid) {
-        const paid = Number(info.discountInformationResponseVo.paid);
+    percent() {
+      if (this.info?.discountInformationResponseVo?.paid) {
+        const paid = Number(this.info.discountInformationResponseVo.paid);
         const amount =
-          paid / Number(info.discountInformationResponseVo.paymentAmount);
+          paid / Number(this.info.discountInformationResponseVo.paymentAmount);
         return amount * 100;
       }
     },
