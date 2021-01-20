@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-01-09 15:59:32
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-09 16:09:20
+ * @LastEditTime: 2021-01-19 19:31:40
  */
 import storageTool from "../common/storageTool";
 import { userSwitchApi, getUserInfoApi } from "../api/index";
@@ -77,7 +77,7 @@ export default {
                         userInfo.loginUserType == element.userType ? "#4881f9" : "#666";
                     let userTypeName =
                         userInfo.loginUserType == element.userType
-                            ? element.userTypeName + " √"
+                            ? element.userTypeName + " ✓"
                             : element.userTypeName;
                     this.switchList.push({
                         text: userTypeName,
