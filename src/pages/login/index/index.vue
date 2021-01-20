@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-29 15:58:19
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-13 15:01:11
+ * @LastEditTime: 2021-01-20 10:19:46
 -->
 <template>
   <view class="page login-page-style">
@@ -275,25 +275,27 @@ export default {
     },
     async getPhoneNumber(e) {
       console.log(e);
-      if (e.detail.errMsg == "getPhoneNumber:fail user deny") {
+      console.log(e.detail.errMsg);
+      if (e.detail.errMsg.startsWith("getPhoneNumber:fail")) {
         //用户拒绝
       } else {
         try {
           let uuid = storageTool.getUUID();
-
-          let p = {
-            uuid: uuid,
-            encryptedData: e.detail.encryptedData,
-            iv: e.detail.iv,
-          };
-          console.log(p);
-          const res = await postGetPhoneNumberApi(p);
-          console.log(res);
-          this.loginSuccess(res);
+          if (e.detail.encryptedData && e.detail.iv) {
+            let p = {
+              uuid: uuid,
+              encryptedData: e.detail.encryptedData,
+              iv: e.detail.iv,
+            };
+            console.log(p);
+            const res = await postGetPhoneNumberApi(p);
+            console.log(res);
+            this.loginSuccess(res);
+          }
         } catch (error) {
           console.log(error);
           storageTool.removeUUID();
-          let title = error?.msg||'登录失败!请重新进入小程序';
+          let title = error?.msg || "登录失败!请重新进入小程序";
           console.log(title);
           tool.toast(title);
         }

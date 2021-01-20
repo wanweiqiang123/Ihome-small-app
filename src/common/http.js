@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 10:17:55
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-12 15:54:14
+ * @LastEditTime: 2021-01-20 10:11:59
  */
 import storageTool from './storageTool'
 import tool from './tool'
@@ -80,6 +80,9 @@ const api = (url, data = {}, option = {}) => {
                     tool.toast('服务器域名未配置');
                 } else if (err.errMsg.includes('CONNECTION_TIMED_OUT')) {
                     tool.toast('网络连接超时');
+                }
+                else if (err.errMsg.includes('ERR_NAME_NOT_RESOLVED')) {
+                    tool.toast('域名未解析');
                 }
                 else {
                     tool.toast("网络异常：" + err.errMsg);
