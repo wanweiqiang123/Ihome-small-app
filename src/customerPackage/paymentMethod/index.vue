@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-19 19:49:36
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-01-20 16:58:14
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
@@ -41,21 +41,18 @@
         ></u-field>
       </view>
     </view>
-    <view class="pay-title">付款方式</view>
-    <view class="pay-msg margin-top">
+
+    <view class="pay-title" v-if="configPay == 'On'">付款方式</view>
+    <view class="pay-msg margin-top" v-if="configPay == 'On'">
       <u-radio-group v-model="payType">
-        <view
-          class="pay-type"
-          v-for="(item, i) in payTypeOptions"
-          :key="i"
-        >
+        <view class="pay-type" v-for="(item, i) in payTypeOptions" :key="i">
           <view class="pay-type-image">
             <u-image
               height="60rpx"
               width="60rpx"
               :src="require(`../common/img/${item.code}.png`)"
             ></u-image>
-            <text class="pay-type-name">{{item.name}}</text>
+            <text class="pay-type-name">{{ item.name }}</text>
           </view>
           <u-radio
             active-color="#18B566"
@@ -66,18 +63,21 @@
         </view>
       </u-radio-group>
     </view>
-    <view class="my-btn">
-      <u-button
-        shape="square"
-        @click="payGoto"
-        :loading="buttonLoading"
-      >{{`${getDictName(payType, payTypeOptions)} ￥${payNum?payNum:0}`}}
+    <view class="my-btn" v-if="configPay == 'On'">
+      <u-button shape="square" @click="payGoto" :loading="buttonLoading"
+        >{{
+          `${getDictName(payType, payTypeOptions)} ￥${payNum ? payNum : 0}`
+        }}
       </u-button>
     </view>
-    <view class="pay-hint">
+    <view class="pay-hint" v-if="configPay == 'On'">
       付款成功后可能存在延迟，请耐心等待1~2分钟！
       如付款成功后长时间还未更新记录请及时联系工作人员。
     </view>
+    <view class="my-btn" v-if="configPay == 'Off'">
+      <u-button shape="square" @click="goBack"> 返回 </u-button>
+    </view>
+
     <u-keyboard
       ref="uKeyboard"
       mode="number"
@@ -102,11 +102,13 @@ import {
   getBusinessIdApi,
 } from "../../api/customer";
 import { getAllByTypeApi } from "../../api/index";
+// import { tool } from "../../common/tool";
 import uImage from "../../uview-ui/components/u-image/u-image.vue";
 export default {
   components: { uImage },
   data() {
     return {
+      configPay: "Off",
       payData: {},
       payType: "WeChatPay",
       payNum: 0,
@@ -126,10 +128,15 @@ export default {
   },
   async onLoad() {
     this.payData = { ...getApp().paidData };
-    this.payTypeOptions = await getAllByTypeApi({
-      type: "PayType",
-      tag: "Customer",
-    });
+    this.PayOpenFlag = await this.getDictAll("PayOpenFlag");
+    this.configPay = this.PayOpenFlag.find((v) => v.code === "OpenFlag").tag;
+    if (this.configPay == "On") {
+      this.payTypeOptions = await getAllByTypeApi({
+        type: "PayType",
+        tag: "Customer",
+      });
+    }
+
     // console.log(res);
     // this.payTypeOptions = res.filter(
     //   (v) => !["WeChatPay", "Alipay"].includes(v.code)
@@ -160,6 +167,7 @@ export default {
       }
     },
     payNumChange(v) {
+      console.log(v);
       let num = v.target.value;
       let amount = this.payData.paymentAmount + "";
       if (Number(num) > Number(this.payData.paymentAmount)) {
@@ -167,12 +175,25 @@ export default {
       }
     },
     keyChange(e) {
+      console.log(e);
       if (this.open) {
         this.payNum = "";
         this.open = false;
       }
-      this.payNum += e;
+      if (this.payNum?.includes(".")) {
+        if (e != ".") {
+          let arr = this.payNum.split(".");
+          if (arr[1].length < 2) {
+            this.payNum += e;
+          }
+        }
+      } else {
+        this.payNum += e;
+      }
+
+      // this.payNum = this.$tool.tofixed(parseFloat(this.payNum), 2);
     },
+
     backspace() {
       if (this.payNum.length) {
         this.payNum = this.payNum.substr(0, this.payNum.length - 1);
@@ -180,6 +201,9 @@ export default {
     },
     radioChange(e) {
       this.payType = e;
+    },
+    goBack() {
+      uni.navigateBack();
     },
     async payGoto() {
       this.buttonLoading = true;
