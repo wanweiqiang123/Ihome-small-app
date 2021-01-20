@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-15 18:08:02
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-16 09:47:49
+ * @LastEditTime: 2021-01-20 16:06:13
  */
 import { getApi, postApi } from '../common/http.js';
 
@@ -119,4 +119,8 @@ export async function postPaymentupdateApi(data = {}, option = {}) {
 // 查询待付款订单或者已付金额,没有待付款订单则只返回已付金额
 export async function getUnpaidOrderOrAmountPaidApi(data = {}, option = {}) {
   return await getApi(`/sales-api/finance/payment/getUnpaidOrderOrAmountPaid/${data}`, option)
+}
+// 调该接口获取到已签署好的E签宝地址
+export async function getPreviewApi(data = {}, option = {}) {
+  return await getApi(`/sales-api/contract/notice/preview/sign/${data}`, option)
 }

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-19 19:38:43
+ * @LastEditTime: 2021-01-20 16:17:19
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -153,7 +153,7 @@
               </view>
               <view class="swiper-item-btn">
                 <u-button
-                  v-if="item.notificationStatus === 'BecomeEffective'"
+                  v-if="['BecomeEffective', 'WaitPay', 'WaitReview'].includes(item.notificationStatus)"
                   type="primary"
                   size="medium"
                   shape="circle"
@@ -193,7 +193,7 @@
           class="pay-list"
           style="padding-top: 10rpx"
         >收款人
-          <text class="pay-list-money">皮小强</text>
+          <text class="pay-list-money">杨伟立</text>
         </view>
         <view
           class="pay-list"
@@ -226,6 +226,7 @@ import {
   getCheckIsExistNoPayApi,
   postDeleteByBusinessIdApi,
   getNotCheckNumApi,
+  getPreviewApi,
 } from "../../api/customer";
 import { getAllByTypeApi } from "../../api/index";
 import uImage from "../../uview-ui/components/u-image/u-image.vue";
@@ -291,12 +292,24 @@ export default {
       }
     },
     // 预览
-    gotoNotice(val, type) {
-      getApp().noticeInfo = { ...val, type: type };
-      if (val) {
-        uni.navigateTo({
-          url: `/customerPackage/notification/index`,
-        });
+    async gotoNotice(val, type) {
+      switch (val.notificationStatus) {
+        case "BecomeEffective":
+        case "WaitBeSigned":
+          getApp().noticeInfo = { ...val, type: type };
+          uni.navigateTo({
+            url: `/customerPackage/notification/index`,
+          });
+          break;
+        case "WaitPay":
+        case "WaitReview":
+          const res = await getPreviewApi(this.noticeId);
+          if (res) {
+            getApp().globalData.webViewSrc = res;
+            uni.navigateTo({
+              url: `/customerPackage/webView/index`,
+            });
+          }
       }
     },
     async gotoPay(obj) {
