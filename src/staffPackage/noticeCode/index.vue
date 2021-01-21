@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 17:10:39
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-19 15:42:04
+ * @LastEditTime: 2021-01-21 14:14:22
 -->
 <template>
   <LoginPage>
@@ -110,6 +110,7 @@ export default {
       });
     },
     handleCode(item) {
+      console.log(item);
       this.src = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${item.preferentialAddr}`;
       this.fileId = item.preferentialAddr;
       this.isShow = true;
@@ -150,7 +151,8 @@ export default {
     downloadCode() {
       this.loading = true;
       uni.downloadFile({
-        url: `${this.codeUrl}${this.fileId}`,
+        url: `${this.codeUrl}${this.fileId}.jpg`,
+        // url: `http://img02.tooopen.com/images/20150928/tooopen_sy_143912755726.jpg`,
         success: (res) => {
           let filePath = res.tempFilePath;
           console.log(filePath);

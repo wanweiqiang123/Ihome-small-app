@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 14:10:55
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-20 09:37:14
+ * @LastEditTime: 2021-01-21 11:23:20
 -->
 <template>
   <view class="receipt safe-area-inset-bottom">
@@ -76,8 +76,8 @@
     </view>
     <!-- 筛选弹出层 -->
     <PopupSearch
-      width="100%"
-      :mask="false"
+      width="90%"
+      :mask="true"
       v-model="isShow"
       @reset="reset()"
       @confirm="confirm()"

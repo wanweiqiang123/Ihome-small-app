@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-19 18:44:57
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-21 11:02:42
+ * @LastEditTime: 2021-01-21 14:08:52
 -->
 <template>
   <view class="receipt">
@@ -224,7 +224,7 @@ export default {
     },
     async getBank() {
       let cycleId = getApp().paidData.cycleId;
-      let info = await getBankInfoApi(3);
+      let info = await getBankInfoApi(cycleId);
       this.backInfo = {
         payeeAccount: info.payeeAccount,
         payeeName: info.payeeName,
@@ -280,9 +280,9 @@ export default {
         terminal: "WeChatApp",
       };
       // 假数据
-      params.groupId = 15;
-      params.operator = 15;
-      params.termId = 3;
+      // params.groupId = 15;
+      // params.operator = 15;
+      // params.termId = 3;
       this.$refs.uForm.validate(async (val) => {
         if (val) {
           try {
