@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-10 15:30:58
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-19 17:38:49
+ * @LastEditTime: 2021-01-20 18:47:20
  */
 import { getApi, postApi } from '../common/http.js';
 
@@ -137,4 +137,31 @@ export async function getWechatNoticeInfoApi(data = {}, option = {}) {
  */
 export async function getNotCheckNumApi(data = {}, option = {}) {
   return await getApi(`/sales-api/finance/payment/getNotCheckNum/${data.noticeId}`, null, option)
+}
+/**
+ * @description: 根据交易参考号返回订单数据
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function getNoOrderInfo(data = {}, option = {}) {
+  return await getApi(`/sales-api/finance/payment/getNoOrderInfo/${data.orderNo}`, null, option)
+}
+/**
+ * @description: 添加服务费付款记录
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function postAddPayServe(data = {}, option = {}) {
+  return await postApi('/sales-api/finance/payment/addService', data, option)
+}
+/**
+ * @description: 根据立项周期ID查询付款银行基本信息
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function getBankInfoApi(data = {}, option = {}) {
+  return await getApi(`/sales-api/finance/payment/getBankInfo/${data}`, null, option)
 }

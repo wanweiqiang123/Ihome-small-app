@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 14:10:55
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-19 19:52:23
+ * @LastEditTime: 2021-01-20 09:37:14
 -->
 <template>
   <view class="receipt safe-area-inset-bottom">
@@ -15,7 +15,7 @@
       <u-card
         :border="false"
         :show-head="false"
-        :foot-border-top="false"
+        :foot-border-top="true"
         padding="15"
         margin="20rpx 30rpx"
         :foot-style="{paddingTop: '0'}"
@@ -334,6 +334,7 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding-top: 20rpx;
   }
   .font-text {
     color: $u-type-error;

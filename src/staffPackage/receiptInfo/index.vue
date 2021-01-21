@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-19 15:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-19 19:33:04
+ * @LastEditTime: 2021-01-20 17:07:24
 -->
 <template>
   <view class="receipt info">
@@ -69,7 +69,7 @@
             type="primary"
             size="medium"
             shape="circle"
-            @click="handleGoto()"
+            @click="handleGoto(info.discountInformationResponseVo)"
           >添加收款</u-button>
         </view>
       </view>
@@ -256,7 +256,12 @@ export default {
         });
       }
     },
-    handleGoto() {
+    handleGoto(val) {
+      getApp().paidData = {
+        ...val,
+        businessId: this.noticeId,
+        businessCode: this.info.noticeNo,
+      };
       uni.navigateTo({
         url: `/staffPackage/receiptAdd/index`,
       });
