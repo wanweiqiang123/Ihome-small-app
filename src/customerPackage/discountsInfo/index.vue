@@ -4,8 +4,8 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
 <<<<<<< HEAD
- * @LastEditors: zyc
- * @LastEditTime: 2021-01-20 17:00:02
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-21 18:02:31
 =======
  * @LastEditors: wwq
  * @LastEditTime: 2021-01-20 16:17:19
@@ -35,18 +35,16 @@
         </view>
         <view class="info-first-msg">
           <view>已付{{ info.discountInformationResponseVo.paid }}</view>
-          <view
-            >应付{{ info.discountInformationResponseVo.paymentAmount }}</view
-          >
+          <view>应付{{ info.discountInformationResponseVo.paymentAmount }}</view>
         </view>
         <view class="info-first-paid">未付金额</view>
-        <view class="info-first-money"
-          >{{ info.discountInformationResponseVo.unpaid }}
-          <text style="margin-left: 20rpx; font-size: 24rpx; font-weight: bold"
-            >元</text
-          >
+        <view class="info-first-money">{{ info.discountInformationResponseVo.unpaid }}
+          <text style="margin-left: 20rpx; font-size: 24rpx; font-weight: bold">元</text>
         </view>
-        <view class="info-first-detail" @click="payHistory(noticeId)">
+        <view
+          class="info-first-detail"
+          @click="payHistory(noticeId)"
+        >
           <u-icon
             name="arrow-right"
             width="12"
@@ -60,16 +58,22 @@
           class="info-first-audit"
           @click="payAuditing(noticeId)"
         >
-          <u-icon name="arrow-right" size="28" color="#666666"></u-icon>
-          <text class="text"
-            >您有
+          <u-icon
+            name="arrow-right"
+            size="28"
+            color="#666666"
+          ></u-icon>
+          <text class="text">您有
             <text style="color: #ff0000; padding: 0 5rpx">{{
               payAuditNum
             }}</text>
             笔付款正在审核中
           </text>
         </view>
-        <view class="info-first-btn" v-if="configPay == 'On'">
+        <view
+          class="info-first-btn"
+          v-if="configPay == 'On'"
+        >
           <u-button
             v-if="
               Number(info.discountInformationResponseVo.paid) !==
@@ -79,10 +83,12 @@
             size="medium"
             shape="circle"
             @click="gotoPay(info.discountInformationResponseVo)"
-            >去付款</u-button
-          >
+          >去付款</u-button>
         </view>
-        <view class="info-first-btn" v-if="configPay == 'Off'">
+        <view
+          class="info-first-btn"
+          v-if="configPay == 'Off'"
+        >
           <u-button
             v-if="
               Number(info.discountInformationResponseVo.paid) !==
@@ -92,8 +98,7 @@
             size="medium"
             shape="circle"
             @click="gotoPay(info.discountInformationResponseVo)"
-            >查看当前付款</u-button
-          >
+          >查看当前付款</u-button>
         </view>
       </view>
     </view>
@@ -124,18 +129,21 @@
           >
             <view class="swiper-item-title">{{ `业主${i + 1}` }}</view>
             <view class="swiper-item-msg">
-              <view class="swiper-item-detail"
-                >姓名
+              <view class="swiper-item-detail">姓名
                 <text class="swiper-item-name">{{ item.ownerName }}</text>
               </view>
-              <view class="swiper-item-detail" style="padding-top: 20rpx"
-                >身份证号
+              <view
+                class="swiper-item-detail"
+                style="padding-top: 20rpx"
+              >身份证号
                 <text class="swiper-item-identity">{{
                   item.ownerCertificateNo
                 }}</text>
               </view>
-              <view class="swiper-item-detail" style="padding-top: 20rpx"
-                >手机号码
+              <view
+                class="swiper-item-detail"
+                style="padding-top: 20rpx"
+              >手机号码
                 <text class="swiper-item-phone">{{ item.ownerMobile }}</text>
               </view>
             </view>
@@ -155,8 +163,7 @@
     <view class="info-third">
       <view class="info-third-title">
         <view style="color: #4881f9">优惠告知书信息</view>
-        <view class="all"
-          >全部（
+        <view class="all">全部（
           <text style="color: #ff0000">{{ info.noticeList.length }}</text>
           ）
         </view>
@@ -180,9 +187,7 @@
                   <view class="swiper-item-type">{{
                     `${getDictName(item.notificationType, NotificationType)}`
                   }}</view>
-                  <view class="swiper-item-num"
-                    >编号（{{ item.noticeNo }}）</view
-                  >
+                  <view class="swiper-item-num">编号（{{ item.noticeNo }}）</view>
                 </view>
                 <view class="swiper-item-status">{{
                   `${getDictName(item.notificationStatus, NotificationStatus)}`
@@ -195,16 +200,14 @@
                   size="medium"
                   shape="circle"
                   @click="gotoNotice(item, 'view')"
-                  >预览</u-button
-                >
+                >预览</u-button>
                 <u-button
                   v-if="item.notificationStatus === 'WaitBeSigned'"
                   type="primary"
                   size="medium"
                   shape="circle"
                   @click="gotoNotice(item, 'sign')"
-                  >去签署</u-button
-                >
+                >去签署</u-button>
               </view>
             </view>
           </swiper-item>
@@ -225,8 +228,7 @@
       <view class="info-four-title">退款信息</view>
       <view class="info-four-money">退款金额: 3000.00</view>
       <view class="info-four-msg">
-        <view class="pay-list"
-          >收款账号
+        <view class="pay-list">收款账号
           <text class="pay-list-money">{{ 62100099999828828 }}</text>
         </view>
         <view
@@ -235,8 +237,10 @@
         >收款人
           <text class="pay-list-money">杨伟立</text>
         </view>
-        <view class="pay-list" style="padding-top: 10rpx"
-          >退款时间
+        <view
+          class="pay-list"
+          style="padding-top: 10rpx"
+        >退款时间
           <text class="pay-list-money">2020-12-20 23:59:59</text>
         </view>
       </view>
@@ -331,8 +335,26 @@ export default {
     },
     // 预览
     async gotoNotice(val, type) {
+      // switch (val.notificationStatus) {
+      //   case "BecomeEffective":
+      //   case "WaitBeSigned":
+      //     getApp().noticeInfo = { ...val, type: type };
+      //     uni.navigateTo({
+      //       url: `/customerPackage/notification/index`,
+      //     });
+      //     break;
+      //   case "WaitPay":
+      //   case "WaitReview":
+      //     const res = await getPreviewApi(this.noticeId);
+      //     if (res) {
+      //       getApp().globalData.webViewSrc = res;
+      //       uni.navigateTo({
+      //         url: `/customerPackage/webView/index`,
+      //       });
+      //     }
+      // }
+
       switch (val.notificationStatus) {
-        case "BecomeEffective":
         case "WaitBeSigned":
           getApp().noticeInfo = { ...val, type: type };
           uni.navigateTo({
@@ -348,6 +370,14 @@ export default {
               url: `/customerPackage/webView/index`,
             });
           }
+          break;
+        case "BecomeEffective":
+          let url = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${val.templateId}`;
+          getApp().globalData.webViewSrc = url;
+          uni.navigateTo({
+            url: `/customerPackage/webView/index`,
+          });
+          break;
       }
     },
     async gotoPay(obj) {
