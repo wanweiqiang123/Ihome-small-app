@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import { postWechatNoticeListApi } from "../../api/customer";
+import { postWechatNoticeListApi } from "../../api/customer"; 
 import { getAllByTypeApi } from "../../api/index";
 import storageTool from "../../common/storageTool";
 export default {

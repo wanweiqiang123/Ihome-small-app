@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-21 20:02:18
+ * @LastEditTime: 2021-01-21 20:39:51
 -->
 <template>
   <LoginPage>
@@ -102,6 +102,7 @@ import {
   getUnpaidOrderOrAmountPaidApi,
   postPaymentupdateApi,
   getBusinessIdApi,
+  postWechatNoticeListApi,
 } from "../../api/customer";
 import { getAllByTypeApi } from "../../api/index";
 // import { tool } from "../../common/tool";
@@ -138,7 +139,11 @@ export default {
   },
   async onShow() {
     this.hidePayStatus = this.$storageTool.hidePay();
-    if(!this.hidePayStatus){
+    const userInfo = this.$storageTool.getUserInfo();
+    let resList = await postWechatNoticeListApi({
+      ownerMobile: userInfo?.mobilePhone,
+    });
+    if (!this.hidePayStatus && (resList || []).length > 0) {
       this.payTypeOptions = await getAllByTypeApi({
         type: "PayType",
         tag: "Customer",
