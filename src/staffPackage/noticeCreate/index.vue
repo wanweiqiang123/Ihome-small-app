@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-19 15:04:49
+ * @LastEditTime: 2021-01-21 15:28:38
 -->
 <template>
   <LoginPage>
@@ -390,6 +390,7 @@ import {
   getNoticeInfo,
   postNoticeUpdate,
   postCheckRoom,
+  postNoticeDelete,
 } from "../../api/staff";
 
 export default {
