@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 17:10:39
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-19 15:42:04
+ * @LastEditTime: 2021-01-21 15:05:06
 -->
 <template>
   <LoginPage>
@@ -150,18 +150,24 @@ export default {
     downloadCode() {
       this.loading = true;
       uni.downloadFile({
-        url: `${this.codeUrl}${this.fileId}`,
+        url: `${this.codeUrl}${this.fileId}.jpg`,
+        // url: `http://img02.tooopen.com/images/20150928/tooopen_sy_143912755726.jpg`,
         success: (res) => {
+          console.log(`${this.codeUrl}${this.fileId}.jpg`);
           let filePath = res.tempFilePath;
           console.log(filePath);
           uni.saveImageToPhotosAlbum({
             filePath: filePath,
             success: () => {
-              this.$tool.toast("保存成功");
+              this.$tool.toast("购房二维码已保存到相册");
               this.loading = false;
             },
             fail: () => {
-              this.$tool.toast("保存失败");
+              uni.showToast({
+                title: "保存失败, 可以尝试点击图片进行长按保存",
+                icon: "none",
+                duration: 5000,
+              });
               this.loading = false;
             },
           });
