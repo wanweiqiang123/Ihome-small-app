@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-13 20:59:13
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-01-21 19:20:55
 -->
 <script>
 export default {
@@ -45,7 +45,7 @@ export default {
   },
   onLaunch: function () {
     console.log("App Launch");
-    console.log("envVersion", __wxConfig.envVersion);
+    // console.log("envVersion", __wxConfig.envVersion);
   },
   onShow: function () {
     console.log("App Show");

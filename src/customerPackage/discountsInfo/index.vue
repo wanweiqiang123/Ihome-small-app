@@ -3,249 +3,247 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
-<<<<<<< HEAD
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-21 18:04:27
-=======
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-20 16:17:19
->>>>>>> 0dbd5039d08ff77bb659496b3b13d23ec330c44c
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-01-21 20:00:07
 -->
 <template>
-  <view class="info safe-area-inset-bottom">
-    <view class="info-first">
-      <view class="info-first-title">
-        <view>
-          <view class="info-first-way">优惠方式</view>
-          <view class="info-first-discount">{{
-            info.discountInformationResponseVo.explain
+  <LoginPage>
+    <view class="info safe-area-inset-bottom">
+      <view class="info-first">
+        <view class="info-first-title">
+          <view>
+            <view class="info-first-way">优惠方式</view>
+            <view class="info-first-discount">{{
+              info.discountInformationResponseVo.explain
+            }}</view>
+          </view>
+          <view class="background"></view>
+        </view>
+        <view style="padding: 0 19rpx">
+          <view class="info-first-progress">
+            <u-line-progress
+              height="18"
+              active-color="#4881F9"
+              :show-percent="false"
+              :percent="percent"
+              :striped-active="true"
+            ></u-line-progress>
+          </view>
+          <view class="info-first-msg">
+            <view>已付{{ info.discountInformationResponseVo.paid }}</view>
+            <view
+              >应付{{ info.discountInformationResponseVo.paymentAmount }}</view
+            >
+          </view>
+          <view class="info-first-paid">未付金额</view>
+          <view class="info-first-money"
+            >{{ info.discountInformationResponseVo.unpaid }}
+            <text
+              style="margin-left: 20rpx; font-size: 24rpx; font-weight: bold"
+              >元</text
+            >
+          </view>
+          <view class="info-first-detail" @click="payHistory(noticeId)">
+            <u-icon
+              name="arrow-right"
+              width="12"
+              height="22"
+              color="#666666"
+            ></u-icon>
+            <text>付款明细</text>
+          </view>
+          <view
+            v-if="payAuditNum"
+            class="info-first-audit"
+            @click="payAuditing(noticeId)"
+          >
+            <u-icon name="arrow-right" size="28" color="#666666"></u-icon>
+            <text class="text"
+              >您有
+              <text style="color: #ff0000; padding: 0 5rpx">{{
+                payAuditNum
+              }}</text>
+              笔付款正在审核中
+            </text>
+          </view>
+          <view class="info-first-btn" v-if="!hidePayStatus">
+            <u-button
+              v-if="
+                Number(info.discountInformationResponseVo.paid) !==
+                Number(info.discountInformationResponseVo.paymentAmount)
+              "
+              type="primary"
+              size="medium"
+              shape="circle"
+              @click="gotoPay(info.discountInformationResponseVo)"
+              >去付款</u-button
+            >
+          </view>
+          <view class="info-first-btn" v-if="hidePayStatus">
+            <u-button
+              v-if="
+                Number(info.discountInformationResponseVo.paid) !==
+                Number(info.discountInformationResponseVo.paymentAmount)
+              "
+              type="primary"
+              size="medium"
+              shape="circle"
+              @click="gotoPay(info.discountInformationResponseVo)"
+              >查看当前付款</u-button
+            >
+          </view>
+        </view>
+      </view>
+      <view class="info-second">
+        <view class="info-second-title">购房信息</view>
+        <view class="info-second-msg">
+          <view class="info-second-top">{{
+            info.purchaseInformation.projectName
+          }}</view>
+          <view class="info-second-bottom">{{
+            `${getDictName(info.purchaseInformation.propertyType, Property)}-${
+              info.purchaseInformation.buyUnitName
+            }-${info.purchaseInformation.roomNumberName}`
           }}</view>
         </view>
-        <view class="background"></view>
-      </view>
-      <view style="padding: 0 19rpx">
-        <view class="info-first-progress">
-          <u-line-progress
-            height="18"
-            active-color="#4881F9"
-            :show-percent="false"
-            :percent="percent"
-            :striped-active="true"
-          ></u-line-progress>
-        </view>
-        <view class="info-first-msg">
-          <view>已付{{ info.discountInformationResponseVo.paid }}</view>
-          <view>应付{{ info.discountInformationResponseVo.paymentAmount }}</view>
-        </view>
-        <view class="info-first-paid">未付金额</view>
-        <view class="info-first-money">{{ info.discountInformationResponseVo.unpaid }}
-          <text style="margin-left: 20rpx; font-size: 24rpx; font-weight: bold">元</text>
-        </view>
-        <view
-          class="info-first-detail"
-          @click="payHistory(noticeId)"
-        >
-          <u-icon
-            name="arrow-right"
-            width="12"
-            height="22"
-            color="#666666"
-          ></u-icon>
-          <text>付款明细</text>
-        </view>
-        <view
-          v-if="payAuditNum"
-          class="info-first-audit"
-          @click="payAuditing(noticeId)"
-        >
-          <u-icon
-            name="arrow-right"
-            size="28"
-            color="#666666"
-          ></u-icon>
-          <text class="text">您有
-            <text style="color: #ff0000; padding: 0 5rpx">{{
-              payAuditNum
-            }}</text>
-            笔付款正在审核中
-          </text>
-        </view>
-        <view
-          class="info-first-btn"
-          v-if="configPay == 'On'"
-        >
-          <u-button
-            v-if="
-              Number(info.discountInformationResponseVo.paid) !==
-              Number(info.discountInformationResponseVo.paymentAmount)
-            "
-            type="primary"
-            size="medium"
-            shape="circle"
-            @click="gotoPay(info.discountInformationResponseVo)"
-          >去付款</u-button>
-        </view>
-        <view
-          class="info-first-btn"
-          v-if="configPay == 'Off'"
-        >
-          <u-button
-            v-if="
-              Number(info.discountInformationResponseVo.paid) !==
-              Number(info.discountInformationResponseVo.paymentAmount)
-            "
-            type="primary"
-            size="medium"
-            shape="circle"
-            @click="gotoPay(info.discountInformationResponseVo)"
-          >查看当前付款</u-button>
-        </view>
-      </view>
-    </view>
-    <view class="info-second">
-      <view class="info-second-title">购房信息</view>
-      <view class="info-second-msg">
-        <view class="info-second-top">{{
-          info.purchaseInformation.projectName
-        }}</view>
-        <view class="info-second-bottom">{{
-          `${getDictName(info.purchaseInformation.propertyType, Property)}-${
-            info.purchaseInformation.buyUnitName
-          }-${info.purchaseInformation.roomNumberName}`
-        }}</view>
-      </view>
-      <view class="info-second-wrap">
-        <swiper
-          class="swiper"
-          :autoplay="false"
-          circular
-          title
-          @change="change"
-        >
-          <swiper-item
-            class="swiper-item"
-            v-for="(item, i) in info.purchaseInformation.ownerWeChatList"
-            :key="i"
+        <view class="info-second-wrap">
+          <swiper
+            class="swiper"
+            :autoplay="false"
+            circular
+            title
+            @change="change"
           >
-            <view class="swiper-item-title">{{ `业主${i + 1}` }}</view>
-            <view class="swiper-item-msg">
-              <view class="swiper-item-detail">姓名
-                <text class="swiper-item-name">{{ item.ownerName }}</text>
-              </view>
-              <view
-                class="swiper-item-detail"
-                style="padding-top: 20rpx"
-              >身份证号
-                <text class="swiper-item-identity">{{
-                  item.ownerCertificateNo
-                }}</text>
-              </view>
-              <view
-                class="swiper-item-detail"
-                style="padding-top: 20rpx"
-              >手机号码
-                <text class="swiper-item-phone">{{ item.ownerMobile }}</text>
-              </view>
-            </view>
-          </swiper-item>
-        </swiper>
-        <view class="indicator-dots">
-          <view
-            v-for="(item, i) in info.purchaseInformation.ownerWeChatList"
-            :key="i"
-            class="indicator-dots-item"
-            :class="[current == i ? 'indicator-dots-active' : '']"
-          >
-          </view>
-        </view>
-      </view>
-    </view>
-    <view class="info-third">
-      <view class="info-third-title">
-        <view style="color: #4881f9">优惠告知书信息</view>
-        <view class="all">全部（
-          <text style="color: #ff0000">{{ info.noticeList.length }}</text>
-          ）
-        </view>
-      </view>
-      <view class="info-third-wrap">
-        <swiper
-          class="swiper"
-          :autoplay="false"
-          circular
-          title
-          @change="changemsg"
-        >
-          <swiper-item
-            class="swiper-item"
-            v-for="(item, i) in info.noticeList"
-            :key="i"
-          >
-            <view class="swiper-item-msg">
-              <view class="swiper-item-layout">
-                <view class="swiper-item-detail">
-                  <view class="swiper-item-type">{{
-                    `${getDictName(item.notificationType, NotificationType)}`
-                  }}</view>
-                  <view class="swiper-item-num">编号（{{ item.noticeNo }}）</view>
+            <swiper-item
+              class="swiper-item"
+              v-for="(item, i) in info.purchaseInformation.ownerWeChatList"
+              :key="i"
+            >
+              <view class="swiper-item-title">{{ `业主${i + 1}` }}</view>
+              <view class="swiper-item-msg">
+                <view class="swiper-item-detail"
+                  >姓名
+                  <text class="swiper-item-name">{{ item.ownerName }}</text>
                 </view>
-                <view class="swiper-item-status">{{
-                  `${getDictName(item.notificationStatus, NotificationStatus)}`
-                }}</view>
+                <view class="swiper-item-detail" style="padding-top: 20rpx"
+                  >身份证号
+                  <text class="swiper-item-identity">{{
+                    item.ownerCertificateNo
+                  }}</text>
+                </view>
+                <view class="swiper-item-detail" style="padding-top: 20rpx"
+                  >手机号码
+                  <text class="swiper-item-phone">{{ item.ownerMobile }}</text>
+                </view>
               </view>
-              <view class="swiper-item-btn">
-                <u-button
-                  v-if="['BecomeEffective', 'WaitPay', 'WaitReview'].includes(item.notificationStatus)"
-                  type="primary"
-                  size="medium"
-                  shape="circle"
-                  @click="gotoNotice(item, 'view')"
-                >预览</u-button>
-                <u-button
-                  v-if="item.notificationStatus === 'WaitBeSigned'"
-                  type="primary"
-                  size="medium"
-                  shape="circle"
-                  @click="gotoNotice(item, 'sign')"
-                >去签署</u-button>
-              </view>
+            </swiper-item>
+          </swiper>
+          <view class="indicator-dots">
+            <view
+              v-for="(item, i) in info.purchaseInformation.ownerWeChatList"
+              :key="i"
+              class="indicator-dots-item"
+              :class="[current == i ? 'indicator-dots-active' : '']"
+            >
             </view>
-          </swiper-item>
-        </swiper>
-        <view class="indicator-dots">
-          <view
-            v-for="(item, i) in info.noticeList"
-            :key="i"
-            class="indicator-dots-item"
-            :class="[currents == i ? 'indicator-dots-active' : '']"
-          >
           </view>
         </view>
       </view>
-    </view>
-
-    <view class="info-four">
-      <view class="info-four-title">退款信息</view>
-      <view class="info-four-money">退款金额: 3000.00</view>
-      <view class="info-four-msg">
-        <view class="pay-list">收款账号
-          <text class="pay-list-money">{{ 62100099999828828 }}</text>
+      <view class="info-third">
+        <view class="info-third-title">
+          <view style="color: #4881f9">优惠告知书信息</view>
+          <view class="all"
+            >全部（
+            <text style="color: #ff0000">{{ info.noticeList.length }}</text>
+            ）
+          </view>
         </view>
-        <view
-          class="pay-list"
-          style="padding-top: 10rpx"
-        >收款人
-          <text class="pay-list-money">杨伟立</text>
-        </view>
-        <view
-          class="pay-list"
-          style="padding-top: 10rpx"
-        >退款时间
-          <text class="pay-list-money">2020-12-20 23:59:59</text>
+        <view class="info-third-wrap">
+          <swiper
+            class="swiper"
+            :autoplay="false"
+            circular
+            title
+            @change="changemsg"
+          >
+            <swiper-item
+              class="swiper-item"
+              v-for="(item, i) in info.noticeList"
+              :key="i"
+            >
+              <view class="swiper-item-msg">
+                <view class="swiper-item-layout">
+                  <view class="swiper-item-detail">
+                    <view class="swiper-item-type">{{
+                      `${getDictName(item.notificationType, NotificationType)}`
+                    }}</view>
+                    <view class="swiper-item-num"
+                      >编号（{{ item.noticeNo }}）</view
+                    >
+                  </view>
+                  <view class="swiper-item-status">{{
+                    `${getDictName(
+                      item.notificationStatus,
+                      NotificationStatus
+                    )}`
+                  }}</view>
+                </view>
+                <view class="swiper-item-btn">
+                  <u-button
+                    v-if="
+                      ['BecomeEffective', 'WaitPay', 'WaitReview'].includes(
+                        item.notificationStatus
+                      )
+                    "
+                    type="primary"
+                    size="medium"
+                    shape="circle"
+                    @click="gotoNotice(item, 'view')"
+                    >预览</u-button
+                  >
+                  <u-button
+                    v-if="item.notificationStatus === 'WaitBeSigned'"
+                    type="primary"
+                    size="medium"
+                    shape="circle"
+                    @click="gotoNotice(item, 'sign')"
+                    >去签署</u-button
+                  >
+                </view>
+              </view>
+            </swiper-item>
+          </swiper>
+          <view class="indicator-dots">
+            <view
+              v-for="(item, i) in info.noticeList"
+              :key="i"
+              class="indicator-dots-item"
+              :class="[currents == i ? 'indicator-dots-active' : '']"
+            >
+            </view>
+          </view>
         </view>
       </view>
-    </view>
-    <!-- <view>
+
+      <view class="info-four">
+        <view class="info-four-title">退款信息</view>
+        <view class="info-four-money">退款金额: 3000.00</view>
+        <view class="info-four-msg">
+          <view class="pay-list"
+            >收款账号
+            <text class="pay-list-money">{{ 62100099999828828 }}</text>
+          </view>
+          <view class="pay-list" style="padding-top: 10rpx"
+            >收款人
+            <text class="pay-list-money">杨伟立</text>
+          </view>
+          <view class="pay-list" style="padding-top: 10rpx"
+            >退款时间
+            <text class="pay-list-money">2020-12-20 23:59:59</text>
+          </view>
+        </view>
+      </view>
+      <!-- <view>
       <u-modal
         v-model="show"
         @confirm="confirm(info.discountInformationResponseVo)"
@@ -260,7 +258,8 @@
       >
       </u-modal>
     </view> -->
-  </view>
+    </view>
+  </LoginPage>
 </template>
 <script>
 import {
@@ -277,7 +276,7 @@ export default {
   components: { uImage },
   data() {
     return {
-      configPay: "Off",
+      hidePayStatus: true,
       info: {
         discountInformationResponseVo: {
           paid: 0,
@@ -308,11 +307,11 @@ export default {
     }
   },
   async onShow() {
+    this.hidePayStatus = this.$storageTool.hidePay();
     this.NotificationType = await this.getDictAll("NotificationType");
     this.NotificationStatus = await this.getDictAll("NotificationStatus");
     this.Property = await this.getDictAll("Property");
     this.PayOpenFlag = await this.getDictAll("PayOpenFlag");
-    this.configPay = this.PayOpenFlag.find((v) => v.code === "OpenFlag").tag;
   },
   computed: {
     percent() {
