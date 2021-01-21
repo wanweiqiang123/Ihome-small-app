@@ -5,7 +5,7 @@
  * @Date: 2020-11-13 15:23:42
 <<<<<<< HEAD
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-21 18:02:31
+ * @LastEditTime: 2021-01-21 18:04:27
 =======
  * @LastEditors: wwq
  * @LastEditTime: 2021-01-20 16:17:19
@@ -272,6 +272,7 @@ import {
 } from "../../api/customer";
 import { getAllByTypeApi } from "../../api/index";
 import uImage from "../../uview-ui/components/u-image/u-image.vue";
+import { currentEnvConfig } from "../../env-config.js";
 export default {
   components: { uImage },
   data() {
