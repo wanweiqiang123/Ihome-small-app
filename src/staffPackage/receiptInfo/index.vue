@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-19 15:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-20 17:07:24
+ * @LastEditTime: 2021-01-21 18:13:04
 -->
 <template>
   <view class="receipt info">
@@ -61,11 +61,12 @@
             笔付款正在审核中
           </text>
         </view>
-        <view
-          class="info-first-btn"
-          v-if="true"
-        >
+        <view class="info-first-btn">
           <u-button
+            v-if="
+              Number(info.discountInformationResponseVo.paid) !==
+              Number(info.discountInformationResponseVo.paymentAmount)
+            "
             type="primary"
             size="medium"
             shape="circle"
