@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-19 18:44:57
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-21 14:08:52
+ * @LastEditTime: 2021-01-21 18:09:28
 -->
 <template>
   <view class="receipt">
@@ -74,6 +74,8 @@
             <u-input
               v-model="form.amount"
               placeholder="请输入收款金额"
+              disabled
+              @click="keyBoardShow = true"
             />
           </u-form-item>
           <u-form-item
@@ -128,6 +130,18 @@
       label-name="name"
       @confirm="payeeConfirm"
     ></u-select>
+    <!-- 数字键盘 -->
+    <u-keyboard
+      ref="uKeyboard"
+      mode="number"
+      v-model="keyBoardShow"
+      :mask="false"
+      @change="keyChange"
+      safe-area-inset-bottom
+      @backspace="backspace"
+      :show-tips="false"
+      :cancel-btn="false"
+    ></u-keyboard>
   </view>
 </template>
 
@@ -203,6 +217,7 @@ export default {
         payeeAccount: "",
         payeeName: "",
       },
+      keyBoardShow: false,
     };
   },
   methods: {
@@ -214,10 +229,37 @@ export default {
     // timeConfirm(val) {
     //   this.form.name = `${val.year}-${val.month}-${val.day}`;
     // },
+    backspace() {
+      if (this.form.amount.length) {
+        this.form.amount = this.form.amount.substr(
+          0,
+          this.form.amount.length - 1
+        );
+      }
+    },
+    keyChange(e) {
+      console.log(e);
+      if (this.form.amount?.includes(".")) {
+        if (e != ".") {
+          let arr = this.form.amount.split(".");
+          if (arr[1].length < 2) {
+            this.form.amount += e;
+          }
+        }
+      } else {
+        this.form.amount += e;
+      }
+    },
     payeeConfirm(val) {
       let item = val[0];
       this.form.payTypeName = item.label;
       this.form.payType = item.value;
+      Object.assign(this.form, {
+        orderNo: "",
+        payTime: "",
+        attachments: [],
+        amount: "",
+      });
       if (item.value === "Transfer") {
         this.getBank();
       }
@@ -292,7 +334,7 @@ export default {
                 : { ...params, ...this.form };
             await postAddPayServe(data);
             this.$tool.toast("提交成功");
-            this.$tool.back({ type: "init", page: null });
+            this.$tool.back(null, { type: "init", page: null });
           } catch (error) {
             console.log(error);
           }

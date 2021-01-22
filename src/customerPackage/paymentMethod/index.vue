@@ -4,92 +4,94 @@
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-20 16:58:14
+ * @LastEditTime: 2021-01-21 20:39:51
 -->
 <template>
-  <view class="pay safe-area-inset-bottom">
-    <view class="pay-title margin-top">付款信息</view>
-    <view class="pay-msg margin-top">
-      <view class="pay-item">
-        <u-field
-          label-width="150"
-          v-model="payData.paymentAmount"
-          label="应付服务费"
-          disabled
-        ></u-field>
-        <u-field
-          label-width="150"
-          v-model="payData.paid"
-          label="已付服务费"
-          disabled
-        ></u-field>
-        <u-field
-          label-width="150"
-          v-model="payData.unpaid"
-          label="未付服务费"
-          disabled
-        ></u-field>
-        <u-field
-          label-width="150"
-          v-model="payNum"
-          label="付款金额"
-          :clearable="false"
-          focus
-          @blur="payNumChange"
-          disabled
-          @click="show = true"
-        ></u-field>
-      </view>
-    </view>
-
-    <view class="pay-title" v-if="configPay == 'On'">付款方式</view>
-    <view class="pay-msg margin-top" v-if="configPay == 'On'">
-      <u-radio-group v-model="payType">
-        <view class="pay-type" v-for="(item, i) in payTypeOptions" :key="i">
-          <view class="pay-type-image">
-            <u-image
-              height="60rpx"
-              width="60rpx"
-              :src="require(`../common/img/${item.code}.png`)"
-            ></u-image>
-            <text class="pay-type-name">{{ item.name }}</text>
-          </view>
-          <u-radio
-            active-color="#18B566"
-            class="pay-type-radio"
-            :name="item.code"
-            @change="radioChange"
-          ></u-radio>
+  <LoginPage>
+    <view class="pay safe-area-inset-bottom">
+      <view class="pay-title margin-top">付款信息</view>
+      <view class="pay-msg margin-top">
+        <view class="pay-item">
+          <u-field
+            label-width="150"
+            v-model="payData.paymentAmount"
+            label="应付服务费"
+            disabled
+          ></u-field>
+          <u-field
+            label-width="150"
+            v-model="payData.paid"
+            label="已付服务费"
+            disabled
+          ></u-field>
+          <u-field
+            label-width="150"
+            v-model="payData.unpaid"
+            label="未付服务费"
+            disabled
+          ></u-field>
+          <u-field
+            label-width="150"
+            v-model="payNum"
+            label="付款金额"
+            :clearable="false"
+            focus
+            @blur="payNumChange"
+            disabled
+            @click="show = true"
+          ></u-field>
         </view>
-      </u-radio-group>
-    </view>
-    <view class="my-btn" v-if="configPay == 'On'">
-      <u-button shape="square" @click="payGoto" :loading="buttonLoading"
-        >{{
-          `${getDictName(payType, payTypeOptions)} ￥${payNum ? payNum : 0}`
-        }}
-      </u-button>
-    </view>
-    <view class="pay-hint" v-if="configPay == 'On'">
-      付款成功后可能存在延迟，请耐心等待1~2分钟！
-      如付款成功后长时间还未更新记录请及时联系工作人员。
-    </view>
-    <view class="my-btn" v-if="configPay == 'Off'">
-      <u-button shape="square" @click="goBack"> 返回 </u-button>
-    </view>
+      </view>
 
-    <u-keyboard
-      ref="uKeyboard"
-      mode="number"
-      v-model="show"
-      :mask="false"
-      @change="keyChange"
-      safe-area-inset-bottom
-      @backspace="backspace"
-      :show-tips="false"
-      :cancel-btn="false"
-    ></u-keyboard>
-  </view>
+      <view class="pay-title" v-if="!hidePayStatus">付款方式</view>
+      <view class="pay-msg margin-top" v-if="!hidePayStatus">
+        <u-radio-group v-model="payType">
+          <view class="pay-type" v-for="(item, i) in payTypeOptions" :key="i">
+            <view class="pay-type-image">
+              <u-image
+                height="60rpx"
+                width="60rpx"
+                :src="require(`../common/img/${item.code}.png`)"
+              ></u-image>
+              <text class="pay-type-name">{{ item.name }}</text>
+            </view>
+            <u-radio
+              active-color="#18B566"
+              class="pay-type-radio"
+              :name="item.code"
+              @change="radioChange"
+            ></u-radio>
+          </view>
+        </u-radio-group>
+      </view>
+      <view class="my-btn" v-if="!hidePayStatus">
+        <u-button shape="square" @click="payGoto" :loading="buttonLoading"
+          >{{
+            `${getDictName(payType, payTypeOptions)} ￥${payNum ? payNum : 0}`
+          }}
+        </u-button>
+      </view>
+      <view class="pay-hint" v-if="!hidePayStatus">
+        付款成功后可能存在延迟，请耐心等待1~2分钟！
+        如付款成功后长时间还未更新记录请及时联系工作人员。
+      </view>
+      <view class="my-btn" v-if="hidePayStatus">
+        <u-button shape="square" @click="goBack"> 返回 </u-button>
+      </view>
+
+      <u-keyboard
+        ref="uKeyboard"
+        mode="number"
+        v-model="show"
+        :mask="false"
+        @change="keyChange"
+        safe-area-inset-bottom
+        @backspace="backspace"
+        :show-tips="false"
+        :cancel-btn="false"
+      ></u-keyboard>
+    </view>
+  </LoginPage>
 </template>
 <script>
 import {
@@ -100,6 +102,7 @@ import {
   getUnpaidOrderOrAmountPaidApi,
   postPaymentupdateApi,
   getBusinessIdApi,
+  postWechatNoticeListApi,
 } from "../../api/customer";
 import { getAllByTypeApi } from "../../api/index";
 // import { tool } from "../../common/tool";
@@ -108,7 +111,7 @@ export default {
   components: { uImage },
   data() {
     return {
-      configPay: "Off",
+      hidePayStatus: true,
       payData: {},
       payType: "WeChatPay",
       payNum: 0,
@@ -128,14 +131,6 @@ export default {
   },
   async onLoad() {
     this.payData = { ...getApp().paidData };
-    this.PayOpenFlag = await this.getDictAll("PayOpenFlag");
-    this.configPay = this.PayOpenFlag.find((v) => v.code === "OpenFlag").tag;
-    if (this.configPay == "On") {
-      this.payTypeOptions = await getAllByTypeApi({
-        type: "PayType",
-        tag: "Customer",
-      });
-    }
 
     // console.log(res);
     // this.payTypeOptions = res.filter(
@@ -143,6 +138,17 @@ export default {
     // );
   },
   async onShow() {
+    this.hidePayStatus = this.$storageTool.hidePay();
+    const userInfo = this.$storageTool.getUserInfo();
+    let resList = await postWechatNoticeListApi({
+      ownerMobile: userInfo?.mobilePhone,
+    });
+    if (!this.hidePayStatus && (resList || []).length > 0) {
+      this.payTypeOptions = await getAllByTypeApi({
+        type: "PayType",
+        tag: "Customer",
+      });
+    }
     const res = await getUnpaidOrderOrAmountPaidApi(this.payData.businessId);
     this.payData.paid = res.amountPaid;
     this.payData.unpaid = (

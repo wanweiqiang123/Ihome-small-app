@@ -3,13 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
-<<<<<<< HEAD
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-21 19:20:27
-=======
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-20 16:17:19
->>>>>>> 0dbd5039d08ff77bb659496b3b13d23ec330c44c
+ * @LastEditTime: 2021-01-22 09:32:26
 -->
 <template>
   <view class="info safe-area-inset-bottom">

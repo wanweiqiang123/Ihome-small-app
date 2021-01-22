@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 15:30:00
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-08 18:07:50
+ * @LastEditTime: 2021-01-21 19:48:18
  */
 const tokenKey = 'token';//token的key
 const expiresInKey = 'expires_in';//token的key的过期时间
@@ -14,6 +14,21 @@ const loginUserTypeLogKey = 'loginUserTypeLog';//登录类别记录
 const UUIDKey = "uuid";//微信code换取uuid
 
 const storageTool = {
+
+    hidePay() {
+        try {
+            let userInfo = this.getUserInfo();
+            if (userInfo) {
+                let roleList = userInfo.roleList?.map((item) => { return item.code }) || [];
+                return roleList.includes('RAuditCustomer');
+            } else {
+                return true;
+            }
+        } catch (error) {
+            return true;
+        }
+
+    },
     /**设置token*/
     setToken(data, expires_in) {
         uni.setStorageSync(tokenKey, data);
