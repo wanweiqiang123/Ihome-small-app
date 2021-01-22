@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-19 18:44:57
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-21 18:09:28
+ * @LastEditTime: 2021-01-22 11:32:28
 -->
 <template>
   <view class="receipt">
@@ -198,13 +198,13 @@ export default {
             trigger: "change",
           },
         ],
-        attachments: [
-          {
-            required: true,
-            message: "请上传转账凭证",
-            trigger: "change",
-          },
-        ],
+        // attachments: [
+        //   {
+        //     // required: true,
+        //     message: "请上传转账凭证",
+        //     trigger: "change",
+        //   },
+        // ],
       },
       action: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/upload`,
       header: {
@@ -328,6 +328,13 @@ export default {
       this.$refs.uForm.validate(async (val) => {
         if (val) {
           try {
+            if (
+              this.form.payType === "Transfer" &&
+              !this.form.attachments.length
+            ) {
+              this.$tool.toast("请上传转账凭证");
+              return;
+            }
             let data =
               this.form.payType === "Transfer"
                 ? { ...params, ...this.form, ...this.backInfo }

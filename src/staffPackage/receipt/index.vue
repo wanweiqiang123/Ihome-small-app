@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 14:10:55
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-21 11:23:20
+ * @LastEditTime: 2021-01-22 10:04:15
 -->
 <template>
   <view class="receipt safe-area-inset-bottom">
@@ -129,7 +129,7 @@
           :border-bottom="false"
         >
           <u-input
-            v-model="form.name"
+            v-model="form.ownerName"
             border
             placeholder="请输入客户姓名"
           />
@@ -184,6 +184,7 @@ export default {
     return {
       isShow: false,
       form: {
+        ownerName: "",
         ownerMobile: "",
         proName: "",
         projectId: null,
@@ -255,6 +256,7 @@ export default {
     },
     reset() {
       Object.assign(this.form, {
+        ownerName: "",
         ownerMobile: "",
         proName: "",
         projectId: null,
