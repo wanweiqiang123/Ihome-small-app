@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 15:28:17
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-22 12:12:29
+ * @LastEditTime: 2021-01-22 12:34:35
 -->
 <template>
   <u-popup
@@ -18,8 +18,11 @@
     close-icon-size="40"
     @close="close"
   >
+    <view
+      class="title"
+      v-if="!hidePayStatus"
+    >银行转账</view>
     <view class="pay safe-area-inset-bottom">
-      <view class="title">银行转账</view>
       <view class="pay-msg margin-top">
         <view class="pay-title">
           <text style="margin-left: 20rpx">收款信息</text>
@@ -53,7 +56,10 @@
           <text style="margin-left: 20rpx">转账成功后在下方上传银行转账凭证并提交确认~</text>
         </view>
         <view class="pay-upload">
-          <text class="upload-title">转账凭证</text>
+          <text
+            class="upload-title"
+            v-if="!hidePayStatus"
+          >转账凭证</text>
           <u-upload
             max-count="10"
             class="upload"
@@ -115,6 +121,7 @@ export default {
       addOrUpdate: "",
       continueId: "",
       buttonLoading: false,
+      hidePayStatus: true,
     };
   },
   watch: {
@@ -130,6 +137,7 @@ export default {
           if (this.cycleId) {
             this.getInfo();
           }
+          this.hidePayStatus = this.$storageTool.hidePay();
           // 假数据
           // this.cycleId = 3;
         }
@@ -231,6 +239,12 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.title {
+  position: absolute;
+  left: 50%;
+  top: 30rpx;
+  transform: translate(-50%);
+}
 .pay {
   padding-top: 15rpx;
   width: 100%;
@@ -239,11 +253,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  .title {
-    text-align: center;
-    padding-top: 15rpx;
-  }
+  padding-top: 70rpx;
 
   &-hint {
     padding: 20rpx;
