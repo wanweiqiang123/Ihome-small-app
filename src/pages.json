@@ -72,7 +72,8 @@
 				{
 					"path": "homeTab/index",
 					"style": {
-						"navigationBarTitleText": "客户首页"
+						"navigationBarTitleText": "客户首页",
+						"enablePullDownRefresh": true
 					}
 				},
 				{
@@ -443,7 +444,8 @@
 				{
 					"path": "receipt/index",
 					"style": {
-						"navigationBarTitleText": "购房优惠收款"
+						"navigationBarTitleText": "购房优惠收款",
+						"enablePullDownRefresh": true
 					}
 				},
 				{

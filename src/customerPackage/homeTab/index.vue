@@ -3,19 +3,19 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-22 09:04:47
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-01-22 16:00:06
 -->
 <template>
   <view>
     <CustomerTabBar>
       <view
         class="box"
-        v-if="info.length"
+        v-if="tablePage.length"
       >
         <u-card
           :border="false"
-          v-for="(item, i) in info"
+          v-for="(item, i) in tablePage"
           :key="i"
           class="ih-card"
           :show-head="false"
@@ -65,29 +65,30 @@
 </template>
 
 <script>
-import { postWechatNoticeListApi } from "../../api/customer"; 
+import pagination from "../../mixins/pagination";
+import { postWechatNoticeListApi } from "../../api/customer";
 import { getAllByTypeApi } from "../../api/index";
-import storageTool from "../../common/storageTool";
 export default {
   name: "PageingSearch",
+  mixins: [pagination],
   components: {},
   data() {
     return {
-      info: [],
       show: false,
       Property: [],
     };
   },
   onLoad() {
-    this.getInfo();
+    this.getListMixin();
   },
   async onShow() {
     this.Property = await this.getDictAll("Property");
   },
   methods: {
-    async getInfo() {
-      const userInfo = storageTool.getUserInfo();
-      this.info = await postWechatNoticeListApi();
+    async getListMixin() {
+      this.setPageDataMixin(
+        await postWechatNoticeListApi(this.queryPageParameters)
+      );
     },
     routerTo(id) {
       uni.navigateTo({

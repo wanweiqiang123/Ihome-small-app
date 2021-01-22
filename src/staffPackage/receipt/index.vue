@@ -4,13 +4,13 @@
  * @Author: ywl
  * @Date: 2020-11-24 14:10:55
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-22 10:04:15
+ * @LastEditTime: 2021-01-22 16:11:52
 -->
 <template>
   <view class="receipt safe-area-inset-bottom">
     <view
       class="item-list"
-      v-if="list.length"
+      v-if="tablePage.length"
     >
       <u-card
         :border="false"
@@ -21,7 +21,7 @@
         :foot-style="{paddingTop: '0'}"
         class="ih-card"
         border-radius="4"
-        v-for="(i, n) in list"
+        v-for="(i, n) in tablePage"
         :key="n"
       >
         <view
@@ -91,7 +91,7 @@
           :border-bottom="false"
         >
           <u-input
-            v-model="form.proName"
+            v-model="queryPageParameters.proName"
             @click="handleToSearch()"
             placeholder="请选择楼盘名称"
             type="select"
@@ -103,7 +103,7 @@
           :border-bottom="false"
         >
           <u-input
-            v-model="form.unitName"
+            v-model="queryPageParameters.unitName"
             placeholder="请选择栋座"
             :select-open="buildSelectShow"
             @click="handleShowBuild()"
@@ -116,7 +116,7 @@
           :border-bottom="false"
         >
           <u-input
-            v-model="form.roomNo"
+            v-model="queryPageParameters.roomNo"
             :select-open="roomSelectShow"
             placeholder="请选择房号"
             @click="handleShowRoom()"
@@ -129,7 +129,7 @@
           :border-bottom="false"
         >
           <u-input
-            v-model="form.ownerName"
+            v-model="queryPageParameters.ownerName"
             border
             placeholder="请输入客户姓名"
           />
@@ -139,7 +139,7 @@
           :border-bottom="false"
         >
           <u-input
-            v-model="form.ownerMobile"
+            v-model="queryPageParameters.ownerMobile"
             border
             placeholder="请输入客户电话"
           />
@@ -170,6 +170,7 @@
 
 <script>
 import PopupSearch from "../../components/PopupSearch/index.vue";
+import pagination from "../../mixins/pagination";
 import { getAllByTypeApi } from "../../api/index";
 import {
   postWechatNotice,
@@ -180,10 +181,11 @@ import {
 export default {
   name: "receipt",
   components: { PopupSearch },
+  mixins: [pagination],
   data() {
     return {
       isShow: false,
-      form: {
+      queryPageParameters: {
         ownerName: "",
         ownerMobile: "",
         proName: "",
@@ -193,7 +195,6 @@ export default {
         unitName: "",
         buyUnit: null,
       },
-      list: [],
       property: [],
       buildSelectShow: false,
       buildSelectList: [],
@@ -204,7 +205,7 @@ export default {
   filters: {
     filterDict(type, data) {
       const item = data.find((i) => i.code === type);
-      return item ? item.name : "-";
+      return item ? item.name : "";
     },
   },
   methods: {
@@ -225,7 +226,7 @@ export default {
       });
     },
     handleShowBuild() {
-      if (!this.form.projectId) {
+      if (!this.queryPageParameters.projectId) {
         this.$tool.toast("请先选择项目");
         return;
       }
@@ -233,17 +234,17 @@ export default {
     },
     async buildConfirm(val) {
       let item = val[0];
-      this.form.unitName = item.label;
-      this.form.buyUnit = item.value;
-      this.form.roomNumberId = null;
-      this.form.roomNo = "";
+      this.queryPageParameters.unitName = item.label;
+      this.queryPageParameters.buyUnit = item.value;
+      this.queryPageParameters.roomNumberId = null;
+      this.queryPageParameters.roomNo = "";
       this.roomSelectList = await postRoomByProId({
-        proId: this.form.projectId,
-        buildingId: this.form.buyUnit,
+        proId: this.queryPageParameters.projectId,
+        buildingId: this.queryPageParameters.buyUnit,
       });
     },
     handleShowRoom() {
-      if (!this.form.projectId) {
+      if (!this.queryPageParameters.projectId) {
         this.$tool.toast("请先选择项目");
         return;
       }
@@ -251,11 +252,11 @@ export default {
     },
     roomConfirm(val) {
       let item = val[0];
-      this.form.roomNumberId = item.value;
-      this.form.roomNo = item.label;
+      this.queryPageParameters.roomNumberId = item.value;
+      this.queryPageParameters.roomNo = item.label;
     },
     reset() {
-      Object.assign(this.form, {
+      Object.assign(this.queryPageParameters, {
         ownerName: "",
         ownerMobile: "",
         proName: "",
@@ -266,11 +267,13 @@ export default {
         buyUnit: null,
       });
     },
-    confirm() {
-      this.getList();
+    async confirm() {
+      this.tablePage = [];
+      this.queryPageParameters.pageNum = 1;
+      this.setPageDataMixin(await postNoticeList(this.queryPageParameters));
     },
-    async getList() {
-      this.list = await postWechatNotice(this.form);
+    async getListMixin() {
+      this.setPageDataMixin(await postWechatNotice(this.queryPageParameters));
     },
     async getDictName(type) {
       const dictList = await getAllByTypeApi({ type });
@@ -278,16 +281,16 @@ export default {
     },
   },
   async onLoad() {
-    this.getList();
+    this.getListMixin();
     this.property = await this.getDictName("Property");
   },
   async onShow() {
     let item = getApp().globalData.searchBackData;
     if (item && item.type === "project") {
-      this.form.projectId = item.data.proId;
-      this.form.proName = item.data.proName;
+      this.queryPageParameters.projectId = item.data.proId;
+      this.queryPageParameters.proName = item.data.proName;
       this.buildSelectList = await postBuildByProId({
-        proId: this.form.projectId,
+        proId: this.queryPageParameters.projectId,
       });
       getApp().globalData.searchBackData = {};
     }
