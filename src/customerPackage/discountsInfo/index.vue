@@ -5,7 +5,7 @@
  * @Date: 2020-11-13 15:23:42
 <<<<<<< HEAD
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-21 18:04:27
+ * @LastEditTime: 2021-01-21 19:20:27
 =======
  * @LastEditors: wwq
  * @LastEditTime: 2021-01-20 16:17:19
@@ -108,10 +108,10 @@
         <view class="info-second-top">{{
           info.purchaseInformation.projectName
         }}</view>
-        <view class="info-second-bottom">{{
+        <view class="info-second-bottom">{{ info.purchaseInformation.propertyType ? 
           `${getDictName(info.purchaseInformation.propertyType, Property)}-${
             info.purchaseInformation.buyUnitName
-          }-${info.purchaseInformation.roomNumberName}`
+          }-${info.purchaseInformation.roomNumberName}` : ''
         }}</view>
       </view>
       <view class="info-second-wrap">
@@ -281,11 +281,32 @@ export default {
       info: {
         discountInformationResponseVo: {
           paid: 0,
+          noticeId: null,
+          noticeNo: null,
+          agentId: null,
+          buyUnit: null,
+          buyUnitName: null,
+          cycleId: null,
+          explain: null,
+          groupId: null,
+          partyAId: null,
+          paymentAmount: null,
+          projectId: null,
+          roomNumberId: null,
+          roomNumberName: null,
+          unpaid: null,
         },
-        noticeId: null,
-        noticeNo: null,
         noticeList: [],
-        purchaseInformation: {},
+        purchaseInformation: {
+          buyUnit: null,
+          buyUnitName: null,
+          ownerWeChatList: [],
+          projectName: null,
+          propertyType: null,
+          roomNumberId: null,
+          roomNumberName: null,
+        },
+        refundInfoResponse: {},
       },
       current: 0,
       currents: 0,

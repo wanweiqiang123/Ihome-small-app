@@ -4,13 +4,13 @@
  * @Author: wwq
  * @Date: 2020-12-15 18:08:02
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-20 16:06:13
+ * @LastEditTime: 2021-01-22 09:04:33
  */
 import { getApi, postApi } from '../common/http.js';
 
 // 查询优惠告知书列表
 export async function postWechatNoticeListApi(data = {}, option = {}) {
-  return await postApi('/sales-api/contract/notice/wechat/notices', data, option)
+  return await postApi('/sales-api/contract/notice/wechat/customer/notices', data, option)
 }
 // 查询优惠告知书详情
 export async function getWechatNoticeInfoApi(data = {}, option = {}) {

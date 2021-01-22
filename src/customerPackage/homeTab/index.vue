@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 17:46:01
+ * @LastEditTime: 2021-01-22 09:04:47
 -->
 <template>
   <view>
@@ -87,9 +87,7 @@ export default {
   methods: {
     async getInfo() {
       const userInfo = storageTool.getUserInfo();
-      this.info = await postWechatNoticeListApi({
-        ownerMobile: userInfo.mobilePhone,
-      });
+      this.info = await postWechatNoticeListApi();
     },
     routerTo(id) {
       uni.navigateTo({
