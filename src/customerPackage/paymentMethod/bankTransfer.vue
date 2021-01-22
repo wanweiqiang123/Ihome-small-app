@@ -4,68 +4,82 @@
  * @Author: wwq
  * @Date: 2020-11-24 15:28:17
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-16 09:59:39
+ * @LastEditTime: 2021-01-22 12:12:29
 -->
 <template>
-  <view class="pay safe-area-inset-bottom">
-    <view class="pay-msg margin-top">
-      <view class="pay-title">
-        <text style="margin-left: 20rpx">收款信息</text>
-      </view>
-      <view class="pay-item">
-        <view class="pay-list">收款公司
-          <text class="pay-list-money">{{info.payeeName}}</text>
+  <u-popup
+    :value="value"
+    mode="right"
+    width="100%"
+    :mask="true"
+    close-icon-pos="top-left"
+    closeable
+    safe-area-inset-bottom
+    close-icon-size="40"
+    @close="close"
+  >
+    <view class="pay safe-area-inset-bottom">
+      <view class="title">银行转账</view>
+      <view class="pay-msg margin-top">
+        <view class="pay-title">
+          <text style="margin-left: 20rpx">收款信息</text>
         </view>
-        <view class="pay-list">收款帐号
-          <view class='pay-payeeAccount'>
-            <text class="pay-payeeAccount-title">{{info.payeeAccount}}</text>
-            <u-icon
-              name="file-text-fill"
-              color="#2979ff"
-              size="40"
-              @click="copyPayNum"
-            ></u-icon>
+        <view class="pay-item">
+          <view class="pay-list">收款公司
+            <text class="pay-list-money">{{info.payeeName}}</text>
+          </view>
+          <view class="pay-list">收款帐号
+            <view class='pay-payeeAccount'>
+              <text class="pay-payeeAccount-title">{{info.payeeAccount}}</text>
+              <u-icon
+                name="file-text-fill"
+                color="#2979ff"
+                size="40"
+                @click="copyPayNum"
+              ></u-icon>
+            </view>
+          </view>
+          <view class="pay-list">收款金额
+            <text class="pay-list-money">{{payNum}}</text>
           </view>
         </view>
-        <view class="pay-list">收款金额
-          <text class="pay-list-money">{{payNum}}</text>
+      </view>
+      <view class="pay-msg margin-top">
+        <view class="pay-hint">
+          <u-icon
+            name="info-circle"
+            size="34"
+          ></u-icon>
+          <text style="margin-left: 20rpx">转账成功后在下方上传银行转账凭证并提交确认~</text>
+        </view>
+        <view class="pay-upload">
+          <text class="upload-title">转账凭证</text>
+          <u-upload
+            max-count="10"
+            class="upload"
+            width="160"
+            height="160"
+            :action="action"
+            @on-success="successChange"
+            @on-remove="removeChange"
+            :show-upload-list="showUploadList"
+            :header="header"
+            :show-progress="false"
+            :before-upload="beforeUpload"
+            name="files"
+          ></u-upload>
         </view>
       </view>
-    </view>
-    <view class="pay-msg margin-top">
-      <view class="pay-hint">
-        <u-icon
-          name="info-circle"
-          size="34"
-        ></u-icon>
-        <text style="margin-left: 20rpx">转账成功后在下方上传银行转账凭证并提交确认~</text>
-      </view>
-      <view class="pay-upload">
-        <text class="upload-title">转账凭证</text>
-        <u-upload
-          max-count="10"
-          class="upload"
-          width="160"
-          height="160"
-          :action="action"
-          @on-success="successChange"
-          @on-remove="removeChange"
-          :show-upload-list="showUploadList"
-          :header="header"
-          :show-progress="false"
-          :before-upload="beforeUpload"
-          name="files"
-        ></u-upload>
+      <view class="my-btn">
+        <u-button
+          type="primary"
+          shape="square"
+          @click="submitMsg"
+          :loading="buttonLoading"
+        >提交</u-button>
       </view>
     </view>
-    <view class="my-btn">
-      <u-button
-        shape="square"
-        @click="submitMsg"
-        :loading="buttonLoading"
-      >提交</u-button>
-    </view>
-  </view>
+  </u-popup>
 </template>
 <script>
 import {
@@ -76,6 +90,11 @@ import {
 import { currentEnvConfig } from "../../env-config.js";
 import storageTool from "../../common/storageTool.js";
 export default {
+  props: {
+    value: {
+      type: Boolean,
+    },
+  },
   data() {
     return {
       info: {},
@@ -98,21 +117,29 @@ export default {
       buttonLoading: false,
     };
   },
-  onLoad(options) {
-    this.cycleId = getApp().bankTransferData.cycleId;
-    this.payNum = getApp().bankTransferData.payNum;
-    this.addOrUpdate = getApp().bankTransferData.addOrUpdate;
-    this.continueId = options.id;
-    this.payData = { ...getApp().paidData };
-    // 假数据
-    // this.cycleId = 3;
-  },
-  onShow() {
-    if (this.cycleId) {
-      this.getInfo();
-    }
+  watch: {
+    value: {
+      immediate: true,
+      async handler(v) {
+        if (v) {
+          this.cycleId = getApp().bankTransferData.cycleId;
+          this.payNum = getApp().bankTransferData.payNum;
+          this.addOrUpdate = getApp().bankTransferData.addOrUpdate;
+          this.continueId = getApp().bankTransferData.id;
+          this.payData = { ...getApp().paidData };
+          if (this.cycleId) {
+            this.getInfo();
+          }
+          // 假数据
+          // this.cycleId = 3;
+        }
+      },
+    },
   },
   methods: {
+    close() {
+      this.$emit("input", false);
+    },
     async getInfo() {
       this.info = await getBankInfoApi(this.cycleId);
     },
@@ -172,6 +199,14 @@ export default {
         try {
           await postAddServiceApi(obj);
           this.buttonLoading = false;
+          uni.showToast({
+            title: "提交成功",
+            icon: "none",
+          });
+          this.close();
+          uni.redirectTo({
+            url: `/customerPackage/discountsInfo/index?id=${this.payData.businessId}`,
+          });
         } catch (err) {
           this.buttonLoading = false;
         }
@@ -179,29 +214,36 @@ export default {
         try {
           await postPaymentupdateApi(obj);
           this.buttonLoading = false;
+          uni.showToast({
+            title: "提交成功",
+            icon: "none",
+          });
+          this.close();
+          uni.redirectTo({
+            url: `/customerPackage/discountsInfo/index?id=${this.payData.businessId}`,
+          });
         } catch (error) {
           this.buttonLoading = false;
         }
       }
-      uni.showToast({
-        title: "提交成功",
-        icon: "none",
-      });
-      uni.redirectTo({
-        url: `/customerPackage/discountsInfo/index?id=${this.payData.businessId}`,
-      });
     },
   },
 };
 </script>
 <style lang="scss" scoped>
 .pay {
+  padding-top: 15rpx;
   width: 100%;
   min-height: 100vh;
   background-color: #f1f1f1;
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  .title {
+    text-align: center;
+    padding-top: 15rpx;
+  }
 
   &-hint {
     padding: 20rpx;

@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
- * @LastEditors: zyc
- * @LastEditTime: 2021-01-21 20:39:51
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-22 11:58:29
 -->
 <template>
   <LoginPage>
@@ -43,10 +43,20 @@
         </view>
       </view>
 
-      <view class="pay-title" v-if="!hidePayStatus">付款方式</view>
-      <view class="pay-msg margin-top" v-if="!hidePayStatus">
+      <view
+        class="pay-title"
+        v-if="!hidePayStatus"
+      >付款方式</view>
+      <view
+        class="pay-msg margin-top"
+        v-if="!hidePayStatus"
+      >
         <u-radio-group v-model="payType">
-          <view class="pay-type" v-for="(item, i) in payTypeOptions" :key="i">
+          <view
+            class="pay-type"
+            v-for="(item, i) in payTypeOptions"
+            :key="i"
+          >
             <view class="pay-type-image">
               <u-image
                 height="60rpx"
@@ -64,19 +74,34 @@
           </view>
         </u-radio-group>
       </view>
-      <view class="my-btn" v-if="!hidePayStatus">
-        <u-button shape="square" @click="payGoto" :loading="buttonLoading"
-          >{{
+      <view
+        class="my-btn"
+        v-if="!hidePayStatus"
+      >
+        <u-button
+          shape="square"
+          @click="payGoto"
+          :loading="buttonLoading"
+        >{{
             `${getDictName(payType, payTypeOptions)} ￥${payNum ? payNum : 0}`
           }}
         </u-button>
       </view>
-      <view class="pay-hint" v-if="!hidePayStatus">
+      <view
+        class="pay-hint"
+        v-if="!hidePayStatus"
+      >
         付款成功后可能存在延迟，请耐心等待1~2分钟！
         如付款成功后长时间还未更新记录请及时联系工作人员。
       </view>
-      <view class="my-btn" v-if="hidePayStatus">
-        <u-button shape="square" @click="goBack"> 返回 </u-button>
+      <view
+        class="my-btn"
+        v-if="hidePayStatus"
+      >
+        <u-button
+          shape="square"
+          @click="goBack"
+        > 返回 </u-button>
       </view>
 
       <u-keyboard
@@ -90,6 +115,16 @@
         :show-tips="false"
         :cancel-btn="false"
       ></u-keyboard>
+      <BankTransfer v-model="bankTransferShow"></BankTransfer>
+      <POS
+        v-model="POSShow"
+        :payId="posId"
+      ></POS>
+      <Linkto
+        v-model="linktoShow"
+        :payId="linktoId"
+        :payType="linktoType"
+      ></Linkto>
     </view>
   </LoginPage>
 </template>
@@ -106,9 +141,11 @@ import {
 } from "../../api/customer";
 import { getAllByTypeApi } from "../../api/index";
 // import { tool } from "../../common/tool";
-import uImage from "../../uview-ui/components/u-image/u-image.vue";
+import BankTransfer from "./bankTransfer.vue";
+import POS from "./POS.vue";
+import Linkto from "./linkto.vue";
 export default {
-  components: { uImage },
+  components: { BankTransfer, POS, Linkto },
   data() {
     return {
       hidePayStatus: true,
@@ -120,6 +157,12 @@ export default {
       show: false,
       open: true,
       buttonLoading: false,
+      bankTransferShow: false,
+      POSShow: false,
+      posId: "",
+      linktoType: "",
+      linktoId: "",
+      linktoShow: false,
     };
   },
   watch: {
@@ -229,10 +272,10 @@ export default {
       obj.unpaidServiceFee = this.payData.unpaid;
       obj.terminal = "WeChatApp";
       // 假数据
-      // obj.groupId = 15;
-      // obj.operator = 15;
-      // obj.proId = 1;
-      // obj.termId = 3;
+      obj.groupId = 15;
+      obj.operator = 15;
+      obj.proId = 1;
+      obj.termId = 3;
 
       // 判断是否存在待支付订单
       const isPay = await getBusinessIdApi(this.payData.businessId);
@@ -259,9 +302,12 @@ export default {
             }
           }
           if (res.data) {
-            uni.navigateTo({
-              url: `/customerPackage/paymentMethod/zhifubaoPay?id=${res.data}&type=${this.payType}`,
-            });
+            this.linktoId = res.data;
+            this.linktoType = this.payType;
+            this.linktoShow = true;
+            // uni.navigateTo({
+            //   url: `/customerPackage/paymentMethod/zhifubaoPay?id=${res.data}&type=${this.payType}`,
+            // });
           }
           break;
         case "Pos":
@@ -281,9 +327,11 @@ export default {
             }
           }
           if (res.data) {
-            uni.navigateTo({
-              url: `/customerPackage/paymentMethod/POS?id=${res.data}`,
-            });
+            this.POSShow = true;
+            this.posId = res.data;
+            // uni.navigateTo({
+            //   url: `/customerPackage/paymentMethod/POS?id=${res.data}`,
+            // });
           }
           break;
         case "Transfer":
@@ -291,11 +339,13 @@ export default {
             cycleId: this.payData.cycleId,
             payNum: this.payNum,
             addOrUpdate: isPay ? "update" : "add",
+            id: isPay,
           };
           this.buttonLoading = false;
-          uni.navigateTo({
-            url: `/customerPackage/paymentMethod/bankTransfer?id=${isPay}`,
-          });
+          this.bankTransferShow = true;
+          // uni.navigateTo({
+          //   url: `/customerPackage/paymentMethod/bankTransfer?id=${isPay}`,
+          // });
           break;
         case "WeChatPay":
           if (!isPay) {
