@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:53:18
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-12 15:11:54
+ * @LastEditTime: 2021-01-22 14:19:14
 -->
 <template>
   <view>
@@ -16,6 +16,8 @@
       v-model="current"
       :list="tablePage"
       :before-switch="beforeSwitch"
+      active-color="#4881F9"
+      nactive-color="#847E81"
     ></u-tabbar>
   </view>
 </template>

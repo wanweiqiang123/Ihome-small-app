@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 16:09:28
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-09 08:55:41
+ * @LastEditTime: 2021-01-22 14:55:41
 -->
 <template>
   <view class="payment safe-area-inset-bottom">
@@ -231,14 +231,14 @@ export default {
     .title-icon {
       padding: 5rpx 10rpx;
       border-radius: 4rpx;
-      color: #fff;
+      color: #18b566;
       white-space: nowrap;
-      background: #18b566;
+      // background: #18b566;
       box-sizing: border-box;
       font-size: 26rpx;
       line-height: 1;
       &.bg-warning {
-        background: #eb7734;
+        color: #eb7734;
       }
     }
     .title-text {

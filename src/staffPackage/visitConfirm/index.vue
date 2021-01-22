@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-17 10:54:41
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-09 08:51:22
+ * @LastEditTime: 2021-01-22 15:36:54
 -->
 <template>
   <view class="container safe-area-inset-bottom">
@@ -72,16 +72,19 @@
           class="ih-card-foot"
         >
           <u-button
-            class="foot-btn"
+            shape="circle"
+            :custom-style="{ padding: '0 40rpx', marginRight: '20rpx' }"
             size="mini"
             type="primary"
           >上传附件</u-button>
           <u-button
             size="mini"
-            class="foot-btn"
+            shape="circle"
+            :custom-style="{ padding: '0 40rpx', marginRight: '20rpx' }"
           >无效</u-button>
           <u-button
-            class="foot-btn"
+            shape="circle"
+            :custom-style="{ padding: '0 40rpx' }"
             size="mini"
             type="success"
           >有效</u-button>
@@ -203,22 +206,22 @@ export default {
   }
   &-tag {
     position: absolute;
-    right: -40rpx;
-    top: 22rpx;
+    right: -50rpx;
+    top: 24rpx;
     background: $u-type-primary;
     color: #fff;
     transform: rotate(42deg);
     width: 200rpx;
-    padding: 4rpx 40rpx;
+    // padding: 4rpx 40rpx;
     box-sizing: border-box;
     text-align: center;
-    box-shadow: 10rpx 4rpx 15rpx #888888;
+    // box-shadow: 10rpx 4rpx 15rpx #888888;
+    &.bg-warning {
+      background: $u-type-warning;
+    }
   }
   &-foot {
     text-align: right;
-    .foot-btn + .foot-btn {
-      margin-left: 30rpx;
-    }
   }
   .link {
     color: $u-type-primary;

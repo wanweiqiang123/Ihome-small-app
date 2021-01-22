@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-13 15:13:13
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-16 17:22:12
+ * @LastEditTime: 2021-01-22 15:37:27
 -->
 <template>
   <view class="container safe-area-inset-bottom">
@@ -75,15 +75,18 @@
           <u-button
             size="mini"
             type="primary"
-            class="foot-btn"
+            shape="circle"
+            :custom-style="{ padding: '0 40rpx', marginRight: '20rpx' }"
             @click="handleCopy()"
           >一键复制</u-button>
           <u-button
             size="mini"
-            class="foot-btn"
+            shape="circle"
+            :custom-style="{ padding: '0 40rpx', marginRight: '20rpx' }"
           >无效</u-button>
           <u-button
-            class="foot-btn"
+            shape="circle"
+            :custom-style="{ padding: '0 40rpx' }"
             size="mini"
             type="success"
           >有效</u-button>
@@ -260,22 +263,22 @@ export default {
   }
   &-tag {
     position: absolute;
-    right: -40rpx;
-    top: 22rpx;
+    right: -50rpx;
+    top: 24rpx;
     background: $u-type-primary;
     color: #fff;
     transform: rotate(42deg);
     width: 200rpx;
-    padding: 4rpx 40rpx;
+    // padding: 4rpx 40rpx;
     box-sizing: border-box;
     text-align: center;
-    box-shadow: 10rpx 4rpx 15rpx #888888;
+    // box-shadow: 10rpx 4rpx 15rpx #888888;
+    &.bg-warning {
+      background: $u-type-warning;
+    }
   }
   &-foot {
     text-align: right;
-    .foot-btn + .foot-btn {
-      margin-left: 30rpx;
-    }
   }
 }
 .report-head {

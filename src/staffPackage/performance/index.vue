@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 14:54:27
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-27 10:33:09
+ * @LastEditTime: 2021-01-22 15:01:16
 -->
 <template>
   <view class="performance safe-area-inset-bottom">
@@ -56,17 +56,23 @@
           <u-button
             size="mini"
             type="error"
+            shape="circle"
             class="foot-btn"
+            :custom-style="{ padding: '0 40rpx' }"
           >删除</u-button>
           <u-button
             size="mini"
             type="primary"
+            shape="circle"
             class="foot-btn"
+            :custom-style="{ padding: '0 40rpx' }"
           >修改</u-button>
           <u-button
             size="mini"
             type="success"
+            shape="circle"
             class="foot-btn"
+            :custom-style="{ padding: '0 40rpx' }"
           >详情</u-button>
         </view>
       </u-card>
@@ -240,9 +246,9 @@ export default {
     .title-icon {
       padding: 5rpx 10rpx;
       border-radius: 4rpx;
-      color: #fff;
+      color: #18b566;
       white-space: nowrap;
-      background: $u-type-success;
+      // background: $u-type-success;
       box-sizing: border-box;
       font-size: 26rpx;
       line-height: 1;
