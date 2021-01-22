@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-19 18:28:28
+ * @LastEditTime: 2021-01-22 16:43:05
 -->
 <template>
   <LoginPage>
@@ -20,7 +20,10 @@
           @click="handleGoConfirm(i)"
         >
           <view class="notice-info">
-            <view class="notice-title">{{i.notificationType | filterNoticeDict(noticeTypes)}}{{`(${i.noticeNo})`}}</view>
+            <text
+              class="notice-title"
+              :user-select="true"
+            >{{i.notificationType | filterNoticeDict(noticeTypes)}}{{`(${i.noticeNo})`}}</text>
             <view
               v-if="i.buyUnitName && i.roomNumberName"
               class="notice-text"
@@ -239,7 +242,7 @@ export default {
   filters: {
     filterNoticeDict(type, data) {
       const item = data.find((i) => i.code === type);
-      return item?.name;
+      return item?.name || "";
     },
   },
   methods: {
@@ -419,6 +422,7 @@ export default {
       font-family: "Source Han Sans CN";
     }
     .notice-title {
+      display: block;
       padding-bottom: 20rpx;
       font-size: 30rpx;
       font-weight: bold;
