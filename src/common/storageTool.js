@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-10 15:30:00
- * @LastEditors: zyc
- * @LastEditTime: 2021-01-21 19:48:18
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-23 15:37:40
  */
 const tokenKey = 'token';//token的key
 const expiresInKey = 'expires_in';//token的key的过期时间
@@ -22,10 +22,10 @@ const storageTool = {
                 let roleList = userInfo.roleList?.map((item) => { return item.code }) || [];
                 return roleList.includes('RAuditCustomer');
             } else {
-                return true;
+                return false;
             }
         } catch (error) {
-            return true;
+            return false;
         }
 
     },
