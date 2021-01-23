@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-21 15:28:38
+ * @LastEditTime: 2021-01-23 09:19:34
 -->
 <template>
   <LoginPage>
@@ -699,25 +699,21 @@ export default {
       Promise.all(verifyArr)
         .then(async () => {
           console.log("全部通过", this.form);
-          // try {
-          //   const res = await postNoticeCreate(this.form);
-          //   this.$tool.toast("保存成功");
-          //   if (this.form.templateType === "ElectronicTemplate") {
-          //     uni.navigateTo({
-          //       url: `/staffPackage/noticePreview/index?id=${res.noticeId}&tId=${res.templateId}&type=Notification`,
-          //     });
-          //   } else {
-          //     this.$tool.back(null, { type: "init", page: null });
-          //   }
-          // } catch (err) {
-          //   console.log(err);
-          // }
-          let isBool = await this.isShowTis(this.form.roomNumberId);
-          if (isBool) {
+          if (this.isRecognize) {
+            // 认筹阶段不需要判断房号
             this.submieMethod();
           } else {
-            this.isShowRoomTip = true;
-            this.isUpdate = false;
+            try {
+              let isBool = await this.isShowTis(this.form.roomNumberId);
+              if (isBool) {
+                this.submieMethod();
+              } else {
+                this.isShowRoomTip = true;
+                this.isUpdate = false;
+              }
+            } catch (error) {
+              console.log(error);
+            }
           }
         })
         .catch(() => {
@@ -729,12 +725,21 @@ export default {
       Promise.all(verifyArr)
         .then(async () => {
           console.log("全部通过", this.form);
-          let isBool = await this.isShowTis(this.form.roomNumberId);
-          if (isBool) {
+          if (this.isRecognize) {
+            // 认筹阶段不需要判断房号
             this.updateMethod();
           } else {
-            this.isShowRoomTip = true;
-            this.isUpdate = true;
+            try {
+              let isBool = await this.isShowTis(this.form.roomNumberId);
+              if (isBool) {
+                this.updateMethod();
+              } else {
+                this.isShowRoomTip = true;
+                this.isUpdate = true;
+              }
+            } catch (error) {
+              console.log(error);
+            }
           }
         })
         .catch(() => {
