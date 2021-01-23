@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-22 09:32:26
+ * @LastEditTime: 2021-01-23 17:03:07
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -190,7 +190,7 @@
               </view>
               <view class="swiper-item-btn">
                 <u-button
-                  v-if="['BecomeEffective', 'WaitPay', 'WaitReview'].includes(item.notificationStatus)"
+                  v-if="['BecomeEffective', 'WaitPay', 'WaitReview', 'Invalidation'].includes(item.notificationStatus)"
                   type="primary"
                   size="medium"
                   shape="circle"
@@ -389,6 +389,7 @@ export default {
           }
           break;
         case "BecomeEffective":
+        case "Invalidation":
           let url = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${val.templateId}`;
           getApp().globalData.webViewSrc = url;
           uni.navigateTo({

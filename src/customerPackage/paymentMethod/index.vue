@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-23 11:52:35
+ * @LastEditTime: 2021-01-23 15:49:26
 -->
 <template>
   <LoginPage>
@@ -181,7 +181,7 @@ export default {
     // );
   },
   async onShow() {
-    this.hidePayStatus = !this.$storageTool.hidePay();
+    this.hidePayStatus = this.$storageTool.hidePay();
     const userInfo = this.$storageTool.getUserInfo();
     let resList = await postWechatNoticeListApi({
       pageNum: 1,
