@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-22 16:43:05
+ * @LastEditTime: 2021-01-23 17:14:46
 -->
 <template>
   <LoginPage>
@@ -198,6 +198,7 @@
 </template>
 
 <script>
+import { currentEnvConfig } from "../../env-config.js";
 import PopupSearch from "../../components/PopupSearch/index.vue";
 import IhCheckbox from "../../components/IhCheckbox/index.vue";
 import pagination from "../../mixins/pagination";
@@ -279,9 +280,14 @@ export default {
               url: `/staffPackage/noticeInfo/index?id=${item.id}&tempType=${item.templateType}`,
             });
           } else {
+            let url = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${item.templateId}`;
+            getApp().globalData.webViewSrc = url;
             uni.navigateTo({
-              url: `/staffPackage/noticePreview/index?id=${item.id}&tId=${item.templateId}&type=${item.notificationType}&sign=${item.notificationStatus}`,
+              url: `/customerPackage/webView/index`,
             });
+            // uni.navigateTo({
+            //   url: `/staffPackage/noticePreview/index?id=${item.id}&tId=${item.templateId}&type=${item.notificationType}&sign=${item.notificationStatus}`,
+            // });
           }
           break;
         default:

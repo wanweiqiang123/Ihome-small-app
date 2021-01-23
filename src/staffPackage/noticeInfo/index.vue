@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-18 11:38:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-18 19:39:27
+ * @LastEditTime: 2021-01-23 17:15:02
 -->
 <template>
   <LoginPage>
@@ -172,9 +172,14 @@ export default {
       }
     },
     handleGoto() {
+      let url = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${this.form.templateId}`;
+      getApp().globalData.webViewSrc = url;
       uni.navigateTo({
-        url: `/staffPackage/noticePreview/index?id=${this.form.id}&tId=${this.form.templateId}&type=${this.form.notificationType}&sign=${this.form.notificationStatus}`,
+        url: `/customerPackage/webView/index`,
       });
+      // uni.navigateTo({
+      //   url: `/staffPackage/noticePreview/index?id=${this.form.id}&tId=${this.form.templateId}&type=${this.form.notificationType}&sign=${this.form.notificationStatus}`,
+      // });
     },
     beforeUpload() {
       uni.showToast({
