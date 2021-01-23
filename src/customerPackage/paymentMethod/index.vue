@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-22 11:58:29
+ * @LastEditTime: 2021-01-23 11:23:39
 -->
 <template>
   <LoginPage>
@@ -184,9 +184,10 @@ export default {
     this.hidePayStatus = this.$storageTool.hidePay();
     const userInfo = this.$storageTool.getUserInfo();
     let resList = await postWechatNoticeListApi({
-      ownerMobile: userInfo?.mobilePhone,
+      pageNum: 1,
+      pageSize: 10,
     });
-    if (!this.hidePayStatus && (resList || []).length > 0) {
+    if (!this.hidePayStatus && (resList.list || []).length > 0) {
       this.payTypeOptions = await getAllByTypeApi({
         type: "PayType",
         tag: "Customer",
@@ -272,10 +273,10 @@ export default {
       obj.unpaidServiceFee = this.payData.unpaid;
       obj.terminal = "WeChatApp";
       // 假数据
-      obj.groupId = 15;
-      obj.operator = 15;
-      obj.proId = 1;
-      obj.termId = 3;
+      // obj.groupId = 15;
+      // obj.operator = 15;
+      // obj.proId = 1;
+      // obj.termId = 3;
 
       // 判断是否存在待支付订单
       const isPay = await getBusinessIdApi(this.payData.businessId);
