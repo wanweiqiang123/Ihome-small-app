@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-19 18:44:57
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-22 11:32:28
+ * @LastEditTime: 2021-01-23 15:41:18
 -->
 <template>
   <view class="receipt">
@@ -341,7 +341,7 @@ export default {
                 : { ...params, ...this.form };
             await postAddPayServe(data);
             this.$tool.toast("提交成功");
-            this.$tool.back(null, { type: "init", page: null });
+            uni.navigateBack({ delta: 1 });
           } catch (error) {
             console.log(error);
           }

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-19 15:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-21 18:13:04
+ * @LastEditTime: 2021-01-23 15:40:54
 -->
 <template>
   <view class="receipt info">
@@ -298,12 +298,15 @@ export default {
   },
   async onLoad(options) {
     this.noticeId = options.id;
-    this.getInfo(options.id);
     this.NotificationType = await this.getDictAll("NotificationType");
     this.NotificationStatus = await this.getDictAll("NotificationStatus");
     this.Property = await this.getDictAll("Property");
   },
-  async onShow() {},
+  async onShow() {
+    if (this.noticeId) {
+      this.getInfo(this.noticeId);
+    }
+  },
 };
 </script>
 

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 14:10:55
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-22 16:11:52
+ * @LastEditTime: 2021-01-23 15:02:35
 -->
 <template>
   <view class="receipt safe-area-inset-bottom">
@@ -270,7 +270,7 @@ export default {
     async confirm() {
       this.tablePage = [];
       this.queryPageParameters.pageNum = 1;
-      this.setPageDataMixin(await postNoticeList(this.queryPageParameters));
+      this.setPageDataMixin(await postWechatNotice(this.queryPageParameters));
     },
     async getListMixin() {
       this.setPageDataMixin(await postWechatNotice(this.queryPageParameters));
