@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-23 17:03:07
+ * @LastEditTime: 2021-01-25 18:51:28
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -103,11 +103,7 @@
         <view class="info-second-top">{{
           info.purchaseInformation.projectName
         }}</view>
-        <view class="info-second-bottom">{{ info.purchaseInformation.propertyType ? 
-          `${getDictName(info.purchaseInformation.propertyType, Property)}-${
-            info.purchaseInformation.buyUnitName
-          }-${info.purchaseInformation.roomNumberName}` : ''
-        }}</view>
+        <view>{{info.purchaseInformation.propertyType ? `${getDictName(info.purchaseInformation.propertyType, Property)}-${info.purchaseInformation.buyUnitName}-${info.purchaseInformation.roomNumberName}` : `${info.purchaseInformation.buyUnitName}-${info.purchaseInformation.roomNumberName}`}}</view>
       </view>
       <view class="info-second-wrap">
         <swiper
@@ -219,7 +215,7 @@
       </view>
     </view>
 
-    <view class="info-four">
+    <!-- <view class="info-four">
       <view class="info-four-title">退款信息</view>
       <view class="info-four-money">退款金额: 3000.00</view>
       <view class="info-four-msg">
@@ -239,21 +235,6 @@
           <text class="pay-list-money">2020-12-20 23:59:59</text>
         </view>
       </view>
-    </view>
-    <!-- <view>
-      <u-modal
-        v-model="show"
-        @confirm="confirm(info.discountInformationResponseVo)"
-        @cancel="cancel"
-        ref="uModal"
-        title="您还有一笔未完成付款"
-        show-confirm-button
-        :show-cancel-button="true"
-        confirm-text="继续支付"
-        cancel-text="取消"
-        :content="content"
-      >
-      </u-modal>
     </view> -->
   </view>
 </template>
@@ -306,10 +287,7 @@ export default {
       current: 0,
       currents: 0,
       noticeId: "",
-      // show: false,
       payAuditNum: 0,
-      // content:
-      //   "您上次还有一笔待付款单未完成支付，您可以选择前往继续支付，也可以选择创建一笔新的付款。",
       Property: [],
       NotificationType: [],
       NotificationStatus: [],
@@ -352,25 +330,6 @@ export default {
     },
     // 预览
     async gotoNotice(val, type) {
-      // switch (val.notificationStatus) {
-      //   case "BecomeEffective":
-      //   case "WaitBeSigned":
-      //     getApp().noticeInfo = { ...val, type: type };
-      //     uni.navigateTo({
-      //       url: `/customerPackage/notification/index`,
-      //     });
-      //     break;
-      //   case "WaitPay":
-      //   case "WaitReview":
-      //     const res = await getPreviewApi(this.noticeId);
-      //     if (res) {
-      //       getApp().globalData.webViewSrc = res;
-      //       uni.navigateTo({
-      //         url: `/customerPackage/webView/index`,
-      //       });
-      //     }
-      // }
-
       switch (val.notificationStatus) {
         case "WaitBeSigned":
           getApp().noticeInfo = { ...val, type: type };
@@ -408,19 +367,6 @@ export default {
         url: `/customerPackage/paymentMethod/index`,
       });
     },
-    // confirm(obj) {
-    //   getApp().paidData = {
-    //     ...obj,
-    //     businessId: this.noticeId,
-    //     businessCode: this.info.noticeNo,
-    //   };
-    //   uni.navigateTo({
-    //     url: `/customerPackage/unpaid/index`,
-    //   });
-    // },
-    // async cancel() {
-    //   this.show = false;
-    // },
     change(e) {
       this.current = e.detail.current;
     },
@@ -446,7 +392,7 @@ export default {
     getDictName(code, list) {
       if (list.length) {
         const item = list.find((v) => v.code === code);
-        return item?.name;
+        return item?.name ? item.name : "";
       }
     },
   },

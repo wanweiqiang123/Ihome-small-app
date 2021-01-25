@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-23 15:49:26
+ * @LastEditTime: 2021-01-25 18:37:07
 -->
 <template>
   <LoginPage>
@@ -167,7 +167,7 @@ export default {
   },
   watch: {
     payNum(v) {
-      if (Number(v) >= Number(this.payData.unpaid)) {
+      if (Number(v) > Number(this.payData.unpaid)) {
         this.payNum = this.payData.unpaid + "";
       }
     },
