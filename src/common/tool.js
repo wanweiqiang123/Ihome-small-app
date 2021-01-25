@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 15:29:08
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-20 16:47:21
+ * @LastEditTime: 2021-01-25 17:40:10
  */
 
 const tool = {
@@ -100,12 +100,23 @@ const tool = {
         let baseNum1 = 0, baseNum2 = 0;
         let baseNum3, baseNum4;
         try {
-            baseNum1 = num1.toString().split(".")[1].length;
+            let arr = num1.toString().split(".");
+            if (arr.length == 0) {
+                baseNum1 = 0;
+            } else {
+                baseNum1 = arr[1].length;
+            }
         } catch (e) {
             baseNum1 = 0;
         }
         try {
-            baseNum2 = num2.toString().split(".")[1].length;
+            let arr = num2.toString().split(".");
+            if (arr.length == 0) {
+                baseNum2 = 0;
+            } else {
+                baseNum2 = arr[1].length;
+            }
+
         } catch (e) {
             baseNum2 = 0;
         }
@@ -121,12 +132,24 @@ const tool = {
     multi(num1, num2) {
         let baseNum = 0;
         try {
-            baseNum += num1.toString().split(".")[1].length;
+            let arr = num1.toString().split(".");
+            if (arr.length == 0) {
+                baseNum = 0;
+            } else {
+                baseNum += arr[1].length;
+            }
+
         } catch (e) {
             console.error(e);
         }
         try {
-            baseNum += num2.toString().split(".")[1].length;
+            let arr = num2.toString().split(".");
+            if (arr.length == 0) {
+                baseNum = 0;
+            } else {
+                baseNum += arr[1].length;
+            }
+
         } catch (e) {
             console.error(e);
         }
@@ -141,12 +164,23 @@ const tool = {
         let baseNum, baseNum1, baseNum2;
         let precision;// 精度
         try {
-            baseNum1 = num1.toString().split(".")[1].length;
+            let arr = num1.toString().split(".");
+            if (arr.length == 0) {
+                baseNum1 = 0;
+            } else {
+                baseNum1 = arr[1].length;
+            }
+
         } catch (e) {
             baseNum1 = 0;
         }
         try {
-            baseNum2 = num2.toString().split(".")[1].length;
+            let arr = num2.toString().split(".");
+            if (arr.length == 0) {
+                baseNum2 = 0;
+            } else {
+                baseNum2 = arr[1].length;
+            }
         } catch (e) {
             baseNum2 = 0;
         }
@@ -162,12 +196,24 @@ const tool = {
     add(num1, num2) {
         let baseNum, baseNum1, baseNum2;
         try {
-            baseNum1 = num1.toString().split(".")[1].length;
+            let arr = num1.toString().split(".");
+            if (arr.length == 0) {
+                baseNum1 = 0;
+            } else {
+                baseNum1 = arr[1].length;
+            }
+
         } catch (e) {
             baseNum1 = 0;
         }
         try {
-            baseNum2 = num2.toString().split(".")[1].length;
+            let arr = num2.toString().split(".");
+            if (arr.length == 0) {
+                baseNum2 = 0;
+            } else {
+                baseNum2 = [1].length;
+            }
+
         } catch (e) {
             baseNum2 = 0;
         }
@@ -202,6 +248,6 @@ const tool = {
             throw ('tool.tofixed方法只能对数字使用')
         }
     },
- 
+
 };
 export default tool;
