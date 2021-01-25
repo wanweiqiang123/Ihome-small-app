@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-23 09:19:34
+ * @LastEditTime: 2021-01-25 18:11:47
 -->
 <template>
   <LoginPage>
@@ -361,7 +361,7 @@
       <!-- 模态框 -->
       <u-modal
         v-model="isRemoveShow"
-        content="是否确认作废?"
+        content="优惠告知书创建3天仍未签署的才可以删除, 确认删除此优惠告知书吗?"
         show-cancel-button
         confirm-color="#fa3534"
         :async-close="true"
@@ -391,6 +391,7 @@ import {
   postNoticeUpdate,
   postCheckRoom,
   postNoticeDelete,
+  getRecognizeById,
 } from "../../api/staff";
 
 export default {
@@ -793,13 +794,13 @@ export default {
     },
     async removeConfirm() {
       try {
-        await postNoticeDelete({ id: this.option.id });
-        this.isShow = false;
-        this.$tool.toast("作废成功");
+        await postNoticeDelete({ id: this.form.noticeId });
+        this.isRemoveShow = false;
+        this.$tool.toast("删除成功");
         this.$tool.back(null, { type: "init", page: null });
       } catch (error) {
         console.log(error);
-        this.isShow = false;
+        this.isRemoveShow = false;
         this.$tool.toast("作废失败");
       }
     },
@@ -816,9 +817,9 @@ export default {
         explain: info.explain,
         paymentAmount: info.paymentAmount,
         buyUnit: info.buyUnit,
-        buyUnitName: info.buyUnitName,
+        buyUnitName: info.buyUnitName || "",
         roomNumberId: info.roomNumberId,
-        roomNumberName: info.roomNumberName,
+        roomNumberName: info.roomNumberName || "",
         ownerType: info.ownerType,
         templateType: info.templateType,
         ownerList: info.ownerList,
@@ -831,6 +832,23 @@ export default {
         : (this.enterpriseFrom = info.ownerList[0]);
       this.proId = info.projectId;
       this.isType = info.templateType === "ElectronicTemplate";
+      this.isRecognize = await getRecognizeById(info.cycleId);
+      this.roomRules = {
+        buyUnitName: [
+          {
+            required: !this.isRecognize,
+            message: "请选择栋座",
+            trigger: "change",
+          },
+        ],
+        roomNumberName: [
+          {
+            required: !this.isRecognize,
+            message: "请选择房号",
+            trigger: "change",
+          },
+        ],
+      };
       this.getMannerList();
       this.getBuildList();
       this.getRoomList();

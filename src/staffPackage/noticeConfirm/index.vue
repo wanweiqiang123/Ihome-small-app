@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 17:32:25
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-18 19:40:38
+ * @LastEditTime: 2021-01-25 18:27:05
 -->
 <template>
   <LoginPage>
@@ -39,11 +39,11 @@
             ref="uForm"
             label-width="220"
           >
-            <u-form-item label="选择栋座">
-              <view class="text-right">{{form.buyUnitName}}</view>
+            <u-form-item label="栋座">
+              <view class="text-right">{{isRecognize ? '以最终甲方推送的房号确认书为准' : form.buyUnitName}}</view>
             </u-form-item>
-            <u-form-item label="选择房号">
-              <view class="text-right">{{form.roomNumberName}}</view>
+            <u-form-item label="房号">
+              <view class="text-right">{{isRecognize ? '以最终甲方推送的房号确认书为准' : form.roomNumberName}}</view>
             </u-form-item>
             <template v-for="(i, n) in form.ownerList">
               <u-gap
@@ -131,6 +131,7 @@ import {
   postNoticeManagement,
   postBuildByProId,
   postRoomByProId,
+  getRecognizeById,
 } from "../../api/staff";
 
 export default {
@@ -153,6 +154,7 @@ export default {
       roomShow: false,
       roomSelectList: [],
       fileList: [],
+      isRecognize: false,
     };
   },
   methods: {
@@ -160,6 +162,7 @@ export default {
       if (id) {
         const res = await getNoticeInfo({ id });
         Object.assign(this.form, res);
+        this.isRecognize = await getRecognizeById(res.cycleId);
         this.fileList = res.noticeAttachmentList
           .filter((i) => i.type === "NoticeAttachment")
           .map((val) => ({

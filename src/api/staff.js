@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-10 15:30:58
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-20 18:47:20
+ * @LastEditTime: 2021-01-25 18:05:08
  */
 import { getApi, postApi } from '../common/http.js';
 
@@ -164,4 +164,13 @@ export async function postAddPayServe(data = {}, option = {}) {
  */
 export async function getBankInfoApi(data = {}, option = {}) {
   return await getApi(`/sales-api/finance/payment/getBankInfo/${data}`, null, option)
+}
+/**
+ * @description: 通过周期ID判断是否认筹
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function getRecognizeById(data = {}, option = {}) {
+  return await getApi(`/sales-api/project/term/getRecognizeById/${data}`, null, option)
 }

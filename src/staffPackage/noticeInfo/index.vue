@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-18 11:38:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-23 17:15:02
+ * @LastEditTime: 2021-01-25 18:24:25
 -->
 <template>
   <LoginPage>
@@ -39,11 +39,11 @@
             ref="uForm"
             label-width="220"
           >
-            <u-form-item label="选择栋座">
-              <view class="text-right">{{form.buyUnitName}}</view>
+            <u-form-item label="栋座">
+              <view class="text-right">{{isRecognize ? '以最终甲方推送的房号确认书为准' : form.buyUnitName}}</view>
             </u-form-item>
-            <u-form-item label="选择房号">
-              <view class="text-right">{{form.roomNumberName}}</view>
+            <u-form-item label="房号">
+              <view class="text-right">{{isRecognize ? '以最终甲方推送的房号确认书为准' : form.roomNumberName}}</view>
             </u-form-item>
             <template v-for="(i, n) in form.ownerList">
               <u-gap
@@ -131,7 +131,11 @@
 <script>
 import { currentEnvConfig } from "../../env-config.js";
 import storageTool from "../../common/storageTool.js";
-import { getNoticeInfo, postUploadAnnex } from "../../api/staff";
+import {
+  getNoticeInfo,
+  postUploadAnnex,
+  getRecognizeById,
+} from "../../api/staff";
 
 export default {
   name: "notice-confirm",
@@ -156,6 +160,7 @@ export default {
       },
       fileList: [],
       noticeAttachmentList: [],
+      isRecognize: false,
     };
   },
   methods: {
@@ -163,6 +168,7 @@ export default {
       if (id) {
         const res = await getNoticeInfo({ id });
         Object.assign(this.form, res);
+        this.isRecognize = await getRecognizeById(res.cycleId);
         this.fileList = res.noticeAttachmentList
           .filter((i) => i.type === "NoticeAttachment")
           .map((val) => ({
