@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 15:29:08
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-26 15:54:32
+ * @LastEditTime: 2021-01-26 17:00:58
  */
 
 const tool = {
@@ -133,20 +133,15 @@ const tool = {
         let baseNum = 0;
         try {
             let arr = num1.toString().split(".");
-            if (arr.length <= 1) {
-                baseNum = 0;
-            } else {
+            if (arr.length > 1) {
                 baseNum += arr[1].length;
             }
-
         } catch (e) {
             console.error(e);
         }
         try {
             let arr = num2.toString().split(".");
-            if (arr.length <= 1) {
-                baseNum = 0;
-            } else {
+            if (arr.length > 1) {
                 baseNum += arr[1].length;
             }
 
