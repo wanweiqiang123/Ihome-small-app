@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-26 08:56:46
+ * @LastEditTime: 2021-01-26 16:57:00
 -->
 <template>
   <LoginPage>
@@ -220,7 +220,9 @@
             <view>{{`切换为${isType ? '纸质' : '电子'}优惠告知书`}}</view>
             <u-switch
               v-model="isType"
-              @change="form.noticeAttachmentList = []"
+              @change="(isActive) => {
+                if (isActive) form.noticeAttachmentList = []
+              }"
             ></u-switch>
           </view>
           <view
@@ -240,6 +242,7 @@
                   :header="header"
                   :show-progress="false"
                   :before-upload="beforeUpload"
+                  :file-list="fileList"
                   @on-success="successChange"
                   @on-remove="removeChange"
                 ></u-upload>
@@ -769,6 +772,9 @@ export default {
         const res = await postNoticeUpdate({
           ...this.form,
           notificationStatus: "WaitBeSigned",
+          noticeAttachmentList: this.form.noticeAttachmentList.filter(
+            (i) => !!i
+          ),
         });
         this.$tool.toast("保存成功");
         if (this.form.templateType === "ElectronicTemplate") {
@@ -802,7 +808,6 @@ export default {
       } catch (error) {
         console.log(error);
         this.isRemoveShow = false;
-        this.$tool.toast("作废失败");
       }
     },
 
@@ -832,9 +837,14 @@ export default {
         ? (this.ownerInfo = info.ownerList)
         : (this.enterpriseFrom = info.ownerList[0]);
       this.proId = info.projectId;
+      // 是否电子版
       this.isType = info.templateType === "ElectronicTemplate";
+      this.fileList = info.noticeAttachmentList
+        .filter((i) => i.type === "NoticeAttachment")
+        .map((val) => ({
+          url: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${val.fileNo}`,
+        }));
       this.isRecognize = await getRecognizeById(info.cycleId);
-      console.log(this.isRecognize);
       this.roomRules = {
         buyUnitName: [
           {

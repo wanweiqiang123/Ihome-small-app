@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-18 11:38:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-26 15:51:09
+ * @LastEditTime: 2021-01-26 17:06:45
 -->
 <template>
   <LoginPage>
@@ -57,19 +57,19 @@
               >业主信息</view>
               <u-form-item
                 :key="n"
-                label="业主姓名"
+                :label="isEnterprise ? '公司名称' : '业主姓名'"
               >
                 <view class="text-right">{{i.ownerName}}</view>
               </u-form-item>
               <u-form-item
                 :key="n"
-                label="手机号码"
+                :label="isEnterprise ? '经办人号码' : '手机号码'"
               >
                 <view class="text-right">{{i.ownerMobile}}</view>
               </u-form-item>
               <u-form-item
                 :key="n"
-                label="身份证号"
+                :label="isEnterprise ? '营业执照编号' : '身份证号'"
               >
                 <view class="text-right">{{i.ownerCertificateNo}}</view>
               </u-form-item>
@@ -151,6 +151,7 @@ export default {
         explain: "",
         buyUnit: "",
         buyUnitName: "",
+        ownerType: "",
       },
       option: {},
       isPaper: false,
@@ -162,6 +163,11 @@ export default {
       noticeAttachmentList: [],
       isRecognize: false,
     };
+  },
+  computed: {
+    isEnterprise() {
+      return this.form.ownerType === "Enterprise";
+    },
   },
   methods: {
     async getInfo(id) {
@@ -219,9 +225,10 @@ export default {
     },
     async submitFile() {
       try {
-        if (this.noticeAttachmentList.length) {
-          console.log(this.noticeAttachmentList);
-          await postUploadAnnex(this.noticeAttachmentList);
+        let list = this.noticeAttachmentList.filter((i) => !!i);
+        console.log(list);
+        if (list.length) {
+          await postUploadAnnex(list);
           this.$tool.toast("上传成功");
           this.$tool.back(null, { type: "update", page: null });
         } else {
