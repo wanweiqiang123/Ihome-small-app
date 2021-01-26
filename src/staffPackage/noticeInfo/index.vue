@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-18 11:38:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-26 17:59:23
+ * @LastEditTime: 2021-01-26 18:26:10
 -->
 <template>
   <LoginPage>
@@ -99,6 +99,7 @@
                 width="180"
                 height="180"
                 name="files"
+                ref="fileRef"
                 :file-list="fileList"
                 :action="action"
                 :header="header"
@@ -230,6 +231,8 @@ export default {
         if (list.length) {
           await postUploadAnnex(list);
           this.$tool.toast("上传成功");
+          this.noticeAttachmentList = [];
+          this.$refs.fileRef.clear();
           this.getInfo(this.form.id);
           // this.$tool.back(null, { type: "update", page: null });
         } else {
