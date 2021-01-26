@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 15:29:08
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-25 17:40:10
+ * @LastEditTime: 2021-01-26 15:54:32
  */
 
 const tool = {
@@ -101,7 +101,7 @@ const tool = {
         let baseNum3, baseNum4;
         try {
             let arr = num1.toString().split(".");
-            if (arr.length == 0) {
+            if (arr.length <= 1) {
                 baseNum1 = 0;
             } else {
                 baseNum1 = arr[1].length;
@@ -111,7 +111,7 @@ const tool = {
         }
         try {
             let arr = num2.toString().split(".");
-            if (arr.length == 0) {
+            if (arr.length <= 1) {
                 baseNum2 = 0;
             } else {
                 baseNum2 = arr[1].length;
@@ -133,7 +133,7 @@ const tool = {
         let baseNum = 0;
         try {
             let arr = num1.toString().split(".");
-            if (arr.length == 0) {
+            if (arr.length <= 1) {
                 baseNum = 0;
             } else {
                 baseNum += arr[1].length;
@@ -144,7 +144,7 @@ const tool = {
         }
         try {
             let arr = num2.toString().split(".");
-            if (arr.length == 0) {
+            if (arr.length <= 1) {
                 baseNum = 0;
             } else {
                 baseNum += arr[1].length;
@@ -165,7 +165,7 @@ const tool = {
         let precision;// 精度
         try {
             let arr = num1.toString().split(".");
-            if (arr.length == 0) {
+            if (arr.length <= 1) {
                 baseNum1 = 0;
             } else {
                 baseNum1 = arr[1].length;
@@ -176,7 +176,7 @@ const tool = {
         }
         try {
             let arr = num2.toString().split(".");
-            if (arr.length == 0) {
+            if (arr.length <= 1) {
                 baseNum2 = 0;
             } else {
                 baseNum2 = arr[1].length;
@@ -197,7 +197,7 @@ const tool = {
         let baseNum, baseNum1, baseNum2;
         try {
             let arr = num1.toString().split(".");
-            if (arr.length == 0) {
+            if (arr.length <= 1) {
                 baseNum1 = 0;
             } else {
                 baseNum1 = arr[1].length;
@@ -208,10 +208,10 @@ const tool = {
         }
         try {
             let arr = num2.toString().split(".");
-            if (arr.length == 0) {
+            if (arr.length <= 1) {
                 baseNum2 = 0;
             } else {
-                baseNum2 = [1].length;
+                baseNum2 = arr[1].length;
             }
 
         } catch (e) {
