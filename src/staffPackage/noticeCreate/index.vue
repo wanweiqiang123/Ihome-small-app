@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-26 16:57:00
+ * @LastEditTime: 2021-01-26 20:43:35
 -->
 <template>
   <LoginPage>
@@ -76,6 +76,10 @@
                   v-model="form.paymentAmount"
                   placeholder="请输入服务费金额"
                 />
+              </u-form-item>
+              <u-form-item label="业管审核状态">
+                <view v-if="form.reviewStatus">{{ form.reviewStatus | filterDict(distri)}}</view>
+                <view v-else>待审核</view>
               </u-form-item>
             </template>
             <template v-else>
@@ -385,6 +389,7 @@
 import { phoneValidator, validIdentityCard } from "../../common/validate.js";
 import { currentEnvConfig } from "../../env-config.js";
 import storageTool from "../../common/storageTool.js";
+import { getAllByTypeApi } from "../../api/index.js";
 import {
   getMannerListByTermId,
   postBuildByProId,
@@ -429,6 +434,7 @@ export default {
         templateType: null,
         ownerList: [],
         noticeAttachmentList: [],
+        reviewStatus: "",
       },
       baseRules: {
         cycleName: [
@@ -522,7 +528,14 @@ export default {
       isRemoveShow: false,
       isShowRoomTip: false,
       isUpdate: false,
+      distri: [],
     };
+  },
+  filters: {
+    filterDict(type, data) {
+      const item = data.find((i) => i.code === type);
+      return item ? item.name : "";
+    },
   },
   methods: {
     addOwner() {
@@ -768,13 +781,12 @@ export default {
     },
     async updateMethod() {
       this.form.ownerEditList = this.form.ownerList;
+      let list = this.form.noticeAttachmentList.filter((i) => !!i);
       try {
         const res = await postNoticeUpdate({
           ...this.form,
           notificationStatus: "WaitBeSigned",
-          noticeAttachmentList: this.form.noticeAttachmentList.filter(
-            (i) => !!i
-          ),
+          noticeAttachmentList: list,
         });
         this.$tool.toast("保存成功");
         if (this.form.templateType === "ElectronicTemplate") {
@@ -810,7 +822,10 @@ export default {
         this.isRemoveShow = false;
       }
     },
-
+    async getDictList(type) {
+      const list = await getAllByTypeApi({ type });
+      return list;
+    },
     async getInfo(id) {
       const info = await getNoticeInfo({ id });
       console.log(info);
@@ -832,6 +847,8 @@ export default {
         noticeId: info.id,
         templateId: info.templateId,
         refundDays: info.refundDays,
+        noticeAttachmentList: [],
+        reviewStatus: info.reviewStatus,
       };
       info.ownerType === "Personal"
         ? (this.ownerInfo = info.ownerList)
@@ -923,8 +940,9 @@ export default {
       }
     }
   },
-  onLoad(option) {
+  async onLoad(option) {
     this.isSubmit = true;
+    this.distri = this.getDictList("DistributionState");
     if (option.id) {
       this.getInfo(option.id);
       uni.setNavigationBarTitle({
