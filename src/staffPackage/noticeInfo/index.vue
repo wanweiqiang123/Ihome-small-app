@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-18 11:38:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-26 17:06:45
+ * @LastEditTime: 2021-01-26 17:59:23
 -->
 <template>
   <LoginPage>
@@ -230,7 +230,8 @@ export default {
         if (list.length) {
           await postUploadAnnex(list);
           this.$tool.toast("上传成功");
-          this.$tool.back(null, { type: "update", page: null });
+          this.getInfo(this.form.id);
+          // this.$tool.back(null, { type: "update", page: null });
         } else {
           this.$tool.toast("请先上传附件");
         }
