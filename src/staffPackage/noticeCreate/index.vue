@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-25 18:11:47
+ * @LastEditTime: 2021-01-26 08:56:46
 -->
 <template>
   <LoginPage>
@@ -722,6 +722,7 @@ export default {
         });
     },
     update() {
+      this.$refs.roomFrom.setRules(this.roomRules);
       let verifyArr = this.dataVerify();
       Promise.all(verifyArr)
         .then(async () => {
@@ -833,6 +834,7 @@ export default {
       this.proId = info.projectId;
       this.isType = info.templateType === "ElectronicTemplate";
       this.isRecognize = await getRecognizeById(info.cycleId);
+      console.log(this.isRecognize);
       this.roomRules = {
         buyUnitName: [
           {
