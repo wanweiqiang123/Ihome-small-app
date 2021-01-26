@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-18 11:38:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-25 18:24:25
+ * @LastEditTime: 2021-01-26 15:51:09
 -->
 <template>
   <LoginPage>
@@ -220,6 +220,7 @@ export default {
     async submitFile() {
       try {
         if (this.noticeAttachmentList.length) {
+          console.log(this.noticeAttachmentList);
           await postUploadAnnex(this.noticeAttachmentList);
           this.$tool.toast("上传成功");
           this.$tool.back(null, { type: "update", page: null });

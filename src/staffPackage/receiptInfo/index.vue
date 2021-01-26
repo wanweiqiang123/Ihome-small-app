@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-19 15:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-23 15:40:54
+ * @LastEditTime: 2021-01-26 14:32:39
 -->
 <template>
   <view class="receipt info">
@@ -185,7 +185,10 @@
       </view>
     </view>
 
-    <view class="info-four">
+    <view
+      class="info-four"
+      v-if="false"
+    >
       <view class="info-four-title">退款信息</view>
       <view class="info-four-money">退款金额: 3000.00</view>
       <view class="info-four-msg">
