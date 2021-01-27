@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-27 11:50:03
+ * @LastEditTime: 2021-01-27 20:30:15
 -->
 <template>
   <LoginPage>
@@ -791,7 +791,7 @@ export default {
         this.$tool.toast("保存成功");
         if (this.form.templateType === "ElectronicTemplate") {
           uni.navigateTo({
-            url: `/staffPackage/noticePreview/index?id=${this.form.noticeId}&tId=${this.form.templateId}&type=Notification`,
+            url: `/staffPackage/noticePreview/index?id=${this.form.noticeId}&tId=${res.templateId}&type=Notification`,
           });
         } else {
           this.$tool.back(null, {
