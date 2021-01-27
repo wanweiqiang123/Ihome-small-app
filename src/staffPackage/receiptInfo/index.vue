@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-19 15:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-26 14:32:39
+ * @LastEditTime: 2021-01-27 19:43:05
 -->
 <template>
   <view class="receipt info">
@@ -30,56 +30,98 @@
           <view>已付{{info.discountInformationResponseVo.paid}}</view>
           <view>应付{{info.discountInformationResponseVo.paymentAmount}}</view>
         </view>
-        <view class="info-first-paid">待收金额(元)</view>
-        <view class="info-first-money">{{info.discountInformationResponseVo.unpaid}}
-          <text style="margin-left:20rpx;font-size: 24rpx;font-weight: bold;">元</text>
-        </view>
-        <view
-          class="info-first-detail"
-          @click="payHistory(noticeId)"
-        >
-          <u-icon
-            name="arrow-right"
-            width="12"
-            height="22"
-            color="#666666"
-          ></u-icon>
-          <text>付款明细</text>
-        </view>
-        <view
-          v-if="payAuditNum"
-          class="info-first-audit"
-          @click="payAuditing(noticeId)"
-        >
-          <u-icon
-            name="arrow-right"
-            size="28"
-            color="#666666"
-          ></u-icon>
-          <text class="text">有
-            <text style="color:#FF0000;padding: 0 5rpx">{{payAuditNum}}</text>
-            笔付款正在审核中
-          </text>
-        </view>
-        <view class="info-first-btn">
-          <u-button
-            v-if="
+        <!-- 信息待确认 -->
+        <template v-if="info.notificationStatus === 'WaitDetermine'">
+          <view class="receipt-text">告知书信息未确认</view>
+        </template>
+        <!-- 客户待签署 -->
+        <template v-else-if="info.notificationStatus === 'WaitBeSigned'">
+          <view class="receipt-text">待客户签署协议</view>
+        </template>
+        <!-- 客户待支付 -->
+        <template v-else-if="info.notificationStatus === 'WaitPay'">
+          <template v-if="isRefund">
+            <view class="receipt-text">客户发起退款申请</view>
+          </template>
+          <template v-else>
+            <view class="info-first-paid">待收金额(元)</view>
+            <view class="info-first-money">{{info.discountInformationResponseVo.unpaid}}
+              <text style="margin-left:20rpx;font-size: 24rpx;font-weight: bold;">元</text>
+            </view>
+            <view
+              class="info-first-detail"
+              @click="payHistory(noticeId)"
+            >
+              <u-icon
+                name="arrow-right"
+                width="12"
+                height="22"
+                color="#666666"
+              ></u-icon>
+              <text>付款明细</text>
+            </view>
+            <view
+              v-if="payAuditNum"
+              class="info-first-audit"
+              @click="payAuditing(noticeId)"
+            >
+              <u-icon
+                name="arrow-right"
+                size="28"
+                color="#666666"
+              ></u-icon>
+              <text class="text">有
+                <text style="color:#FF0000;padding: 0 5rpx">{{payAuditNum}}</text>
+                笔付款正在审核中
+              </text>
+            </view>
+            <view class="info-first-btn">
+              <u-button
+                v-if="
               Number(info.discountInformationResponseVo.paid) !==
               Number(info.discountInformationResponseVo.paymentAmount)
             "
-            type="primary"
-            size="medium"
-            shape="circle"
-            @click="handleGoto(info.discountInformationResponseVo)"
-          >添加收款</u-button>
-        </view>
+                type="primary"
+                size="medium"
+                shape="circle"
+                @click="handleGoto(info.discountInformationResponseVo)"
+              >添加收款</u-button>
+            </view>
+          </template>
+        </template>
+        <!-- 客户已支付 -->
+        <template v-else-if="info.notificationStatus === 'Paid'">
+          <view class="receipt-text">收款完成，待分公司业管审核</view>
+        </template>
+        <!-- 已生效 -->
+        <template v-else-if="info.notificationStatus === 'BecomeEffective'">
+          <view
+            v-if="isWaitBeSigned"
+            class="receipt-text"
+          >待客户签署协议</view>
+          <view
+            v-else-if="isSignedRefund"
+            class="receipt-text"
+          >协议已终止</view>
+          <view
+            v-else
+            class="receipt-text"
+          >收款完成，告知书已生效</view>
+        </template>
       </view>
     </view>
     <view class="info-second">
       <view class="info-second-title">购房信息</view>
       <view class="info-second-msg">
         <view class="info-second-top">{{info.purchaseInformation.projectName}}</view>
-        <view class="info-second-bottom">{{`${getDictName(info.purchaseInformation.propertyType, Property)}-${info.purchaseInformation.buyUnit}-${info.purchaseInformation.roomNumberName}`}}</view>
+        <view
+          class="info-second-bottom"
+          v-if="isRecognize"
+        >以最终甲方推送的房号确认书为准</view>
+        <view
+          class="info-second-bottom"
+          v-else
+        >{{`${getDictName(info.purchaseInformation.propertyType, Property)}-${info.purchaseInformation.buyUnit}-${info.purchaseInformation.roomNumberName}`}}</view>
       </view>
       <view class="info-second-wrap">
         <swiper
@@ -150,9 +192,9 @@
               <view class="swiper-item-layout">
                 <view class="swiper-item-detail">
                   <view class="swiper-item-type">{{`${getDictName(item.notificationType, NotificationType)}`}}</view>
-                  <view class="swiper-item-num">编号（{{item.noticeNo}}）</view>
+                  <view class="swiper-item-status">{{`${getDictName(item.notificationStatus, NotificationStatus)}`}}</view>
                 </view>
-                <view class="swiper-item-status">{{`${getDictName(item.notificationStatus, NotificationStatus)}`}}</view>
+                <view class="swiper-item-num">编号（{{item.noticeNo}}）</view>
               </view>
               <view class="swiper-item-btn">
                 <u-button
@@ -213,8 +255,12 @@
 </template>
 
 <script>
-import { getWechatNoticeInfoApi, getNotCheckNumApi } from "../../api/staff";
 import { getAllByTypeApi } from "../../api/index";
+import {
+  getWechatNoticeInfoApi,
+  getNotCheckNumApi,
+  getRecognizeById,
+} from "../../api/staff";
 
 export default {
   data() {
@@ -225,6 +271,8 @@ export default {
         noticeNo: null,
         noticeList: [],
         purchaseInformation: {},
+        reviewStatus: "",
+        notificationStatus: "",
       },
       current: 0,
       currents: 0,
@@ -234,6 +282,7 @@ export default {
       Property: [],
       NotificationType: [],
       NotificationStatus: [],
+      isRecognize: false,
     };
   },
   computed: {
@@ -245,12 +294,35 @@ export default {
         return amount * 100;
       }
     },
+    isWaitBeSigned() {
+      return this.info.noticeList
+        .map((i) => i.notificationStatus)
+        .includes("WaitBeSigned");
+    },
+    isRefund() {
+      return this.info.noticeList
+        .map((i) => i.notificationType)
+        .includes("RefundApplication");
+    },
+    isSignedRefund() {
+      let item = this.info.noticeList.find(
+        (i) => i.notificationType === "TerminationAgreement"
+      );
+      if (item) {
+        return item.notificationStatus === "BecomeEffective";
+      } else {
+        return false;
+      }
+    },
   },
   methods: {
     async getInfo(noticeId) {
       const res = await getWechatNoticeInfoApi({ noticeId });
       this.info = { ...res };
       this.payAuditNum = await getNotCheckNumApi({ noticeId });
+      this.isRecognize = await getRecognizeById(
+        res.discountInformationResponseVo.cycleId
+      );
     },
     // 预览
     gotoNotice(val) {
@@ -295,7 +367,7 @@ export default {
     getDictName(code, list) {
       if (list.length) {
         const item = list.find((v) => v.code === code);
-        return item?.name;
+        return item ? item.name : "";
       }
     },
   },
@@ -547,18 +619,18 @@ export default {
           }
 
           &-layout {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
+            padding: 20rpx 38rpx;
           }
           &-detail {
-            padding: 39rpx 0 0 27rpx;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            padding-bottom: 20rpx;
           }
 
           &-type {
             font-weight: 600;
             font-size: 26rpx;
-            padding-bottom: 20rpx;
             color: #1f1f1f;
           }
           &-num {
@@ -569,7 +641,6 @@ export default {
           &-status {
             font-weight: 600;
             font-size: 32rpx;
-            padding: 36rpx 48rpx 0 0;
             color: #333333;
           }
           &-btn {
@@ -636,5 +707,10 @@ export default {
 
 .indicator-dots-active {
   background-color: #4881f9;
+}
+.receipt-text {
+  padding: 30rpx 0;
+  text-align: center;
+  color: $u-type-primary;
 }
 </style>

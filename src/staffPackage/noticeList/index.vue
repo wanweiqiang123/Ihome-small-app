@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-27 09:34:38
+ * @LastEditTime: 2021-01-27 11:21:43
 -->
 <template>
   <LoginPage>
@@ -73,8 +73,8 @@
       </view>
       <!-- 筛选弹出 -->
       <PopupSearch
-        width="100%"
-        :mask="false"
+        width="90%"
+        :mask="true"
         v-model="isShow"
         @reset="reset()"
         @confirm="confirm()"
@@ -153,6 +153,19 @@
             />
           </u-form-item>
           <u-form-item
+            label="业管审核状态"
+            :border-bottom="false"
+          >
+            <u-input
+              v-model="queryPageParameters.reviewText"
+              :select-open="reviewSelShow"
+              placeholder="请选择"
+              @click="reviewSelShow = true"
+              type="select"
+              border
+            />
+          </u-form-item>
+          <u-form-item
             label="优惠告知书类型"
             :border-bottom="false"
           >
@@ -193,6 +206,15 @@
         label-name="roomNo"
         @confirm="roomConfirm"
       ></u-select>
+      <u-select
+        v-model="reviewSelShow"
+        :list="noticeReview"
+        safe-area-inset-bottom
+        title="业管审核状态"
+        value-name="code"
+        label-name="name"
+        @confirm="reviewConfirm"
+      ></u-select>
     </view>
   </LoginPage>
 </template>
@@ -231,9 +253,13 @@ export default {
         noticeNo: null,
         notificationStatuses: [],
         notificationTypes: [],
+        reviewStatus: "",
+        reviewText: "",
       },
       noticeTypes: [],
       noticeStatus: [],
+      reviewSelShow: false,
+      noticeReview: [],
       buildSelectShow: false,
       buildSelectList: [],
       roomSelectShow: false,
@@ -310,6 +336,11 @@ export default {
         url: "/pages/search/index/index",
       });
     },
+    reviewConfirm(val) {
+      let item = val[0];
+      this.queryPageParameters.reviewText = item.label;
+      this.queryPageParameters.reviewStatus = item.value;
+    },
     async buildConfirm(val) {
       let item = val[0];
       this.queryPageParameters.unitName = item.label;
@@ -373,6 +404,7 @@ export default {
     this.getListMixin();
     this.noticeTypes = await this.getDictName("NotificationType");
     this.noticeStatus = await this.getDictName("NotificationStatus");
+    this.noticeReview = await this.getDictName("ReviewStatus");
   },
   async onShow() {
     let item = getApp().globalData.searchBackData;

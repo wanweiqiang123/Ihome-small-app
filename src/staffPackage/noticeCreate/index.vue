@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-26 20:43:35
+ * @LastEditTime: 2021-01-27 11:50:03
 -->
 <template>
   <LoginPage>
@@ -942,7 +942,7 @@ export default {
   },
   async onLoad(option) {
     this.isSubmit = true;
-    this.distri = this.getDictList("DistributionState");
+    this.distri = this.getDictList("ReviewStatus");
     if (option.id) {
       this.getInfo(option.id);
       uni.setNavigationBarTitle({
