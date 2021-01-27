@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 14:10:55
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-23 15:02:35
+ * @LastEditTime: 2021-01-27 21:00:31
 -->
 <template>
   <view class="receipt safe-area-inset-bottom">
@@ -46,7 +46,8 @@
           class="ih-card-foot"
         >
           <view class="font-text">
-            <text v-show="i.notificationStatus === 'WaitBeSigned'">客户尚未完成付款</text>
+            <text v-show="i.notificationStatus === 'WaitBeSigned'">客户尚未完成签署</text>
+            <text v-show="i.notificationStatus === 'WaitPay'">客户尚未完成付款</text>
           </view>
           <u-button
             size="mini"
