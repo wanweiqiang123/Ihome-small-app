@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-23 17:14:46
+ * @LastEditTime: 2021-01-27 09:34:38
 -->
 <template>
   <LoginPage>
@@ -267,7 +267,7 @@ export default {
             url: `/staffPackage/receiptInfo/index?id=${item.id}`,
           });
           break;
-        case "WaitReview":
+        case "Paid":
           // 分公司业管待审核
           uni.navigateTo({
             url: `/staffPackage/noticeConfirm/index?id=${item.id}`,
