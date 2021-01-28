@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 14:10:55
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-27 21:00:31
+ * @LastEditTime: 2021-01-28 19:19:27
 -->
 <template>
   <view class="receipt safe-area-inset-bottom">
@@ -48,6 +48,10 @@
           <view class="font-text">
             <text v-show="i.notificationStatus === 'WaitBeSigned'">客户尚未完成签署</text>
             <text v-show="i.notificationStatus === 'WaitPay'">客户尚未完成付款</text>
+            <text
+              v-show="i.notificationStatus === 'BecomeEffective'"
+              class="success"
+            >已生效</text>
           </view>
           <u-button
             size="mini"
@@ -344,6 +348,9 @@ export default {
   }
   .font-text {
     color: $u-type-error;
+    .success {
+      color: $u-type-success;
+    }
   }
 }
 </style>
