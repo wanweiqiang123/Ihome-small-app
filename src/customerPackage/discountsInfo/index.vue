@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-25 18:51:28
+ * @LastEditTime: 2021-01-28 18:14:15
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -32,69 +32,126 @@
           <view>已付{{ info.discountInformationResponseVo.paid }}</view>
           <view>应付{{ info.discountInformationResponseVo.paymentAmount }}</view>
         </view>
-        <view class="info-first-paid">未付金额</view>
-        <view class="info-first-money">{{ info.discountInformationResponseVo.unpaid }}
-          <text style="margin-left: 20rpx; font-size: 24rpx; font-weight: bold">元</text>
-        </view>
-        <view
-          class="info-first-detail"
-          @click="payHistory(noticeId)"
-        >
-          <u-icon
-            name="arrow-right"
-            width="12"
-            height="22"
-            color="#666666"
-          ></u-icon>
-          <text>付款明细</text>
-        </view>
-        <view
-          v-if="payAuditNum"
-          class="info-first-audit"
-          @click="payAuditing(noticeId)"
-        >
-          <u-icon
-            name="arrow-right"
-            size="28"
-            color="#666666"
-          ></u-icon>
-          <text class="text">您有
-            <text style="color: #ff0000; padding: 0 5rpx">{{
+        <!-- 客户待签署 -->
+        <template v-if="info.notificationStatus === 'WaitBeSigned'">
+          <view
+            class="receipt-text"
+            style="color: #F56C6C"
+            @click="gotoSign('Notification')"
+          >您还未签署优惠告知书，点击前往处理</view>
+        </template>
+        <!-- 信息待确认 -->
+        <template v-else-if="info.notificationStatus === 'WaitDetermine'">
+          <view class="receipt-text">信息待确认</view>
+        </template>
+        <!-- 客户待支付 -->
+        <template v-else-if="info.notificationStatus === 'WaitPay'">
+          <template v-if="isRefund">
+            <view
+              style="color: #F56C6C"
+              class="receipt-text"
+              @click="gotoSign('RefundApplication')"
+            >您有一份退款申请待签署，点击前往处理</view>
+          </template>
+          <template v-else>
+            <view class="info-first-paid">未付金额</view>
+            <view class="info-first-money">{{ info.discountInformationResponseVo.unpaid }}
+              <text style="margin-left: 20rpx; font-size: 24rpx; font-weight: bold">元</text>
+            </view>
+            <view
+              class="info-first-detail"
+              @click="payHistory(noticeId)"
+            >
+              <u-icon
+                name="arrow-right"
+                width="12"
+                height="22"
+                color="#666666"
+              ></u-icon>
+              <text>付款明细</text>
+            </view>
+            <view
+              v-if="payAuditNum"
+              class="info-first-audit"
+              @click="payAuditing(noticeId)"
+            >
+              <u-icon
+                name="arrow-right"
+                size="28"
+                color="#666666"
+              ></u-icon>
+              <text class="text">您有
+                <text style="color: #ff0000; padding: 0 5rpx">{{
               payAuditNum
             }}</text>
-            笔付款正在审核中
-          </text>
-        </view>
-        <view
-          class="info-first-btn"
-          v-if="configPay == 'On'"
-        >
-          <u-button
-            v-if="
+                笔付款正在审核中
+              </text>
+            </view>
+            <view
+              class="info-first-btn"
+              v-if="configPay == 'On'"
+            >
+              <u-button
+                v-if="
               Number(info.discountInformationResponseVo.paid) !==
               Number(info.discountInformationResponseVo.paymentAmount)
             "
-            type="primary"
-            size="medium"
-            shape="circle"
-            @click="gotoPay(info.discountInformationResponseVo)"
-          >去付款</u-button>
-        </view>
-        <view
-          class="info-first-btn"
-          v-if="configPay == 'Off'"
-        >
-          <u-button
-            v-if="
+                type="primary"
+                size="medium"
+                shape="circle"
+                @click="gotoPay(info.discountInformationResponseVo)"
+              >去付款</u-button>
+            </view>
+            <view
+              class="info-first-btn"
+              v-if="configPay == 'Off'"
+            >
+              <u-button
+                v-if="
               Number(info.discountInformationResponseVo.paid) !==
               Number(info.discountInformationResponseVo.paymentAmount)
             "
-            type="primary"
-            size="medium"
-            shape="circle"
-            @click="gotoPay(info.discountInformationResponseVo)"
-          >查看当前付款</u-button>
-        </view>
+                type="primary"
+                size="medium"
+                shape="circle"
+                @click="gotoPay(info.discountInformationResponseVo)"
+              >查看当前付款</u-button>
+            </view>
+          </template>
+        </template>
+        <!-- 客户已支付 -->
+        <template v-else-if="info.notificationStatus === 'Paid'">
+          <view class="receipt-text">付款完成，优惠确认中</view>
+        </template>
+        <!-- 已生效 -->
+        <template v-else-if="info.notificationStatus === 'BecomeEffective'">
+          <view
+            v-if="isWaitBeSigned"
+            class="receipt-text"
+          >待客户签署协议</view>
+          <view
+            style="color: #F56C6C"
+            v-if="isSupplementaryAgreementOne"
+            @click="gotoSign('SupplementaryAgreement')"
+            class="receipt-text"
+          >您有一份协议待签署，点击前往处理</view>
+          <view
+            style="color: #F56C6C"
+            v-if="isSupplementaryAgreementMore"
+            @click="gotoSignMore()"
+            class="receipt-text"
+          >您有多份协议待签署，点击前往处理</view>
+          <view
+            style="color: #F56C6C"
+            v-else-if="isSignedRefund"
+            class="receipt-text"
+          >协议已终止，此优惠无效</view>
+          <view
+            v-else
+            style="color: #19BE6B"
+            class="receipt-text"
+          >付款完成，优惠已生效</view>
+        </template>
       </view>
     </view>
     <view class="info-second">
@@ -175,14 +232,10 @@
             <view class="swiper-item-msg">
               <view class="swiper-item-layout">
                 <view class="swiper-item-detail">
-                  <view class="swiper-item-type">{{
-                    `${getDictName(item.notificationType, NotificationType)}`
-                  }}</view>
-                  <view class="swiper-item-num">编号（{{ item.noticeNo }}）</view>
+                  <view class="swiper-item-type">{{`${getDictName(item.notificationType, NotificationType)}`}}</view>
+                  <view class="swiper-item-status">{{`${getDictName(item.notificationStatus, NotificationStatus)}`}}</view>
                 </view>
-                <view class="swiper-item-status">{{
-                  `${getDictName(item.notificationStatus, NotificationStatus)}`
-                }}</view>
+                <view class="swiper-item-num">编号（{{ item.noticeNo }}）</view>
               </view>
               <view class="swiper-item-btn">
                 <u-button
@@ -213,9 +266,19 @@
           </view>
         </view>
       </view>
+      <view
+        v-if='info.noticeList.length > 1'
+        class="gotoSign"
+        @click="gotoSignMore"
+      >
+        您有多份协议待签署，点击前往处理
+      </view>
     </view>
 
-    <!-- <view class="info-four">
+    <view
+      class="info-four"
+      v-if="false"
+    >
       <view class="info-four-title">退款信息</view>
       <view class="info-four-money">退款金额: 3000.00</view>
       <view class="info-four-msg">
@@ -235,7 +298,7 @@
           <text class="pay-list-money">2020-12-20 23:59:59</text>
         </view>
       </view>
-    </view> -->
+    </view>
   </view>
 </template>
 <script>
@@ -317,6 +380,41 @@ export default {
         return amount * 100;
       }
     },
+    isRefund() {
+      return this.info.noticeList
+        .map((i) => i.notificationType)
+        .includes("RefundApplication");
+    },
+    isWaitBeSigned() {
+      return this.info.noticeList
+        .map((i) => i.notificationStatus)
+        .includes("WaitBeSigned");
+    },
+    isSignedRefund() {
+      let item = this.info.noticeList.find(
+        (i) => i.notificationType === "TerminationAgreement"
+      );
+      if (item) {
+        return item.notificationStatus === "BecomeEffective";
+      } else {
+        return false;
+      }
+    },
+    isSupplementaryAgreementOne() {
+      let item = this.info.noticeList.find(
+        (v) => v.notificationType === "SupplementaryAgreement"
+      );
+      if (item) return true;
+      else return false;
+    },
+    isSupplementaryAgreementMore() {
+      let arr = [];
+      arr = this.info.noticeList.filter((v) => {
+        return v.notificationType === "SupplementaryAgreement";
+      });
+      if (arr.length > 1) return true;
+      else return false;
+    },
   },
   methods: {
     async getInfo() {
@@ -328,6 +426,21 @@ export default {
         this.payAuditNum = await getNotCheckNumApi(this.noticeId);
       }
     },
+
+    gotoSign(type) {
+      let item = this.info.noticeList.find((v) => v.notificationType === type);
+      if (item) {
+        this.gotoNotice(item, "sign");
+      }
+    },
+
+    gotoSignMore() {
+      getApp().signMoreData = this.info.noticeList;
+      uni.navigateTo({
+        url: `/customerPackage/signMore/index`,
+      });
+    },
+
     // 预览
     async gotoNotice(val, type) {
       switch (val.notificationStatus) {
@@ -632,18 +745,18 @@ export default {
           }
 
           &-layout {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
+            padding: 20rpx 38rpx;
           }
           &-detail {
-            padding: 39rpx 0 0 27rpx;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 20rpx;
           }
 
           &-type {
             font-weight: 600;
             font-size: 26rpx;
-            padding-bottom: 20rpx;
             color: #1f1f1f;
           }
           &-num {
@@ -654,7 +767,6 @@ export default {
           &-status {
             font-weight: 600;
             font-size: 32rpx;
-            padding: 36rpx 48rpx 0 0;
             color: #333333;
           }
           &-btn {
@@ -721,5 +833,17 @@ export default {
 
 .indicator-dots-active {
   background-color: #4881f9;
+}
+
+.receipt-text {
+  padding: 30rpx 0;
+  text-align: center;
+  color: $u-type-primary;
+}
+
+.gotoSign {
+  text-align: center;
+  color: #f56c6c;
+  padding-bottom: 20rpx;
 }
 </style>
