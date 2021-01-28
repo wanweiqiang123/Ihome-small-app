@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-28 15:50:48
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-28 17:25:09
+ * @LastEditTime: 2021-01-28 18:11:22
 -->
 <template>
   <view class="signmore">
@@ -121,10 +121,6 @@ export default {
 
 .signCollapse {
   width: 100%;
-}
-
-.imageview {
-  // padding-bottom: 50rpx;
 }
 
 .my-btn {

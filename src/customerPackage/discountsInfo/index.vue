@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-28 18:06:25
+ * @LastEditTime: 2021-01-28 18:14:15
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -430,7 +430,7 @@ export default {
     gotoSign(type) {
       let item = this.info.noticeList.find((v) => v.notificationType === type);
       if (item) {
-        this.gotoNotice(arr[0], "sign");
+        this.gotoNotice(item, "sign");
       }
     },
 
