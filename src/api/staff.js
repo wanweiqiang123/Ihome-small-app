@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-10 15:30:58
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-25 18:05:08
+ * @LastEditTime: 2021-01-28 19:04:26
  */
 import { getApi, postApi } from '../common/http.js';
 
@@ -173,4 +173,31 @@ export async function getBankInfoApi(data = {}, option = {}) {
  */
 export async function getRecognizeById(data = {}, option = {}) {
   return await getApi(`/sales-api/project/term/getRecognizeById/${data}`, null, option)
+}
+/**
+ * @description: 查询收款信息列表数据
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function getAppListApi(data = {}, option = {}) {
+  return await getApi(`/sales-api/finance/payment/getAppList/${data}`, option)
+}
+/**
+ * @description: 删除付款记录
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function paymentdeleteApi(data = {}, option = {}) {
+  return await postApi(`/sales-api/finance/payment/delete/${data}`, option)
+}
+/**
+ * @description: 查询待审核数列表数据
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function getNotCheckListApi(data = {}, option = {}) {
+  return await getApi(`/sales-api/finance/payment/getNotCheckList/${data}`, option)
 }

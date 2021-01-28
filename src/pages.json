@@ -467,6 +467,12 @@
 					}
 				},
 				{
+					"path": "receiptHistory/index",
+					"style": {
+						"navigationBarTitleText": "收款待审核"
+					}
+				},
+				{
 					"path": "noticeCode/index",
 					"style": {
 						"navigationBarTitleText": "查询购房优惠码"

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-19 15:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-28 15:04:08
+ * @LastEditTime: 2021-01-28 19:11:25
 -->
 <template>
   <view class="receipt info">
@@ -216,12 +216,19 @@
                   @click="preview(item)"
                 >查看</u-button>
                 <u-button
-                  v-if="item.notificationStatus === 'WaitBeSigned'"
+                  v-else-if="item.notificationStatus === 'WaitBeSigned'"
                   type="primary"
                   size="medium"
                   shape="circle"
                   @click="gotoNotice(item)"
                 >转发</u-button>
+                <u-button
+                  v-else
+                  type="primary"
+                  size="medium"
+                  shape="circle"
+                  @click="gotoNotice(item)"
+                >查看</u-button>
               </view>
             </view>
           </swiper-item>
@@ -267,6 +274,7 @@
 
 <script>
 import { getAllByTypeApi } from "../../api/index";
+import { currentEnvConfig } from "../../env-config.js";
 import {
   getWechatNoticeInfoApi,
   getNotCheckNumApi,
@@ -379,12 +387,12 @@ export default {
     },
     payHistory(e) {
       uni.navigateTo({
-        url: `/customerPackage/payHistory/index?id=${e}`,
+        url: `/staffPackage/receiptHistory/index?id=${e}`,
       });
     },
     payAuditing(e) {
       uni.navigateTo({
-        url: `/customerPackage/payAuditing/index?id=${e}`,
+        url: `/staffPackage/receiptAuditing/index?id=${e}`,
       });
     },
     // 字典翻译
