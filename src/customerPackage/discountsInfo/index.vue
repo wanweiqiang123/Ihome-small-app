@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-28 17:30:33
+ * @LastEditTime: 2021-01-28 18:06:25
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -232,14 +232,10 @@
             <view class="swiper-item-msg">
               <view class="swiper-item-layout">
                 <view class="swiper-item-detail">
-                  <view class="swiper-item-type">{{
-                    `${getDictName(item.notificationType, NotificationType)}`
-                  }}</view>
-                  <view class="swiper-item-num">编号（{{ item.noticeNo }}）</view>
+                  <view class="swiper-item-type">{{`${getDictName(item.notificationType, NotificationType)}`}}</view>
+                  <view class="swiper-item-status">{{`${getDictName(item.notificationStatus, NotificationStatus)}`}}</view>
                 </view>
-                <view class="swiper-item-status">{{
-                  `${getDictName(item.notificationStatus, NotificationStatus)}`
-                }}</view>
+                <view class="swiper-item-num">编号（{{ item.noticeNo }}）</view>
               </view>
               <view class="swiper-item-btn">
                 <u-button
@@ -269,6 +265,13 @@
           >
           </view>
         </view>
+      </view>
+      <view
+        v-if='info.noticeList.length > 1'
+        class="gotoSign"
+        @click="gotoSignMore"
+      >
+        您有多份协议待签署，点击前往处理
       </view>
     </view>
 
@@ -742,18 +745,18 @@ export default {
           }
 
           &-layout {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
+            padding: 20rpx 38rpx;
           }
           &-detail {
-            padding: 39rpx 0 0 27rpx;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 20rpx;
           }
 
           &-type {
             font-weight: 600;
             font-size: 26rpx;
-            padding-bottom: 20rpx;
             color: #1f1f1f;
           }
           &-num {
@@ -764,7 +767,6 @@ export default {
           &-status {
             font-weight: 600;
             font-size: 32rpx;
-            padding: 36rpx 48rpx 0 0;
             color: #333333;
           }
           &-btn {
@@ -837,5 +839,11 @@ export default {
   padding: 30rpx 0;
   text-align: center;
   color: $u-type-primary;
+}
+
+.gotoSign {
+  text-align: center;
+  color: #f56c6c;
+  padding-bottom: 20rpx;
 }
 </style>
