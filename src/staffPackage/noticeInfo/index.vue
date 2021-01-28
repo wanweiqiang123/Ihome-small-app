@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-18 11:38:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-26 18:26:10
+ * @LastEditTime: 2021-01-28 10:22:02
 -->
 <template>
   <LoginPage>
@@ -185,8 +185,9 @@ export default {
       }
     },
     handleGoto() {
-      let url = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${this.form.templateId}`;
+      let url = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${this.form.templateId}.pdf`;
       getApp().globalData.webViewSrc = url;
+      console.log(url);
       uni.navigateTo({
         url: `/customerPackage/webView/index`,
       });
