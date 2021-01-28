@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-19 15:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-28 11:12:07
+ * @LastEditTime: 2021-01-28 15:04:08
 -->
 <template>
   <view class="receipt info">
@@ -101,12 +101,23 @@
           >待客户签署协议</view>
           <view
             v-else-if="isSignedRefund"
-            class="receipt-text"
+            class="receipt-text error"
           >协议已终止</view>
-          <view
-            v-else
-            class="receipt-text"
-          >收款完成，告知书已生效</view>
+          <template v-else>
+            <view
+              class="info-first-detail"
+              @click="payHistory(noticeId)"
+            >
+              <u-icon
+                name="arrow-right"
+                width="12"
+                height="22"
+                color="#666666"
+              ></u-icon>
+              <text>付款明细</text>
+            </view>
+            <view class="receipt-text success">收款完成，告知书已生效</view>
+          </template>
         </template>
       </view>
     </view>
@@ -333,6 +344,8 @@ export default {
           var filePath = res.tempFilePath;
           uni.openDocument({
             filePath: filePath,
+            fileType: "pdf",
+            showMenu: true,
             success: function (res) {
               console.log("打开文档成功");
             },
@@ -728,5 +741,11 @@ export default {
   padding: 30rpx 0;
   text-align: center;
   color: $u-type-primary;
+  &.error {
+    color: $u-type-error;
+  }
+  &.success {
+    color: $u-type-success;
+  }
 }
 </style>
