@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-30 14:22:01
- * @LastEditors: zyc
- * @LastEditTime: 2021-01-08 18:09:27
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-28 19:12:08
 -->
 <template>
   <view style="padding-top: 100px">
@@ -58,11 +58,15 @@ export default {
       let that = this;
       uni.login({
         success: async function (res) {
-          console.log(res);
+          console.log(res, "xxxxx");
           getOpenidApi(res.code, {
             hideLoading: true,
           })
             .then((infoRes) => {
+              console.log(infoRes.uuid, "uuid");
+              showToast({
+                title: res.code + "xx" + infoRes.uuid,
+              });
               storageTool.setUUID(infoRes.uuid);
             })
             .catch((err) => {
