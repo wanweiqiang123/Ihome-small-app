@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-18 11:38:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-28 11:04:42
+ * @LastEditTime: 2021-01-28 16:04:36
 -->
 <template>
   <LoginPage>
@@ -85,6 +85,14 @@
               <view class="text-right">
                 <u-button
                   size="mini"
+                  type="primary"
+                  :custom-style="{
+                    marginRight: '30rpx'
+                  }"
+                  @click="handleShow"
+                >下载文件</u-button>
+                <u-button
+                  size="mini"
                   type="success"
                   @click="handleGoto"
                 >预览</u-button>
@@ -125,6 +133,16 @@
           >提交附件</u-button>
         </template>
       </view>
+      <u-modal
+        v-model="isShow"
+        :show-title="false"
+        confirm-text="一键复制"
+        :content="downUrl"
+        :content-style="{
+          wordBreak: 'break-word'
+        }"
+        @confirm="modalConfirm"
+      ></u-modal>
     </view>
   </LoginPage>
 </template>
@@ -163,6 +181,8 @@ export default {
       fileList: [],
       noticeAttachmentList: [],
       isRecognize: false,
+      isShow: false,
+      downUrl: "",
     };
   },
   computed: {
@@ -184,6 +204,10 @@ export default {
         console.log(this.fileList);
       }
     },
+    handleShow() {
+      this.downUrl = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/download/${this.form.templateId}.pdf`;
+      this.isShow = true;
+    },
     handleGoto() {
       let url = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${this.form.templateId}.pdf`;
       // getApp().globalData.webViewSrc = `https://intapi.polyihome.com/sales-api/sales-document-cover/file/browse/601226638dff4d00080480c2.pdf`;
@@ -197,10 +221,20 @@ export default {
           var filePath = res.tempFilePath;
           uni.openDocument({
             filePath: filePath,
+            fileType: "pdf",
+            showMenu: true,
             success: function (res) {
               console.log("打开文档成功");
             },
           });
+        },
+      });
+    },
+    modalConfirm() {
+      uni.setClipboardData({
+        data: this.downUrl,
+        success: () => {
+          this.$tool.toast("复制成功, 请前往浏览器打开");
         },
       });
     },
