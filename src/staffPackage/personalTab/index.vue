@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-11-23 11:22:52
- * @LastEditors: zyc
- * @LastEditTime: 2021-01-09 16:08:02
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-01-28 16:21:17
 -->
 <template>
   <StaffTabBar>
@@ -19,7 +19,7 @@
           ></u-image>
         </view>
         <view>{{ userInfo.name }}</view>
-        <view>{{ userInfo.mobilePhone }}</view>
+        <view>{{ userInfo.orgName }}</view>
       </view>
       <view class="person-item-wrapper">
         <u-cell-group>
@@ -39,9 +39,11 @@
       </view>
 
       <view class="btn-container">
-        <u-button shape="circle" type="primary" @click="handleLoginOut"
-          >退出账号</u-button
-        >
+        <u-button
+          shape="circle"
+          type="primary"
+          @click="handleLoginOut"
+        >退出账号</u-button>
       </view>
     </view>
     <!-- 退出 -->

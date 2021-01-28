@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-27 20:30:15
+ * @LastEditTime: 2021-01-28 18:45:11
 -->
 <template>
   <LoginPage>
@@ -533,6 +533,7 @@ export default {
   },
   filters: {
     filterDict(type, data) {
+      console.log(data);
       const item = data.find((i) => i.code === type);
       return item ? item.name : "";
     },
@@ -861,6 +862,11 @@ export default {
         .map((val) => ({
           url: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${val.fileNo}`,
         }));
+      // 是不是自定义
+      if (info.promotionMethod === "Manual") {
+        this.isOther = true;
+        this.form.manner = "自定义";
+      }
       this.isRecognize = await getRecognizeById(info.cycleId);
       this.roomRules = {
         buyUnitName: [
@@ -942,7 +948,7 @@ export default {
   },
   async onLoad(option) {
     this.isSubmit = true;
-    this.distri = this.getDictList("ReviewStatus");
+    this.distri = await this.getDictList("ReviewStatus");
     if (option.id) {
       this.getInfo(option.id);
       uni.setNavigationBarTitle({
