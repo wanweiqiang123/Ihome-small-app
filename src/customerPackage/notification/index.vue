@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-30 10:23:11
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 15:16:36
+ * @LastEditTime: 2021-01-28 17:25:23
 -->
 <template>
   <LoginPage>
@@ -116,6 +116,7 @@ export default {
           noticeId: this.noticeId,
           templateId: this.templateId,
           notificationType: this.notificationType,
+          type: "one",
         };
         uni.navigateTo({
           url: `/customerPackage/attestation/index`,

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-15 18:08:02
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-22 09:04:33
+ * @LastEditTime: 2021-01-28 17:19:46
  */
 import { getApi, postApi } from '../common/http.js';
 
@@ -123,4 +123,8 @@ export async function getUnpaidOrderOrAmountPaidApi(data = {}, option = {}) {
 // 调该接口获取到已签署好的E签宝地址
 export async function getPreviewApi(data = {}, option = {}) {
   return await getApi(`/sales-api/contract/notice/preview/sign/${data}`, option)
+}
+// 客户合并签署
+export async function postSigningApi(data = {}, option = {}) {
+  return await postApi(`/sales-api/contract/notice/merge/signing`, data, option)
 }

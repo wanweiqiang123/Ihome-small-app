@@ -145,7 +145,13 @@
 				{
 					"path": "webView/index",
 					"style": {
-						"navigationBarTitleText": "E签宝"
+						"navigationBarTitleText": "web-view"
+					}
+				},
+				{
+					"path": "signMore/index",
+					"style": {
+						"navigationBarTitleText": "预览签署优惠告知书"
 					}
 				}
 			]
