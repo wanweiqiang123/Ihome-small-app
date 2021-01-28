@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-30 14:22:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-28 19:12:08
+ * @LastEditTime: 2021-01-28 19:23:58
 -->
 <template>
   <view style="padding-top: 100px">
@@ -64,7 +64,7 @@ export default {
           })
             .then((infoRes) => {
               console.log(infoRes.uuid, "uuid");
-              showToast({
+              uni.showToast({
                 title: res.code + "xx" + infoRes.uuid,
               });
               storageTool.setUUID(infoRes.uuid);
