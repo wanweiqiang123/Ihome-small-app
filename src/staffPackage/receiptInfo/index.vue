@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-19 15:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-27 19:43:05
+ * @LastEditTime: 2021-01-28 11:12:07
 -->
 <template>
   <view class="receipt info">
@@ -202,7 +202,7 @@
                   type="primary"
                   size="medium"
                   shape="circle"
-                  @click="gotoNotice(item)"
+                  @click="preview(item)"
                 >查看</u-button>
                 <u-button
                   v-if="item.notificationStatus === 'WaitBeSigned'"
@@ -324,7 +324,23 @@ export default {
         res.discountInformationResponseVo.cycleId
       );
     },
-    // 预览
+    // 查看预览
+    preview(val) {
+      let url = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${val.templateId}.pdf`;
+      uni.downloadFile({
+        url: url,
+        success: function (res) {
+          var filePath = res.tempFilePath;
+          uni.openDocument({
+            filePath: filePath,
+            success: function (res) {
+              console.log("打开文档成功");
+            },
+          });
+        },
+      });
+    },
+    // 转发预览
     gotoNotice(val) {
       if (val) {
         uni.navigateTo({

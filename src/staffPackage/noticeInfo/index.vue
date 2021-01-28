@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-18 11:38:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-28 10:22:02
+ * @LastEditTime: 2021-01-28 11:04:42
 -->
 <template>
   <LoginPage>
@@ -186,14 +186,23 @@ export default {
     },
     handleGoto() {
       let url = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${this.form.templateId}.pdf`;
-      getApp().globalData.webViewSrc = url;
-      console.log(url);
-      uni.navigateTo({
-        url: `/customerPackage/webView/index`,
-      });
+      // getApp().globalData.webViewSrc = `https://intapi.polyihome.com/sales-api/sales-document-cover/file/browse/601226638dff4d00080480c2.pdf`;
+      // console.log(url);
       // uni.navigateTo({
-      //   url: `/staffPackage/noticePreview/index?id=${this.form.id}&tId=${this.form.templateId}&type=${this.form.notificationType}&sign=${this.form.notificationStatus}`,
+      //   url: `/customerPackage/webView/index`,
       // });
+      uni.downloadFile({
+        url: url,
+        success: function (res) {
+          var filePath = res.tempFilePath;
+          uni.openDocument({
+            filePath: filePath,
+            success: function (res) {
+              console.log("打开文档成功");
+            },
+          });
+        },
+      });
     },
     beforeUpload() {
       uni.showToast({
