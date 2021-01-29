@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-19 18:44:57
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-29 19:20:29
+ * @LastEditTime: 2021-01-29 19:24:55
 -->
 <template>
   <view class="receipt">
@@ -72,7 +72,7 @@
             prop="amount"
           >
             <u-input
-              v-model="payNum"
+              v-model="form.amount"
               placeholder="请输入收款金额"
               disabled
               @click="keyBoardShow = true"
@@ -373,6 +373,7 @@ export default {
     const payData = { ...getApp().paidData };
     this.form.amount =
       (Number(payData.paymentAmount) - Number(payData.paid)).toFixed(2) + "";
+    this.payNum = this.form.amount;
   },
 };
 </script>
