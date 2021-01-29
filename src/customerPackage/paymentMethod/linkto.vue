@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 15:26:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-22 12:08:54
+ * @LastEditTime: 2021-01-29 16:03:08
 -->
 <template>
   <u-popup
@@ -62,7 +62,7 @@ export default {
   data() {
     return {
       url: "",
-      timer: "",
+      linkToTimer: "",
     };
   },
   watch: {
@@ -71,14 +71,15 @@ export default {
       handler(v) {
         if (v) {
           this.url = `${currentEnvConfig["protocol"]}://${currentEnvConfig["h5Domain"]}/sales-h5/${this.payType}?id=${this.payId}`;
-          this.timer = setInterval(this.getInfo, 3000);
+          if (this.linkToTimer) {
+            clearInterval(this.linkToTimer);
+            this.linkToTimer = null;
+          } else {
+            this.linkToTimer = setInterval(this.getInfo, 3000);
+          }
         }
       },
     },
-  },
-  // created() {},
-  destroyed() {
-    clearInterval(this.timer);
   },
   methods: {
     async getInfo() {
@@ -87,10 +88,11 @@ export default {
       });
       switch (item.status) {
         case "Paid":
-          uni.navigateTo({
+          this.close();
+          clearInterval(this.linkToTimer);
+          uni.redirectTo({
             url: `/customerPackage/paySuccess/index?id=${item.businessId}`,
           });
-          clearInterval(this.timer);
           break;
       }
     },

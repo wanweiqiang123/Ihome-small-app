@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 15:27:32
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-22 12:03:33
+ * @LastEditTime: 2021-01-29 16:01:27
 -->
 <template>
   <u-popup
@@ -54,7 +54,7 @@ export default {
   data() {
     return {
       url: "",
-      timer: "",
+      posTimer: null,
       payMsg: {
         transAmount: 0,
         billNo: "",
@@ -69,16 +69,17 @@ export default {
         if (v) {
           if (this.payId) {
             this.getInfo();
-            this.timer = setInterval(this.getStatus, 3000);
+            if (this.posTimer) {
+              clearInterval(this.posTimer);
+              this.posTimer = null;
+            } else {
+              this.posTimer = setInterval(this.getStatus, 3000);
+            }
           }
           this.PaymentStatus = await this.getDictAll("PaymentStatus");
         }
       },
     },
-  },
-  // async created() {},
-  destroyed() {
-    clearInterval(this.timer);
   },
   methods: {
     close() {
@@ -128,10 +129,10 @@ export default {
       switch (item.status) {
         case "Paid":
           this.close();
-          uni.navigateTo({
+          clearInterval(this.posTimer);
+          uni.redirectTo({
             url: `/customerPackage/paySuccess/index?id=${item.businessId}`,
           });
-          clearInterval(this.timer);
           break;
       }
     },

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-16 14:21:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-12 17:59:27
+ * @LastEditTime: 2021-01-29 15:52:43
 -->
 <template>
   <view class="success">

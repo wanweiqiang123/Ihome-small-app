@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 15:28:17
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-22 12:34:35
+ * @LastEditTime: 2021-01-29 15:17:58
 -->
 <template>
   <u-popup
@@ -78,6 +78,7 @@
       </view>
       <view class="my-btn">
         <u-button
+          :disabled="!uploadArr.length"
           type="primary"
           shape="square"
           @click="submitMsg"
