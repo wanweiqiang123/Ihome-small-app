@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-19 15:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-28 19:11:25
+ * @LastEditTime: 2021-01-29 10:10:02
 -->
 <template>
   <view class="receipt info">
@@ -27,8 +27,8 @@
           ></u-line-progress>
         </view>
         <view class="info-first-msg">
-          <view>已付{{info.discountInformationResponseVo.paid}}</view>
-          <view>应付{{info.discountInformationResponseVo.paymentAmount}}</view>
+          <view>已收{{info.discountInformationResponseVo.paid}}</view>
+          <view>应收{{info.discountInformationResponseVo.paymentAmount}}</view>
         </view>
         <!-- 信息待确认 -->
         <template v-if="info.notificationStatus === 'WaitDetermine'">
@@ -58,7 +58,7 @@
                 height="22"
                 color="#666666"
               ></u-icon>
-              <text>付款明细</text>
+              <text>收款明细</text>
             </view>
             <view
               v-if="payAuditNum"
@@ -72,7 +72,7 @@
               ></u-icon>
               <text class="text">有
                 <text style="color:#FF0000;padding: 0 5rpx">{{payAuditNum}}</text>
-                笔付款正在审核中
+                笔收款正在审核中
               </text>
             </view>
             <view class="info-first-btn">
@@ -106,6 +106,7 @@
           <template v-else>
             <view
               class="info-first-detail"
+              style="padding-top: 30rpx;"
               @click="payHistory(noticeId)"
             >
               <u-icon
@@ -114,7 +115,7 @@
                 height="22"
                 color="#666666"
               ></u-icon>
-              <text>付款明细</text>
+              <text>收款明细</text>
             </view>
             <view class="receipt-text success">收款完成，告知书已生效</view>
           </template>
