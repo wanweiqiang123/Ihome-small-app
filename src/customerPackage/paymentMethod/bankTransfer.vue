@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 15:28:17
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-29 15:17:58
+ * @LastEditTime: 2021-01-29 19:30:58
 -->
 <template>
   <u-popup
@@ -78,7 +78,6 @@
       </view>
       <view class="my-btn">
         <u-button
-          :disabled="!uploadArr.length"
           type="primary"
           shape="square"
           @click="submitMsg"
@@ -161,9 +160,9 @@ export default {
       this.uploadArr[index] = {
         fileId: lists[index].response.data[0].fileId,
         fileName:
-          lists[index].response.data[0].generateFileName +
+          lists[index].response?.data[0].generateFileName +
           "." +
-          lists[index].response.data[0].generateFileType,
+          lists[index].response?.data[0].generateFileType,
       };
     },
     beforeUpload() {
@@ -199,6 +198,10 @@ export default {
       if (this.addOrUpdate === "update") {
         obj.id = this.continueId;
       }
+      if (!this.uploadArr.length) {
+        this.$tool.toast("请上传转账凭证");
+        return;
+      }
       // 假数据
       // obj.groupId = 15;
       // obj.operator = 15;
@@ -208,10 +211,7 @@ export default {
         try {
           await postAddServiceApi(obj);
           this.buttonLoading = false;
-          uni.showToast({
-            title: "提交成功",
-            icon: "none",
-          });
+          this.$tool.toast("提交成功");
           this.close();
           uni.redirectTo({
             url: `/customerPackage/discountsInfo/index?id=${this.payData.businessId}`,
@@ -223,10 +223,7 @@ export default {
         try {
           await postPaymentupdateApi(obj);
           this.buttonLoading = false;
-          uni.showToast({
-            title: "提交成功",
-            icon: "none",
-          });
+          this.$tool.toast("提交成功");
           this.close();
           uni.redirectTo({
             url: `/customerPackage/discountsInfo/index?id=${this.payData.businessId}`,
