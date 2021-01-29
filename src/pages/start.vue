@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-30 14:22:01
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-29 09:33:41
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-01-29 14:52:08
 -->
 <template>
   <view style="padding-top: 100px">
@@ -50,7 +50,10 @@ export default {
   },
   onLoad() {
     let that = this;
-    that.wxLogin();
+    
+  },
+  onShow() {
+    this.wxLogin();
   },
 
   methods: {
