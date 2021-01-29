@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-19 18:44:57
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-23 15:41:18
+ * @LastEditTime: 2021-01-29 12:27:48
 -->
 <template>
   <view class="receipt">
@@ -72,7 +72,7 @@
             prop="amount"
           >
             <u-input
-              v-model="form.amount"
+              v-model="payNum"
               placeholder="请输入收款金额"
               disabled
               @click="keyBoardShow = true"
@@ -105,22 +105,6 @@
       @click="submit()"
     >提 交</u-button>
     <!-- 选择器 -->
-    <!-- <u-picker
-      mode="time"
-      v-model="isShow"
-      safe-area-inset-bottom
-      title="收款日期"
-      :show-time-tag="false"
-      :params="{
-        year: true,
-        month: true,
-        day: true,
-        hour: false,
-        minute: false,
-        second: false
-      }"
-      @confirm="timeConfirm"
-    ></u-picker> -->
     <u-select
       v-model="payeeShow"
       :list="payTypeList"
@@ -167,6 +151,7 @@ export default {
         attachments: [],
         amount: "",
       },
+      payNum: "",
       rules: {
         orderNo: [
           {
@@ -220,6 +205,17 @@ export default {
       keyBoardShow: false,
     };
   },
+  watch: {
+    payNum(v) {
+      const payData = { ...getApp().paidData };
+      let maxNum = (
+        Number(payData.paymentAmount) - Number(payData.paid)
+      ).toFixed(2);
+      if (Number(v) > Number(maxNum)) {
+        this.payNum = maxNum + "";
+      }
+    },
+  },
   methods: {
     // handleShowTime(bool) {
     //   if (!bool) {
@@ -230,24 +226,21 @@ export default {
     //   this.form.name = `${val.year}-${val.month}-${val.day}`;
     // },
     backspace() {
-      if (this.form.amount.length) {
-        this.form.amount = this.form.amount.substr(
-          0,
-          this.form.amount.length - 1
-        );
+      if (this.payNum.length) {
+        this.payNum = this.payNum.substr(0, this.payNum.length - 1);
       }
     },
     keyChange(e) {
       console.log(e);
-      if (this.form.amount?.includes(".")) {
+      if (this.payNum?.includes(".")) {
         if (e != ".") {
-          let arr = this.form.amount.split(".");
+          let arr = this.payNum.split(".");
           if (arr[1].length < 2) {
-            this.form.amount += e;
+            this.payNum += e;
           }
         }
       } else {
-        this.form.amount += e;
+        this.payNum += e;
       }
     },
     payeeConfirm(val) {
@@ -337,7 +330,12 @@ export default {
             }
             let data =
               this.form.payType === "Transfer"
-                ? { ...params, ...this.form, ...this.backInfo }
+                ? {
+                    ...params,
+                    ...this.form,
+                    ...this.backInfo,
+                    amount: this.payNum,
+                  }
                 : { ...params, ...this.form };
             await postAddPayServe(data);
             this.$tool.toast("提交成功");
@@ -361,6 +359,11 @@ export default {
   async onLoad() {
     let list = await this.getDictName("PayType");
     this.payTypeList = list.filter((i) => i.tag.includes("Staff"));
+  },
+  onShow() {
+    const payData = { ...getApp().paidData };
+    this.payNum =
+      (Number(payData.paymentAmount) - Number(payData.paid)).toFixed(2) + "";
   },
 };
 </script>
