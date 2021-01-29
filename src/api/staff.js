@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-10 15:30:58
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-28 19:04:26
+ * @LastEditTime: 2021-01-29 16:40:35
  */
 import { getApi, postApi } from '../common/http.js';
 
@@ -200,4 +200,13 @@ export async function paymentdeleteApi(data = {}, option = {}) {
  */
 export async function getNotCheckListApi(data = {}, option = {}) {
   return await getApi(`/sales-api/finance/payment/getNotCheckList/${data}`, option)
+}
+/**
+ * @description: 调该接口获取到已签署好的E签宝地址
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function getPreviewApi(data = {}, option = {}) {
+  return await getApi(`/sales-api/contract/notice/preview/sign/${data}`, option)
 }

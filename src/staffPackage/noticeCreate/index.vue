@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-29 15:17:00
+ * @LastEditTime: 2021-01-29 18:47:02
 -->
 <template>
   <LoginPage>
@@ -543,7 +543,6 @@ export default {
   },
   filters: {
     filterDict(type, data) {
-      console.log(data);
       const item = data.find((i) => i.code === type);
       return item ? item.name : "";
     },
@@ -603,7 +602,7 @@ export default {
         this.form.promotionMethod = "Manual";
         this.form.manner = item.label;
         this.form.explain = null;
-        this.form.paymentAmount = null;
+        this.form.paymentAmount = "";
       } else {
         this.isOther = false;
         this.form.promotionMethod = "Automatic";
@@ -847,7 +846,7 @@ export default {
         promotionMethod: info.promotionMethod,
         manner: info.explain,
         explain: info.explain,
-        paymentAmount: info.paymentAmount,
+        paymentAmount: info.paymentAmount + "",
         buyUnit: info.buyUnit,
         buyUnitName: info.buyUnitName || "",
         roomNumberId: info.roomNumberId,
@@ -877,7 +876,11 @@ export default {
         this.isOther = true;
         this.form.manner = "自定义";
       }
-      this.isRecognize = await getRecognizeById(info.cycleId);
+      try {
+        this.isRecognize = await getRecognizeById(info.cycleId);
+      } catch (error) {
+        console.log(error);
+      }
       this.roomRules = {
         buyUnitName: [
           {

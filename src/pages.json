@@ -63,6 +63,12 @@
 			"style": {
 				"navigationBarTitleText": "搜索"
 			}
+		},
+		{
+			"path": "pages/webView/preview/index",
+			"style": {
+				"navigationBarTitleText": "预览"
+			}
 		}
 	],
 	"subPackages": [
@@ -140,12 +146,6 @@
 					"path": "attestation/index",
 					"style": {
 						"navigationBarTitleText": "认证信息"
-					}
-				},
-				{
-					"path": "webView/index",
-					"style": {
-						"navigationBarTitleText": "web-view"
 					}
 				},
 				{

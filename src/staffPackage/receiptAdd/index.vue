@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-19 18:44:57
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-29 12:27:48
+ * @LastEditTime: 2021-01-29 19:24:55
 -->
 <template>
   <view class="receipt">
@@ -72,7 +72,7 @@
             prop="amount"
           >
             <u-input
-              v-model="payNum"
+              v-model="form.amount"
               placeholder="请输入收款金额"
               disabled
               @click="keyBoardShow = true"
@@ -212,7 +212,7 @@ export default {
         Number(payData.paymentAmount) - Number(payData.paid)
       ).toFixed(2);
       if (Number(v) > Number(maxNum)) {
-        this.payNum = maxNum + "";
+        this.form.amount = maxNum + "";
       }
     },
   },
@@ -226,35 +226,45 @@ export default {
     //   this.form.name = `${val.year}-${val.month}-${val.day}`;
     // },
     backspace() {
-      if (this.payNum.length) {
-        this.payNum = this.payNum.substr(0, this.payNum.length - 1);
+      if (this.form.amount.length) {
+        this.form.amount = this.form.amount.substr(
+          0,
+          this.form.amount.length - 1
+        );
       }
     },
     keyChange(e) {
-      console.log(e);
-      if (this.payNum?.includes(".")) {
+      if (this.form.amount?.includes(".")) {
         if (e != ".") {
-          let arr = this.payNum.split(".");
+          let arr = this.form.amount.split(".");
           if (arr[1].length < 2) {
-            this.payNum += e;
+            this.form.amount += e;
           }
         }
       } else {
-        this.payNum += e;
+        this.form.amount += e;
       }
     },
     payeeConfirm(val) {
       let item = val[0];
       this.form.payTypeName = item.label;
       this.form.payType = item.value;
-      Object.assign(this.form, {
-        orderNo: "",
-        payTime: "",
-        attachments: [],
-        amount: "",
-      });
+
       if (item.value === "Transfer") {
         this.getBank();
+        Object.assign(this.form, {
+          orderNo: "",
+          payTime: "",
+          attachments: [],
+          amount: this.payNum,
+        });
+      } else {
+        Object.assign(this.form, {
+          orderNo: "",
+          payTime: "",
+          attachments: [],
+          amount: "",
+        });
       }
     },
     async getBank() {
@@ -334,7 +344,6 @@ export default {
                     ...params,
                     ...this.form,
                     ...this.backInfo,
-                    amount: this.payNum,
                   }
                 : { ...params, ...this.form };
             await postAddPayServe(data);
@@ -362,8 +371,9 @@ export default {
   },
   onShow() {
     const payData = { ...getApp().paidData };
-    this.payNum =
+    this.form.amount =
       (Number(payData.paymentAmount) - Number(payData.paid)).toFixed(2) + "";
+    this.payNum = this.form.amount;
   },
 };
 </script>
