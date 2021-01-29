@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-30 14:22:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-28 19:34:55
+ * @LastEditTime: 2021-01-29 09:33:41
 -->
 <template>
   <view style="padding-top: 100px">
@@ -63,7 +63,6 @@ export default {
             hideLoading: true,
           })
             .then((infoRes) => {
-              console.log(infoRes.uuid, "xxxxxxx");
               storageTool.setUUID(infoRes.uuid);
             })
             .catch((err) => {

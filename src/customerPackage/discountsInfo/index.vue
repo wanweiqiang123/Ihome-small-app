@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-28 18:14:15
+ * @LastEditTime: 2021-01-29 10:47:48
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -463,11 +463,20 @@ export default {
         case "BecomeEffective":
         case "Invalidation":
           let url = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${val.templateId}`;
-          getApp().globalData.webViewSrc = url;
-          uni.navigateTo({
-            url: `/customerPackage/webView/index`,
+          uni.downloadFile({
+            url: url,
+            success: function (res) {
+              var filePath = res.tempFilePath;
+              uni.openDocument({
+                filePath: filePath,
+                fileType: "pdf",
+                showMenu: true,
+                success: function (res) {
+                  console.log("打开文档成功");
+                },
+              });
+            },
           });
-          break;
       }
     },
     async gotoPay(obj) {
