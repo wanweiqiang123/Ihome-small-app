@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2021-01-28 15:50:48
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-28 18:11:22
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-01-29 17:06:24
 -->
 <template>
   <view class="signmore">
@@ -102,7 +102,7 @@ export default {
       } else {
         getApp().globalData.webViewSrc = res.signedAddress;
         uni.navigateTo({
-          url: `/customerPackage/webView/index`,
+          url: `/pages/webView/preview/index`,
         });
       }
     },

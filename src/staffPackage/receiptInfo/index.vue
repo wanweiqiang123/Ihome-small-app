@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-19 15:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-29 10:10:02
+ * @LastEditTime: 2021-01-29 17:04:37
 -->
 <template>
   <view class="receipt info">
@@ -274,12 +274,13 @@
 </template>
 
 <script>
-import { getAllByTypeApi } from "../../api/index";
 import { currentEnvConfig } from "../../env-config.js";
+import { getAllByTypeApi } from "../../api/index";
 import {
   getWechatNoticeInfoApi,
   getNotCheckNumApi,
   getRecognizeById,
+  getPreviewApi,
 } from "../../api/staff";
 
 export default {
@@ -363,11 +364,25 @@ export default {
       });
     },
     // 转发预览
-    gotoNotice(val) {
+    async gotoNotice(val) {
       if (val) {
-        uni.navigateTo({
-          url: `/staffPackage/noticePreview/index?id=${val.id}&tId=${val.templateId}&type=${val.notificationType}&sign=${val.notificationStatus}`,
-        });
+        switch (val.notificationStatus) {
+          case "WaitPay":
+          case "WaitReview":
+            const res = await getPreviewApi(this.noticeId);
+            if (res) {
+              getApp().globalData.webViewSrc = res;
+              uni.navigateTo({
+                url: `/pages/webView/preview/index`,
+              });
+            }
+            break;
+          default:
+            uni.navigateTo({
+              url: `/staffPackage/noticePreview/index?id=${val.id}&tId=${val.templateId}&type=${val.notificationType}&sign=${val.notificationStatus}`,
+            });
+            break;
+        }
       }
     },
     handleGoto(val) {

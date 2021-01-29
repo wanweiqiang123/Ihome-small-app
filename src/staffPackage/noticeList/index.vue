@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-27 11:21:43
+ * @LastEditTime: 2021-01-29 16:56:02
 -->
 <template>
   <LoginPage>
@@ -307,13 +307,24 @@ export default {
             });
           } else {
             let url = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${item.templateId}`;
-            getApp().globalData.webViewSrc = url;
-            uni.navigateTo({
-              url: `/customerPackage/webView/index`,
-            });
+            // getApp().globalData.webViewSrc = url;
             // uni.navigateTo({
-            //   url: `/staffPackage/noticePreview/index?id=${item.id}&tId=${item.templateId}&type=${item.notificationType}&sign=${item.notificationStatus}`,
+            //   url: `/customerPackage/webView/index`,
             // });
+            uni.downloadFile({
+              url: url,
+              success: function (res) {
+                var filePath = res.tempFilePath;
+                uni.openDocument({
+                  filePath: filePath,
+                  fileType: "pdf",
+                  showMenu: true,
+                  success: function (res) {
+                    console.log("打开文档成功");
+                  },
+                });
+              },
+            });
           }
           break;
         default:

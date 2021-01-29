@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-29 10:47:48
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-01-29 17:03:57
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -456,7 +456,7 @@ export default {
           if (res) {
             getApp().globalData.webViewSrc = res;
             uni.navigateTo({
-              url: `/customerPackage/webView/index`,
+              url: `/pages/webView/preview/index`,
             });
           }
           break;
