@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-28 18:45:11
+ * @LastEditTime: 2021-01-29 15:17:00
 -->
 <template>
   <LoginPage>
@@ -386,7 +386,11 @@
 </template>
 
 <script>
-import { phoneValidator, validIdentityCard } from "../../common/validate.js";
+import {
+  phoneValidator,
+  validIdentityCard,
+  noTrim,
+} from "../../common/validate.js";
 import { currentEnvConfig } from "../../env-config.js";
 import storageTool from "../../common/storageTool.js";
 import { getAllByTypeApi } from "../../api/index.js";
@@ -448,6 +452,12 @@ export default {
         ],
         paymentAmount: [
           { required: true, message: "请输入服务费金额", trigger: "change" },
+          { validator: noTrim, trigger: "change" },
+          {
+            pattern: /^\d+$|^\d*\.\d+$/g,
+            message: "金额只能输入数字和小数点",
+            trigger: "change",
+          },
         ],
       },
       roomRules: {

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-29 15:58:19
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-20 10:19:46
+ * @LastEditTime: 2021-01-29 14:53:25
 -->
 <template>
   <view class="page login-page-style">
@@ -224,6 +224,7 @@ import {
   postSessionUserSendSmsApi,
   postGetPhoneNumberApi,
 } from "../../../api/index";
+import { getOpenidApi } from "../../../api/customer";
 import storageTool from "../../../common/storageTool";
 import tool from "../../../common/tool";
 export default {
@@ -267,8 +268,32 @@ export default {
     this.redirect = options.redirect || null;
     console.log("this.redirect", this.redirect);
   },
+  onShow() {
+    console.log("login,onShow");
+    this.wxLogin();
+  },
 
   methods: {
+    wxLogin() {
+      uni.login({
+        success: async (res) => {
+          console.log(res);
+          getOpenidApi(res.code, {
+            hideLoading: true,
+          })
+            .then((infoRes) => {
+              storageTool.setUUID(infoRes.uuid);
+            })
+            .catch((err) => {
+              uni.showToast({
+                title: "[启动异常,请重新进入小程序]" + err.msg,
+                icon: "none",
+                duration: 3000,
+              });
+            });
+        },
+      });
+    },
     otherLogin(type) {
       console.log(type);
       this.loginWechat = type;
