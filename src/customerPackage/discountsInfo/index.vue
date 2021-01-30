@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
- * @LastEditors: ywl
- * @LastEditTime: 2021-01-29 17:03:57
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-30 17:57:10
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -175,15 +175,15 @@
             v-for="(item, i) in info.purchaseInformation.ownerWeChatList"
             :key="i"
           >
-            <view class="swiper-item-title">{{ `业主${i + 1}` }}</view>
+            <view class="swiper-item-title">{{  `${getDictName(info.ownerType, OwnerType)}${i + 1}` }}</view>
             <view class="swiper-item-msg">
-              <view class="swiper-item-detail">姓名
+              <view class="swiper-item-detail">{{info.ownerType === 'Personal' ? '业主姓名' : '公司名称'}}
                 <text class="swiper-item-name">{{ item.ownerName }}</text>
               </view>
               <view
                 class="swiper-item-detail"
                 style="padding-top: 20rpx"
-              >身份证号
+              >{{info.ownerType === 'Personal' ? '身份证号' : '经办人号码'}}
                 <text class="swiper-item-identity">{{
                   item.ownerCertificateNo
                 }}</text>
@@ -191,7 +191,7 @@
               <view
                 class="swiper-item-detail"
                 style="padding-top: 20rpx"
-              >手机号码
+              >{{info.ownerType === 'Personal' ? '手机号' : '营业执照编号'}}
                 <text class="swiper-item-phone">{{ item.ownerMobile }}</text>
               </view>
             </view>
@@ -355,6 +355,7 @@ export default {
       NotificationType: [],
       NotificationStatus: [],
       PayOpenFlag: [],
+      OwnerType: [],
       isShowPayButton: false,
     };
   },
@@ -368,6 +369,7 @@ export default {
     this.NotificationType = await this.getDictAll("NotificationType");
     this.NotificationStatus = await this.getDictAll("NotificationStatus");
     this.Property = await this.getDictAll("Property");
+    this.OwnerType = await this.getDictAll("ownerType");
     this.PayOpenFlag = await this.getDictAll("PayOpenFlag");
     this.configPay = this.PayOpenFlag.find((v) => v.code === "OpenFlag").tag;
   },
