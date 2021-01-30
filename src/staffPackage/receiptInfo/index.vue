@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-19 15:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-29 17:04:37
+ * @LastEditTime: 2021-01-30 18:04:42
 -->
 <template>
   <view class="receipt info">
@@ -148,21 +148,21 @@
             v-for="(item, i) in info.purchaseInformation.ownerWeChatList"
             :key="i"
           >
-            <view class="swiper-item-title">{{`业主${i+1}`}}</view>
+            <view class="swiper-item-title">{{`${getDictName(info.ownerType, OwnerType)}${info.purchaseInformation.ownerWeChatList.length >= 1 ? '' : i+1}`}}</view>
             <view class="swiper-item-msg">
-              <view class="swiper-item-detail">姓名
+              <view class="swiper-item-detail">{{info.ownerType === 'Personal' ? '姓名' : '公司名称'}}
                 <text class="swiper-item-name">{{item.ownerName}}</text>
               </view>
               <view
                 class="swiper-item-detail"
                 style="padding-top: 20rpx"
-              >身份证号
+              >{{info.ownerType === 'Personal' ? '身份证号' : '营业执照编号'}}
                 <text class="swiper-item-identity">{{item.ownerCertificateNo}}</text>
               </view>
               <view
                 class="swiper-item-detail"
                 style="padding-top: 20rpx"
-              >手机号码
+              >{{info.ownerType === 'Personal' ? '手机号码' : '经办人号码'}}
                 <text class="swiper-item-phone">{{item.ownerMobile}}</text>
               </view>
             </view>
@@ -294,6 +294,7 @@ export default {
         purchaseInformation: {},
         reviewStatus: "",
         notificationStatus: "",
+        ownerType: "",
       },
       current: 0,
       currents: 0,
@@ -303,6 +304,7 @@ export default {
       Property: [],
       NotificationType: [],
       NotificationStatus: [],
+      OwnerType: [],
       isRecognize: false,
     };
   },
@@ -347,6 +349,7 @@ export default {
     },
     // 查看预览
     preview(val) {
+      console.log(val);
       let url = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${val.templateId}.pdf`;
       uni.downloadFile({
         url: url,
@@ -429,6 +432,7 @@ export default {
     this.NotificationType = await this.getDictAll("NotificationType");
     this.NotificationStatus = await this.getDictAll("NotificationStatus");
     this.Property = await this.getDictAll("Property");
+    this.OwnerType = await this.getDictAll("OwnerType");
   },
   async onShow() {
     if (this.noticeId) {
