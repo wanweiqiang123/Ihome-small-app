@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-19 18:44:57
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-29 19:24:55
+ * @LastEditTime: 2021-01-29 19:32:35
 -->
 <template>
   <view class="receipt">
@@ -368,12 +368,14 @@ export default {
   async onLoad() {
     let list = await this.getDictName("PayType");
     this.payTypeList = list.filter((i) => i.tag.includes("Staff"));
-  },
-  onShow() {
     const payData = { ...getApp().paidData };
     this.form.amount =
       (Number(payData.paymentAmount) - Number(payData.paid)).toFixed(2) + "";
-    this.payNum = this.form.amount;
+  },
+  onShow() {
+    const payData = { ...getApp().paidData };
+    this.payNum =
+      (Number(payData.paymentAmount) - Number(payData.paid)).toFixed(2) + "";
   },
 };
 </script>
