@@ -14,7 +14,7 @@
         <view>{{companyInfo.name}}</view>
         <view>
           （{{companyInfo.shortName}}）
-          <u-tag text="审核中" mode="dark" size="mini" type="error"/>
+          <u-tag :text="companyInfo.statusName" mode="dark" size="mini" type="error"/>
         </view>
       </view>
       <view class="btn-wrapper" @click="editCompanyInfo" v-if="['DRAFT', 'ToBeConfirmed'].includes(companyInfo.status)">
@@ -91,7 +91,7 @@
       </view>
       <view class="info-item">
         <view class="form-title u-border-bottom">公司备注</view>
-        <view class="remark">{{companyInfo.remark ? companyInfo.remark : ""}}</view>
+        <view class="remark">{{companyInfo.remark ? companyInfo.remark : '暂无'}}</view>
       </view>
       <view class="info-item">
         <view class="form-title u-border-bottom form-count">
@@ -148,6 +148,7 @@
       return {
         userInfo: null,
         companyInfo: {
+          statusName: null, // 状态
           channelBanks: []
         }, // 公司基本信息
         channelPersons: {}, // 负责人信息

@@ -146,13 +146,16 @@
           <view
             class="bank-item"
             v-for="(item, index) in bankList" :key="index"
-            @click="handleSelectBank(item)">{{item.bankName}}</view>
+            @click="handleSelectBank(item)">{{item.branchName}}</view>
           <u-divider v-if="isMore" :fontSize="30" :margin-top="30" half-width="100%">没有更多了</u-divider>
         </scroll-view>
       </view>
     </u-popup>
     <u-modal
       @confirm="handleDelete"
+      @cancel="showDeleteWin = false"
+      :mask-close-able="true"
+      :show-cancel-button="true"
       v-model="showDeleteWin" content="您确定要删除此项吗？"></u-modal>
   </view>
 </template>
@@ -277,7 +280,7 @@ export default {
       showBank: false,
       queryPageParameters: {
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 20,
         bankName: null
       },
       bankList: [],
@@ -299,8 +302,8 @@ export default {
       currentUploadType: null, // 上传的附件类型
       showActionShow: false,
       showDeleteWin: false,
-      deleteIndex: '',
-      deleteItem: '',
+      deleteIndex: null,
+      deleteItem: null,
       showCompanyType: false, // 公司类型
       companyTypeList: []
     };

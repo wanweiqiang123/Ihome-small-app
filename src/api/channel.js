@@ -55,9 +55,14 @@ export async function getChannelInfo(id = '', data = {}, option = {}) {
   return await getApi(`/sales-api/channel/channel/get/${id}`, data, option);
 }
 
+// 修改渠道商公司信息
+export async function editChannelInfo(data = {}, option = {}) {
+  return await postApi('/sales-api/channel/channel/edit', data, option);
+}
+
 // 渠道商公司状态变为草稿
 export async function backToDraft(id = '', data = {}, option = {}) {
-  return await getApi(`/sales-api/channel/channel/backToDraft/${id}`, data, option);
+  return await postApi(`/sales-api/channel/channel/backToDraft/${id}`, data, option);
 }
 
 // 获取推荐的项目列表
