@@ -365,7 +365,8 @@
 				{
 					"path": "reportConfirm/index",
 					"style": {
-						"navigationBarTitleText": "报备确认页"
+						"navigationBarTitleText": "报备确认页",
+						"enablePullDownRefresh": true
 					}
 				},
 				{
