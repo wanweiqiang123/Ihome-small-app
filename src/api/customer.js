@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-15 18:08:02
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-28 17:19:46
+ * @LastEditTime: 2021-02-01 09:27:34
  */
 import { getApi, postApi } from '../common/http.js';
 
@@ -58,7 +58,7 @@ export async function getNotCheckListApi(data = {}, option = {}) {
 }
 // 删除付款记录
 export async function paymentdeleteApi(data = {}, option = {}) {
-  return await postApi(`/sales-api/finance/payment/delete/${data}`, option)
+  return await postApi(`/sales-api/finance/payment/appDelete/${data}`, option)
 }
 // 查询收款信息列表数据
 export async function getAppListApi(data = {}, option = {}) {
