@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-19 15:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-30 18:04:42
+ * @LastEditTime: 2021-02-01 09:38:38
 -->
 <template>
   <view class="receipt info">
@@ -349,22 +349,36 @@ export default {
     },
     // 查看预览
     preview(val) {
-      console.log(val);
-      let url = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${val.templateId}.pdf`;
-      uni.downloadFile({
-        url: url,
-        success: function (res) {
-          var filePath = res.tempFilePath;
-          uni.openDocument({
-            filePath: filePath,
-            fileType: "pdf",
-            showMenu: true,
-            success: function (res) {
-              console.log("打开文档成功");
-            },
+      if (val.templateType === "ElectronicTemplate") {
+        let url = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${val.templateId}.pdf`;
+        uni.downloadFile({
+          url: url,
+          success: function (res) {
+            var filePath = res.tempFilePath;
+            uni.openDocument({
+              filePath: filePath,
+              fileType: "pdf",
+              showMenu: true,
+              success: function (res) {
+                console.log("打开文档成功");
+              },
+            });
+          },
+        });
+      } else {
+        if (val.noticeAttachmentList.length) {
+          let preList = val.noticeAttachmentList.map(
+            (i) =>
+              `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${i.fileNo}`
+          );
+          uni.previewImage({
+            urls: preList,
+            current: 1,
           });
-        },
-      });
+        } else {
+          this.$tool.toast("附件为空");
+        }
+      }
     },
     // 转发预览
     async gotoNotice(val) {
