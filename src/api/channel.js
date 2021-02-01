@@ -3,8 +3,8 @@
  * @version:
  * @Author: lsj
  * @Date: 2020-12-15 10:10:10
- * @LastEditors: lsj
- * @LastEditTime: 2020-12-15 16:30:30
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-01 11:27:54
  */
 import { getApi, postApi } from '@/common/http';
 import { currentEnvConfig } from '@/env-config';
@@ -16,7 +16,7 @@ export function getImgUrl(id = '') {
 }
 
 // 渠道公司注册 --- 获取临时token
-export async function getTempToken(code = '',data = {}, option = {}) {
+export async function getTempToken(code = '', data = {}, option = {}) {
   return await getApi(`/sales-api/system/wx/getTemporaryToken/${code}`, data, option);
 }
 
@@ -76,6 +76,11 @@ export async function addCustomer(data = {}, option = {}) {
 }
 
 // 客户 --- 查看客户
-export async function getCustomerById(id= '' , data = {}, option = {}) {
+export async function getCustomerById(id = '', data = {}, option = {}) {
   return await getApi(`/sales-api/customer/reportCustomer/get/${id}`, data, option);
+}
+
+// 收藏或者取消项目
+export async function addOrUpdateApi(data = {}, option = {}) {
+  return await postApi('/sales-api/customer/collect/addOrUpdate', data, option);
 }

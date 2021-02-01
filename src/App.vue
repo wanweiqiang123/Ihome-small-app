@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-28 16:03:42
+ * @LastEditTime: 2021-02-01 10:44:02
 -->
 <script>
 export default {
@@ -27,6 +27,7 @@ export default {
     searchBackData: null, // 搜索返回数据
     bankTransferData: null, // 银行转账数据
     signMoreData: [], // 合并签署
+    viewHomeDetail: [], //查看楼盘信息
     userType: null,
     webViewSrc: null,
     tabList: [

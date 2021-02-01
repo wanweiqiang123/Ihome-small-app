@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-12 10:53:18
- * @LastEditors: zyc
- * @LastEditTime: 2020-11-12 15:45:27
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-01 09:31:48
 -->
 <template>
   <view>
@@ -37,14 +37,14 @@ let tablePage = [
     text: "客户",
     customIcon: false,
   },
-  {
-    pagePath: "/channelPackage/messageTab/index",
-    iconPath: "chat",
-    selectedIconPath: "chat-fill",
-    count: 2,
-    text: "消息",
-    customIcon: false,
-  },
+  // {
+  //   pagePath: "/channelPackage/messageTab/index",
+  //   iconPath: "chat",
+  //   selectedIconPath: "chat-fill",
+  //   count: 2,
+  //   text: "消息",
+  //   customIcon: false,
+  // },
   {
     pagePath: "/channelPackage/myTab/index",
     iconPath: "account",
