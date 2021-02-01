@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-11 16:41:45
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-13 15:06:13
+ * @LastEditTime: 2021-02-01 09:38:19
  */
 export default {
     data() {
@@ -56,6 +56,7 @@ export default {
      * @return {*}
      */
     onReachBottom() {
+        console.log('onReachBottom')
         if (this.tableTotal <= this.tablePage.length) return;
         this.status = "loading";
         this.queryPageParameters.pageNum++;
@@ -66,6 +67,7 @@ export default {
      * @return {*}
      */
     onPullDownRefresh() {
+        console.log('onPullDownRefresh')
         this.initMIxin();
     },
     onShow() {

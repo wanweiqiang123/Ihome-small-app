@@ -4,10 +4,10 @@
  * @Author: zyc
  * @Date: 2020-10-09 14:38:31
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-13 15:00:01
+ * @LastEditTime: 2021-02-01 09:35:10
 -->
 <template>
-  <TabBarPage>
+  <TabBarPage> 
     <view class="page">
       <view class="top">
         <u-input
