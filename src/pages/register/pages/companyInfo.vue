@@ -158,7 +158,7 @@
 </template>
 
 <script>
-import { getAreaList, getDictByType, getBankBranchList, channelRegister } from '@/api/channel';
+import { getAreaList, getDictByType, getBankBranchList, channelRegister, channelCheckSetupTime } from '@/api/channel';
 import { validIdentityCard } from '@/common/validate';
 import { getImgUrl } from '@/api/channel';
 import { currentEnvConfig } from '@/env-config';
@@ -183,6 +183,23 @@ export default {
     }
   },
   data() {
+    const validSetupTime = async (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请选择成立日期！'));
+      } else {
+        try {
+          let flag = await channelCheckSetupTime({ setupTime: value });
+          if (flag) {
+            callback();
+          } else {
+            callback(new Error("成立时间必须大于三个月"));
+          }
+        } catch (error) {
+          callback();
+          console.log(error);
+        }
+      }
+    };
     return {
       pdfImg: require('@/channelPackage/common/img/pdf.jpg'),
       excelImg: require('@/channelPackage/common/img/excel.png'),
@@ -221,7 +238,7 @@ export default {
           { validator: validIdentityCard, trigger: ['blur'] }
         ],
         setupTime: [
-          { required: true, message: '请选择成立日期', trigger: ['blur', 'change'] }
+          { validator: validSetupTime, trigger: ['blur', 'change'] }
         ],
         capital: [
           { required: true, message: '请输入注册资本', trigger: ['blur'] }

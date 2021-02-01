@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-10 10:09:50
- * @LastEditors: zyc
- * @LastEditTime: 2021-01-13 15:01:01
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-01 14:47:07
  */
 
 import { getApi, postApi } from '../common/http.js';
@@ -158,4 +158,8 @@ export async function postBankBranchApi(data, option = {}) {
     return await postApi('/sales-api/finance/bankBranch/getList', data, option)
 }
 
+/**查询客户池列表*/
+export async function postReportCustomerApi(data, option = {}) {
+    return await postApi('/sales-api/customer/reportCustomer/getList', data, option)
+}
 

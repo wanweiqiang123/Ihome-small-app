@@ -3,8 +3,8 @@
  * @version:
  * @Author: lsj
  * @Date: 2020-12-15 10:10:10
- * @LastEditors: lsj
- * @LastEditTime: 2020-12-15 16:30:30
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-01 18:26:08
  */
 import { getApi, postApi } from '@/common/http';
 import { currentEnvConfig } from '@/env-config';
@@ -16,7 +16,7 @@ export function getImgUrl(id = '') {
 }
 
 // 渠道公司注册 --- 获取临时token
-export async function getTempToken(code = '',data = {}, option = {}) {
+export async function getTempToken(code = '', data = {}, option = {}) {
   return await getApi(`/sales-api/system/wx/getTemporaryToken/${code}`, data, option);
 }
 
@@ -43,6 +43,11 @@ export async function getDictByType(data = {}, option = {}) {
 // 渠道公司注册 --- 注册
 export async function channelRegister(data = {}, option = {}) {
   return await postApi('/sales-api/channel/channelRegistUser/regist', data, option);
+}
+
+// 渠道公司注册 --- 检查成立时间是否大于等于三个月
+export async function channelCheckSetupTime(data = {}, option = {}) {
+  return await getApi('/sales-api/channel/channel/checkSetupTime', data, option);
 }
 
 // 获取渠道商公司信息
@@ -76,6 +81,46 @@ export async function addCustomer(data = {}, option = {}) {
 }
 
 // 客户 --- 查看客户
-export async function getCustomerById(id= '' , data = {}, option = {}) {
+export async function getCustomerById(id = '', data = {}, option = {}) {
   return await getApi(`/sales-api/customer/reportCustomer/get/${id}`, data, option);
+}
+
+
+
+//客户管理-我的收藏管理
+
+/** 收藏或者取消项目
+ * @param {*} data
+ * @param {*} option
+ * @return {*}
+ */
+export async function postCollectAddOrUpdateApi(data = {}, option = {}) {
+  return await postApi(`/sales-api/customer/collect/addOrUpdate`, data, option);
+}
+/** 批量取消项目收藏
+ * @param {*} data
+ * @param {*} option
+ * @return {*}
+ */
+export async function postCollectBatchUpdateApi(data = {}, option = {}) {
+  return await postApi(`/sales-api/customer/collect/BatchUpdate`, data, option);
+}
+
+/** 查询项目收藏列表
+ * @param {*} data
+ * @param {*} option
+ * @return {*}
+ */
+export async function postCollectGetList(data = {}, option = {}) {
+  return await postApi(`/sales-api/customer/collect/getList`, data, option);
+}
+
+// 收藏或者取消项目
+export async function addOrUpdateApi(data = {}, option = {}) {
+  return await postApi('/sales-api/customer/collect/addOrUpdate', data, option);
+}
+
+// 新增客户报备
+export async function postReportApi(data = {}, option = {}) {
+  return await postApi('/sales-api/customer/report/add', data, option);
 }
