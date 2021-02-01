@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-15 10:10:10
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-01 11:27:54
+ * @LastEditTime: 2021-02-01 15:32:47
  */
 import { getApi, postApi } from '@/common/http';
 import { currentEnvConfig } from '@/env-config';
@@ -83,4 +83,9 @@ export async function getCustomerById(id = '', data = {}, option = {}) {
 // 收藏或者取消项目
 export async function addOrUpdateApi(data = {}, option = {}) {
   return await postApi('/sales-api/customer/collect/addOrUpdate', data, option);
+}
+
+// 新增客户报备
+export async function postReportApi(data = {}, option = {}) {
+  return await postApi('/sales-api/customer/report/add', data, option);
 }
