@@ -45,6 +45,11 @@ export async function channelRegister(data = {}, option = {}) {
   return await postApi('/sales-api/channel/channelRegistUser/regist', data, option);
 }
 
+// 渠道公司注册 --- 检查成立时间是否大于等于三个月
+export async function channelCheckSetupTime(data = {}, option = {}) {
+  return await getApi('/sales-api/channel/channel/checkSetupTime', data, option);
+}
+
 // 获取渠道商公司信息
 export async function getChannelInfo(id = '', data = {}, option = {}) {
   return await getApi(`/sales-api/channel/channel/get/${id}`, data, option);
