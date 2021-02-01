@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:53:18
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-12 15:45:27
+ * @LastEditTime: 2021-02-01 14:49:08
 -->
 <template>
   <view>
@@ -24,31 +24,31 @@
 let tablePage = [
   {
     pagePath: "/channelPackage/homeTab/index",
-    iconPath: "home",
-    selectedIconPath: "home-fill",
+    iconPath: require("@/channelPackage/common/icon/tabicon/home.png"),
+    selectedIconPath: require("@/channelPackage/common/icon/tabicon/homeactive.png"),
     text: "首页",
     isDot: true,
     customIcon: false,
   },
   {
     pagePath: "/channelPackage/clientTab/index",
-    iconPath: "grid",
-    selectedIconPath: "grid-fill",
+    iconPath: require("@/channelPackage/common/icon/tabicon/customer.png"),
+    selectedIconPath: require("@/channelPackage/common/icon/tabicon/customeractive.png"),
     text: "客户",
     customIcon: false,
   },
-  {
-    pagePath: "/channelPackage/messageTab/index",
-    iconPath: "chat",
-    selectedIconPath: "chat-fill",
-    count: 2,
-    text: "消息",
-    customIcon: false,
-  },
+  // {
+  //   pagePath: "/channelPackage/messageTab/index",
+  //   iconPath: require("@/channelPackage/common/icon/tabicon/msg.png"),
+  //   selectedIconPath: require("@/channelPackage/common/icon/tabicon/msgactive.png"),
+  //   count: 2,
+  //   text: "消息",
+  //   customIcon: false,
+  // },
   {
     pagePath: "/channelPackage/myTab/index",
-    iconPath: "account",
-    selectedIconPath: "account-fill",
+    iconPath: require("@/channelPackage/common/icon/tabicon/me.png"),
+    selectedIconPath: require("@/channelPackage/common/icon/tabicon/meactive.png"),
     text: "我的",
     count: 0,
     isDot: false,
