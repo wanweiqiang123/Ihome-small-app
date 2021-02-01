@@ -3,18 +3,32 @@
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-23 17:30:18
- * @LastEditors: lsj
- * @LastEditTime: 2020-12-12 15:43:20
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-01 11:25:44
 -->
 <template>
   <view class="project-detail-wrapper">
     <view class="bg-wrapper"></view>
     <view class="detail-content-wrapper">
       <view class="content-wrapper">
-        <u-card :show-head="false" margin="0rpx" padding="20">
-          <view class="" slot="body">
-            <u-image width="100%" height="320rpx" :src="banner"></u-image>
-            <view class="title">低层洋房87m<span class="square">2</span></view>
+        <u-card
+          :show-head="false"
+          margin="0rpx"
+          padding="20"
+        >
+          <view
+            class=""
+            slot="body"
+          >
+            <u-image
+              width="100%"
+              height="320rpx"
+              :src="banner"
+            ></u-image>
+            <view class="title">
+              {{info.houseName}}
+              <!-- <span class="square"></span> -->
+            </view>
           </view>
         </u-card>
         <view class="home-info-wrapper">
@@ -24,7 +38,7 @@
               <u-col span="7">
                 <view class="home-col-wrapper">
                   <view class="home-label">户型</view>
-                  <view class="home-value">2室 1厅 1厨 1卫</view>
+                  <view class="home-value">{{`2室 1厅 1厨 1卫`}}</view>
                 </view>
               </u-col>
               <u-col span="5">
@@ -73,13 +87,25 @@
           </view>
         </view>
       </view>
-      <u-gap height="28" bg-color="#F2F2F2"></u-gap>
+      <u-gap
+        height="28"
+        bg-color="#F2F2F2"
+      ></u-gap>
       <view class="content-wrapper">
         <view class="home-info-wrapper">
           <view class="home-info-title">同楼盘其他户型</view>
-          <view class="home-info-other" v-for="item in [1, 2, 3]" :key="item" @click="viewHomeDetail">
+          <view
+            class="home-info-other"
+            v-for="item in [1, 2, 3]"
+            :key="item"
+            @click="viewHomeDetail"
+          >
             <view class="home-img">
-              <u-image width="170rpx" height="130rpx" :src="homeImg"></u-image>
+              <u-image
+                width="170rpx"
+                height="130rpx"
+                :src="homeImg"
+              ></u-image>
             </view>
             <view class="home-info-right">
               <view class="info-title">
@@ -97,150 +123,180 @@
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        banner: require('@/channelPackage/common/img/banner_1.png'),
-        homeImg: require('@/channelPackage/common/img/house.jpg'),
-        homeForm: {}
-      };
+import { getAllByTypeApi } from "../../../api/index";
+export default {
+  data() {
+    return {
+      banner: require("@/channelPackage/common/img/banner_1.png"),
+      homeImg: require("@/channelPackage/common/img/house.jpg"),
+      info: {
+        averagePrice: "",
+        houseName: "",
+        houseTypeId: "",
+        picAddr: "",
+        positionEnum: "",
+        propertyAge: "",
+        propertyCost: "",
+        propertyEnum: "",
+        renovatLevelEnum: "",
+      },
+      Property: [],
+      RenovatLevel: [],
+    };
+  },
+  async onShow() {
+    this.info = { ...getApp().viewHomeDetail };
+    this.Property = await this.getDictAll("Property");
+    this.RenovatLevel = await this.getDictAll("RenovatLevel");
+  },
+  methods: {
+    // 查看户型详情
+    viewHomeDetail() {
+      uni.navigateTo({
+        url: `/channelPackage/homeTab/pages/unitDetail`,
+      });
     },
-    onLoad() {
+    // 字典翻译
+    async getDictAll(type) {
+      const dictList = await getAllByTypeApi({ type });
+      return dictList;
     },
-    methods: {
-      // 查看户型详情
-      viewHomeDetail() {
-        uni.navigateTo({
-          url: `/channelPackage/homeTab/pages/unitDetail`,
-        })
+    // 字典匹配
+    getDictName(code, list) {
+      if (list.length) {
+        const item = list.find((v) => v.code === code);
+        return item?.name;
       }
-    }
-  };
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-  .project-detail-wrapper {
-    width: 100%;
+.project-detail-wrapper {
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+
+  .square {
+    vertical-align: super;
+    font-size: 18rpx;
+  }
+
+  .price-color {
+    color: #fd4918;
+  }
+
+  .home-info-title {
+    height: 30rpx;
+    line-height: 30rpx;
+    text-align: left;
+    border-left: 10rpx solid $uni-color-primary;
+    padding-left: 15rpx;
+    font-size: 30rpx;
+    font-weight: 600;
+    color: #333333;
     box-sizing: border-box;
-    position: relative;
+    margin: 10rpx 0rpx;
+  }
 
-    .square {
-      vertical-align: super;
-      font-size: 18rpx;
-    }
+  .bg-wrapper {
+    width: 100%;
+    height: 380rpx;
+    position: absolute;
+    left: 0rpx;
+    top: 0rpx;
+    z-index: -1;
+    background-color: $uni-color-primary;
+  }
 
-    .price-color {
-      color: #FD4918;
-    }
+  .detail-content-wrapper {
+    width: 100%;
+    position: absolute;
+    left: 0rpx;
+    top: 0rpx;
+    z-index: 500;
+    box-sizing: border-box;
+    padding: 20rpx 0rpx 0rpx 0rpx;
 
-    .home-info-title {
-      height: 30rpx;
-      line-height: 30rpx;
-      text-align: left;
-      border-left: 10rpx solid $uni-color-primary;
-      padding-left: 15rpx;
-      font-size: 30rpx;
-      font-weight: 600;
-      color: #333333;
-      box-sizing: border-box;
-      margin: 10rpx 0rpx;
-    }
-
-    .bg-wrapper {
+    .content-wrapper {
       width: 100%;
-      height: 380rpx;
-      position: absolute;
-      left: 0rpx;
-      top: 0rpx;
-      z-index: -1;
-      background-color: $uni-color-primary;
-    }
-
-    .detail-content-wrapper {
-      width: 100%;
-      position: absolute;
-      left: 0rpx;
-      top: 0rpx;
-      z-index: 500;
       box-sizing: border-box;
-      padding: 20rpx 0rpx 0rpx 0rpx;
+      padding: 0rpx 20rpx;
 
-      .content-wrapper {
-        width: 100%;
+      .title {
         box-sizing: border-box;
-        padding: 0rpx 20rpx;
-
-        .title {
-          box-sizing: border-box;
-          margin: 18rpx 0rpx;
-          font-size: 34rpx;
-          font-weight: 600;
-          color: #1C1C1C;
-        }
+        margin: 18rpx 0rpx;
+        font-size: 34rpx;
+        font-weight: 600;
+        color: #1c1c1c;
       }
+    }
 
-      .home-info-wrapper {
+    .home-info-wrapper {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 20rpx;
+
+      .home-info {
         width: 100%;
         box-sizing: border-box;
-        padding: 20rpx;
 
-        .home-info {
-          width: 100%;
-          box-sizing: border-box;
-
-          .home-col-wrapper {
-            width: 100%;
-            display: flex;
-            flex-direction: row;
-            box-sizing: border-box;
-            margin: 10rpx 0rpx;
-
-            .home-label {
-              width: 120rpx;
-              display: block;
-              font-size: 26rpx;
-              text-align-last: justify;
-            }
-
-            .home-value {
-              flex: 1;
-              box-sizing: border-box;
-              margin-left: 15rpx;
-            }
-          }
-        }
-
-        .home-info-other {
+        .home-col-wrapper {
           width: 100%;
           display: flex;
           flex-direction: row;
+          box-sizing: border-box;
+          margin: 10rpx 0rpx;
 
-          &:not(:last-child) {
-            margin-bottom: 10rpx;
+          .home-label {
+            width: 120rpx;
+            display: block;
+            font-size: 26rpx;
+            text-align-last: justify;
           }
 
-          .home-info-right {
+          .home-value {
             flex: 1;
             box-sizing: border-box;
-            margin-left: 20rpx;
+            margin-left: 15rpx;
+          }
+        }
+      }
 
-            .info-title, .info-size, .info-location {
-              height: 40rpx;
-              box-sizing: border-box;
-              margin-bottom: 8rpx;
-            }
+      .home-info-other {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
 
-            .info-title {
-              display: flex;
-              flex-direction: row;
+        &:not(:last-child) {
+          margin-bottom: 10rpx;
+        }
 
-              view {
-                flex: 1;
-              }
+        .home-info-right {
+          flex: 1;
+          box-sizing: border-box;
+          margin-left: 20rpx;
+
+          .info-title,
+          .info-size,
+          .info-location {
+            height: 40rpx;
+            box-sizing: border-box;
+            margin-bottom: 8rpx;
+          }
+
+          .info-title {
+            display: flex;
+            flex-direction: row;
+
+            view {
+              flex: 1;
             }
           }
         }
       }
     }
   }
+}
 </style>

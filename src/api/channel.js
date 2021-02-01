@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-15 10:10:10
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-01 10:30:04
+ * @LastEditTime: 2021-02-01 14:51:36
  */
 import { getApi, postApi } from '@/common/http';
 import { currentEnvConfig } from '@/env-config';
@@ -110,3 +110,7 @@ export async function postCollectGetList(data = {}, option = {}) {
   return await postApi(`/sales-api/customer/collect/getList`, data, option);
 }
 
+// 收藏或者取消项目
+export async function addOrUpdateApi(data = {}, option = {}) {
+  return await postApi('/sales-api/customer/collect/addOrUpdate', data, option);
+}

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-10 15:30:58
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-29 16:40:35
+ * @LastEditTime: 2021-02-01 10:41:02
  */
 import { getApi, postApi } from '../common/http.js';
 
@@ -190,7 +190,7 @@ export async function getAppListApi(data = {}, option = {}) {
  * @return {*} Promise
  */
 export async function paymentdeleteApi(data = {}, option = {}) {
-  return await postApi(`/sales-api/finance/payment/delete/${data}`, option)
+  return await postApi(`/sales-api/finance/payment/appDelete/${data}`, option)
 }
 /**
  * @description: 查询待审核数列表数据

@@ -3,8 +3,13 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-12 10:53:18
+<<<<<<< HEAD
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-01 14:49:08
+ * @LastEditTime: 2021-02-01 14:51:55
+=======
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-01 09:31:48
+>>>>>>> f0673f0d494328b8a7d75c1782909b740244f191
 -->
 <template>
   <view>
