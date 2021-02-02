@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-19 18:44:57
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-29 19:32:35
+ * @LastEditTime: 2021-02-02 20:39:44
 -->
 <template>
   <view class="receipt">
@@ -50,6 +50,7 @@
             label="收款日期"
             class="hide-icon"
             right-icon="arrow-right"
+            required
           >
             <u-input
               v-model="form.payTime"
@@ -57,7 +58,10 @@
               placeholder="选择日期"
             />
           </u-form-item>
-          <u-form-item label="收款金额">
+          <u-form-item
+            label="收款金额"
+            required
+          >
             <u-input
               v-model="form.amount"
               :disabled="form.payType === 'PosNoOrder'"
@@ -213,6 +217,14 @@ export default {
       ).toFixed(2);
       if (Number(v) > Number(maxNum)) {
         this.form.amount = maxNum + "";
+      }
+    },
+    "form.orderNo"(v) {
+      if (!v && this.form.payType === "PosNoOrder") {
+        Object.assign(this.form, {
+          payTime: "",
+          amount: "",
+        });
       }
     },
   },

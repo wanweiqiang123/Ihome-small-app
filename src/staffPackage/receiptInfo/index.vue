@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-19 15:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-01 09:38:38
+ * @LastEditTime: 2021-02-02 19:59:28
 -->
 <template>
   <view class="receipt info">
@@ -133,7 +133,7 @@
         <view
           class="info-second-bottom"
           v-else
-        >{{`${getDictName(info.purchaseInformation.propertyType, Property)}-${info.purchaseInformation.buyUnit}-${info.purchaseInformation.roomNumberName}`}}</view>
+        >{{`${getDictName(info.purchaseInformation.propertyType, Property)}-${info.purchaseInformation.buyUnitName}-${info.purchaseInformation.roomNumberName}`}}</view>
       </view>
       <view class="info-second-wrap">
         <swiper
