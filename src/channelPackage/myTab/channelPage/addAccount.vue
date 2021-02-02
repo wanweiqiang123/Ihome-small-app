@@ -3,28 +3,44 @@
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-27 17:13:50
- * @LastEditors: lsj
- * @LastEditTime: 2020-12-12 17:20:50
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-02-02 09:18:17
 -->
 <template>
   <view class="add-account-wrapper">
     <view class="form">
       <u-form :model="addForm" ref="addForm" :label-width="160">
-        <u-form-item label="账户名称">
+        <u-form-item label="账户名称" prop="accountName">
           <u-input
             v-model="addForm.accountName"
-            placeholder="账户名称" :clearable="true" input-align="left" />
+            placeholder="账户名称"
+            :clearable="true"
+            input-align="left"
+          />
         </u-form-item>
-        <u-form-item label="开户银行" right-icon="arrow-right" class="hide-icon">
+        <u-form-item
+          prop="branchName"
+          label="开户银行"
+          right-icon="arrow-right"
+          class="hide-icon"
+        >
           <u-input
             @click="showBank = true"
-            v-model="addForm.accountBank" type="select"
-            placeholder="开户银行" disabled :clearable="true" input-align="left" />
+            v-model="addForm.branchName"
+            type="select"
+            placeholder="开户银行"
+            disabled
+            :clearable="true"
+            input-align="left"
+          />
         </u-form-item>
-        <u-form-item label="银行卡号">
+        <u-form-item label="银行卡号" prop="accountNo">
           <u-input
-            v-model="addForm.accountCode"
-            placeholder="银行卡号" :clearable="true" input-align="left"/>
+            v-model="addForm.accountNo"
+            placeholder="银行卡号"
+            :clearable="true"
+            input-align="left"
+          />
         </u-form-item>
       </u-form>
     </view>
@@ -44,99 +60,133 @@
             border-color="#DCDCDC"
             :show-action="false"
             placeholder="请输入开户银行名搜索"
-            v-model="queryPageParameters.bankName"></u-search>
+            v-model="queryPageParameters.bankName"
+          ></u-search>
         </view>
         <view
           class="bank-item"
-          v-for="(item, index) in bankList" :key="index"
-          @click="showBank = false">{{item.name}}</view>
+          v-for="(item, index) in bankList"
+          :key="index"
+          @click="showBank = false"
+          >{{ item.name }}</view
+        >
       </view>
     </u-popup>
   </view>
 </template>
 
 <script>
+import storageTool from "../../../common/storageTool";
 export default {
   data() {
     return {
       addForm: {
-        accountName: '',
-        accountBank: '',
-        accountCode: ''
+        accountName: null, //账户名称
+        accountNo: "", //账户号码
+        accountType: "Commonly",
+        branchName: "", //开户银行
+        branchNo: "", //联行号
+        channelId: "", //渠道商ID
       },
+      rules: {
+        accountName: [
+          {
+            required: true,
+            message: "请输入账户名称",
+            trigger: ["change"],
+          },
+        ],
+
+        branchName: [
+          {
+            required: true,
+            message: "请输入开户银行",
+            trigger: ["change"],
+          },
+        ],
+        accountNo: [
+          {
+            required: true,
+            message: "请输入银行卡号",
+            trigger: ["change"],
+          },
+        ],
+      },
+
       showBank: false,
-      bankList: [
-        {
-          name: '广东广州工商银行番禺支行'
-        },
-        {
-          name: '广东广州工商银行番禺支行'
-        },
-        {
-          name: '广东广州工商银行番禺支行'
-        },
-        {
-          name: '广东广州工商银行番禺支行'
-        }
-      ],
+
       queryPageParameters: {
-        bankName: null
-      }
+        bankName: null,
+      },
+      bankList: [{ name: "xxxxxxx" }, { name: "xxxxxxx" }, { name: "xxxxxxx" }],
     };
   },
-  onLoad() {
-
+  onLoad(options) {
+    let userInfo = storageTool.getUserInfo();
+    console.log(options.id);
+    this.addForm.channelId = userInfo?.channelId;
+  },
+  onReady() {
+    this.$refs.addForm.setRules(this.rules);
   },
   methods: {
     // 保存
     handleSave() {
-      uni.redirectTo({
-        url: `/channelPackage/myTab/channelPage/commissionAccount`
+      console.log("handleSave");
+      this.$refs.addForm.validate((valid) => {
+        if (valid) {
+          console.log("验证通过");
+        } else {
+          console.log("验证失败");
+        }
       });
-    }
+      // uni.redirectTo({
+      //   url: `/channelPackage/myTab/channelPage/commissionAccount`,
+      // });
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-  .add-account-wrapper {
+.add-account-wrapper {
+  width: 100%;
+  height: 100vh;
+  background-color: #f5f5f5;
+
+  .form {
+    background-color: #ffffff;
+    padding: 20rpx;
+  }
+
+  .btn {
     width: 100%;
-    height: 100vh;
-    background-color: #F5F5F5;
+    padding: 10rpx 50rpx;
+    margin-top: 20rpx;
+  }
+}
 
-    .form {
-      background-color: #FFFFFF;
-      padding: 20rpx;
-    }
+.add-bank-list-wrapper {
+  width: 100%;
 
-    .btn {
-      width: 100%;
-      padding: 10rpx 50rpx;
-      margin-top: 20rpx;
+  .top-wrapper {
+    width: 100%;
+    height: 92rpx;
+    box-sizing: border-box;
+    padding: 10rpx 24rpx 10rpx 18rpx;
+    display: flex;
+    background-color: #efeff4;
+
+    .search {
+      flex: 1;
+      height: 72rpx;
     }
   }
 
-  .add-bank-list-wrapper {
-    width: 100%;
-
-    .top-wrapper {
-      width: 100%;
-      height: 92rpx;
-      box-sizing: border-box;
-      padding: 10rpx 24rpx 10rpx 18rpx;
-      display: flex;
-      background-color: #EFEFF4;
-
-      .search {
-        flex: 1;
-        height: 72rpx;
-      }
-    }
-
-    .bank-item {
-      padding: 30rpx 10rpx;
-      text-align: left;
-      border-bottom: 1rpx solid #CCCCCC;
-    }
+  .bank-item {
+    padding: 30rpx 10rpx;
+    text-align: left;
+    border-bottom: 1rpx solid #cccccc;
   }
+}
 </style>

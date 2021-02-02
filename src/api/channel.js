@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-15 10:10:10
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-01 14:51:36
+ * @LastEditTime: 2021-02-01 17:19:50
  */
 import { getApi, postApi } from '@/common/http';
 import { currentEnvConfig } from '@/env-config';
@@ -109,6 +109,28 @@ export async function postCollectBatchUpdateApi(data = {}, option = {}) {
 export async function postCollectGetList(data = {}, option = {}) {
   return await postApi(`/sales-api/customer/collect/getList`, data, option);
 }
+
+/** 查询渠道商银行账户列表
+ * @param {*} data
+ * @param {*} option
+ * @return {*}
+ */
+export async function getchannelBankByIdApi(id, option = {}) {
+  let url = `/sales-api/channel/channelBank/getAll/${id}`;
+  return await getApi(url, {}, option);
+}
+
+/** 批量删除银行账户
+ * @param {*} data
+ * @param {*} option
+ * @return {*}
+ */
+export async function postChannelBankBatchDeleteApi(data={}, option = {}) {
+  let url = `/sales-api/channel/channelBank/batchDelete`;
+  return await getApi(url, data, option);
+}
+
+
 
 // 收藏或者取消项目
 export async function addOrUpdateApi(data = {}, option = {}) {

@@ -132,6 +132,7 @@ export default {
     checkboxChange(item) {
       console.log("checkboxChange", item);
       this.$forceUpdate();
+      
       console.log(this.tablePage);
     },
     async handleSubmit() {
