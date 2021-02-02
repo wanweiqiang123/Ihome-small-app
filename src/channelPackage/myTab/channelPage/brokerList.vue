@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-27 17:30:05
- * @LastEditors: lsj
- * @LastEditTime: 2020-12-09 15:57:30
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-02-02 16:38:05
 -->
 <template>
   <view class="broker-list-wrapper">
@@ -25,7 +25,7 @@
       <view class="management" @click="isManager = !isManager">{{isManager ? '完成' : '管理'}}</view>
     </view>
     <view class="list-wrapper">
-      <view class="item-wrapper" v-for="item in [1,2,3,4,5]" :key="item">
+      <view class="item-wrapper" v-for="item in [1,2,3,4,5,6,7,8,9,10]" :key="item">
         <view class="check" v-if="isManager">
           <u-checkbox v-model="flag" shape="circle" size="30rpx"></u-checkbox>
         </view>
