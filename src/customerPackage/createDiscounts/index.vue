@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-26 15:40:27
+ * @LastEditTime: 2021-02-01 16:18:21
 -->
 <template>
   <LoginPage>
@@ -276,14 +276,14 @@ export default {
     this.$refs.roomFrom.setRules(this.roomRules);
   },
   onShow() {
-    // if (this.noticeId) {
-    this.getInfo();
-    // }
+    if (this.noticeId) {
+      this.getInfo();
+    }
   },
   methods: {
     // 获取页面信息
     async getInfo() {
-      const res = await getDetailApi("24");
+      const res = await getDetailApi(this.noticeId);
       this.form = {
         channel: "Customer",
         cycleId: res.termId,

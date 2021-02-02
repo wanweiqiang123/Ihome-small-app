@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-24 09:58:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-01 14:23:19
+ * @LastEditTime: 2021-02-01 18:25:26
 -->
 <template>
   <view class="report-client-wrapper">
@@ -20,8 +20,7 @@
         :show-action="false"
         placeholder="请输入项目名称"
         disabled
-        @click="handleToSearch"
-        v-model="info.proName"
+        @click="projectSearch"
       ></u-search>
       <view class="project-card">
         <view class="project-img">
@@ -32,19 +31,19 @@
           ></u-image>
         </view>
         <view class="project-info">
-          <view>远洋招商保利东湾经纪渠道</view>
+          <view>{{info.proName}}</view>
           <view>
             <u-tag
-              text="天河区"
+              :text="getDictName(district, areaRegion)"
               size="mini"
               :closeable="false"
               type="info"
             />
           </view>
-          <view class="price-wrapper">
+          <!-- <view class="price-wrapper">
             <span class="price">均价23000</span>
             <span class="unit">元/m<span class="two">2</span></span>
-          </view>
+          </view> -->
           <view class="rule">
             <span class="rule-tap">佣</span>
             <span>佣金规则</span>
@@ -61,22 +60,23 @@
               type="warning"
               shape="circle"
               size="mini"
-              @click="handleImportClient"
+              @click="customerSearch"
             >客户池导入</u-button>
           </view>
         </view>
         <view class="form-wrapper">
           <u-form
-            :model="infoForm"
-            ref="infoForm"
+            :model="custormInfo"
+            ref="custormInfo"
             :label-width="130"
           >
             <u-form-item
               label="姓名"
+              prop="name"
               required
             >
               <u-input
-                v-model="infoForm.name"
+                v-model="custormInfo.name"
                 placeholder="姓名"
                 :clearable="false"
                 input-align="left"
@@ -84,19 +84,21 @@
             </u-form-item>
             <u-form-item
               label="性别"
+              prop="sex"
               required
             >
-              <u-radio-group v-model="infoForm.sex">
-                <u-radio name="female">女</u-radio>
-                <u-radio name="male">男</u-radio>
+              <u-radio-group v-model="custormInfo.sex">
+                <u-radio name="Ms">女</u-radio>
+                <u-radio name="Mr">男</u-radio>
               </u-radio-group>
             </u-form-item>
             <u-form-item
               label="手机号"
+              prop="mobile"
               required
             >
               <u-input
-                v-model="infoForm.phone"
+                v-model="custormInfo.mobile"
                 placeholder="手机号"
                 :clearable="false"
                 input-align="left"
@@ -114,16 +116,17 @@
         </view>
         <view class="form-wrapper">
           <u-form
-            :model="visitForm"
-            ref="visitForm"
+            :model="info"
+            ref="info"
             :label-width="190"
           >
             <u-form-item
               label="预计到访人数"
+              prop="expectedNumber"
               required
             >
               <u-input
-                v-model="visitForm.number"
+                v-model="info.expectedNumber"
                 placeholder="预计到访人数"
                 :clearable="true"
                 input-align="left"
@@ -131,14 +134,15 @@
             </u-form-item>
             <u-form-item
               label="预计到访时间"
-              required
+              prop="expectedTime"
               class="hide-icon"
               right-icon="arrow-right"
+              required
             >
               <u-input
-                v-model="visitForm.time"
+                v-model="info.expectedTime"
                 type="select"
-                @click="handleSelectTime"
+                @click="showTime = true"
                 placeholder="预计到访时间"
                 :clearable="true"
                 input-align="left"
@@ -146,7 +150,7 @@
             </u-form-item>
             <u-form-item label="备注">
               <u-input
-                v-model="visitForm.remark"
+                v-model="info.remark"
                 placeholder="备注"
                 :clearable="true"
                 input-align="left"
@@ -227,35 +231,6 @@
       :params="timeParams"
       @confirm="handleConfirm"
     ></u-picker>
-    <u-popup
-      v-model="showClient"
-      mode="right"
-      length="100%"
-    >
-      <view class="client-search-wrapper">
-        <u-search
-          class="search"
-          shape="round"
-          height="72"
-          placeholder-color="#BDBDBD"
-          search-icon-color="#BDBDBD"
-          bg-color="#FFFFFF"
-          border-color="#DCDCDC"
-          :show-action="false"
-          placeholder="请输入姓名或电话"
-          v-model="info.projectName"
-        ></u-search>
-      </view>
-      <view
-        v-for="item in clientList"
-        :key="item.phone"
-        class="client-list"
-        @click="handleImport(item)"
-      >
-        <view class="client-name">{{item.name}}</view>
-        <view class="client-phone">{{item.phone}}</view>
-      </view>
-    </u-popup>
     <u-select
       v-model="selectEstateWin"
       :list="estateList"
@@ -265,57 +240,55 @@
 </template>
 
 <script>
+import { getAllByTypeApi } from "@/api/index";
+import { getAreaList, postReportApi } from "@/api/channel";
+import { phoneValidator } from "../../../common/validate";
 export default {
   data() {
     return {
-      homeImg: require("@/channelPackage/common/img/house.jpg"),
-      pageType: "",
       info: {
-        proName: "",
+        proName: "远洋招商保利东湾经纪渠道",
         proId: "",
-      },
-      infoForm: {
-        name: "",
-        sex: "",
-        phone: "",
-      },
-      visitForm: {
-        number: "",
-        time: "",
+        expectedNumber: "",
+        expectedTime: "",
         remark: "",
       },
-      showTime: false,
-      timeParams: {
-        year: true,
-        month: true,
-        day: true,
-        hour: true,
-        minute: true,
-        second: true,
+      custormInfo: {
+        name: "",
+        sex: "Ms",
+        mobile: "",
       },
+      district: "440105000000",
+      areaRegion: [],
+      infoRules: {
+        expectedNumber: [
+          {
+            required: true,
+            message: "请输入预计到访人数",
+            trigger: "change",
+          },
+        ],
+        expectedTime: [
+          {
+            required: true,
+            message: "请输入预计到访时间",
+            trigger: "change",
+          },
+        ],
+      },
+      custormRules: {
+        name: [{ required: true, message: "请输入姓名", trigger: "change" }],
+        sex: [{ required: true, message: "请选择性别", trigger: "change" }],
+        mobile: [
+          { required: true, message: "请输入手机号", trigger: "change" },
+          { validator: phoneValidator, trigger: "change" },
+        ],
+      },
+
+      homeImg: require("@/channelPackage/common/img/house.jpg"),
+      pageType: "",
+      showTime: false,
       showClient: false,
-      clientList: [
-        {
-          name: "张三",
-          sex: "male",
-          phone: "13888888888",
-        },
-        {
-          name: "李四",
-          sex: "male",
-          phone: "13999999999",
-        },
-        {
-          name: "小黄",
-          sex: "female",
-          phone: "13000000000",
-        },
-        {
-          name: "小红",
-          sex: "female",
-          phone: "13222222222",
-        },
-      ],
       estateForm: {
         estateName: "",
         roof: "",
@@ -324,10 +297,23 @@ export default {
       currentSelectType: "",
       selectEstateWin: false,
       estateList: [],
+      timeParams: {
+        year: true,
+        month: true,
+        day: true,
+        hour: true,
+        minute: true,
+        second: false,
+      },
     };
   },
+  onReady() {
+    this.$nextTick(() => {
+      this.$refs.info.setRules(this.infoRules);
+      this.$refs.custormInfo.setRules(this.custormRules);
+    });
+  },
   onLoad(option) {
-    console.log(option);
     if (option.type && option.type === "dealReg") {
       uni.setNavigationBarTitle({
         title: "成交登记",
@@ -337,18 +323,30 @@ export default {
       this.pageType = "";
     }
   },
-  onShow() {
+  async onShow() {
+    this.areaRegion = await this.getArea(); // 省市区
     let item = getApp().globalData.searchBackData;
     if (item && item.type === "project") {
       console.log(item);
       this.info.proId = item.data.proId;
       this.info.proName = item.data.proName;
+      this.info.exMarket = item.data.exMarket;
+      this.district = item.data.district;
       getApp().globalData.searchBackData = {};
+      // if (this.pageType) {
+      //   this.buildSelectList = await postBuildByProId({
+      //     proId: this.info.proId,
+      //   });
+      // }
+    } else if (item && item.type === "customer") {
+      this.info.name = item.data.name;
+      this.info.sex = item.data.sex;
+      this.info.mobile = item.data.mobile;
     }
   },
   methods: {
-    // 跳转搜索页
-    handleToSearch() {
+    // 周期跳转搜索页
+    projectSearch() {
       getApp().globalData.searchParams = {
         api: "postProjectsApi",
         key: "proName",
@@ -359,24 +357,41 @@ export default {
         url: "/pages/search/index/index",
       });
     },
-    // 导入客户
-    handleImportClient() {
-      this.showClient = true;
+    // 客户池跳转搜索页
+    customerSearch() {
+      getApp().globalData.searchParams = {
+        api: "postReportCustomerApi",
+        key: "name",
+        id: "userId",
+        type: "customer",
+      };
+      uni.navigateTo({
+        url: "/pages/search/index/index",
+      });
     },
-    // 确定导入客户
-    handleImport(item) {
-      // console.log(item);
-      this.showClient = false;
-      this.infoForm = item;
+    // 获取字典
+    async getDictByType(type) {
+      const dictList = await getAllByTypeApi({ type });
+      return dictList;
     },
-    // 选择到访时间
-    handleSelectTime() {
-      this.showTime = true;
+    // 获取对应字典name
+    getDictName(code, list) {
+      if (list.length) {
+        const item = list.find((v) => v.code === code);
+        return item?.name;
+      } else {
+        return "";
+      }
+    },
+    // 获取省市区
+    async getArea() {
+      let areaList = await getAreaList();
+      return areaList;
     },
     // 确定选择时间
     handleConfirm(value) {
       // console.log(value);
-      this.visitForm.time = `${value.year}-${value.month}-${value.day}  ${value.hour}:${value.minute}:${value.second}`;
+      this.info.expectedTime = `${value.year}-${value.month}-${value.day} ${value.hour}:${value.minute}`;
     },
     // 成交登记-选择栋座和房号
     selectEstate(type) {
@@ -425,17 +440,45 @@ export default {
         this.estateForm.room = e.label;
       }
     },
+    // 表单验证
+    formDataRules() {
+      let arr = [];
+      const info = new Promise((resolve, reject) => {
+        this.$refs.info.validate((val) => {
+          val ? resolve() : reject(err);
+        });
+      });
+      const custormInfo = new Promise((resolve, reject) => {
+        this.$refs.custormInfo.validate((val) => {
+          val ? resolve() : reject(err);
+        });
+      });
+      arr.push(info, custormInfo);
+      return arr;
+    },
     // 成交登记/报备客户
     handleReport() {
-      if (this.pageType === "dealReg") {
-        uni.redirectTo({
-          url: `/channelPackage/myTab/pages/myReport`,
-        });
-      } else {
-        uni.redirectTo({
-          url: `/channelPackage/homeTab/index`,
-        });
-      }
+      let formDataRules = this.formDataRules();
+      Promise.all(formDataRules).then(async () => {
+        const userInfo = this.$storageTool.getUserInfo();
+        let obj = { ...this.info, ...this.custormInfo };
+        obj.channelId = userInfo.channelId;
+        obj.reportCustomerId = userInfo.id;
+        obj.reportMobile = userInfo.mobilePhone;
+        obj.reportName = userInfo.name;
+        obj.reportType = "FullNumber";
+        await postReportApi(obj);
+        this.$tool.toast(this.pageType ? "登记成功" : "报备成功");
+        if (this.pageType === "dealReg") {
+          uni.redirectTo({
+            url: `/channelPackage/myTab/pages/myReport`,
+          });
+        } else {
+          uni.redirectTo({
+            url: `/channelPackage/homeTab/index`,
+          });
+        }
+      });
     },
   },
 };

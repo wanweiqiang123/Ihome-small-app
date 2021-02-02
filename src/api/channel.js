@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-15 10:10:10
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-01 17:19:50
+ * @LastEditTime: 2021-02-02 09:39:01
  */
 import { getApi, postApi } from '@/common/http';
 import { currentEnvConfig } from '@/env-config';
@@ -45,14 +45,24 @@ export async function channelRegister(data = {}, option = {}) {
   return await postApi('/sales-api/channel/channelRegistUser/regist', data, option);
 }
 
+// 渠道公司注册 --- 检查成立时间是否大于等于三个月
+export async function channelCheckSetupTime(data = {}, option = {}) {
+  return await getApi('/sales-api/channel/channel/checkSetupTime', data, option);
+}
+
 // 获取渠道商公司信息
 export async function getChannelInfo(id = '', data = {}, option = {}) {
   return await getApi(`/sales-api/channel/channel/get/${id}`, data, option);
 }
 
+// 修改渠道商公司信息
+export async function editChannelInfo(data = {}, option = {}) {
+  return await postApi('/sales-api/channel/channel/edit', data, option);
+}
+
 // 渠道商公司状态变为草稿
 export async function backToDraft(id = '', data = {}, option = {}) {
-  return await getApi(`/sales-api/channel/channel/backToDraft/${id}`, data, option);
+  return await postApi(`/sales-api/channel/channel/backToDraft/${id}`, data, option);
 }
 
 // 获取推荐的项目列表
@@ -135,4 +145,9 @@ export async function postChannelBankBatchDeleteApi(data={}, option = {}) {
 // 收藏或者取消项目
 export async function addOrUpdateApi(data = {}, option = {}) {
   return await postApi('/sales-api/customer/collect/addOrUpdate', data, option);
+}
+
+// 新增客户报备
+export async function postReportApi(data = {}, option = {}) {
+  return await postApi('/sales-api/customer/report/add', data, option);
 }

@@ -4,13 +4,27 @@
  * @Author: ywl
  * @Date: 2020-12-10 15:30:58
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-01 10:41:02
+ * @LastEditTime: 2021-02-01 16:18:07
  */
 import { getApi, postApi } from '../common/http.js';
 
-// 报备确认列表
+/**
+ * @description: 报备确认列表
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
 export async function postReportList(data = {}, option = {}) {
   return await postApi('/sales-api/customer/report/getList', data, option)
+}
+/**
+ * @description: 报备有效无效操作
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function reportValidOrInvalid(data = {}, option = {}) {
+  return await postApi('/sales-api/customer/report/reportValidOrInvalid', data, option)
 }
 /**
  * @description: 获取优惠告知书列表

@@ -146,19 +146,22 @@
           <view
             class="bank-item"
             v-for="(item, index) in bankList" :key="index"
-            @click="handleSelectBank(item)">{{item.bankName}}</view>
+            @click="handleSelectBank(item)">{{item.branchName}}</view>
           <u-divider v-if="isMore" :fontSize="30" :margin-top="30" half-width="100%">没有更多了</u-divider>
         </scroll-view>
       </view>
     </u-popup>
     <u-modal
       @confirm="handleDelete"
+      @cancel="showDeleteWin = false"
+      :mask-close-able="true"
+      :show-cancel-button="true"
       v-model="showDeleteWin" content="您确定要删除此项吗？"></u-modal>
   </view>
 </template>
 
 <script>
-import { getAreaList, getDictByType, getBankBranchList, channelRegister } from '@/api/channel';
+import { getAreaList, getDictByType, getBankBranchList, channelRegister, channelCheckSetupTime } from '@/api/channel';
 import { validIdentityCard } from '@/common/validate';
 import { getImgUrl } from '@/api/channel';
 import { currentEnvConfig } from '@/env-config';
@@ -183,6 +186,23 @@ export default {
     }
   },
   data() {
+    const validSetupTime = async (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请选择成立日期！'));
+      } else {
+        try {
+          let flag = await channelCheckSetupTime({ setupTime: value });
+          if (flag) {
+            callback();
+          } else {
+            callback(new Error("成立时间必须大于三个月"));
+          }
+        } catch (error) {
+          callback();
+          console.log(error);
+        }
+      }
+    };
     return {
       pdfImg: require('@/channelPackage/common/img/pdf.jpg'),
       excelImg: require('@/channelPackage/common/img/excel.png'),
@@ -221,7 +241,7 @@ export default {
           { validator: validIdentityCard, trigger: ['blur'] }
         ],
         setupTime: [
-          { required: true, message: '请选择成立日期', trigger: ['blur', 'change'] }
+          { validator: validSetupTime, trigger: ['blur', 'change'] }
         ],
         capital: [
           { required: true, message: '请输入注册资本', trigger: ['blur'] }
@@ -260,7 +280,7 @@ export default {
       showBank: false,
       queryPageParameters: {
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 20,
         bankName: null
       },
       bankList: [],
@@ -282,8 +302,8 @@ export default {
       currentUploadType: null, // 上传的附件类型
       showActionShow: false,
       showDeleteWin: false,
-      deleteIndex: '',
-      deleteItem: '',
+      deleteIndex: null,
+      deleteItem: null,
       showCompanyType: false, // 公司类型
       companyTypeList: []
     };

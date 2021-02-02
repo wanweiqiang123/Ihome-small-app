@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-13 15:13:13
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-22 15:37:27
+ * @LastEditTime: 2021-02-02 09:12:28
 -->
 <template>
   <view class="container safe-area-inset-bottom">
@@ -14,9 +14,10 @@
           style="flex: 1"
           :show-action="false"
           placeholder="请输入客户名称和手机号"
-          v-model="queryPageParameters.name"
+          v-model="keyword"
           height="72"
           :clearabled="true"
+          @search="confirm"
         ></u-search>
         <view
           class="filter-btn"
@@ -53,20 +54,24 @@
           slot="body"
           class="ih-card-content"
         >
-          <text ref="text">
-            客户姓名：{{`${i.name}(${i.sex === 'Mr' ? '先生' : '女士'})`}}
-            客户电话：{{i.mobile}}
-            预计到访时间：{{i.visitDate}}
-            预计到访人数：2
-            报备项目：{{i.proName}}
-            项目周期：{{i.proCycle}}
-            所属渠道：{{i.channelName}}
-            报备人：{{i.reportUser}}
-            报备人电话：18761234521
-            公司门店：广州居家房地产有限公司(居家置业店)
-            报备时间：{{i.reportDate}}
-          </text>
-          <view class="ih-card-tag">市场化</view>
+          <view>
+            <view>客户姓名：{{`${i.name}(${i.sex === 'Mr' ? '先生' : '女士'})`}}</view>
+            <view>客户电话：{{i.mobile}}</view>
+            <view>预计到访时间：{{i.expectedTime}}</view>
+            <view>预计到访人数：{{i.expectedNumber}}</view>
+            <view>报备项目：{{i.proName}}</view>
+            <view>项目周期：{{i.proCycle}}</view>
+            <view>所属渠道：{{i.channelName || '-'}}</view>
+            <view>报备人：{{i.reportUser || '-'}}</view>
+            <view>报备人电话：{{i.reportMobile || '-'}}</view>
+            <view>报备时间：{{i.reportDate}}</view>
+            <view v-if="current === 1">报备确认时间：{{i.auditTime}}</view>
+            <view v-if="current === 2">无效时间：{{i.auditTime}}</view>
+            <view v-if="current !== 0">操作人：{{i.auditUserName}}</view>
+            <view v-if="current === 2">无效原因：{{i.comment}}</view>
+          </view>
+          <!-- 公司门店：广州居家房地产有限公司(居家置业店) -->
+          <view :class="['ih-card-tag', {'bg-warning': !i.exMarket}]">{{i.exMarket ? '市场化' : '非市场化'}}</view>
         </view>
         <view
           slot="foot"
@@ -77,19 +82,23 @@
             type="primary"
             shape="circle"
             :custom-style="{ padding: '0 40rpx', marginRight: '20rpx' }"
-            @click="handleCopy()"
+            @click="handleCopy(i)"
           >一键复制</u-button>
-          <u-button
-            size="mini"
-            shape="circle"
-            :custom-style="{ padding: '0 40rpx', marginRight: '20rpx' }"
-          >无效</u-button>
-          <u-button
-            shape="circle"
-            :custom-style="{ padding: '0 40rpx' }"
-            size="mini"
-            type="success"
-          >有效</u-button>
+          <template v-if="current === 0">
+            <u-button
+              size="mini"
+              shape="circle"
+              :custom-style="{ padding: '0 40rpx', marginRight: '20rpx' }"
+              @click="showInvalid = true;reportId = i.id;"
+            >无效</u-button>
+            <u-button
+              shape="circle"
+              :custom-style="{ padding: '0 40rpx' }"
+              size="mini"
+              type="success"
+              @click="showValid = true;reportId = i.id;"
+            >有效</u-button>
+          </template>
         </view>
       </u-card>
 
@@ -108,6 +117,7 @@
     <PopupSearch
       v-model="show"
       @reset="handleReset()"
+      @confirm="confirm()"
     >
       <u-form
         ref="uForm"
@@ -152,27 +162,42 @@
           prop="intro"
           :border-bottom="false"
         >
-          <IhCheckbox
-            v-model="exMarketList"
-            :arr="checkList"
-          ></IhCheckbox>
+          <IhRadio
+            v-model="queryPageParameters.exMarket"
+            :arrData="checkList"
+          ></IhRadio>
         </u-form-item>
       </u-form>
     </PopupSearch>
+    <!-- 模态框 -->
+    <u-modal
+      v-model="showInvalid"
+      content="是否确认无效?"
+      show-cancel-button
+      :show-title="false"
+      @confirm="submitReport(reportId, 'Invalid')"
+    ></u-modal>
+    <u-modal
+      v-model="showValid"
+      content="是否确认有效?"
+      show-cancel-button
+      :show-title="false"
+      @confirm="submitReport(reportId, 'Valid')"
+    ></u-modal>
   </view>
 </template>
 
 <script>
 import PopupSearch from "../../components/PopupSearch/index.vue";
-import IhCheckbox from "../../components/IhCheckbox/index.vue";
+import IhRadio from "../../components/IhRadio/index";
 import pagination from "../../mixins/pagination";
-import { postReportList } from "../../api/staff";
+import { postReportList, reportValidOrInvalid } from "../../api/staff";
 
 export default {
   name: "report",
   components: {
     PopupSearch,
-    IhCheckbox,
+    IhRadio,
   },
   mixins: [pagination],
   data() {
@@ -185,59 +210,127 @@ export default {
       ],
       current: 0,
       show: false,
+      reportStatus: "UnderReview",
       queryPageParameters: {
-        proName: null,
-        proCycle: null,
-        channelName: null,
+        proName: "",
+        channelName: "",
+        proCycle: "",
         exMarket: null,
-        name: null,
-        reportStatus: "UnderReview",
       },
-      exMarketList: [],
       checkList: [
         {
-          value: 1,
+          code: 1,
           name: "市场化项目",
         },
         {
-          value: 0,
+          code: 0,
           name: "非市场化项目",
         },
       ],
+      showInvalid: false,
+      showValid: false,
+      reportId: null,
     };
   },
   methods: {
     tabChange(index) {
       this.current = index;
+      this.reportStatus = this.tabList[index].value;
+      this.confirm();
     },
     handleReset() {
       Object.assign(this.queryPageParameters, {
-        proName: null,
-        proCycle: null,
-        channelName: null,
+        proName: "",
+        channelName: "",
+        proCycle: "",
         exMarket: null,
       });
     },
+    confirm() {
+      this.tablePage = [];
+      this.queryPageParameters.pageNum = 1;
+      this.getListMixin();
+    },
+    async submitReport(rId, type) {
+      try {
+        await reportValidOrInvalid({
+          reportIds: [rId],
+          validOrInvalid: type,
+        });
+        this.$tool.toast(`${type === "Valid" ? "有效成功" : "无效成功"}`);
+        this.confirm();
+      } catch (error) {
+        console.log(error);
+      }
+    },
     handleCopy(data) {
+      let copyStr = "";
+      if (this.current === 0) {
+        copyStr = `客户姓名：${data.name}(${
+          data.sex === "Mr" ? "先生" : "女士"
+        })
+客户电话：${data.mobile}
+预计到访时间：${data.expectedTime}
+预计到访人数：${data.expectedNumber}
+报备项目：${data.proName}
+项目周期：${data.proCycle}
+所属渠道：${data.channelName || "-"}
+报备人：${data.reportUser || "-"}
+报备人电话：${data.reportMobile || "-"}
+报备时间：${data.reportDate}`;
+      }
+      if (this.current === 1) {
+        copyStr = `客户姓名：${data.name}(${
+          data.sex === "Mr" ? "先生" : "女士"
+        })
+客户电话：${data.mobile}
+预计到访时间：${data.expectedTime}
+预计到访人数：${data.expectedNumber}
+报备项目：${data.proName}
+项目周期：${data.proCycle}
+所属渠道：${data.channelName || "-"}
+报备人：${data.reportUser || "-"}
+报备人电话：${data.reportMobile || "-"}
+报备时间：${data.reportDate}
+报备确认时间：${data.auditTime}
+操作人：${data.auditUserName}`;
+      }
+      if (this.current === 2) {
+        copyStr = `客户姓名：${data.name}(${
+          data.sex === "Mr" ? "先生" : "女士"
+        })
+客户电话：${data.mobile}
+预计到访时间：${data.expectedTime}
+预计到访人数：${data.expectedNumber}
+报备项目：${data.proName}
+项目周期：${data.proCycle}
+所属渠道：${data.channelName || "-"}
+报备人：${data.reportUser || "-"}
+报备人电话：${data.reportMobile || "-"}
+报备时间：${data.reportDate}
+无效时间：${data.auditTime}
+操作人：${data.auditUserName}
+无效原因：${data.comment}`;
+      }
       uni.setClipboardData({
-        data: `客户姓名：陈家家(先生)
-客户电话：1389998444
-预计到访时间：2020-08-25 16:30
-预计到访人数：2
-报备项目：保利十方舟
-项目周期：20200310~20200410
-所属渠道：中介
-报备人：艾佳佳
-报备人电话：18761234521
-公司门店：广州居家房地产有限公司(居家置业店)
-报备时间：2020-08-25 16:40:12`,
+        data: copyStr,
         success: function () {
-          console.log("success");
+          uni.showToast({
+            title: "复制成功",
+            icon: "success",
+            duration: 2000,
+          });
         },
       });
     },
     async getListMixin() {
-      this.setPageDataMixin(await postReportList(this.queryPageParameters));
+      this.setPageDataMixin(
+        await postReportList({
+          ...this.queryPageParameters,
+          nameOrTel: this.keyword,
+          reportStatus: this.reportStatus,
+        })
+      );
     },
   },
   onLoad() {
