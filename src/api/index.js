@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-10 10:09:50
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-01 14:47:07
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-02-02 14:13:50
  */
 
 import { getApi, postApi } from '../common/http.js';
@@ -163,3 +163,8 @@ export async function postReportCustomerApi(data, option = {}) {
     return await postApi('/sales-api/customer/reportCustomer/getList', data, option)
 }
 
+
+/**查询银行网点信息列表数据*/
+export async function postBankBranchGetListApi(data, option = {}) {
+    return await postApi('/sales-api/finance/bankBranch/getList', data, option)
+}

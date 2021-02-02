@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-27 17:13:50
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-02 09:18:17
+ * @LastEditTime: 2021-02-02 14:57:00
 -->
 <template>
   <view class="add-account-wrapper">
@@ -25,7 +25,7 @@
           class="hide-icon"
         >
           <u-input
-            @click="showBank = true"
+            @click="gotosearch()"
             v-model="addForm.branchName"
             type="select"
             placeholder="开户银行"
@@ -40,6 +40,7 @@
             placeholder="银行卡号"
             :clearable="true"
             input-align="left"
+            type="number"
           />
         </u-form-item>
       </u-form>
@@ -47,36 +48,17 @@
     <view class="btn">
       <u-button type="primary" @click="handleSave">保存</u-button>
     </view>
-    <u-popup v-model="showBank" mode="right" length="100%">
-      <view class="add-bank-list-wrapper">
-        <view class="top-wrapper">
-          <u-search
-            class="search"
-            shape="round"
-            height="72"
-            placeholder-color="#BDBDBD"
-            search-icon-color="#BDBDBD"
-            bg-color="#FFFFFF"
-            border-color="#DCDCDC"
-            :show-action="false"
-            placeholder="请输入开户银行名搜索"
-            v-model="queryPageParameters.bankName"
-          ></u-search>
-        </view>
-        <view
-          class="bank-item"
-          v-for="(item, index) in bankList"
-          :key="index"
-          @click="showBank = false"
-          >{{ item.name }}</view
-        >
-      </view>
-    </u-popup>
   </view>
 </template>
 
 <script>
 import storageTool from "../../../common/storageTool";
+import tool from "../../../common/tool";
+import {
+  postChannelBankAddApi,
+  postChannelBankEditApi,
+  getChannelBankGetApi,
+} from "../../../api/channel";
 export default {
   data() {
     return {
@@ -118,31 +100,72 @@ export default {
       queryPageParameters: {
         bankName: null,
       },
-      bankList: [{ name: "xxxxxxx" }, { name: "xxxxxxx" }, { name: "xxxxxxx" }],
     };
   },
-  onLoad(options) {
+  async onLoad(options) {
     let userInfo = storageTool.getUserInfo();
     console.log(options.id);
     this.addForm.channelId = userInfo?.channelId;
+    if (options.id != "") {
+      const res = await getChannelBankGetApi(options.id);
+      console.log(res);
+      Object.assign(this.addForm, res);
+    } else {
+      this.addForm.id = null;
+    }
   },
   onReady() {
     this.$refs.addForm.setRules(this.rules);
   },
+  onShow() {
+    let item = getApp().globalData.searchBackData;
+    console.log(item);
+    if (item) {
+      switch (item.type) {
+        case "branch":
+          this.addForm.branchNo = item.data.branchNo;
+          this.addForm.branchName = item.data.branchName;
+          // this.addForm.provinceName = item.data.provinceName;
+          // this.addForm.cityName = item.data.cityName;
+          break;
+      }
+    }
+  },
   methods: {
+    gotosearch() {
+      getApp().globalData.searchParams = {
+        api: "postBankBranchApi",
+        key: "branchName",
+        id: "branchNo",
+        type: "branch",
+      };
+      uni.navigateTo({
+        url: "/pages/search/index/index",
+      });
+    },
     // 保存
-    handleSave() {
+    async handleSave() {
       console.log("handleSave");
-      this.$refs.addForm.validate((valid) => {
+      this.$refs.addForm.validate(async (valid) => {
         if (valid) {
           console.log("验证通过");
+
+          if (this.addForm.id) {
+            const res = await postChannelBankEditApi(this.addForm);
+            console.log(res);
+            tool.toast("修改成功");
+          } else {
+            const res = await postChannelBankAddApi(this.addForm);
+            console.log(res);
+            tool.toast("新增成功");
+          }
+          uni.redirectTo({
+            url: `/channelPackage/myTab/channelPage/commissionAccount`,
+          });
         } else {
           console.log("验证失败");
         }
       });
-      // uni.redirectTo({
-      //   url: `/channelPackage/myTab/channelPage/commissionAccount`,
-      // });
     },
   },
 };

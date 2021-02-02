@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 15:30:00
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-02 11:17:48
+ * @LastEditTime: 2021-02-02 15:02:06
  */
 const tokenKey = 'token';//token的key
 const expiresInKey = 'expires_in';//token的key的过期时间

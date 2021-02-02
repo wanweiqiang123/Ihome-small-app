@@ -3,8 +3,8 @@
  * @version:
  * @Author: lsj
  * @Date: 2020-12-15 10:10:10
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-02 11:09:41
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-02-02 15:01:10
  */
 import { getApi, postApi } from '@/common/http';
 import { currentEnvConfig } from '@/env-config';
@@ -137,7 +137,37 @@ export async function getchannelBankByIdApi(id, option = {}) {
  */
 export async function postChannelBankBatchDeleteApi(data = {}, option = {}) {
   let url = `/sales-api/channel/channelBank/batchDelete`;
-  return await getApi(url, data, option);
+  return await postApi(url, data, option);
+}
+
+ 
+
+/** 添加渠道商银行账户
+ * @param {*} data
+ * @param {*} option
+ * @return {*}
+ */
+export async function postChannelBankAddApi(data = {}, option = {}) {
+  let url = `/sales-api/channel/channelBank/add`;
+  return await postApi(url, data, option);
+}
+/** 修改渠道商银行账户
+ * @param {*} data
+ * @param {*} option
+ * @return {*}
+ */
+export async function postChannelBankEditApi(data = {}, option = {}) {
+  let url = `/sales-api/channel/channelBank/edit`;
+  return await postApi(url, data, option);
+}
+/** 查询渠道商银行账户详情
+ * @param {*} data
+ * @param {*} option
+ * @return {*}
+ */
+export async function getChannelBankGetApi(id, option = {}) {
+  let url = `/sales-api/channel/channelBank/get/${id}`;
+  return await getApi(url, {}, option);
 }
 
 
