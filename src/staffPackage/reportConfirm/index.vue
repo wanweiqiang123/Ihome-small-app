@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-13 15:13:13
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-01 18:40:00
+ * @LastEditTime: 2021-02-02 09:12:28
 -->
 <template>
   <view class="container safe-area-inset-bottom">
@@ -82,7 +82,7 @@
             type="primary"
             shape="circle"
             :custom-style="{ padding: '0 40rpx', marginRight: '20rpx' }"
-            @click="handleCopy()"
+            @click="handleCopy(i)"
           >一键复制</u-button>
           <template v-if="current === 0">
             <u-button
@@ -166,10 +166,6 @@
             v-model="queryPageParameters.exMarket"
             :arrData="checkList"
           ></IhRadio>
-          <!-- <IhCheckbox
-            v-model="exMarketList"
-            :arr="checkList"
-          ></IhCheckbox> -->
         </u-form-item>
       </u-form>
     </PopupSearch>
@@ -221,7 +217,6 @@ export default {
         proCycle: "",
         exMarket: null,
       },
-      exMarketList: [],
       checkList: [
         {
           code: 1,
@@ -252,7 +247,6 @@ export default {
       });
     },
     confirm() {
-      console.log(this.queryPageParameters);
       this.tablePage = [];
       this.queryPageParameters.pageNum = 1;
       this.getListMixin();
@@ -270,19 +264,62 @@ export default {
       }
     },
     handleCopy(data) {
+      let copyStr = "";
+      if (this.current === 0) {
+        copyStr = `客户姓名：${data.name}(${
+          data.sex === "Mr" ? "先生" : "女士"
+        })
+客户电话：${data.mobile}
+预计到访时间：${data.expectedTime}
+预计到访人数：${data.expectedNumber}
+报备项目：${data.proName}
+项目周期：${data.proCycle}
+所属渠道：${data.channelName || "-"}
+报备人：${data.reportUser || "-"}
+报备人电话：${data.reportMobile || "-"}
+报备时间：${data.reportDate}`;
+      }
+      if (this.current === 1) {
+        copyStr = `客户姓名：${data.name}(${
+          data.sex === "Mr" ? "先生" : "女士"
+        })
+客户电话：${data.mobile}
+预计到访时间：${data.expectedTime}
+预计到访人数：${data.expectedNumber}
+报备项目：${data.proName}
+项目周期：${data.proCycle}
+所属渠道：${data.channelName || "-"}
+报备人：${data.reportUser || "-"}
+报备人电话：${data.reportMobile || "-"}
+报备时间：${data.reportDate}
+报备确认时间：${data.auditTime}
+操作人：${data.auditUserName}`;
+      }
+      if (this.current === 2) {
+        copyStr = `客户姓名：${data.name}(${
+          data.sex === "Mr" ? "先生" : "女士"
+        })
+客户电话：${data.mobile}
+预计到访时间：${data.expectedTime}
+预计到访人数：${data.expectedNumber}
+报备项目：${data.proName}
+项目周期：${data.proCycle}
+所属渠道：${data.channelName || "-"}
+报备人：${data.reportUser || "-"}
+报备人电话：${data.reportMobile || "-"}
+报备时间：${data.reportDate}
+无效时间：${data.auditTime}
+操作人：${data.auditUserName}
+无效原因：${data.comment}`;
+      }
       uni.setClipboardData({
-        data: `客户姓名：陈家家(先生)
-客户电话：1389998444
-预计到访时间：2020-08-25 16:30
-预计到访人数：2
-报备项目：保利十方舟
-项目周期：20200310~20200410
-所属渠道：中介
-报备人：艾佳佳
-报备人电话：18761234521
-报备时间：2020-08-25 16:40:12`,
+        data: copyStr,
         success: function () {
-          console.log("success");
+          uni.showToast({
+            title: "复制成功",
+            icon: "success",
+            duration: 2000,
+          });
         },
       });
     },
