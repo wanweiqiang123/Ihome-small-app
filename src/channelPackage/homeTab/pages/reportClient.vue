@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-24 09:58:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-01 18:25:26
+ * @LastEditTime: 2021-02-02 08:57:53
 -->
 <template>
   <view class="report-client-wrapper">
@@ -468,7 +468,7 @@ export default {
         obj.reportName = userInfo.name;
         obj.reportType = "FullNumber";
         await postReportApi(obj);
-        this.$tool.toast(this.pageType ? "登记成功" : "报备成功");
+        this.$tool.toast("报备成功");
         if (this.pageType === "dealReg") {
           uni.redirectTo({
             url: `/channelPackage/myTab/pages/myReport`,

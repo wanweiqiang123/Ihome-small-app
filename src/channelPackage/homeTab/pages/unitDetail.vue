@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-23 17:30:18
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-01 11:25:44
+ * @LastEditTime: 2021-02-02 10:27:33
 -->
 <template>
   <view class="project-detail-wrapper">
@@ -23,7 +23,7 @@
             <u-image
               width="100%"
               height="320rpx"
-              :src="banner"
+              :src="info.picAddr"
             ></u-image>
             <view class="title">
               {{info.houseName}}
@@ -38,49 +38,49 @@
               <u-col span="7">
                 <view class="home-col-wrapper">
                   <view class="home-label">户型</view>
-                  <view class="home-value">{{`2室 1厅 1厨 1卫`}}</view>
+                  <view class="home-value">{{`${info.room ? info.room : 0}室 ${info.hall ? info.hall : 0}厅 ${info.kitchen ? info.kitchen : 0}厨 ${info.toilet ? info.toilet : 0}卫`}}</view>
                 </view>
               </u-col>
               <u-col span="5">
                 <view class="home-col-wrapper">
                   <view class="home-label">售价</view>
-                  <view class="home-value">200万起</view>
+                  <view class="home-value">{{info.salePrice ? info.salePrice : 0}}</view>
                 </view>
               </u-col>
               <u-col span="7">
                 <view class="home-col-wrapper">
                   <view class="home-label">户型面积</view>
-                  <view class="home-value">87m²</view>
+                  <view class="home-value">{{info.space ? info.space : 0}}</view>
                 </view>
               </u-col>
               <u-col span="5">
                 <view class="home-col-wrapper">
                   <view class="home-label">朝向</view>
-                  <view class="home-value">南</view>
+                  <view class="home-value">{{getDictName(info.positionEnum, PositionEnum)}}</view>
                 </view>
               </u-col>
               <u-col span="7">
                 <view class="home-col-wrapper">
                   <view class="home-label">物业类型</view>
-                  <view class="home-value">住宅</view>
+                  <view class="home-value">{{getDictName(info.propertyEnum, Property)}}</view>
                 </view>
               </u-col>
               <u-col span="5">
                 <view class="home-col-wrapper">
                   <view class="home-label">物业费</view>
-                  <view class="home-value">2.8元/m²</view>
+                  <view class="home-value">{{info.propertyCost ? info.propertyCost : 0}}</view>
                 </view>
               </u-col>
               <u-col span="7">
                 <view class="home-col-wrapper">
                   <view class="home-label">产权年限</view>
-                  <view class="home-value">70年</view>
+                  <view class="home-value">{{info.propertyAge ? getDictName(info.propertyAge, PropertyAge) : 0}}</view>
                 </view>
               </u-col>
               <u-col span="5">
                 <view class="home-col-wrapper">
                   <view class="home-label">装修级别</view>
-                  <view class="home-value">精装</view>
+                  <view class="home-value">{{getDictName(info.renovatLevelEnum, RenovatLevelEnum)}}</view>
                 </view>
               </u-col>
             </u-row>
@@ -96,24 +96,24 @@
           <view class="home-info-title">同楼盘其他户型</view>
           <view
             class="home-info-other"
-            v-for="item in [1, 2, 3]"
-            :key="item"
-            @click="viewHomeDetail"
+            v-for="(item, i) in info.houseTypeYDOtherDetailVos"
+            :key="i"
+            @click="viewHomeDetail(item.houseTypeId)"
           >
             <view class="home-img">
               <u-image
                 width="170rpx"
                 height="130rpx"
-                :src="homeImg"
+                :src="item.picAddr"
               ></u-image>
             </view>
             <view class="home-info-right">
               <view class="info-title">
-                <view>底层洋房101m²</view>
-                <veiw class="price-color">284万起</veiw>
+                <view>{{item.houseName}}</view>
+                <veiw class="price-color">{{item.salePrice}}</veiw>
               </view>
-              <view class="info-size">101m²</view>
-              <view class="info-location">北</view>
+              <view class="info-size">{{item.space}}</view>
+              <view class="info-location">{{getDictName(item.positionEnum, PositionEnum)}}</view>
             </view>
           </view>
         </view>
@@ -124,36 +124,63 @@
 
 <script>
 import { getAllByTypeApi } from "../../../api/index";
+import { getYDhouseDetail } from "../../../api/channel";
+import { currentEnvConfig } from "../../../env-config.js";
 export default {
   data() {
     return {
       banner: require("@/channelPackage/common/img/banner_1.png"),
       homeImg: require("@/channelPackage/common/img/house.jpg"),
       info: {
-        averagePrice: "",
         houseName: "",
-        houseTypeId: "",
         picAddr: "",
         positionEnum: "",
+        proId: "",
         propertyAge: "",
         propertyCost: "",
         propertyEnum: "",
         renovatLevelEnum: "",
+        salePrice: "",
+        space: "",
+        houseTypeYDOtherDetailVos: [],
       },
       Property: [],
       RenovatLevel: [],
+      PositionEnum: [],
+      PropertyAge: [],
+      RenovatLevelEnum: [],
+      houseId: "",
     };
   },
+  onLoad(options) {
+    this.houseId = options.id;
+    if (this.houseId) {
+      this.getInfo();
+    }
+  },
   async onShow() {
-    this.info = { ...getApp().viewHomeDetail };
     this.Property = await this.getDictAll("Property");
     this.RenovatLevel = await this.getDictAll("RenovatLevel");
+    this.PositionEnum = await this.getDictAll("Position");
+    this.PropertyAge = await this.getDictAll("PropertyAge");
+    this.RenovatLevelEnum = await this.getDictAll("RenovatLevel");
   },
   methods: {
+    async getInfo() {
+      const res = await getYDhouseDetail(this.houseId);
+      this.info = {
+        ...res,
+        picAddr: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${res.picAddr}`,
+        houseTypeYDOtherDetailVos: res.houseTypeYDOtherDetailVos.map((j) => ({
+          ...j,
+          picAddr: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${j.picAddr}`,
+        })),
+      };
+    },
     // 查看户型详情
-    viewHomeDetail() {
-      uni.navigateTo({
-        url: `/channelPackage/homeTab/pages/unitDetail`,
+    viewHomeDetail(id) {
+      uni.redirectTo({
+        url: `/channelPackage/homeTab/pages/unitDetail?id=${id}`,
       });
     },
     // 字典翻译

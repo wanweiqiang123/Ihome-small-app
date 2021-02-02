@@ -3,8 +3,8 @@
  * @version:
  * @Author: lsj
  * @Date: 2020-12-15 10:10:10
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-01 18:26:08
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-02-02 15:01:10
  */
 import { getApi, postApi } from '@/common/http';
 import { currentEnvConfig } from '@/env-config';
@@ -120,6 +120,58 @@ export async function postCollectGetList(data = {}, option = {}) {
   return await postApi(`/sales-api/customer/collect/getList`, data, option);
 }
 
+/** 查询渠道商银行账户列表
+ * @param {*} data
+ * @param {*} option
+ * @return {*}
+ */
+export async function getchannelBankByIdApi(id, option = {}) {
+  let url = `/sales-api/channel/channelBank/getAll/${id}`;
+  return await getApi(url, {}, option);
+}
+
+/** 批量删除银行账户
+ * @param {*} data
+ * @param {*} option
+ * @return {*}
+ */
+export async function postChannelBankBatchDeleteApi(data = {}, option = {}) {
+  let url = `/sales-api/channel/channelBank/batchDelete`;
+  return await postApi(url, data, option);
+}
+
+ 
+
+/** 添加渠道商银行账户
+ * @param {*} data
+ * @param {*} option
+ * @return {*}
+ */
+export async function postChannelBankAddApi(data = {}, option = {}) {
+  let url = `/sales-api/channel/channelBank/add`;
+  return await postApi(url, data, option);
+}
+/** 修改渠道商银行账户
+ * @param {*} data
+ * @param {*} option
+ * @return {*}
+ */
+export async function postChannelBankEditApi(data = {}, option = {}) {
+  let url = `/sales-api/channel/channelBank/edit`;
+  return await postApi(url, data, option);
+}
+/** 查询渠道商银行账户详情
+ * @param {*} data
+ * @param {*} option
+ * @return {*}
+ */
+export async function getChannelBankGetApi(id, option = {}) {
+  let url = `/sales-api/channel/channelBank/get/${id}`;
+  return await getApi(url, {}, option);
+}
+
+
+
 // 收藏或者取消项目
 export async function addOrUpdateApi(data = {}, option = {}) {
   return await postApi('/sales-api/customer/collect/addOrUpdate', data, option);
@@ -128,4 +180,9 @@ export async function addOrUpdateApi(data = {}, option = {}) {
 // 新增客户报备
 export async function postReportApi(data = {}, option = {}) {
   return await postApi('/sales-api/customer/report/add', data, option);
+}
+
+// 户型详情【移动端】
+export async function getYDhouseDetail(data = {}, option = {}) {
+  return await getApi(`/sales-api/project/houseType/yDhouseDetail/${data}`, option);
 }
