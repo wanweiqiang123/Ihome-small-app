@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-23 11:15:50
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-01 11:39:53
+ * @LastEditTime: 2021-02-02 10:43:35
 -->
 <template>
   <view class="project-detail-wrapper">
@@ -99,7 +99,7 @@
           <view class="u-margin-bottom-50">
             <view class="home-info-title">报备规则</view>
             <view class="content-time">报备保护期: {{detailInfo.customerReportRule.developerProtectionPeriod ? detailInfo.customerReportRule.developerProtectionPeriod: 0}}天</view>
-            <view class="content-time">报备类型: {{`前三后四小时`}}</view>
+            <view class="content-time">报备类型: {{detailInfo.customerReportRule.reportTypeEnum ? getDictName(detailInfo.customerReportRule.reportTypeEnum, ReportType) : ''}}</view>
           </view>
           <view class="u-margin-bottom-50">
             <view class="home-info-title">到访规则</view>
@@ -108,7 +108,7 @@
           </view>
           <view>
             <view class="home-info-title">开发商界定规则</view>
-            <view class="content-time">开发商界定规则详情说明....</view>
+            <view class="content-time">{{detailInfo.customerReportRule.developersRules ? detailInfo.customerReportRule.developersRules : ''}}</view>
           </view>
         </view>
       </view>
@@ -124,10 +124,6 @@
           <view class="u-margin-bottom-50">
             <view class="home-info-title">购房目的</view>
             <view class="content-time">{{detailInfo.promotionVO.housePurchasing ? detailInfo.promotionVO.housePurchasing : '自住、投资'}}</view>
-          </view>
-          <view>
-            <view class="home-info-title">购房预算</view>
-            <view class="content-time">200-300万</view>
           </view>
         </view>
       </view>
@@ -159,6 +155,7 @@
 
 <script>
 import { getProDetail, addOrUpdateApi } from "@/api/channel";
+import { getAllByTypeApi } from "../../../api/index";
 export default {
   data() {
     return {
@@ -202,6 +199,7 @@ export default {
       sellingPointCurrent: 0,
       content: "18888元/m²起",
       keepFlag: false,
+      ReportType: [],
     };
   },
   onLoad(option) {
@@ -209,6 +207,9 @@ export default {
       this.currentProId = option.proId;
       this.init();
     }
+  },
+  async onShow() {
+    this.ReportType = await this.getDictAll("ReportType");
   },
   methods: {
     // 初始化页面
@@ -261,9 +262,8 @@ export default {
     },
     // 查看户型详情
     viewHomeDetail(item) {
-      getApp().viewHomeDetail = item;
       uni.navigateTo({
-        url: `/channelPackage/homeTab/pages/unitDetail`,
+        url: `/channelPackage/homeTab/pages/unitDetail?id=${item.houseTypeId}`,
       });
     },
     // 报备
@@ -271,6 +271,18 @@ export default {
       uni.navigateTo({
         url: `/channelPackage/homeTab/pages/reportClient`,
       });
+    },
+    // 字典翻译
+    async getDictAll(type) {
+      const dictList = await getAllByTypeApi({ type });
+      return dictList;
+    },
+    // 字典匹配
+    getDictName(code, list) {
+      if (list.length) {
+        const item = list.find((v) => v.code === code);
+        return item?.name;
+      }
     },
   },
 };

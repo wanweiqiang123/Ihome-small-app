@@ -3,8 +3,8 @@
  * @version:
  * @Author: lsj
  * @Date: 2020-12-15 10:10:10
- * @LastEditors: zyc
- * @LastEditTime: 2021-02-02 09:39:01
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-02 11:09:41
  */
 import { getApi, postApi } from '@/common/http';
 import { currentEnvConfig } from '@/env-config';
@@ -135,7 +135,7 @@ export async function getchannelBankByIdApi(id, option = {}) {
  * @param {*} option
  * @return {*}
  */
-export async function postChannelBankBatchDeleteApi(data={}, option = {}) {
+export async function postChannelBankBatchDeleteApi(data = {}, option = {}) {
   let url = `/sales-api/channel/channelBank/batchDelete`;
   return await getApi(url, data, option);
 }
@@ -150,4 +150,9 @@ export async function addOrUpdateApi(data = {}, option = {}) {
 // 新增客户报备
 export async function postReportApi(data = {}, option = {}) {
   return await postApi('/sales-api/customer/report/add', data, option);
+}
+
+// 户型详情【移动端】
+export async function getYDhouseDetail(data = {}, option = {}) {
+  return await getApi(`/sales-api/project/houseType/yDhouseDetail/${data}`, option);
 }
