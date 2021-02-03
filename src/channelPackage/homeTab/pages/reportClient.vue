@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-24 09:58:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-02 08:57:53
+ * @LastEditTime: 2021-02-03 10:21:49
 -->
 <template>
   <view class="report-client-wrapper">
@@ -20,6 +20,7 @@
         :show-action="false"
         placeholder="请输入项目名称"
         disabled
+        v-model="keyword"
         @click="projectSearch"
       ></u-search>
       <view class="project-card">
@@ -305,6 +306,7 @@ export default {
         minute: true,
         second: false,
       },
+      keyword: "",
     };
   },
   onReady() {
@@ -327,11 +329,11 @@ export default {
     this.areaRegion = await this.getArea(); // 省市区
     let item = getApp().globalData.searchBackData;
     if (item && item.type === "project") {
-      console.log(item);
       this.info.proId = item.data.proId;
       this.info.proName = item.data.proName;
       this.info.exMarket = item.data.exMarket;
       this.district = item.data.district;
+      this.keyword = item.data.proName;
       getApp().globalData.searchBackData = {};
       // if (this.pageType) {
       //   this.buildSelectList = await postBuildByProId({
@@ -342,10 +344,11 @@ export default {
       this.info.name = item.data.name;
       this.info.sex = item.data.sex;
       this.info.mobile = item.data.mobile;
+      getApp().globalData.searchBackData = {};
     }
   },
   methods: {
-    // 周期跳转搜索页
+    // 项目跳转搜索页
     projectSearch() {
       getApp().globalData.searchParams = {
         api: "postProjectsApi",

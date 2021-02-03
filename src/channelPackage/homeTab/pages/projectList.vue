@@ -4,17 +4,20 @@
  * @Author: lsj
  * @Date: 2020-11-17 15:26:33
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-01 09:18:53
+ * @LastEditTime: 2021-02-03 10:20:33
 -->
 <template>
   <view class="project-list-wrapper">
     <view class="top-wrapper">
-      <view class="top-location">
+      <view
+        class="top-location"
+        @click="cityChange"
+      >
         <u-icon
           name="map-fill"
           size="50rpx"
         ></u-icon>
-        <view>广州市</view>
+        <view>{{getDictName(city, areaRegion)}}</view>
       </view>
       <u-search
         class="search"
@@ -23,17 +26,39 @@
         border-color="#f2f2f2"
         :show-action="false"
         placeholder="请输入项目名称"
-        v-model="queryPageParameters.projectName"
+        v-model="keyword"
+        disabled
+        @click="projectSearch"
       ></u-search>
     </view>
     <view>
-      <u-dropdown ref="uDropdown">
-        <u-dropdown-item
-          @change="handleDrop"
-          v-model="dropDownList[0].value"
-          :title="dropDownList[0].title"
-          :options="dropDownList[0].options"
-        >
+      <u-dropdown
+        ref="uDropdown"
+        @close="dropdownClose"
+      >
+        <u-dropdown-item :title="dropDownList[0].title">
+          <view class="slot-content slot-wrapper">
+            <scroll-view
+              scroll-y="true"
+              style="height: 800rpx;"
+            >
+              <view
+                @click="handleDrop(item.value)"
+                class="slot-item-wrapper"
+                v-for="item in dropDownList[0].options"
+                :key="item.value"
+              >
+                <view class="type">{{item.label}}</view>
+                <view class="icon">
+                  <u-icon
+                    v-show="dropDownList[0].value === item.value"
+                    name="checkbox-mark"
+                    size="32rpx"
+                  ></u-icon>
+                </view>
+              </view>
+            </scroll-view>
+          </view>
         </u-dropdown-item>
         <u-dropdown-item :title="dropDownList[1].title">
           <view class="slot-content slot-wrapper">
@@ -59,7 +84,7 @@
                   <input
                     type="text"
                     class="input-u"
-                    v-model="dropDownList[1].minValue"
+                    v-model="dropDownList[1].minPrice"
                     @input="changePrice"
                     placeholder="最小价格"
                   />
@@ -67,7 +92,7 @@
                   <input
                     type="text"
                     class="input-u"
-                    v-model="dropDownList[1].maxValue"
+                    v-model="dropDownList[1].maxPrice"
                     @input="changePrice"
                     placeholder="最大价格"
                   />
@@ -168,123 +193,105 @@
     <view class="project-list">
       <view
         class="content"
-        v-for="item in [1, 2, 3, 4, 5, 6, 7, 8, 9]"
-        :key="item"
-        @click="viewProjectDetail"
+        v-for="(item, i) in tablePage"
+        :key="i"
+        @click="viewProjectDetail(item.proId)"
       >
         <view>
           <u-image
             width="242rpx"
             height="186rpx"
-            :src="homeImg"
+            :src="item.attachAddr"
           ></u-image>
         </view>
         <view class="content-right">
-          <view class="title-wrapper">远洋招商保利东湾经纪渠道</view>
+          <view class="title-wrapper">{{item.proName}}</view>
           <view>
             <u-tag
-              text="天河区"
+              :text="item.districtName"
               size="mini"
               :closeable="false"
               type="info"
             />
           </view>
           <view class="price-wrapper">
-            <span class="price">均价23000</span>
+            <span class="price">{{item.averagePrice}}</span>
             <span class="unit">元/m<span class="two">2</span></span>
-          </view>
-          <view class="rule">
-            <span class="rule-tap">佣</span>
-            <span>佣金规则</span>
           </view>
         </view>
       </view>
     </view>
+    <u-select
+      v-model="selectcity"
+      :list="selectList"
+      @confirm="confirmCity"
+    ></u-select>
   </view>
 </template>
 
 <script>
+import { getGradeCitiesByChannelIdApi, getAreaList } from "@/api/channel";
+import { getAllByTypeApi, getYDProjectListApi } from "@/api/index";
+import { currentEnvConfig } from "../../../env-config.js";
+import pagination from "../../../mixins/pagination";
 export default {
+  mixins: [pagination],
   data() {
     return {
-      queryPageParameters: {
-        projectName: "",
-      },
+      keyword: "",
+      areaRegion: [],
+      cityList: [],
+      city: "",
+      selectcity: false,
+      selectList: [],
       dropDownList: [
         {
           value: "", // 单选
           title: "区域",
-          options: [
-            {
-              label: "全部区域",
-              value: "1",
-            },
-            {
-              label: "天河区",
-              value: "2",
-            },
-            {
-              label: "南沙区",
-              value: "3",
-            },
-            {
-              label: "番禺区",
-              value: "4",
-            },
-            {
-              label: "增城区",
-              value: "5",
-            },
-          ],
+          options: [],
         },
         {
           value: "", // 单选
           title: "均价",
-          minValue: "", // 最小值
-          maxValue: "", // 最大值
+          minPrice: "", // 最小值
+          maxPrice: "", // 最大值
           titleName: "average",
           options: [
             {
-              label: "不限",
-              value: "1",
-              minValue: "",
-              maxValue: "",
-            },
-            {
               label: "0-1万",
-              value: "2",
-              minValue: "0",
-              maxValue: "1",
+              value: "1",
+              minPrice: "0",
+              maxPrice: "1",
             },
             {
               label: "1-2万",
-              value: "3",
-              minValue: "1",
-              maxValue: "2",
+              value: "2",
+              minPrice: "1",
+              maxPrice: "2",
             },
             {
               label: "2-3万",
-              value: "4",
-              minValue: "2",
-              maxValue: "3",
+              value: "3",
+              minPrice: "2",
+              maxPrice: "3",
             },
             {
               label: "3-4万",
-              value: "5",
-              minValue: "3",
-              maxValue: "4",
+              value: "4",
+              minPrice: "3",
+              maxPrice: "4",
             },
             {
               label: "4-5万",
-              value: "6",
-              minValue: "4",
-              maxValue: "5",
+              value: "5",
+              minPrice: "4",
+              maxPrice: "5",
             },
             {
               label: "5万以上",
-              value: "7",
-              minValue: "",
-              maxValue: "",
+              value: "6",
+              minPrice: "",
+              maxPrice: "",
             },
           ],
         },
@@ -294,32 +301,28 @@ export default {
           titleName: "unit",
           options: [
             {
-              label: "不限",
-              value: "1",
-            },
-            {
               label: "一室",
-              value: "2",
+              value: "One",
             },
             {
               label: "二室",
-              value: "3",
+              value: "Two",
             },
             {
               label: "三室",
-              value: "4",
+              value: "Three",
             },
             {
               label: "四室",
-              value: "5",
+              value: "Four",
             },
             {
               label: "五室",
-              value: "6",
+              value: "Five",
             },
             {
               label: "五室以上",
-              value: "7",
+              value: "FivePlus",
             },
           ],
         },
@@ -332,55 +335,47 @@ export default {
           typeOptions: [
             {
               label: "住宅",
-              value: "1",
+              value: "Residence",
             },
             {
               label: "别墅",
-              value: "2",
+              value: "Villa",
             },
             {
               label: "公寓",
-              value: "3",
+              value: "Apartment",
             },
             {
               label: "写字楼",
-              value: "4",
+              value: "Office",
             },
             {
               label: "商铺",
-              value: "5",
+              value: "Shop",
             },
           ],
           sortOptions: [
             {
               label: "均价从高到低",
-              value: "1",
+              value: "AverageDesc",
             },
             {
               label: "均价从低到高",
-              value: "2",
-            },
-            {
-              label: "距离从远到近",
-              value: "3",
-            },
-            {
-              label: "距离从近到远",
-              value: "4",
+              value: "AverageAsc",
             },
           ],
           decorationOptions: [
             {
               label: "毛胚",
-              value: "1",
+              value: "Rough",
             },
             {
               label: "装修",
-              value: "2",
+              value: "Simple",
             },
             {
               label: "精装",
-              value: "3",
+              value: "HardBound",
             },
           ],
         },
@@ -393,15 +388,99 @@ export default {
       return this.initTag();
     },
   },
-  onLoad() {},
+  async onLoad() {
+    this.areaRegion = await this.getArea();
+    const channelId = this.$storageTool.getUserInfo().channelId;
+    this.cityList = await getGradeCitiesByChannelIdApi(channelId);
+    if (this.cityList.length) {
+      this.city = this.cityList[0];
+      this.getChildCity(this.city);
+    }
+    this.getListMixin();
+  },
+  onShow() {
+    let item = getApp().globalData.searchBackData;
+    if (item && item.type === "project") {
+      this.keyword = item.data.proName;
+      this.queryPageParameters.proId = item.data.proId;
+      getApp().globalData.searchBackData = {};
+      this.getListMixin();
+    }
+  },
   methods: {
+    // 获取列表页
+    async getListMixin() {
+      this.queryPageParameters.cityCode = this.city;
+      let res = await getYDProjectListApi(this.queryPageParameters);
+      const item = {
+        ...res,
+        list: res.list.map((v) => ({
+          ...v,
+          attachAddr: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${v.attachAddr}`,
+        })),
+      };
+      this.setPageDataMixin(item);
+    },
+    // 项目跳转搜索页
+    projectSearch() {
+      getApp().globalData.searchParams = {
+        api: "getFuzzySearchByCityApi",
+        key: "proName",
+        id: "proId",
+        type: "project",
+        other: {
+          city: this.city,
+        },
+      };
+      uni.navigateTo({
+        url: "/pages/search/index/index",
+      });
+    },
+    // 获取字典
+    async getDictByType(type) {
+      const dictList = await getAllByTypeApi({ type });
+      return dictList;
+    },
+    // 获取省市区
+    async getArea() {
+      let areaList = await getAreaList();
+      return areaList;
+    },
+    // 获取对应字典name
+    getDictName(code, list) {
+      if (list.length) {
+        const item = list.find((v) => v.code === code);
+        return item?.name;
+      } else {
+        return "";
+      }
+    },
+    // 根据城市编号获取下级区域
+    async getChildCity(code) {
+      const list = this.areaRegion.filter((v) => v.parentCode === code);
+      this.dropDownList[0].options = list.map((v) => ({
+        label: v.name,
+        value: v.code,
+      }));
+    },
+    // 城市变更
+    cityChange() {
+      this.selectcity = true;
+      this.selectList = this.cityList.map((v) => ({
+        label: this.getDictName(v, this.areaRegion),
+        value: v,
+      }));
+    },
+    confirmCity(v) {
+      this.getChildCity(v[0].value);
+    },
     // 手动关闭下拉菜单
     closeDropdown() {
       this.$refs.uDropdown && this.$refs.uDropdown.close();
     },
     // 区域方法
     handleDrop(value) {
-      console.log("handleDrop", value);
+      this.dropDownList[0].value = value;
       this.initTag();
     },
     // 构建选中的tag
@@ -431,22 +510,22 @@ export default {
                     tagList.push({
                       id: new Date().getTime() + tagList.length,
                       index: index,
-                      minValue: "",
-                      maxValue: "",
+                      minPrice: "",
+                      maxPrice: "",
                       label: option.label,
                       value: option.value,
                     });
                   }
                 });
               } else {
-                if (list.minValue && list.maxValue) {
-                  tagList.push(`${list.minValue}-${list.maxValue}万`);
+                if (list.minPrice && list.maxPrice) {
+                  // tagList.push(`${list.minPrice}-${list.maxPrice}万`);
                   tagList.push({
                     id: new Date().getTime() + tagList.length,
                     index: index,
-                    minValue: list.minValue,
-                    maxValue: list.maxValue,
-                    label: `${list.minValue}-${list.maxValue}万`,
+                    minPrice: list.minPrice,
+                    maxPrice: list.maxPrice,
+                    label: `${list.minPrice}-${list.maxPrice}万`,
                     value: "",
                   });
                 }
@@ -519,7 +598,6 @@ export default {
     },
     // 改变最小价格和最大价格事件
     changePrice(event) {
-      // console.log('changePrice', event);
       if (
         this.dropDownList[1].options &&
         this.dropDownList[1].options.length > 0
@@ -527,8 +605,8 @@ export default {
         let flag = false;
         this.dropDownList[1].options.forEach((option) => {
           if (
-            option.minValue === this.dropDownList[1].minValue &&
-            option.maxValue === this.dropDownList[1].maxValue
+            option.minPrice === this.dropDownList[1].minPrice &&
+            option.maxPrice === this.dropDownList[1].maxPrice
           ) {
             flag = true;
             this.dropDownList[1].value = option.value;
@@ -541,7 +619,6 @@ export default {
     },
     // 下拉框自定义方法click事件
     handleChange(index, key, value) {
-      // console.log('type', this.dropDownList);
       switch (index) {
         case 2: // 户型 - 多选
           if (
@@ -566,8 +643,8 @@ export default {
           if (this.dropDownList[index][key] === value) {
             this.dropDownList[index][key] = "";
             if (index === 1) {
-              this.dropDownList[index].minValue = "";
-              this.dropDownList[index].maxValue = "";
+              this.dropDownList[index].minPrice = "";
+              this.dropDownList[index].maxPrice = "";
             }
           } else {
             this.dropDownList[index][key] = value;
@@ -579,8 +656,8 @@ export default {
               ) {
                 this.dropDownList[index].options.forEach((option) => {
                   if (option.value === value) {
-                    this.dropDownList[index].minValue = option.minValue;
-                    this.dropDownList[index].maxValue = option.maxValue;
+                    this.dropDownList[index].minPrice = option.minPrice;
+                    this.dropDownList[index].maxPrice = option.maxPrice;
                   }
                 });
               }
@@ -597,8 +674,6 @@ export default {
     },
     // 关闭Tag
     closeTag(item) {
-      console.log("index", item);
-      console.log("tagList", this.tagList);
       if (!item.id) return;
       // 删除对应的选项
       switch (item.index) {
@@ -608,12 +683,12 @@ export default {
         case 1: // 均价 - 单选
           if (item.value) {
             this.dropDownList[item.index].value = "";
-            this.dropDownList[item.index].minValue = "";
-            this.dropDownList[item.index].maxValue = "";
+            this.dropDownList[item.index].minPrice = "";
+            this.dropDownList[item.index].maxPrice = "";
           } else {
-            if (item.minValue && item.maxValue) {
-              this.dropDownList[item.index].minValue = "";
-              this.dropDownList[item.index].maxValue = "";
+            if (item.minPrice && item.maxPrice) {
+              this.dropDownList[item.index].minPrice = "";
+              this.dropDownList[item.index].maxPrice = "";
             }
           }
           break;
@@ -633,11 +708,52 @@ export default {
           this.dropDownList[item.index][item.type] = "";
           break;
       }
+      this.queryPageParameters = {
+        pageNum: 1,
+        pageSize: 10,
+      };
+      this.dropdownClose();
+    },
+    // 关闭弹层时触发
+    dropdownClose() {
+      if (this.tagList.length) {
+        let arr = [];
+        this.tagList.forEach((v) => {
+          if (v.index === 0) {
+            this.queryPageParameters.district = v.value;
+          } else if (v.index === 1) {
+            if (Number(v.value) !== 6) {
+              this.queryPageParameters.minPrice = v.minPrice
+                ? Number(v.minPrice)
+                : Number(v.value) - 1;
+              this.queryPageParameters.maxPrice = v.maxPrice
+                ? Number(v.maxPrice)
+                : Number(v.value);
+            } else {
+              this.queryPageParameters.maxPrice = 0;
+              this.queryPageParameters.minPrice = 5;
+            }
+          } else if (v.index === 2) {
+            arr.push(v.value);
+            this.queryPageParameters.roomTypeEnums = arr;
+          } else if (v.index === 3) {
+            if (v.type === "type") {
+              this.queryPageParameters.propertyEnum = v.value;
+            } else if (v.type === "sort") {
+              this.queryPageParameters.proSortEnum = v.value;
+            } else if (v.type === "decoration") {
+              this.queryPageParameters.decoration = v.value;
+            }
+          }
+        });
+        this.tablePage = [];
+        this.getListMixin();
+      }
     },
     // 查看项目详情
-    viewProjectDetail() {
+    viewProjectDetail(id) {
       uni.navigateTo({
-        url: `/channelPackage/homeTab/pages/projectDetail`,
+        url: `/channelPackage/homeTab/pages/projectDetail?proId=${id}`,
       });
     },
   },
@@ -684,7 +800,7 @@ export default {
 
     .slot-item-wrapper {
       box-sizing: border-box;
-      padding: 20rpx 32rpx;
+      padding: 10rpx 32rpx;
       font-size: 28rpx;
       line-height: 54rpx;
       color: #606266;

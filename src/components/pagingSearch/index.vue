@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-13 16:47:03
- * @LastEditors: ywl
- * @LastEditTime: 2021-01-15 16:30:04
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-02 16:35:44
 -->
 <template>
   <view class="box">
@@ -69,7 +69,7 @@
       >
         <template v-for="(item, i) in tablePage">
           <view
-            v-if="Object.keys($scopedSlots).length"
+            v-if="isShowChange()"
             :key="i"
           >
             <slot
@@ -190,6 +190,9 @@ export default {
     this.getListMixin();
   },
   methods: {
+    isShowChange() {
+      return Object.keys(this.$scopedSlots).length;
+    },
     async getAreaOption() {
       let data = await apiList["getAreaApi"]();
       let first = this.$u.deepClone(data[0]);
@@ -259,6 +262,7 @@ export default {
       } else {
         this.searchNull = true;
       }
+      this.$forceUpdate();
     },
   },
 };

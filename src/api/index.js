@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 10:09:50
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-01 14:47:07
+ * @LastEditTime: 2021-02-02 15:37:37
  */
 
 import { getApi, postApi } from '../common/http.js';
@@ -161,5 +161,15 @@ export async function postBankBranchApi(data, option = {}) {
 /**查询客户池列表*/
 export async function postReportCustomerApi(data, option = {}) {
     return await postApi('/sales-api/customer/reportCustomer/getList', data, option)
+}
+
+/**查询项目列表[移动端接口]*/
+export async function getYDProjectListApi(data, option = {}) {
+    return await postApi('/sales-api/project/project/getYDProjectList', data, option)
+}
+
+/**模糊查询客户报备所属城市项目【移动端接口】*/
+export async function getFuzzySearchByCityApi(data, option = {}) {
+    return await postApi('/sales-api/project/project/getFuzzySearchByCity', data, option)
 }
 

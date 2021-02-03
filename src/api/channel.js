@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-15 10:10:10
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-02 11:09:41
+ * @LastEditTime: 2021-02-02 15:00:52
  */
 import { getApi, postApi } from '@/common/http';
 import { currentEnvConfig } from '@/env-config';
@@ -155,4 +155,14 @@ export async function postReportApi(data = {}, option = {}) {
 // 户型详情【移动端】
 export async function getYDhouseDetail(data = {}, option = {}) {
   return await getApi(`/sales-api/project/houseType/yDhouseDetail/${data}`, option);
+}
+
+// 根据渠道商id返回所有的渠道等级的业务开展城市
+export async function getGradeCitiesByChannelIdApi(data = {}, option = {}) {
+  return await getApi(`/sales-api/channel/channelGrade/getGradeCitiesByChannelId/${data}`, option);
+}
+
+// 根据行政区划编码查询所有下级行政区划信息
+export async function getAllChildAreaApi(data = {}, option = {}) {
+  return await getApi(`/sales-api/system/area/getAllChildArea/${data}`, option);
 }
