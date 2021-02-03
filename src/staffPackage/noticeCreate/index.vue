@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-29 18:47:02
+ * @LastEditTime: 2021-02-03 16:03:59
 -->
 <template>
   <LoginPage>
@@ -343,7 +343,7 @@
         :list="selectList"
         safe-area-inset-bottom
         title="选择优惠折扣方式"
-        value-name="premiumReceived"
+        value-name="valueObj"
         label-name="modeDescription"
         @confirm="selectConfirm"
       ></u-select>
@@ -439,6 +439,7 @@ export default {
         ownerList: [],
         noticeAttachmentList: [],
         reviewStatus: "",
+        exPreferentialItem: 1,
       },
       baseRules: {
         cycleName: [
@@ -597,10 +598,11 @@ export default {
     },
     selectConfirm(val) {
       let item = val[0];
-      if (item.value === "other") {
+      if (item.value.premiumReceived === "other") {
         this.isOther = true;
         this.form.promotionMethod = "Manual";
         this.form.manner = item.label;
+        this.form.exPreferentialItem = item.value.exPreferentialItem;
         this.form.explain = null;
         this.form.paymentAmount = "";
       } else {
@@ -608,7 +610,8 @@ export default {
         this.form.promotionMethod = "Automatic";
         this.form.manner = item.label;
         this.form.explain = item.label;
-        this.form.paymentAmount = item.value;
+        this.form.paymentAmount = item.value.premiumReceived;
+        this.form.exPreferentialItem = item.value.exPreferentialItem;
       }
     },
     handleShowSelect() {
@@ -619,10 +622,29 @@ export default {
       this.selectShow = true;
     },
     async getMannerList() {
-      const list = [{ modeDescription: "自定义", premiumReceived: "other" }];
-      this.selectList = await getMannerListByTermId({ id: this.form.cycleId });
+      const list = [
+        {
+          modeDescription: "自定义",
+          valueObj: {
+            premiumReceived: "other",
+            exPreferentialItem: 1,
+          },
+        },
+      ];
+      let res = await getMannerListByTermId({ id: this.form.cycleId });
+
       if (this.form.channel === "CustomerService") {
-        this.selectList = this.selectList.concat(list);
+        this.selectList = res
+          .map((i) => {
+            return {
+              modeDescription: i.modeDescription,
+              valueObj: {
+                premiumReceived: i.premiumReceived,
+                exPreferentialItem: i.exPreferentialItem,
+              },
+            };
+          })
+          .concat(list);
       }
     },
     buildConfirm(val) {
