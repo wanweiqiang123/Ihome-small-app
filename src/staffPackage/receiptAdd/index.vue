@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-19 18:44:57
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-02 20:39:44
+ * @LastEditTime: 2021-02-03 12:05:07
 -->
 <template>
   <view class="receipt">
@@ -56,6 +56,7 @@
               v-model="form.payTime"
               type="select"
               placeholder="选择日期"
+              disabled
             />
           </u-form-item>
           <u-form-item
@@ -64,7 +65,7 @@
           >
             <u-input
               v-model="form.amount"
-              :disabled="form.payType === 'PosNoOrder'"
+              disabled
               placeholder="请输入收款金额"
             />
           </u-form-item>
@@ -220,7 +221,7 @@ export default {
       }
     },
     "form.orderNo"(v) {
-      if (!v && this.form.payType === "PosNoOrder") {
+      if (this.form.payType === "PosNoOrder") {
         Object.assign(this.form, {
           payTime: "",
           amount: "",
@@ -291,7 +292,11 @@ export default {
       if (this.form.orderNo) {
         try {
           const info = await getNoOrderInfo({ orderNo: this.form.orderNo });
-          Object.assign(this.form, info);
+          if (info) {
+            Object.assign(this.form, info);
+          } else {
+            this.$tool.toast("检查单号为空");
+          }
         } catch (error) {
           console.log(error);
         }
