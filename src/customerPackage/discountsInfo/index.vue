@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-03 11:43:02
+ * @LastEditTime: 2021-02-03 16:55:56
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -243,14 +243,14 @@
                   type="primary"
                   size="medium"
                   shape="circle"
-                  @click="gotoNotice(item, 'view')"
+                  @click="viewNotice(item)"
                 >预览</u-button>
                 <u-button
                   v-if="item.notificationStatus === 'WaitBeSigned'"
                   type="primary"
                   size="medium"
                   shape="circle"
-                  @click="gotoNotice(item, 'sign')"
+                  @click="signNotice(item, 'sign')"
                 >去签署</u-button>
               </view>
             </view>
@@ -432,7 +432,7 @@ export default {
     gotoSign(type) {
       let item = this.info.noticeList.find((v) => v.notificationType === type);
       if (item) {
-        this.gotoNotice(item, "sign");
+        this.signNotice(item, "sign");
       }
     },
 
@@ -443,8 +443,16 @@ export default {
       });
     },
 
+    // 签署
+    signNotice(val, type) {
+      getApp().noticeInfo = { ...val, type: type };
+      uni.navigateTo({
+        url: `/customerPackage/notification/index`,
+      });
+    },
+
     // 预览
-    async gotoNotice(val, type) {
+    async viewNotice(val) {
       if (val.templateType !== "ElectronicTemplate") {
         if (val.noticeAttachmentList.length) {
           let preList = val.noticeAttachmentList.map(
@@ -460,12 +468,6 @@ export default {
         }
       } else {
         switch (val.notificationStatus) {
-          case "WaitBeSigned":
-            getApp().noticeInfo = { ...val, type: type };
-            uni.navigateTo({
-              url: `/customerPackage/notification/index`,
-            });
-            break;
           case "WaitPay":
           case "WaitReview":
             const res = await getPreviewApi(this.noticeId);
