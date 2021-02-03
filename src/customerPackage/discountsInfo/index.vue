@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-30 17:57:10
+ * @LastEditTime: 2021-02-03 11:43:02
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -445,40 +445,55 @@ export default {
 
     // 预览
     async gotoNotice(val, type) {
-      switch (val.notificationStatus) {
-        case "WaitBeSigned":
-          getApp().noticeInfo = { ...val, type: type };
-          uni.navigateTo({
-            url: `/customerPackage/notification/index`,
+      if (val.templateType !== "ElectronicTemplate") {
+        if (val.noticeAttachmentList.length) {
+          let preList = val.noticeAttachmentList.map(
+            (i) =>
+              `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${i.fileNo}`
+          );
+          uni.previewImage({
+            urls: preList,
+            current: 1,
           });
-          break;
-        case "WaitPay":
-        case "WaitReview":
-          const res = await getPreviewApi(this.noticeId);
-          if (res) {
-            getApp().globalData.webViewSrc = res;
+        } else {
+          this.$tool.toast("附件为空");
+        }
+      } else {
+        switch (val.notificationStatus) {
+          case "WaitBeSigned":
+            getApp().noticeInfo = { ...val, type: type };
             uni.navigateTo({
-              url: `/pages/webView/preview/index`,
+              url: `/customerPackage/notification/index`,
             });
-          }
-          break;
-        case "BecomeEffective":
-        case "Invalidation":
-          let url = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${val.templateId}`;
-          uni.downloadFile({
-            url: url,
-            success: function (res) {
-              var filePath = res.tempFilePath;
-              uni.openDocument({
-                filePath: filePath,
-                fileType: "pdf",
-                showMenu: true,
-                success: function (res) {
-                  console.log("打开文档成功");
-                },
+            break;
+          case "WaitPay":
+          case "WaitReview":
+            const res = await getPreviewApi(this.noticeId);
+            if (res) {
+              getApp().globalData.webViewSrc = res;
+              uni.navigateTo({
+                url: `/pages/webView/preview/index`,
               });
-            },
-          });
+            }
+            break;
+          case "BecomeEffective":
+          case "Invalidation":
+            let url = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${val.templateId}`;
+            uni.downloadFile({
+              url: url,
+              success: function (res) {
+                var filePath = res.tempFilePath;
+                uni.openDocument({
+                  filePath: filePath,
+                  fileType: "pdf",
+                  showMenu: true,
+                  success: function (res) {
+                    console.log("打开文档成功");
+                  },
+                });
+              },
+            });
+        }
       }
     },
     async gotoPay(obj) {
