@@ -1,335 +1,352 @@
 <!--
  * @Descripttion: 
  * @version: 
- * @Author: lsj
- * @Date: 2020-11-27 17:30:05
+ * @Author: zyc
+ * @Date: 2020-10-09 14:38:31
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-02 16:38:05
+ * @LastEditTime: 2021-02-03 16:57:01
 -->
 <template>
-  <view class="broker-list-wrapper">
-    <view class="top-wrapper">
-      <u-search
-        class="search"
-        shape="round"
-        height="72"
-        placeholder-color="#BDBDBD"
-        search-icon-color="#BDBDBD"
-        bg-color="#FFFFFF"
-        border-color="#DCDCDC"
-        :show-action="false"
-        placeholder="请输入经纪人姓名或手机号码"
-        v-model="queryPageParameters.projectName"></u-search>
-      <view class="filter-wrapper" @click="showSearchWin = true">筛选</view>
-      <u-icon name="grid-fill" color="#3478F7" size="38" @click="showSearchWin = true"></u-icon>
-      <view class="management" @click="isManager = !isManager">{{isManager ? '完成' : '管理'}}</view>
-    </view>
-    <view class="list-wrapper">
-      <view class="item-wrapper" v-for="item in [1,2,3,4,5,6,7,8,9,10]" :key="item">
-        <view class="check" v-if="isManager">
-          <u-checkbox v-model="flag" shape="circle" size="30rpx"></u-checkbox>
+  <LoginPage>
+    <view class="page">
+      <view class="top">
+        <u-input
+          class="top-search"
+          v-model="queryPageParameters.nameOrMobile"
+          type="text"
+          :border="true"
+          placeholder="经纪人 手机号码"
+          confirm-type="search"
+          @confirm="search"
+        />
+        <view class="text-switch">
+          <text @click="searchPopup = !searchPopup"> 筛选</text>
+          <text style="margin: 0 5px"> |</text>
+          <text @click="currentClick = !currentClick">
+            {{ currentClick ? "完成" : "管理" }}</text
+          >
         </view>
-        <view class="item" @click="handleEditor">
-          <view class="item-auth">
-            <text v-if="!isManager">允许发起结佣</text>
-          </view>
-          <view class="item-name">张三三  183000605135</view>
-          <view class="item-btn">
-            <view v-if="!isManager">
-              编辑<u-icon name="edit-pen" color="#66B1FF" size="28"></u-icon>
+      </view>
+      <view class="wrap">
+        <view class="wrap-item" v-for="(item, index) in tablePage" :key="index">
+          <view class="list-item">
+            <view class="list-item-left">
+              <u-button
+                v-show="currentClick"
+                type="error"
+                size="mini"
+                @click="removeItem(item, index)"
+                style="margin-right: 20rpx"
+                >点击删除</u-button
+              >
+              <text style="padding-right: 20rpx">{{ item.name }}</text>
+              <text>{{ item.mobile }}</text>
+            </view>
+            <view class="list-item-right">
+              <view v-if="item.status == 'Valid'" style="color: #4881f9">
+                <text>{{ item.settlementFlag | settlementFlagFilter }}</text>
+              </view>
+              <view style="color: red">
+                <text>{{ item.status | statusFilter }}</text>
+              </view>
+              <view style="margin-top: 40rpx" @click="addBroker(item)">
+                编辑
+              </view>
             </view>
           </view>
         </view>
+        <!-- <EmptyLoading :total="tableTotal"></EmptyLoading> -->
+        <u-loadmore :status="loadingStatus" />
       </view>
-    </view>
-    <view class="btn">
-      <u-button
-        @click="handleClick"
-        :type="isManager ? 'error' : 'primary'">{{isManager ? '删除' : '添加经纪人'}}</u-button>
-    </view>
-    <u-popup v-model="showSearchWin" mode="right" length="80%">
-      <view class="broker-popup-wrapper">
-        <view class="status u-padding-20">状态</view>
-        <view class="search-item-wrapper u-padding-20">
-          <view
-            @click="selectType(item, 'status')"
-            :class="item.checked ? 'item selected' : 'item'"
-            v-for="(item, index) in statusList"
-            :key="index">{{item.name}}</view>
-        </view>
-        <view class="status u-padding-20">结佣权限</view>
-        <view class="search-item-wrapper u-padding-20">
-          <view
-            @click="selectType(item, 'auth')"
-            :class="item.checked ? 'item selected' : 'item'"
-            v-for="(item, index) in authList"
-            :key="index">{{item.name}}</view>
-        </view>
-        <view class="btn-wrapper">
-          <view class="reset" @click="showSearchWin = false">重置</view>
-          <view class="submit" @click="showSearchWin = false">确定</view>
-        </view>
+
+      <view class="bottom-btn" v-show="!currentClick">
+        <u-button type="primary" @click="addBroker()">添加经纪人</u-button>
       </view>
-    </u-popup>
-  </view>
+
+      <u-modal
+        v-model="showPopup"
+        @confirm="handleSubmit"
+        @cancel="showPopup = false"
+        :show-confirm-button="true"
+        :show-cancel-button="true"
+        ref="uModal"
+        content="是否确定删除？"
+      ></u-modal>
+      <PopupSearch
+        width="80%"
+        :mask="true"
+        v-model="searchPopup"
+        @reset="reset()"
+        @confirm="confirm()"
+      >
+        <u-form ref="notice" label-position="top" :border-bottom="false">
+          <u-form-item label="状态" :border-bottom="false">
+            <IhRadio
+              v-model="queryPageParameters.status"
+              :arrData="statusList"
+            ></IhRadio>
+          </u-form-item>
+
+          <u-form-item label="结佣权限" :border-bottom="false">
+            <IhRadio
+              v-model="queryPageParameters.settlementFlag"
+              :arrData="settlementFlagList"
+              @change="settlementFlagChange"
+            ></IhRadio>
+          </u-form-item>
+        </u-form>
+      </PopupSearch>
+    </view>
+  </LoginPage>
 </template>
 
 <script>
+import pagination from "../../../mixins/pagination";
+import { testPageApi } from "../../../api/index";
+import {
+  postCollectAddOrUpdateApi,
+  postCollectBatchUpdateApi,
+  postCollectGetList,
+  postChannelAgentGetListApi,
+  postChannelDeleteApi,
+} from "../../../api/channel";
+import tool from "../../../common/tool";
+import PopupSearch from "../../../components/PopupSearch/index.vue";
+import IhRadio from "../../../components/IhRadio/index.vue";
+import IhCheckbox from "../../../components/IhCheckbox/index.vue";
+import storageTool from "../../../common/storageTool";
 export default {
+  components: { PopupSearch, IhRadio, IhCheckbox },
+  mixins: [pagination],
+  filters: {
+    statusFilter(type) {
+      let r = "";
+      if (type == "Valid") {
+        r = "";
+      } else if (type == "Invalid") {
+        r = "停用";
+      }
+      return r;
+    },
+    settlementFlagFilter(type) {
+      let r = "";
+      if (type == "Has") {
+        r = "允许发起结佣";
+      } else if (type == "No") {
+        r = "";
+      }
+      return r;
+    },
+  },
   data() {
     return {
-      queryPageParameters: {
-        projectName: ''
-      },
-      isManager: false,
-      showSearchWin: false,
       statusList: [
-        {
-          id: '1',
-          name: '不限',
-          checked: false
-        },
-        {
-          id: '2',
-          name: '有效',
-          checked: false
-        },
-        {
-          id: '3',
-          name: '无效',
-          checked: false
-        }
+        { name: "不限", code: "" },
+        { name: "有效", code: "Valid" },
+        { name: "无效", code: "Invalid" },
       ],
-      authList: [
-        {
-          id: '1',
-          name: '不限',
-          checked: false
-        },
-        {
-          id: '2',
-          name: '有',
-          checked: false
-        },
-        {
-          id: '3',
-          name: '无',
-          checked: false
-        }
+      settlementFlagList: [
+        { name: "不限", code: "" },
+        { name: "有", code: "Has" },
+        { name: "无", code: "No" },
       ],
-      flag: false
+
+      searchPopup: false,
+      showPopup: false,
+      checked: false,
+      homeImg: require("@/channelPackage/common/img/house.jpg"),
+
+      queryPageParameters: {
+        channelId: "",
+        mobile: "",
+        name: "",
+        nameOrMobile: "",
+        pageNum: 1,
+        pageSize: 10,
+        settlementFlag: "",
+        status: "",
+      },
+      currentClick: false,
     };
   },
-  onLoad() {
 
+  async created() {},
+
+  async onLoad(option) {
+    let userInfo = storageTool.getUserInfo();
+
+    this.queryPageParameters.channelId = userInfo.channelId;
+
+    console.log("onLoad");
+    console.log(option);
+    this.getListMixin();
   },
+  onShow(option) {
+    console.log("onShow");
+  },
+
   methods: {
-    // 选择
-    selectType(item, type) {
-      if (type === 'status') {
-        this.statusList.forEach((list) => {
-          if (item.id === list.id) {
-            list.checked = !list.checked;
-          } else {
-            list.checked = false;
-          }
-        })
-      } else if (type === 'auth') {
-        this.authList.forEach((list) => {
-          if (item.id === list.id) {
-            list.checked = !list.checked;
-          } else {
-            list.checked = false;
-          }
-        })
-      }
+    settlementFlagChange(item) {
+      console.log(item);
     },
-    // 编辑经纪人
-    handleEditor() {
-      uni.navigateTo({
-        url: `/channelPackage/myTab/channelPage/addBroker`
+    reset() {
+      Object.assign(this.queryPageParameters, {
+        mobile: "",
+        name: "",
+        nameOrMobile: "",
+        pageNum: 1,
+        pageSize: 10,
+        settlementFlag: "",
+        status: "",
       });
     },
-    // 添加/删除经纪人
-    handleClick() {
-      if (!this.isManager) {
-        // true---添加
-        console.log('添加');
+    async confirm() {
+      this.tablePage = [];
+      this.queryPageParameters.pageNum = 1;
+      this.getListMixin();
+      // console.log(this.queryPageParameters);
+    },
+    async removeItem(item, index) {
+      await postChannelDeleteApi(item.id);
+      this.tablePage.splice(index, 1);
+      tool.toast("删除成功");
+    },
+    async getListMixin() {
+      this.setPageDataMixin(
+        await postChannelAgentGetListApi(this.queryPageParameters)
+      );
+      // this.tablePage.map((item) => {
+      //   item.checked = item.checked || false;
+      //   return item;
+      // });
+      console.log(this.tablePage);
+    },
+    async search() {
+      console.log("search");
+      this.tablePage = [];
+      this.tableTotal = null;
+      this.getListMixin();
+    },
+
+    async handleSubmit() {
+      let list = this.tablePage.filter((item) => {
+        return item.checked;
+      });
+      console.log(list);
+      if (list.length > 0) {
+        let postData = {
+          ids: list.map((item) => item.id),
+          status: "Invalid",
+        };
+        console.log(postData);
+        const res = await postCollectBatchUpdateApi(postData);
+        tool.toast("删除成功");
+
+        postData.ids.forEach((item) => {
+          this.remove(item);
+        });
+        console.log(this.tablePage);
+      }
+    },
+    async deleteCheck() {
+      this.showPopup = true;
+    },
+    remove(id) {
+      for (let index = 0; index < this.tablePage.length; index++) {
+        const item = this.tablePage[index];
+        if (item.id == id) {
+          this.tablePage.splice(index, 1);
+        }
+      }
+    },
+
+    viewProjectDetail(item) {
+      if (!this.currentClick) {
         uni.navigateTo({
-          url: `/channelPackage/myTab/channelPage/addBroker`
+          url: `/channelPackage/homeTab/pages/projectDetail?id=` + item.id,
+        });
+      }
+    },
+    addBroker(item) {
+      if (item) {
+        uni.navigateTo({
+          url: `/channelPackage/myTab/channelPage/addBroker?id=` + item.id,
         });
       } else {
-        // false---删除
-        console.log('删除');
+        uni.navigateTo({
+          url: `/channelPackage/myTab/channelPage/addBroker`,
+        });
       }
-    }
+    },
   },
 };
 </script>
 
-<style lang="scss" scoped>
-  .broker-list-wrapper {
-    width: 100%;
+<style lang="scss">
+.page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.top {
+  padding: 20rpx 20rpx 0 20rpx;
+  width: 100%;
+  display: flex;
+  background: #eee;
+  height: 112rpx;
+  position: fixed;
+  top: 0px;
+  z-index: 999;
+}
+.top-search {
+  width: 100%;
+  height: 72rpx;
+  background: #fff;
+}
+.wrap {
+  width: 100%;
+  margin-top: 112rpx;
+  margin-bottom: 100rpx;
+}
+.wrap-item {
+  width: 100%;
+  height: 162rpx;
+  display: flex;
+  border-bottom: 1px solid #eee;
+}
 
-    .top-wrapper {
-      width: 100%;
-      height: 92rpx;
-      box-sizing: border-box;
-      padding: 10rpx 24rpx 10rpx 18rpx;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: #FFFFFF;
-
-      .search {
-        flex: 1;
-        box-sizing: border-box;
-        margin-right: 20rpx;
-      }
-
-      .filter-wrapper {
-        color: $u-type-primary;
-        font-size: 30rpx;
-      }
-
-      .management {
-        font-size: 32rpx;
-        padding: 10rpx;
-        margin-left: 10rpx;
-        border-left: 2rpx solid #E4E4E4;
-      }
-    }
-
-    .list-wrapper {
-      width: 100%;
-      height: calc(100vh - 190rpx);
-      padding: 20rpx;
-
-      .item-wrapper {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        border: 1rpx solid $u-type-primary;
-        border-radius: 10rpx;
-        margin-bottom: 20rpx;
-        padding-left: 10rpx;
-
-        .check {
-          //height: 162rpx;
-          padding-left: 15rpx;
-          margin-bottom: 20rpx;
-        }
-
-        .item {
-          height: 162rpx;
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-
-          view {
-            flex: 1;
-            //padding-bottom: 8rpx;
-          }
-
-          .item-auth {
-            height: 62rpx;
-            text-align: right;
-            font-size: 26rpx;
-
-            text {
-              display: inline-block;
-              padding: 10rpx;
-              color: #FFFFFF;
-              background-color: $u-type-primary;
-            }
-          }
-
-          .item-name {
-            text-align: left;
-            color: #666666;
-            font-weight: 600;
-            //padding-left: 30rpx;
-          }
-
-          .item-btn {
-            height: 44rpx;
-            color: $u-type-primary;
-            text-align: right;
-            padding-right: 20rpx;
-            //padding-bottom: 10rpx;
-            font-size: 26rpx;
-          }
-        }
-      }
-    }
-
-    .btn {
-      width: 100%;
-      height: 90rpx;
-      padding: 10rpx 50rpx;
-      position: fixed;
-      left: 0rpx;
-      border-bottom: 0rpx;
-    }
-  }
-
-  .broker-popup-wrapper {
-    width: 100%;
-    height: 100vh;
-    position: relative;
-
-    .status {
-      color: #999999;
-    }
-
-    .search-item-wrapper {
-      width: 100%;
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-
-      .item {
-        text-align: center;
-        box-sizing: border-box;
-        margin-right: 10rpx;
-        padding: 15rpx 25rpx;
-        background-color: #FFFFFF;
-        border: 1rpx solid #F2F2F2;
-      }
-
-      .selected {
-        border: 1rpx solid $u-type-primary;
-        color: $u-type-primary;
-      }
-    }
-
-    .btn-wrapper {
-      width: 100%;
-      position: absolute;
-      left: 0rpx;
-      bottom: 0rpx;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      view {
-        flex: 1;
-        height: 80rpx;
-        line-height: 80rpx;
-        text-align: center;
-      }
-
-      .reset {
-        border-top: 1rpx solid #E4E4E4;
-        background-color: #FFFFFF;
-        color: $u-type-primary;
-      }
-
-      .submit {
-        background-color: $u-type-primary;
-        color: #FFFFFF;
-      }
-    }
-  }
+.text-switch {
+  width: 100px;
+  margin-left: 10px;
+  line-height: 40px;
+}
+.item-checked {
+  margin-top: 40rpx;
+}
+.bottom-btn {
+  width: 100%;
+  height: 100rpx;
+  box-sizing: border-box;
+  padding: 10rpx 50rpx;
+  background-color: #ffffff;
+  position: fixed;
+  left: 0rpx;
+  bottom: 0rpx;
+  z-index: 9999;
+}
+.list-item {
+  display: flex;
+  width: 100%;
+  padding: 20rpx;
+}
+.list-item-left {
+  flex: 1;
+  margin-top: 40rpx;
+}
+.list-item-right {
+  width: 220rpx;
+  text-align: right;
+}
 </style>

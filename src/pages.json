@@ -320,7 +320,8 @@
 				{
 					"path": "myTab/channelPage/brokerList",
 					"style": {
-						"navigationBarTitleText": "经纪人列表"
+						"navigationBarTitleText": "经纪人列表",
+						"enablePullDownRefresh": true
 					}
 				},
 				{

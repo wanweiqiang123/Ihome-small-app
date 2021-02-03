@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-20 09:01:36
+ * @LastEditTime: 2021-02-03 15:45:31
  */
 import Vue from 'vue'
 import App from './App'
@@ -46,7 +46,6 @@ Vue.component('TabBarPage', TabBarPage);
 Vue.component('CustomerTabBar', CustomerTabBar);
 Vue.component('ChannelTabBar', ChannelTabBar);
 Vue.component('StaffTabBar', StaffTabBar);
-
 //是否有资源权限的方法
 
 Vue.prototype.$has = function (key) {
