@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 10:09:50
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-02 15:37:37
+ * @LastEditTime: 2021-02-03 10:22:58
  */
 
 import { getApi, postApi } from '../common/http.js';
@@ -173,3 +173,8 @@ export async function getFuzzySearchByCityApi(data, option = {}) {
     return await postApi('/sales-api/project/project/getFuzzySearchByCity', data, option)
 }
 
+
+/**查询银行网点信息列表数据*/
+export async function postBankBranchGetListApi(data, option = {}) {
+    return await postApi('/sales-api/finance/bankBranch/getList', data, option)
+}

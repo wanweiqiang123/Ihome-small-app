@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-27 16:36:50
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-01 17:33:01
+ * @LastEditTime: 2021-02-02 15:00:19
 -->
 <template>
   <view class="commission-account-list-wrapper">
@@ -104,7 +104,7 @@ export default {
           channelId: userInfo.channelId,
           ids: list.map((item) => item.id),
         };
-        await postChannelBankBatchDeleteApi();
+        await postChannelBankBatchDeleteApi(p);
         tool.toast("删除成功");
         console.log(p);
         p.ids.forEach((item) => {
