@@ -3,9 +3,10 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
- * @LastEditors: ywl
- * @LastEditTime: 2021-01-29 16:56:02
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-02-03 10:42:51
 -->
+
 <template>
   <LoginPage>
     <view class="notice safe-area-inset-bottom">

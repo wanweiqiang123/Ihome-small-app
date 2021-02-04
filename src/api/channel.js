@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-15 10:10:10
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-04 15:04:44
+ * @LastEditTime: 2021-02-04 15:18:04
  */
 import { getApi, postApi } from '@/common/http';
 import { currentEnvConfig } from '@/env-config';
@@ -169,6 +169,77 @@ export async function getChannelBankGetApi(id, option = {}) {
   let url = `/sales-api/channel/channelBank/get/${id}`;
   return await getApi(url, {}, option);
 }
+
+/** 查询渠道经纪人列表
+ * @param {*} data
+ * @param {*} option
+ * @return {*}
+ */
+export async function postChannelAgentGetListApi(data = {}, option = {}) {
+  let url = `/sales-api/channel/channelAgent/getList`;
+  let res = await postApi(url, data, option);
+  res.list.forEach(item => item.checked = false)
+  return res;
+}
+
+/** 新增经纪人
+ * @param {*} data
+ * @param {*} option
+ * @return {*}
+ */
+export async function postChannelAgentAddApi(data = {}, option = {}) {
+  let url = `/sales-api/channel/channelAgent/add`;
+  return await postApi(url, data, option);
+}
+/** 修改经纪人
+ * @param {*} data
+ * @param {*} option
+ * @return {*}
+ */
+export async function postChannelAgentEditApi(data = {}, option = {}) {
+  let url = `/sales-api/channel/channelAgent/edit`;
+  return await postApi(url, data, option);
+}
+/** 经纪人详情
+ * @param {*} data
+ * @param {*} option
+ * @return {*}
+ */
+export async function getChannelAgentGetidApi(id, option = {}) {
+  let url = `/sales-api/channel/channelAgent/get/${id}`;
+  return await getApi(url, {}, option);
+}
+
+/** 删除渠道经纪人信息
+ * @param {*} data
+ * @param {*} option
+ * @return {*}
+ */
+export async function postChannelDeleteApi(id, option = {}) {
+  let url = `/sales-api/channel/channelAgent/delete/${id}`;
+  return await postApi(url, {}, option);
+}
+/**  查询渠道分销协议列表
+ * @param {*} data
+ * @param {*} option
+ * @return {*}
+ */
+export async function postDistributionAppletsChannelList(data, option = {}) {
+  let url = `/sales-api/contract/distribution/applets/channel/list`;
+  return await postApi(url, data, option);
+}
+
+/**  中介分销合同详情
+ * @param {*} data
+ * @param {*} option
+ * @return {*}
+ */
+export async function getDistributionDetailApi(id, option = {}) {
+  let url = `/sales-api/contract/distribution/detail/${id}`;
+  return await getApi(url, {}, option);
+}
+
+
 
 
 

@@ -321,7 +321,8 @@
 				{
 					"path": "myTab/channelPage/brokerList",
 					"style": {
-						"navigationBarTitleText": "经纪人列表"
+						"navigationBarTitleText": "经纪人列表",
+						"enablePullDownRefresh": true
 					}
 				},
 				{
@@ -333,7 +334,8 @@
 				{
 					"path": "myTab/channelPage/protocolList",
 					"style": {
-						"navigationBarTitleText": "分销协议列表"
+						"navigationBarTitleText": "分销协议列表",
+						"enablePullDownRefresh": true
 					}
 				},
 				{
