@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-17 15:26:33
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-03 10:20:33
+ * @LastEditTime: 2021-02-03 15:40:03
 -->
 <template>
   <view class="project-list-wrapper">
@@ -27,8 +27,7 @@
         :show-action="false"
         placeholder="请输入项目名称"
         v-model="keyword"
-        disabled
-        @click="projectSearch"
+        @search="searchSomething"
       ></u-search>
     </view>
     <view>
@@ -398,15 +397,15 @@ export default {
     }
     this.getListMixin();
   },
-  onShow() {
-    let item = getApp().globalData.searchBackData;
-    if (item && item.type === "project") {
-      this.keyword = item.data.proName;
-      this.queryPageParameters.proId = item.data.proId;
-      getApp().globalData.searchBackData = {};
-      this.getListMixin();
-    }
-  },
+  // onShow() {
+  //   let item = getApp().globalData.searchBackData;
+  //   if (item && item.type === "project") {
+  //     this.keyword = item.data.proName;
+  //     this.queryPageParameters.proId = item.data.proId;
+  //     getApp().globalData.searchBackData = {};
+  //     this.getListMixin();
+  //   }
+  // },
   methods: {
     // 获取列表页
     async getListMixin() {
@@ -421,21 +420,27 @@ export default {
       };
       this.setPageDataMixin(item);
     },
-    // 项目跳转搜索页
-    projectSearch() {
-      getApp().globalData.searchParams = {
-        api: "getFuzzySearchByCityApi",
-        key: "proName",
-        id: "proId",
-        type: "project",
-        other: {
-          city: this.city,
-        },
-      };
-      uni.navigateTo({
-        url: "/pages/search/index/index",
-      });
+    searchSomething() {
+      this.tablePage = [];
+      this.queryPageParameters.pageNum = 1;
+      this.queryPageParameters.proName = this.keyword;
+      this.getListMixin();
     },
+    // 项目跳转搜索页
+    // projectSearch() {
+    //   getApp().globalData.searchParams = {
+    //     api: "getFuzzySearchByCityApi",
+    //     key: "proName",
+    //     id: "proId",
+    //     type: "project",
+    //     other: {
+    //       city: this.city,
+    //     },
+    //   };
+    //   uni.navigateTo({
+    //     url: "/pages/search/index/index",
+    //   });
+    // },
     // 获取字典
     async getDictByType(type) {
       const dictList = await getAllByTypeApi({ type });
@@ -747,6 +752,7 @@ export default {
           }
         });
         this.tablePage = [];
+        this.queryPageParameters.pageNum = 1;
         this.getListMixin();
       }
     },

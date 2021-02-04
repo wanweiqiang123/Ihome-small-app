@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-24 15:22:09
- * @LastEditors: lsj
- * @LastEditTime: 2020-12-08 19:41:20
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-04 11:29:40
 -->
 <template>
   <view class="my-report-wrapper">
@@ -20,28 +20,52 @@
         :show-action="false"
         :clearabled="false"
         placeholder="请输入客户姓名/电话"
-        v-model="queryPageParameters.projectName"></u-search>
+        v-model="keyword"
+        @search="searchSomething"
+      ></u-search>
     </view>
     <view class="my-report-tabs-wrapper">
-      <view class="tabs-item" v-for="(item, index) in tabsList" :key="item.id" @click="changeTabs(item, index)">
-        <text :class="currentTabs === index ? 'name activating' : 'name'">{{item.name}}</text>
+      <view
+        class="tabs-item"
+        v-for="(item, i) in tabsList"
+        :key="i"
+        @click="changeTabs(item, i)"
+      >
+        <text :class="currentTabs === i ? 'name activating' : 'name'">{{item.name}}</text>
       </view>
     </view>
     <view class="my-report-list">
-      <view class="list-item-wrapper" v-for="item in [1, 2, 3, 4, 5, 6, 7]" :key="item">
+      <view
+        class="list-item-wrapper"
+        v-for="(item, i) in tablePage"
+        :key="i"
+      >
         <view class="item-info">
           <view class="name-wrapper">
-            <view class="name">陈小明</view>
-            <view class="status">审核中</view>
+            <view class="name">{{item.name}}</view>
+            <view class="status">{{getDictName(item.reportStatus, ReportStatus)}}</view>
           </view>
-          <view class="phone">18300015234</view>
-          <view class="location">广州保利天际(335金融中心)</view>
-          <view class="time">2020-08-27 19:12:20</view>
+          <view class="phone">{{item.mobile}}</view>
+          <view class="location">{{item.proName}}</view>
+          <view class="time">{{item.reportDate}}</view>
         </view>
         <view class="item-btn u-padding-right-20">
-          <u-button shape="circle" type="primary" @click="viewDetails">查看详情</u-button>
-          <u-button shape="circle" type="warning" @click="uploadAttachment">上传附件</u-button>
-          <u-button shape="circle" type="error" @click="handleDealRegister" v-show="currentTabs === 1">成交登记</u-button>
+          <u-button
+            shape="circle"
+            type="primary"
+            @click="viewDetails(item.id)"
+          >查看详情</u-button>
+          <u-button
+            shape="circle"
+            type="warning"
+            @click="uploadAttachment(item.id)"
+          >上传附件</u-button>
+          <u-button
+            shape="circle"
+            type="error"
+            @click="handleDealRegister(item.id)"
+            v-show="currentTabs === 1"
+          >成交登记</u-button>
         </view>
       </view>
     </view>
@@ -49,191 +73,227 @@
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        queryPageParameters: {
-          projectName: ''
+import { postCustomerReportListApi } from "@/api/channel";
+import { getAllByTypeApi } from "@/api/index";
+import pagination from "../../../mixins/pagination";
+export default {
+  mixins: [pagination],
+  data() {
+    return {
+      keyword: "",
+      tabsList: [
+        {
+          name: "已报备",
+          code: "Report",
         },
-        tabsList: [
-          {
-            id: 1,
-            name: '已报备'
-          },
-          {
-            id: 2,
-            name: '已到访'
-          },
-          {
-            id: 3,
-            name: '已成交'
-          },
-          {
-            id: 4,
-            name: '无效单'
-          }
-        ],
-        currentTabs: 0
-      };
+        {
+          name: "已到访",
+          code: "Visit",
+        },
+        {
+          name: "已成交",
+          code: "Deal",
+        },
+        {
+          name: "无效单",
+          code: "Invalid",
+        },
+      ],
+      currentTabs: 0,
+      ReportStatus: [],
+    };
+  },
+  onLoad() {
+    this.getListMixin();
+  },
+  async onShow() {
+    this.ReportStatus = await this.getDictAll("ReportStatusType");
+  },
+  methods: {
+    async getListMixin() {
+      this.queryPageParameters.type = this.tabsList[this.currentTabs].code;
+      let res = await postCustomerReportListApi(this.queryPageParameters);
+      this.setPageDataMixin(res);
     },
-    onLoad() {
+    // 获取字典
+    async getDictAll(type) {
+      const dictList = await getAllByTypeApi({ type });
+      return dictList;
     },
-    methods: {
-      // 切换tabs
-      changeTabs(item, index) {
-        console.log(item);
-        this.currentTabs = index;
-      },
-      // 成交登记
-      handleDealRegister() {
-        uni.navigateTo({
-          url: `/channelPackage/homeTab/pages/reportClient?type=dealReg`,
-        })
-      },
-      // 上传附件
-      uploadAttachment() {
-        uni.navigateTo({
-          url: `/channelPackage/myTab/pages/uploadAttachment`,
-        })
-      },
-      // 查看详情
-      viewDetails() {
-        uni.navigateTo({
-          url: `/channelPackage/myTab/pages/reportDetails`,
-        })
+    // 获取对应字典name
+    getDictName(code, list) {
+      if (list.length) {
+        const item = list.find((v) => v.code === code);
+        return item?.name;
+      } else {
+        return "";
       }
-    }
-  };
+    },
+    searchSomething() {
+      this.tablePage = [];
+      this.queryPageParameters.pageNum = 1;
+      this.queryPageParameters.nameOrTel = this.keyword;
+      this.getListMixin();
+    },
+    // 切换tabs
+    changeTabs(item, index) {
+      this.currentTabs = index;
+      this.tablePage = [];
+      this.queryPageParameters.pageNum = 1;
+      this.getListMixin();
+    },
+    // 成交登记
+    handleDealRegister(id) {
+      uni.navigateTo({
+        url: `/channelPackage/homeTab/pages/reportClient?type=dealReg&&id=${id}`,
+      });
+    },
+    // 上传附件
+    uploadAttachment(id) {
+      uni.navigateTo({
+        url: `/channelPackage/myTab/pages/uploadAttachment?id=${id}`,
+      });
+    },
+    // 查看详情
+    viewDetails(id) {
+      uni.navigateTo({
+        url: `/channelPackage/myTab/pages/reportDetails?id=${id}`,
+      });
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-  .my-report-wrapper {
+.my-report-wrapper {
+  width: 100%;
+  height: 100vh;
+  box-sizing: border-box;
+  background-color: #f1f1f1;
+
+  .top-wrapper {
     width: 100%;
-    height: 100vh;
+    height: 88rpx;
+    line-height: 88rpx;
     box-sizing: border-box;
-    background-color: #F1F1F1;
+    padding: 0rpx 30rpx;
+  }
 
-    .top-wrapper {
-      width: 100%;
-      height: 88rpx;
-      line-height: 88rpx;
-      box-sizing: border-box;
-      padding: 0rpx 30rpx;
-    }
+  .my-report-tabs-wrapper {
+    width: 100%;
+    height: 78rpx;
+    background: #ffffff;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    text-align: center;
 
-    .my-report-tabs-wrapper {
-      width: 100%;
-      height: 78rpx;
-      background: #FFFFFF;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      text-align: center;
+    .tabs-item {
+      flex: 1;
+      font-size: 30rpx;
+      font-family: PingFang SC;
+      color: #303133;
 
-      .tabs-item {
-        flex: 1;
-        font-size: 30rpx;
-        font-family: PingFang SC;
-        color: #303133;
-
-        .name {
-          width: 128rpx;
-          height: 42rpx;
-          border-radius: 21rpx;
-          display: inline-block;
-        }
-      }
-
-      .activating {
-        font-weight: bold;
-        background: $u-type-primary;
-        color: #FFFFFF;
-        transition-duration: 0.5s;
+      .name {
+        width: 128rpx;
+        height: 42rpx;
+        border-radius: 21rpx;
+        display: inline-block;
       }
     }
 
-    .my-report-list {
-      width: 100%;
-      height: calc(100vh - 170rpx);
-      overflow-y: auto;
-      box-sizing: border-box;
-      padding: 18rpx 30rpx;
+    .activating {
+      font-weight: bold;
+      background: $u-type-primary;
+      color: #ffffff;
+      transition-duration: 0.5s;
+    }
+  }
 
-      .list-item-wrapper {
+  .my-report-list {
+    width: 100%;
+    height: calc(100vh - 170rpx);
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding: 18rpx 30rpx;
+
+    .list-item-wrapper {
+      width: 100%;
+      //height: 322rpx;
+      box-sizing: border-box;
+      margin-bottom: 20rpx;
+      background-color: #ffffff;
+
+      .item-info {
         width: 100%;
-        //height: 322rpx;
+        //height: 222rpx;
         box-sizing: border-box;
-        margin-bottom: 20rpx;
-        background-color: #FFFFFF;
+        padding: 28rpx 0rpx 34rpx 32rpx;
+        border-bottom: 2rpx dashed #f1f1f1;
 
-        .item-info {
+        .name-wrapper {
           width: 100%;
-          //height: 222rpx;
-          box-sizing: border-box;
-          padding: 28rpx 0rpx 34rpx 32rpx;
-          border-bottom: 2rpx dashed #F1F1F1;
-
-          .name-wrapper {
-            width: 100%;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-
-            .name {
-              flex: 1;
-              font-size: 30rpx;
-              font-weight: 600;
-              font-family: PingFang SC;
-              font-weight: 600;
-              color: #1F1F1F;
-              line-height: 48rpx;
-            }
-
-            .status {
-              width: 106rpx;
-              height: 44rpx;
-              line-height: 44rpx;
-              text-align: center;
-              border-top-left-radius: 20rpx;
-              border-bottom-left-radius: 20rpx;
-              background: #00C777;
-              color: #FFFFFF;
-              font-size: 24rpx;
-              font-family: PingFang SC;
-              font-weight: 600;
-            }
-          }
-
-          .phone, .location, .time {
-            width: 100%;
-            box-sizing: border-box;
-            font-size: 26rpx;
-            font-family: Source Han Sans CN;
-            font-weight: bold;
-            color: #606266;
-            line-height: 40rpx;
-          }
-        }
-
-        .item-btn {
-          width: 100%;
-          height: 100rpx;
-          line-height: 100rpx;
-          text-align: right;
           box-sizing: border-box;
           display: flex;
-          flex-direction: row-reverse;
+          flex-direction: row;
           align-items: center;
 
-          /deep/.u-btn {
-            width: 200rpx;
-            height: 66rpx;
-            margin-left: 20rpx;
+          .name {
+            flex: 1;
+            font-size: 30rpx;
+            font-weight: 600;
+            font-family: PingFang SC;
+            font-weight: 600;
+            color: #1f1f1f;
+            line-height: 48rpx;
           }
+
+          .status {
+            width: 106rpx;
+            height: 44rpx;
+            line-height: 44rpx;
+            text-align: center;
+            border-top-left-radius: 20rpx;
+            border-bottom-left-radius: 20rpx;
+            background: #00c777;
+            color: #ffffff;
+            font-size: 24rpx;
+            font-family: PingFang SC;
+            font-weight: 600;
+          }
+        }
+
+        .phone,
+        .location,
+        .time {
+          width: 100%;
+          box-sizing: border-box;
+          font-size: 26rpx;
+          font-family: Source Han Sans CN;
+          font-weight: bold;
+          color: #606266;
+          line-height: 40rpx;
+        }
+      }
+
+      .item-btn {
+        width: 100%;
+        height: 100rpx;
+        line-height: 100rpx;
+        text-align: right;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: row-reverse;
+        align-items: center;
+
+        /deep/.u-btn {
+          width: 200rpx;
+          height: 66rpx;
+          margin-left: 20rpx;
         }
       }
     }
   }
+}
 </style>

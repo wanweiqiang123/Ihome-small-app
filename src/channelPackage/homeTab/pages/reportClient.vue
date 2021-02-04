@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-24 09:58:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-03 10:21:49
+ * @LastEditTime: 2021-02-04 10:36:18
 -->
 <template>
   <view class="report-client-wrapper">
@@ -45,10 +45,10 @@
             <span class="price">均价23000</span>
             <span class="unit">元/m<span class="two">2</span></span>
           </view> -->
-          <view class="rule">
+          <!-- <view class="rule">
             <span class="rule-tap">佣</span>
             <span>佣金规则</span>
-          </view>
+          </view> -->
         </view>
       </view>
     </view>
@@ -110,7 +110,7 @@
       </view>
       <view
         class="card margin-top-20"
-        v-if="!pageType"
+        v-show="!pageType"
       >
         <view class="client-info">
           <view class="title">报备信息</view>
@@ -162,23 +162,20 @@
       </view>
       <view
         class="card margin-top-20"
-        v-else
+        v-show="pageType"
       >
         <view class="client-info">
           <view class="title">房产信息</view>
         </view>
         <view class="form-wrapper">
           <u-form
-            :model="estateForm"
-            ref="estateForm"
+            :model="buildForm"
+            ref="buildForm"
             :label-width="190"
           >
-            <u-form-item
-              label="楼盘名称"
-              right-icon="arrow-right"
-            >
+            <u-form-item label="楼盘名称">
               <u-input
-                v-model="estateForm.estateName"
+                v-model="info.proName"
                 placeholder="楼盘名称"
                 disabled
                 :clearable="false"
@@ -187,12 +184,14 @@
             </u-form-item>
             <u-form-item
               label="认购栋座"
+              prop="subBuildingName"
               right-icon="arrow-right"
               class="hide-icon"
+              required
             >
               <u-input
-                @click="selectEstate('roof')"
-                v-model="estateForm.roof"
+                @click="buildingBlockShow = true"
+                v-model="buildForm.subBuildingName"
                 type="select"
                 placeholder="认购栋座"
                 :clearable="false"
@@ -201,12 +200,14 @@
             </u-form-item>
             <u-form-item
               label="认购房号"
+              prop="roomNo"
               right-icon="arrow-right"
               class="hide-icon"
+              required
             >
               <u-input
-                @click="selectEstate('room')"
-                v-model="estateForm.room"
+                @click="roomNoShow = true"
+                v-model="buildForm.roomNo"
                 type="select"
                 placeholder="认购房号"
                 :clearable="false"
@@ -233,22 +234,36 @@
       @confirm="handleConfirm"
     ></u-picker>
     <u-select
-      v-model="selectEstateWin"
-      :list="estateList"
-      @confirm="confirmEstate"
+      title="选择栋座"
+      confirm-color="#dd524d"
+      v-model="buildingBlockShow"
+      :list="buildingBlockList"
+      @confirm="buildingBlockClick"
+      value-name="buildingId"
+      label-name="buildingName"
+    ></u-select>
+    <u-select
+      title="选择房号"
+      confirm-color="#dd524d"
+      v-model="roomNoShow"
+      :list="roomNoList"
+      @confirm="roomNoClick"
+      value-name="roomId"
+      label-name="roomNo"
     ></u-select>
   </view>
 </template>
 
 <script>
 import { getAllByTypeApi } from "@/api/index";
-import { getAreaList, postReportApi } from "@/api/channel";
+import { getAreaList, postReportApi, postAddDealtApi } from "@/api/channel";
 import { phoneValidator } from "../../../common/validate";
+import { postBuildByProId, postRoomByProId } from "../../../api/staff";
 export default {
   data() {
     return {
       info: {
-        proName: "远洋招商保利东湾经纪渠道",
+        proName: "请选择项目",
         proId: "",
         expectedNumber: "",
         expectedTime: "",
@@ -258,6 +273,12 @@ export default {
         name: "",
         sex: "Ms",
         mobile: "",
+      },
+      buildForm: {
+        subBuildingName: "",
+        subBuildingId: "",
+        roomNo: "",
+        roomId: "",
       },
       district: "440105000000",
       areaRegion: [],
@@ -285,18 +306,28 @@ export default {
           { validator: phoneValidator, trigger: "change" },
         ],
       },
-
+      buildRules: {
+        subBuildingName: [
+          {
+            required: true,
+            message: "请选择栋座",
+            trigger: "change",
+          },
+        ],
+        roomNo: [
+          {
+            required: true,
+            message: "请选择房号",
+            trigger: "change",
+          },
+        ],
+      },
       homeImg: require("@/channelPackage/common/img/house.jpg"),
       pageType: "",
       showTime: false,
-      showClient: false,
-      estateForm: {
-        estateName: "",
-        roof: "",
-        room: "",
-      },
+      buildingBlockShow: false,
       currentSelectType: "",
-      selectEstateWin: false,
+      roomNoShow: false,
       estateList: [],
       timeParams: {
         year: true,
@@ -307,15 +338,18 @@ export default {
         second: false,
       },
       keyword: "",
+      buildingBlockList: [],
+      roomNoList: [],
+      reportId: "",
     };
   },
   onReady() {
     this.$nextTick(() => {
-      this.$refs.info.setRules(this.infoRules);
       this.$refs.custormInfo.setRules(this.custormRules);
     });
   },
   onLoad(option) {
+    this.reportId = option.id;
     if (option.type && option.type === "dealReg") {
       uni.setNavigationBarTitle({
         title: "成交登记",
@@ -335,11 +369,11 @@ export default {
       this.district = item.data.district;
       this.keyword = item.data.proName;
       getApp().globalData.searchBackData = {};
-      // if (this.pageType) {
-      //   this.buildSelectList = await postBuildByProId({
-      //     proId: this.info.proId,
-      //   });
-      // }
+      if (this.pageType) {
+        this.buildingBlockList = await postBuildByProId({
+          proId: this.info.proId,
+        });
+      }
     } else if (item && item.type === "customer") {
       this.info.name = item.data.name;
       this.info.sex = item.data.sex;
@@ -364,7 +398,7 @@ export default {
     customerSearch() {
       getApp().globalData.searchParams = {
         api: "postReportCustomerApi",
-        key: "name",
+        key: "nameOrTel",
         id: "userId",
         type: "customer",
       };
@@ -393,90 +427,83 @@ export default {
     },
     // 确定选择时间
     handleConfirm(value) {
-      // console.log(value);
       this.info.expectedTime = `${value.year}-${value.month}-${value.day} ${value.hour}:${value.minute}`;
     },
-    // 成交登记-选择栋座和房号
-    selectEstate(type) {
-      if (type === "roof") {
-        // 选择栋座
-        this.currentSelectType = "roof";
-        this.estateList = [
-          {
-            value: "1",
-            label: "1栋",
-          },
-          {
-            value: "2",
-            label: "2栋",
-          },
-          {
-            value: "3",
-            label: "3栋",
-          },
-        ];
-      } else {
-        // 选择房号
-        this.currentSelectType = "room";
-        this.estateList = [
-          {
-            value: "1",
-            label: "101",
-          },
-          {
-            value: "2",
-            label: "201",
-          },
-          {
-            value: "3",
-            label: "301",
-          },
-        ];
-      }
-      this.selectEstateWin = true;
+    buildingBlockClick(v) {
+      this.buildForm.subBuildingName = v[0].label;
+      this.buildForm.subBuildingId = v[0].value;
+      this.buildForm.roomNo = "";
+      this.buildForm.roomId = "";
+      this.getRoomList(this.buildForm.subBuildingId);
     },
-    // 确认选择栋座/房号
-    confirmEstate(e) {
-      if (this.currentSelectType === "roof") {
-        this.estateForm.roof = e.label;
-      } else if (this.currentSelectType === "room") {
-        this.estateForm.room = e.label;
-      }
+    // 获取房号
+    async getRoomList(buildNo) {
+      this.roomNoList = await postRoomByProId({
+        proId: this.info.proId,
+        buildingId: buildNo,
+      });
+    },
+    roomNoClick(v) {
+      this.buildForm.roomNo = v[0].label;
+      this.buildForm.roomId = v[0].value;
     },
     // 表单验证
     formDataRules() {
       let arr = [];
       const info = new Promise((resolve, reject) => {
-        this.$refs.info.validate((val) => {
-          val ? resolve() : reject(err);
-        });
-      });
-      const custormInfo = new Promise((resolve, reject) => {
         this.$refs.custormInfo.validate((val) => {
           val ? resolve() : reject(err);
         });
       });
-      arr.push(info, custormInfo);
+      let item;
+      if (this.pageType) {
+        item = new Promise((resolve, reject) => {
+          this.$refs.buildForm.validate((val) => {
+            val ? resolve() : reject(err);
+          });
+        });
+      } else {
+        item = new Promise((resolve, reject) => {
+          this.$refs.info.validate((val) => {
+            val ? resolve() : reject(err);
+          });
+        });
+      }
+
+      arr.push(info, item);
+      console.log(arr);
       return arr;
     },
     // 成交登记/报备客户
     handleReport() {
+      if (this.pageType) {
+        this.$refs.buildForm.setRules(this.buildRules);
+      } else {
+        this.$refs.info.setRules(this.infoRules);
+      }
       let formDataRules = this.formDataRules();
       Promise.all(formDataRules).then(async () => {
         const userInfo = this.$storageTool.getUserInfo();
-        let obj = { ...this.info, ...this.custormInfo };
-        obj.channelId = userInfo.channelId;
-        obj.reportCustomerId = userInfo.id;
-        obj.reportMobile = userInfo.mobilePhone;
-        obj.reportName = userInfo.name;
-        obj.reportType = "FullNumber";
-        await postReportApi(obj);
-        this.$tool.toast("报备成功");
-        if (this.pageType === "dealReg") {
+        let obj = {};
+        if (this.pageType) {
+          obj = { ...this.custormInfo };
+          obj.reportId = this.reportId;
+          obj.roomId = this.buildForm.roomId;
+          obj.subBuildingId = this.buildForm.subBuildingId;
+          await postAddDealtApi(obj);
+          this.$tool.toast("登记成功");
           uni.redirectTo({
             url: `/channelPackage/myTab/pages/myReport`,
           });
         } else {
+          obj = { ...this.info, ...this.custormInfo };
+          obj.channelId = userInfo.channelId;
+          obj.reportCustomerId = userInfo.id;
+          obj.reportMobile = userInfo.mobilePhone;
+          obj.reportName = userInfo.name;
+          obj.reportType = "FullNumber";
+          await postReportApi(obj);
+          this.$tool.toast("报备成功");
           uni.redirectTo({
             url: `/channelPackage/homeTab/index`,
           });

@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-15 10:10:10
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-03 10:22:34
+ * @LastEditTime: 2021-02-04 15:04:44
  */
 import { getApi, postApi } from '@/common/http';
 import { currentEnvConfig } from '@/env-config';
@@ -192,7 +192,27 @@ export async function getGradeCitiesByChannelIdApi(data = {}, option = {}) {
   return await getApi(`/sales-api/channel/channelGrade/getGradeCitiesByChannelId/${data}`, option);
 }
 
-// 根据行政区划编码查询所有下级行政区划信息
-export async function getAllChildAreaApi(data = {}, option = {}) {
-  return await getApi(`/sales-api/system/area/getAllChildArea/${data}`, option);
+// 查询我的报备列表
+export async function postCustomerReportListApi(data = {}, option = {}) {
+  return await postApi(`/sales-api/customer/report/getReportList`, data, option);
+}
+
+// 查询报备成交详情-小程序端
+export async function getReportByIdApi(data = {}, option = {}) {
+  return await getApi(`/sales-api/customer/report/getReportById/${data}`, option);
+}
+
+// 补全客户手机号码
+export async function postCustomerMobileApi(data = {}, option = {}) {
+  return await postApi(`/sales-api/customer/report/update/mobile`, data, option);
+}
+
+// 附件批量上传
+export async function postReportAttachmentApi(data = {}, option = {}) {
+  return await postApi(`/sales-api/customer/reportAttachment/addAttachment`, data, option);
+}
+
+// 成交登记
+export async function postAddDealtApi(data = {}, option = {}) {
+  return await postApi(`/sales-api/customer/report/addDeal`, data, option);
 }
