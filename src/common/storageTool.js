@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 15:30:00
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-03 17:02:29
+ * @LastEditTime: 2021-02-03 20:06:04
  */
 const tokenKey = 'token';//token的key
 const expiresInKey = 'expires_in';//token的key的过期时间
@@ -136,8 +136,8 @@ const storageTool = {
                     break;
                 case 'Channel':
                     uni.redirectTo({
-                        url: "/channelPackage/homeTab/index",
-                        // url: "/channelPackage/myTab/channelPage/brokerList",
+                        // url: "/channelPackage/homeTab/index",
+                        url: "/channelPackage/myTab/channelPage/protocolList",
                     });
                     break;
                 case 'Staff':

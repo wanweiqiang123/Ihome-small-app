@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-15 10:10:10
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-03 15:57:41
+ * @LastEditTime: 2021-02-03 19:56:49
  */
 import { getApi, postApi } from '@/common/http';
 import { currentEnvConfig } from '@/env-config';
@@ -219,6 +219,26 @@ export async function postChannelDeleteApi(id, option = {}) {
   let url = `/sales-api/channel/channelAgent/delete/${id}`;
   return await postApi(url, {}, option);
 }
+/**  查询渠道分销协议列表
+ * @param {*} data
+ * @param {*} option
+ * @return {*}
+ */
+export async function postDistributionAppletsChannelList(data, option = {}) {
+  let url = `/sales-api/contract/distribution/applets/channel/list`;
+  return await postApi(url, data, option);
+}
+
+/**  中介分销合同详情
+ * @param {*} data
+ * @param {*} option
+ * @return {*}
+ */
+export async function getDistributionDetailApi(id, option = {}) {
+  let url = `/sales-api/contract/distribution/detail/${id}`;
+  return await getApi(url, {}, option);
+}
+
 
 
 

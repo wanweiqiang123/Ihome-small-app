@@ -4,10 +4,18 @@
  * @Author: zyc
  * @Date: 2020-11-10 15:29:08
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-26 17:00:58
+ * @LastEditTime: 2021-02-04 10:57:08
  */
-
+import { baseUrl } from '../env-config'
 const tool = {
+    /**获取文件预览路径
+   * @param {*} title
+   * @return {*}
+   */
+    getFileUrl(fid) {
+        let url = baseUrl + `/sales-api/sales-document-cover/file/browse/${fid}`
+        return url;
+    },
     /**弹出提示 uni.showToast   icon: "none"
      * @param {*} title
      * @return {*}

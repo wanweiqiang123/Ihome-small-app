@@ -1,106 +1,151 @@
 <!--
  * @Descripttion: 
  * @version: 
- * @Author: lsj
- * @Date: 2020-11-27 20:02:11
- * @LastEditors: lsj
- * @LastEditTime: 2020-12-09 16:01:38
+ * @Author: zyc
+ * @Date: 2020-10-09 14:38:31
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-02-03 20:13:30
 -->
 <template>
-  <view class="protocol-list-wrapper">
-    <view class="top-wrapper">
-      <u-search
-        class="search"
-        shape="round"
-        height="72"
-        placeholder-color="#BDBDBD"
-        search-icon-color="#BDBDBD"
-        bg-color="#FFFFFF"
-        border-color="#DCDCDC"
-        :show-action="false"
-        placeholder="请输入经纪人姓名或手机号码"
-        v-model="queryPageParameters.projectName"></u-search>
-    </view>
-    <view class="list-wrapper">
-      <view class="item-wrapper" v-for="item in [1,2,3,4,5]" :key="item" @click="viewProtocolDetails">
-        <view class="item-title">保利XXXX项目合作协议</view>
-        <view class="item-detail">详情</view>
-        <u-icon name="arrow-right" color="#999999" size="28"></u-icon>
+  <LoginPage>
+    <view class="page">
+      <view class="top">
+        <u-input
+          class="top-search"
+          v-model="queryPageParameters.keyword"
+          type="text"
+          :border="true"
+          placeholder="搜索"
+          @focus="projectSearch"
+        />
+      </view>
+      <view class="wrap">
+        <view
+          class="wrap-item"
+          v-for="(item, index) in tablePage"
+          :key="index"
+          @click="goto(item)"
+        >
+          <view class="wrap-item-left">
+            {{ item.title }}
+          </view>
+          <view class="wrap-item-right">
+            <u-icon name="arrow-right" size="40" color="#999"></u-icon>
+          </view>
+        </view>
+        <!-- <EmptyLoading :total="tableTotal"></EmptyLoading> -->
+        <u-loadmore :status="loadingStatus" />
       </view>
     </view>
-  </view>
+  </LoginPage>
 </template>
 
 <script>
+import pagination from "../../../mixins/pagination";
+import { testPageApi } from "../../../api/index";
+import { postDistributionAppletsChannelList } from "../../../api/channel";
+
+import storageTool from "../../../common/storageTool";
 export default {
+  mixins: [pagination],
   data() {
     return {
+      // loadingStatus: "loadmore",
+      // tableTotal: null,
+      // tablePage: [],
+
       queryPageParameters: {
-        projectName: ''
-      }
+        channelId: "",
+        pageNum: 1,
+        pageSize: 20,
+        projectId: "",
+      },
     };
   },
-  onLoad() {
 
-  },
-  methods: {
-    // 查看协议详情
-    viewProtocolDetails() {
-      uni.navigateTo({
-        url: `/channelPackage/myTab/channelPage/protocolDetails`
-      });
+  async onShow() {
+    let item = getApp().globalData.searchBackData;
+
+    if (item && item.type === "project") {
+      console.log(item.data.proId, item.data.proName);
+      this.queryPageParameters.projectId;
+      this.queryPageParameters.pageNum = 1;
+      getApp().globalData.searchBackData = {};
+      this.getListMixin();
     }
+  },
+  onLoad(option) {
+    console.log("onLoad");
+    console.log(option);
+    let userInfo = storageTool.getUserInfo();
+    this.queryPageParameters.channelId = userInfo?.channelId;
+    this.getListMixin();
+  },
+
+  methods: {
+    projectSearch() {
+      console.log("projectSearch");
+      getApp().globalData.searchParams = {
+        api: "postProjectsApi",
+        key: "proName",
+        id: "proId",
+        type: "project",
+      };
+      uni.navigateTo({
+        url: "/pages/search/index/index",
+      });
+    },
+
+    async getListMixin() {
+      console.log(this.queryPageParameters);
+      this.setPageDataMixin(
+        await postDistributionAppletsChannelList(this.queryPageParameters)
+      );
+    },
+    goto(item) {
+      uni.navigateTo({
+        url: `/channelPackage/myTab/channelPage/protocolDetails?id=` + item.id,
+      });
+    },
   },
 };
 </script>
 
-<style lang="scss" scoped>
-  .protocol-list-wrapper {
-    width: 100%;
-
-    .top-wrapper {
-      width: 100%;
-      height: 92rpx;
-      box-sizing: border-box;
-      padding: 10rpx 24rpx 10rpx 18rpx;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: #FFFFFF;
-
-      .search {
-        flex: 1;
-        box-sizing: border-box;
-        margin-right: 20rpx;
-      }
-    }
-
-    .list-wrapper {
-      width: 100%;
-      height: calc(100vh - 110rpx);
-      overflow-y: auto;
-
-      .item-wrapper {
-        width: 100%;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        padding: 30rpx 36rpx;
-        border-bottom: 1rpx solid #CCCCCC;
-
-        .item-title {
-          flex: 1;
-          font-size: 32rpx;
-          color: #666666;
-          font-weight: 600;
-        }
-
-        .item-detail {
-          color: #999999;
-          margin-right: 10rpx;
-          font-size: 28rpx;
-        }
-      }
-    }
-  }
+<style lang="scss">
+.page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.top {
+  padding: 20rpx 20rpx 0 20rpx;
+  width: 100%;
+  display: flex;
+  background: #eee;
+  height: 112rpx;
+}
+.top-search {
+  width: 100%;
+  height: 72rpx;
+  background: #fff;
+}
+.wrap {
+  width: 100%;
+}
+.wrap-item {
+  padding: 0 20rpx;
+  width: 100%;
+  height: 100rpx;
+  line-height: 100rpx;
+  display: flex;
+  border-bottom: 1px solid #eee;
+}
+.wrap-item-left {
+  flex: 1;
+}
+.wrap-item-right {
+  width: 40rpx;
+}
 </style>
