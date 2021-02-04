@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-25 09:01:02
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-04 15:15:44
+ * @LastEditTime: 2021-02-04 19:14:42
 -->
 <template>
   <view class="upload-attachment-wrapper">
@@ -21,12 +21,13 @@
             width="160"
             height="160"
             :action="action"
-            @on-success="successChange"
+            @on-success="successChange($event, item.code)"
             @on-remove="removeChange"
             :show-upload-list="true"
             :header="header"
             :show-progress="false"
-            :before-upload="beforeUpload(i)"
+            :before-upload="beforeUpload"
+            :file-list="item.fileList"
             name="files"
           ></u-upload>
         </view>
@@ -101,7 +102,34 @@ export default {
       console.log(index, lists, name);
       // this.uploadArr.splice(index, 1);
     },
-    async successChange(data, index, lists, name) {
+    async successChange(data, code) {
+      let arr = [];
+      this.dictList.forEach((v) => {
+        if (v.code === code) {
+          if (v.fileList.length) {
+            v.fileList.push({
+              fileId: data.data[0].fileId,
+              fileName:
+                data.data[0].generateFileName +
+                "." +
+                data.data[0].generateFileType,
+              type: code,
+            });
+          } else {
+            v.fileList = [
+              {
+                fileId: data.data[0].fileId,
+                fileName:
+                  data.data[0].generateFileName +
+                  "." +
+                  data.data[0].generateFileType,
+                type: code,
+              },
+            ];
+          }
+        }
+      });
+      console.log(this.dictList, "list");
       // this.uploadArr[index] = {
       //   fileId: lists[index].response.data[0].fileId,
       //   fileName:
@@ -109,7 +137,7 @@ export default {
       //     "." +
       //     lists[index].response?.data[0].generateFileType,
       // };
-      console.log(data, index, lists, name);
+      console.log(data, code);
     },
     // 提交
     async handleSubmit() {
