@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-25 09:01:02
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-04 19:14:42
+ * @LastEditTime: 2021-02-05 09:53:55
 -->
 <template>
   <view class="upload-attachment-wrapper">
@@ -22,12 +22,11 @@
             height="160"
             :action="action"
             @on-success="successChange($event, item.code)"
-            @on-remove="removeChange"
+            @on-remove="removeChange($event, item.code)"
             :show-upload-list="true"
             :header="header"
             :show-progress="false"
-            :before-upload="beforeUpload"
-            :file-list="item.fileList"
+            :file-list="item.showList"
             name="files"
           ></u-upload>
         </view>
@@ -44,7 +43,10 @@
 </template>
 
 <script>
-import { postReportAttachmentApi } from "@/api/channel";
+import {
+  postReportAttachmentApi,
+  postReportAttachmentGetAllApi,
+} from "@/api/channel";
 import { getAllByTypeApi } from "@/api/index";
 import { currentEnvConfig } from "../../../env-config.js";
 import storageTool from "../../../common/storageTool.js";
@@ -62,17 +64,20 @@ export default {
       header: {
         Authorization: "bearer " + storageTool.getToken(),
       },
-      uploadArr: [],
+      reportId: "",
     };
   },
-  async onLoad() {
+  async onLoad(option) {
+    this.reportId = option.id;
     this.ReportAttachment = await this.getDictAll("ReportAttachment");
     this.dictList = this.ReportAttachment.map((v) => ({
       code: v.code,
       id: v.id,
       name: v.name,
       fileList: [],
+      showList: [],
     }));
+    if (this.reportId) this.getReportList();
   },
   methods: {
     // 获取字典
@@ -89,21 +94,36 @@ export default {
         return "";
       }
     },
-    beforeUpload(index) {
-      console.log(index);
-      uni.showToast({
-        icon: "loading",
-        title: "正在上传...",
-        duration: 500000000000,
+    async getReportList() {
+      let obj = {};
+      obj.reportId = this.reportId;
+      const res = await postReportAttachmentGetAllApi(obj);
+      res.forEach((v) => {
+        this.dictList.forEach((j) => {
+          if (v.type === j.code) {
+            j.showList.push({
+              fileId: v.fileId,
+              fileName: v.fileName,
+              type: v.type,
+              url: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${v.fileId}`,
+            });
+            j.fileList.push({
+              fileId: v.fileId,
+              fileName: v.fileName,
+              type: v.type,
+            });
+          }
+        });
       });
-      return true;
     },
-    removeChange(index, lists, name) {
-      console.log(index, lists, name);
-      // this.uploadArr.splice(index, 1);
+    removeChange(index, code) {
+      this.dictList.forEach((v) => {
+        if (v.code === code) {
+          v.fileList.splice(index, 1);
+        }
+      });
     },
     async successChange(data, code) {
-      let arr = [];
       this.dictList.forEach((v) => {
         if (v.code === code) {
           if (v.fileList.length) {
@@ -129,20 +149,18 @@ export default {
           }
         }
       });
-      console.log(this.dictList, "list");
-      // this.uploadArr[index] = {
-      //   fileId: lists[index].response.data[0].fileId,
-      //   fileName:
-      //     lists[index].response?.data[0].generateFileName +
-      //     "." +
-      //     lists[index].response?.data[0].generateFileType,
-      // };
-      console.log(data, code);
     },
     // 提交
     async handleSubmit() {
-      let obj = {};
+      let obj = {
+        attachments: [],
+        reportId: this.reportId,
+      };
+      this.dictList.forEach((v) => {
+        obj.attachments = obj.attachments.concat(v.fileList);
+      });
       await postReportAttachmentApi(obj);
+      this.$tool.toast("提交成功");
       uni.navigateTo({
         url: `/channelPackage/myTab/pages/myReport`,
       });

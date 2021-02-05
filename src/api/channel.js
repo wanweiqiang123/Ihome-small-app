@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-15 10:10:10
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-04 15:18:04
+ * @LastEditTime: 2021-02-04 20:28:48
  */
 import { getApi, postApi } from '@/common/http';
 import { currentEnvConfig } from '@/env-config';
@@ -286,4 +286,9 @@ export async function postReportAttachmentApi(data = {}, option = {}) {
 // 成交登记
 export async function postAddDealtApi(data = {}, option = {}) {
   return await postApi(`/sales-api/customer/report/addDeal`, data, option);
+}
+
+// 查询该报备的所有附件
+export async function postReportAttachmentGetAllApi(data = {}, option = {}) {
+  return await postApi(`/sales-api/customer/reportAttachment/getAll`, data, option);
 }
