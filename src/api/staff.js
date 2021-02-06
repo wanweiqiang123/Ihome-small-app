@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-10 15:30:58
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-01 16:18:07
+ * @LastEditTime: 2021-02-06 17:54:35
  */
 import { getApi, postApi } from '../common/http.js';
 
@@ -25,6 +25,15 @@ export async function postReportList(data = {}, option = {}) {
  */
 export async function reportValidOrInvalid(data = {}, option = {}) {
   return await postApi('/sales-api/customer/report/reportValidOrInvalid', data, option)
+}
+/**
+ * @description: 获取待业管审核的告知书
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function postNoticeListByPending(data = {}, option = {}) {
+  return await postApi('/sales-api/contract/notice/pending/list', data, option)
 }
 /**
  * @description: 获取优惠告知书列表
@@ -87,7 +96,7 @@ export async function getNoticeInfo(data = {}, option = {}) {
  * @return {*} Promise
  */
 export async function postNoticeManagement(data = {}, option = {}) {
-  return await getApi(`/sales-api/contract/notice/industry/management/determine/${data}`, null, option)
+  return await postApi(`/sales-api/contract/notice/industry/management/determine`, data, option)
 }
 /**
  * @description: 优惠告知书作废

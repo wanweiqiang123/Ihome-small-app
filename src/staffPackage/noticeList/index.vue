@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
- * @LastEditors: zyc
- * @LastEditTime: 2021-02-03 10:42:51
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-02-06 17:56:34
 -->
 
 <template>
@@ -295,11 +295,6 @@ export default {
           });
           break;
         case "Paid":
-          // 分公司业管待审核
-          uni.navigateTo({
-            url: `/staffPackage/noticeConfirm/index?id=${item.id}`,
-          });
-          break;
         case "BecomeEffective":
           if (item.notificationType === "Notification") {
             // 优惠告知书

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-11 11:37:33
+ * @LastEditTime: 2021-02-06 14:15:14
 -->
 <template>
   <StaffTabBar>
@@ -136,6 +136,11 @@ export default {
           icon: require("../common/icon/channel.png"),
           path: "/staffPackage/channelAccount/index",
           item: "渠道结佣情况",
+        },
+        {
+          icon: require("../common/icon/notice.png"),
+          path: "/staffPackage/noticeSpecial/index",
+          item: "审核优惠告知书",
         },
       ],
     };

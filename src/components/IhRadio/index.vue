@@ -3,15 +3,15 @@
  * @version: 
  * @Author: ywl
  * @Date: 2021-02-01 10:47:14
- * @LastEditors: zyc
- * @LastEditTime: 2021-02-03 16:53:29
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-02-06 15:45:46
 -->
 <template>
   <view class="radio-container">
     <template v-for="(i, n) in arrData">
       <view
         :key="n"
-        :class="['item', {'active': n === active}]"
+        :class="['item', {'active': n === activeHandler}]"
         @click="handleClick(i, n)"
       >{{i[nameProp]}}</view>
     </template>
@@ -49,6 +49,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    valueKey: {
+      type: String,
+      default: "",
+    },
   },
   computed: {
     nameProp() {
@@ -57,19 +61,33 @@ export default {
     valueProp() {
       return this.alias?.code || "code";
     },
-  },
-  watch: {
-    value(val) {
-      // if (!val) {
-      //   this.active = -1;
-      // }
-      // let item = this.arrData.indexOf((i) => {
-      //   return i[this.valueProp] == val
-      // })
-      let list = this.arrData.map((i) => i[this.valueProp]);
-      this.active = list.indexOf(val);
+    activeHandler() {
+      if (this.isValueObj) {
+        let list = this.arrData.map((i) => i[this.valueProp][this.valueKey]);
+        this.active = list.indexOf(this.value[this.valueKey]);
+      } else {
+        let list = this.arrData.map((i) => i[this.valueProp]);
+        this.active = list.indexOf(this.value);
+      }
+      return this.active;
     },
   },
+  // watch: {
+  //   value: {
+  //     immediate: true,
+  //     handler(val) {
+  //       // if (!val) {
+  //       //   this.active = -1;
+  //       // }
+  //       // let item = this.arrData.indexOf((i) => {
+  //       //   return i[this.valueProp] == val
+  //       // })
+  //       let list = this.arrData.map((i) => i[this.valueProp]);
+  //       this.active = list.indexOf(val);
+  //       console.log(this.active, list);
+  //     },
+  //   },
+  // },
   data() {
     return {
       active: -1,
@@ -77,8 +95,7 @@ export default {
   },
   methods: {
     handleClick(item, index) {
-      console.log(item);
-      this.active = index;
+      // this.active = index;
       if (this.isValueObj) {
         this.$emit("input", item);
       } else {

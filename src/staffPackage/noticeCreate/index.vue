@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-03 16:03:59
+ * @LastEditTime: 2021-02-06 19:51:59
 -->
 <template>
   <LoginPage>
@@ -246,6 +246,7 @@
                   :header="header"
                   :show-progress="false"
                   :before-upload="beforeUpload"
+                  :before-remove="beforeRemove"
                   :file-list="fileList"
                   @on-success="successChange"
                   @on-remove="removeChange"
@@ -305,6 +306,7 @@
                   :header="header"
                   :show-progress="false"
                   :before-upload="beforeUpload"
+                  :before-remove="beforeRemove"
                   @on-success="successChange"
                   @on-remove="removeChange"
                 ></u-upload>
@@ -312,6 +314,30 @@
             </u-form>
           </view>
         </template>
+        <view
+          class="form-color"
+          v-if="isOther"
+        >
+          <u-form
+            label-width="220"
+            label-position="top"
+          >
+            <u-form-item label="认购书附件">
+              <u-upload
+                width="180"
+                height="180"
+                name="files"
+                :action="action"
+                :header="header"
+                :show-progress="false"
+                :before-upload="beforeUpload"
+                :file-list="fileList"
+                @on-success="subscriptionSuccess"
+                @on-remove="subscriptionRemove"
+              ></u-upload>
+            </u-form-item>
+          </u-form>
+        </view>
       </view>
       <view class="notice-btn safe-area-inset-bottom">
         <u-button
@@ -345,6 +371,7 @@
         title="选择优惠折扣方式"
         value-name="valueObj"
         label-name="modeDescription"
+        :default-value="[0]"
         @confirm="selectConfirm"
       ></u-select>
       <u-select
@@ -366,6 +393,12 @@
         @confirm="roomConfirm"
       ></u-select>
       <!-- 模态框 -->
+      <u-modal
+        v-model="isOtherShow"
+        content="修改优惠折扣说明需要提供正确的材料附件，请悉知"
+        confirm-color="#fa3534"
+        @confirm="otherConfirm"
+      ></u-modal>
       <u-modal
         v-model="isRemoveShow"
         content="优惠告知书创建3天仍未签署的才可以删除, 确认删除此优惠告知书吗?"
@@ -535,11 +568,14 @@ export default {
       header: {
         Authorization: "bearer " + storageTool.getToken(),
       },
+      subscriptionFile: [],
+      subFileList: [],
       fileList: [],
       isRemoveShow: false,
       isShowRoomTip: false,
       isUpdate: false,
       distri: [],
+      isOtherShow: false,
     };
   },
   filters: {
@@ -596,15 +632,18 @@ export default {
         url: "/pages/search/index/index",
       });
     },
+    otherConfirm() {
+      this.isOther = true;
+      this.form.promotionMethod = "Manual";
+      this.form.manner = "自定义";
+      this.form.exPreferentialItem = 1;
+      this.form.explain = null;
+      this.form.paymentAmount = "";
+    },
     selectConfirm(val) {
       let item = val[0];
       if (item.value.premiumReceived === "other") {
-        this.isOther = true;
-        this.form.promotionMethod = "Manual";
-        this.form.manner = item.label;
-        this.form.exPreferentialItem = item.value.exPreferentialItem;
-        this.form.explain = null;
-        this.form.paymentAmount = "";
+        this.isOtherShow = true;
       } else {
         this.isOther = false;
         this.form.promotionMethod = "Automatic";
@@ -678,15 +717,11 @@ export default {
       this.roomSelectShow = true;
     },
     async getRoomList() {
-      this.roomSelectList = await postRoomByProId(
-        {
-          proId: this.proId,
-          buildingId: this.form.buyUnit,
-        },
-        {
-          hideLoading: true,
-        }
-      );
+      this.roomSelectList = [];
+      this.roomSelectList = await postRoomByProId({
+        proId: this.proId,
+        buildingId: this.form.buyUnit,
+      });
     },
     beforeUpload() {
       uni.showToast({
@@ -706,8 +741,29 @@ export default {
         type: "NoticeAttachment",
       };
     },
+    beforeRemove(index, lists) {
+      console.log(index, lists);
+      if (lists[index].response) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     removeChange(index, lists, name) {
       this.form.noticeAttachmentList.splice(index, 1);
+    },
+    subscriptionSuccess(data, index, lists, name) {
+      this.subscriptionFile[index] = {
+        fileNo: lists[index].response.data[0].fileId,
+        attachmentSuffix:
+          lists[index].response?.data[0].generateFileName +
+          "." +
+          lists[index].response?.data[0].generateFileType,
+        type: "Subscription",
+      };
+    },
+    subscriptionRemove(index, lists, name) {
+      this.subscriptionFile.splice(index, 1);
     },
     dataVerify() {
       this.arr = [];
@@ -748,6 +804,10 @@ export default {
       Promise.all(verifyArr)
         .then(async () => {
           console.log("全部通过", this.form);
+          if (this.isOther && !this.subscriptionFile.length) {
+            this.$tool.toast("认购书附件不能为空");
+            return;
+          }
           if (this.isRecognize) {
             // 认筹阶段不需要判断房号
             this.submieMethod();
@@ -798,6 +858,9 @@ export default {
     },
     async submieMethod() {
       try {
+        this.form.noticeAttachmentList = this.form.noticeAttachmentList.concat(
+          this.subscriptionFile
+        );
         const res = await postNoticeCreate(this.form);
         this.$tool.toast("保存成功");
         if (this.form.templateType === "ElectronicTemplate") {
