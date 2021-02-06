@@ -233,3 +233,63 @@ export async function getNotCheckListApi(data = {}, option = {}) {
 export async function getPreviewApi(data = {}, option = {}) {
   return await getApi(`/sales-api/contract/notice/preview/sign/${data}`, option)
 }
+
+/**
+ * @description: 业绩申报列表
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function getDealList(data = {}, option = {}) {
+  return await postApi(`/sales-api/deal/deal/getList`, data, option)
+}
+
+/**
+ * @description: 业绩申报 - 通过项目周期id获取基础信息
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function getBaseDealInfo(data = {}, option = {}) {
+  return await getApi(`/sales-api/project/term/getProBaseByTermId/${data.cycleId}`, option)
+}
+
+/**
+ * @description: 业绩申报 - 根据业务模式获取可选择的细分业务模式
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function post_buModelContType_subList(data = {}, option = {}) {
+  return await postApi(`/sales-api/deal/buModelContType/subList`, data, option)
+}
+
+/**
+ * @description: 业绩申报 - 查询已配置的【业务模式——合同类型】对应关系列表
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function post_buModelContType_getList(data = {}, option = {}) {
+  return await postApi(`/sales-api/deal/buModelContType/getList`, data, option)
+}
+
+/**
+ * @description: 业绩申报 - 初始化页面，选择周期、房号之后，带出成交基础、房产、渠道、客户、优惠告知书、收派金额、部分附件
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function post_pageData_initBasic(data = {}, option = {}) {
+  return await postApi(`/sales-api/deal/pageData/initBasic`, data, option)
+}
+
+/**
+ * @description: 业绩申报 - 判断是否应该存在优惠告知书，返回true则允许添加，返回false则不允许，返回业务逻辑则直接抛出异常
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function post_pageData_dealCheckNotice(data = {}, option = {}) {
+  return await postApi(`/sales-api/deal/pageData/dealCheckNotice`, data, option)
+}
