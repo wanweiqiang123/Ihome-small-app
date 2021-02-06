@@ -97,6 +97,11 @@ export async function postProjectsApi(data = {}, option = {}) {
     return await postApi('/sales-api/project/project/getList', data, option)
 }
 
+/* 查询项目周期列表 */
+export async function postAllTermApi(data = {}, option = {}) {
+    return await postApi('/sales-api/project/term/getList', data, option)
+}
+
 /**字典列表，全部数据*/
 export async function getDictGetAllApi(data = {}, option = {}) {
     return await getApi('/sales-api/system/dict/getAll', data, option);
@@ -177,4 +182,14 @@ export async function getFuzzySearchByCityApi(data, option = {}) {
 /**查询银行网点信息列表数据*/
 export async function postBankBranchGetListApi(data, option = {}) {
     return await postApi('/sales-api/finance/bankBranch/getList', data, option)
+}
+
+/**
+ * @description: 查询指定类型的所有字典项
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function getAllDictByType(data = {}, option = {}) {
+    return await postApi(`/sales-api/system/dict/getAllByTypes`, data, option)
 }
