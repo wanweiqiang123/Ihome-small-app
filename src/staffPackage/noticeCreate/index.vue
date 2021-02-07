@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-06 19:51:59
+ * @LastEditTime: 2021-02-07 10:32:43
 -->
 <template>
   <LoginPage>
@@ -331,7 +331,8 @@
                 :header="header"
                 :show-progress="false"
                 :before-upload="beforeUpload"
-                :file-list="fileList"
+                :file-list="subFileList"
+                :before-remove="beforeRemove"
                 @on-success="subscriptionSuccess"
                 @on-remove="subscriptionRemove"
               ></u-upload>
@@ -437,6 +438,7 @@ import {
   postCheckRoom,
   postNoticeDelete,
   getRecognizeById,
+  postDelFile,
 } from "../../api/staff";
 
 export default {
@@ -742,7 +744,6 @@ export default {
       };
     },
     beforeRemove(index, lists) {
-      console.log(index, lists);
       if (lists[index].response) {
         return true;
       } else {
@@ -761,6 +762,19 @@ export default {
           lists[index].response?.data[0].generateFileType,
         type: "Subscription",
       };
+    },
+    beforeSubRemove(index, lists) {
+      let url = lists[0].url;
+      let number = url.lastIndexOf("/");
+      let fileNo = url.substring(number + 1, url.length);
+      console.log(index, lists, fileNo);
+      return new Promise((resolve, reject) => {
+        postDelFile(fileNo)
+          .then(resolve())
+          .catch((err) => {
+            reject(0);
+          });
+      });
     },
     subscriptionRemove(index, lists, name) {
       this.subscriptionFile.splice(index, 1);
@@ -835,6 +849,10 @@ export default {
       Promise.all(verifyArr)
         .then(async () => {
           console.log("全部通过", this.form);
+          if (this.isOther && !this.subscriptionFile.length) {
+            this.$tool.toast("认购书附件不能为空");
+            return;
+          }
           if (this.isRecognize) {
             // 认筹阶段不需要判断房号
             this.updateMethod();
@@ -877,6 +895,8 @@ export default {
     async updateMethod() {
       this.form.ownerEditList = this.form.ownerList;
       let list = this.form.noticeAttachmentList.filter((i) => !!i);
+      let subList = this.subscriptionFile.filter((i) => !!i);
+      list = list.concat(subList);
       try {
         const res = await postNoticeUpdate({
           ...this.form,
@@ -960,6 +980,10 @@ export default {
       if (info.promotionMethod === "Manual") {
         this.isOther = true;
         this.form.manner = "自定义";
+        this.subFileList = info.subscriptionAnnex.map((val) => ({
+          ...val,
+          url: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${val.fileNo}`,
+        }));
       }
       try {
         this.isRecognize = await getRecognizeById(info.cycleId);

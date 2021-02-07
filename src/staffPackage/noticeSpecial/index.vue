@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-02-06 10:22:41
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-06 16:39:55
+ * @LastEditTime: 2021-02-07 10:41:23
 -->
 <template>
   <LoginPage>
@@ -136,6 +136,10 @@ export default {
       if (item.reviewStatus === "Pending") {
         uni.navigateTo({
           url: `/staffPackage/noticeConfirm/index?id=${item.id}`,
+        });
+      } else {
+        uni.navigateTo({
+          url: `/staffPackage/noticeInfo/index?id=${item.id}`,
         });
       }
     },

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-18 11:38:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-06 18:36:33
+ * @LastEditTime: 2021-02-07 10:39:40
 -->
 <template>
   <LoginPage>
@@ -229,6 +229,7 @@ export default {
             url: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${val.fileNo}`,
           }));
         console.log(this.fileList);
+        this.isPaper = res.templateType === "PaperTemplate";
       }
     },
     handleShow() {
@@ -331,7 +332,6 @@ export default {
   onLoad(option) {
     this.getInfo(option.id);
     this.option = option;
-    this.isPaper = option.tempType === "PaperTemplate";
   },
 };
 </script>

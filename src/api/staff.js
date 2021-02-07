@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-10 15:30:58
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-06 17:54:35
+ * @LastEditTime: 2021-02-07 09:35:59
  */
 import { getApi, postApi } from '../common/http.js';
 
@@ -43,6 +43,15 @@ export async function postNoticeListByPending(data = {}, option = {}) {
  */
 export async function postNoticeList(data = {}, option = {}) {
   return await postApi('/sales-api/contract/notice/list', data, option)
+}
+/**
+ * @description: 删除优惠告知书附件
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function postDelFile(data = {}, option = {}) {
+  return await postApi(`/sales-api/contract/notice/annex/${data}`, null, option)
 }
 /**
  * @description: 获取优惠告知书的优惠方式
