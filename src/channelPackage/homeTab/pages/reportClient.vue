@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-24 09:58:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-04 10:36:18
+ * @LastEditTime: 2021-02-08 16:49:22
 -->
 <template>
   <view class="report-client-wrapper">
@@ -35,7 +35,7 @@
           <view>{{info.proName}}</view>
           <view>
             <u-tag
-              :text="getDictName(district, areaRegion)"
+              :text="district"
               size="mini"
               :closeable="false"
               type="info"
@@ -255,10 +255,11 @@
 </template>
 
 <script>
-import { getAllByTypeApi } from "@/api/index";
+import { getAllByTypeApi, getProDetailBBApi } from "@/api/index";
 import { getAreaList, postReportApi, postAddDealtApi } from "@/api/channel";
 import { phoneValidator } from "../../../common/validate";
 import { postBuildByProId, postRoomByProId } from "../../../api/staff";
+import { currentEnvConfig } from "../../../env-config.js";
 export default {
   data() {
     return {
@@ -280,8 +281,7 @@ export default {
         roomNo: "",
         roomId: "",
       },
-      district: "440105000000",
-      areaRegion: [],
+      district: "海珠区",
       infoRules: {
         expectedNumber: [
           {
@@ -322,13 +322,12 @@ export default {
           },
         ],
       },
-      homeImg: require("@/channelPackage/common/img/house.jpg"),
+      homeImg: "",
       pageType: "",
       showTime: false,
       buildingBlockShow: false,
       currentSelectType: "",
       roomNoShow: false,
-      estateList: [],
       timeParams: {
         year: true,
         month: true,
@@ -360,14 +359,15 @@ export default {
     }
   },
   async onShow() {
-    this.areaRegion = await this.getArea(); // 省市区
     let item = getApp().globalData.searchBackData;
     if (item && item.type === "project") {
       this.info.proId = item.data.proId;
-      this.info.proName = item.data.proName;
-      this.info.exMarket = item.data.exMarket;
-      this.district = item.data.district;
-      this.keyword = item.data.proName;
+      const res = await getProDetailBBApi(this.info.proId);
+      this.info.proName = res.proName;
+      this.keyword = res.proName;
+      this.info.exMarket = res.exMarket;
+      this.district = res.districtName;
+      this.homeImg = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${res.proAddr}`;
       getApp().globalData.searchBackData = {};
       if (this.pageType) {
         this.buildingBlockList = await postBuildByProId({
@@ -375,9 +375,10 @@ export default {
         });
       }
     } else if (item && item.type === "customer") {
-      this.info.name = item.data.name;
-      this.info.sex = item.data.sex;
-      this.info.mobile = item.data.mobile;
+      this.custormInfo.name = item.data.name;
+      this.custormInfo.sex = item.data.sex;
+      this.custormInfo.mobile = item.data.mobile;
+      this.custormInfo.reportCustomerId = item.data.id;
       getApp().globalData.searchBackData = {};
     }
   },
@@ -385,7 +386,7 @@ export default {
     // 项目跳转搜索页
     projectSearch() {
       getApp().globalData.searchParams = {
-        api: "postProjectsApi",
+        api: "getFuzzySearchByCityApi",
         key: "proName",
         id: "proId",
         type: "project",
@@ -405,25 +406,6 @@ export default {
       uni.navigateTo({
         url: "/pages/search/index/index",
       });
-    },
-    // 获取字典
-    async getDictByType(type) {
-      const dictList = await getAllByTypeApi({ type });
-      return dictList;
-    },
-    // 获取对应字典name
-    getDictName(code, list) {
-      if (list.length) {
-        const item = list.find((v) => v.code === code);
-        return item?.name;
-      } else {
-        return "";
-      }
-    },
-    // 获取省市区
-    async getArea() {
-      let areaList = await getAreaList();
-      return areaList;
     },
     // 确定选择时间
     handleConfirm(value) {
@@ -469,9 +451,7 @@ export default {
           });
         });
       }
-
       arr.push(info, item);
-      console.log(arr);
       return arr;
     },
     // 成交登记/报备客户
@@ -498,7 +478,6 @@ export default {
         } else {
           obj = { ...this.info, ...this.custormInfo };
           obj.channelId = userInfo.channelId;
-          obj.reportCustomerId = userInfo.id;
           obj.reportMobile = userInfo.mobilePhone;
           obj.reportName = userInfo.name;
           obj.reportType = "FullNumber";

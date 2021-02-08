@@ -3,19 +3,22 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-11-17 18:10:07
- * @LastEditors: ywl
- * @LastEditTime: 2020-11-27 11:31:32
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-08 16:00:08
 -->
 <template>
   <view class="client-container safe-area-inset-bottom">
     <view class="report-houses">
       <view class="houses-lable">报备楼盘</view>
-      <view class="houses-search">
+      <view
+        class="houses-search"
+        @click="projectSearch"
+      >
         <view>
           <u-icon
             name="search"
             color="#bdbdbd"
-          />搜索楼盘
+          />{{keyword}}
         </view>
         <u-icon
           name="arrow-down"
@@ -24,13 +27,22 @@
       </view>
     </view>
     <view class="houses-info">
-      <view class="img"></view>
+      <view class="img">
+        <u-image
+          width="242rpx"
+          height="186rpx"
+          :src="info.projectPic"
+        ></u-image>
+      </view>
       <view>
-        <view class="item">远洋招商保利东湾经纪渠道</view>
-        <view class="item area">天河区</view>
-        <view class="item">
-          <view class="icon">佣</view>
-          佣金规则
+        <view class="item">{{info.proAddr}}</view>
+        <view>
+          <u-tag
+            :text="info.districtName"
+            size="mini"
+            :closeable="false"
+            type="info"
+          />
         </view>
       </view>
     </view>
@@ -38,73 +50,126 @@
       <view class="bg-color">
         <view class="form-title u-border-bottom">中介信息</view>
         <u-form
-          :model="form"
-          ref="uForm"
+          :model="channelForm"
+          ref="channelForm"
           label-width="170"
         >
           <u-form-item
             label="渠道公司"
             class="hide-icon"
             right-icon="arrow-right"
+            required
+            prop="channelName"
           >
             <u-input
-              v-model="form.sex"
+              v-model="channelForm.channelName"
               type="select"
               placeholder="请选择渠道公司"
+              @click="channelSearch"
             />
           </u-form-item>
-          <u-form-item label="经纪人姓名">
-            <u-input v-model="form.sex" />
+          <u-form-item
+            label="经纪人姓名"
+            required
+            prop="reportName"
+          >
+            <u-input v-model="channelForm.reportName" />
           </u-form-item>
-          <u-form-item label="经纪人号码">
-            <u-input v-model="form.sex" />
+          <u-form-item
+            label="经纪人号码"
+            required
+            prop="reportMobile"
+          >
+            <u-input v-model="channelForm.reportMobile" />
           </u-form-item>
         </u-form>
       </view>
       <view class="bg-color">
         <view class="form-title u-border-bottom">客户信息</view>
         <u-form
-          :model="form"
-          ref="uForm"
+          :model="custormInfo"
+          ref="custormInfo"
           label-width="150"
         >
-          <u-form-item label="姓名">
-            <u-input v-model="form.sex" />
+          <u-form-item
+            label="姓名"
+            required
+            prop="name"
+          >
+            <u-input
+              v-model="custormInfo.name"
+              placeholder="姓名"
+              :clearable="false"
+              input-align="left"
+            />
           </u-form-item>
-          <u-form-item label="性别">
-            <u-radio-group
-              v-model="form.sex"
-              width="50%"
-            >
-              <u-radio name="1">先生</u-radio>
-              <u-radio name="0">女士</u-radio>
+          <u-form-item
+            label="性别"
+            prop="sex"
+            required
+          >
+            <u-radio-group v-model="custormInfo.sex">
+              <u-radio name="Ms">女</u-radio>
+              <u-radio name="Mr">男</u-radio>
             </u-radio-group>
           </u-form-item>
-          <u-form-item label="手机号">
-            <u-input v-model="form.sex" />
+          <u-form-item
+            label="手机号"
+            prop="mobile"
+            required
+          >
+            <u-input
+              v-model="custormInfo.mobile"
+              placeholder="手机号"
+              :clearable="false"
+              input-align="left"
+            />
           </u-form-item>
         </u-form>
       </view>
       <view class="bg-color">
         <view class="form-title u-border-bottom">报备信息</view>
         <u-form
-          :model="form"
-          ref="uForm"
+          :model="reportForm"
+          ref="reportForm"
           label-width="200"
         >
-          <u-form-item label="预计到访人数">
-            <u-input v-model="form.sex" />
+          <u-form-item
+            label="预计到访人数"
+            prop="expectedNumber"
+            required
+          >
+            <u-input
+              v-model="reportForm.expectedNumber"
+              placeholder="预计到访人数"
+              :clearable="true"
+              input-align="left"
+            />
           </u-form-item>
-          <u-form-item label="预计到访时间">
-            <u-input v-model="form.sex" />
+          <u-form-item
+            label="预计到访时间"
+            prop="expectedTime"
+            class="hide-icon"
+            right-icon="arrow-right"
+            required
+          >
+            <u-input
+              v-model="reportForm.expectedTime"
+              type="select"
+              @click="showTime = true"
+              placeholder="预计到访时间"
+              :clearable="true"
+              input-align="left"
+            />
           </u-form-item>
           <u-form-item
             label="备注信息"
             label-position="top"
           >
             <u-input
-              v-model="form.sex"
+              v-model="reportForm.remark"
               type="textarea"
+              :clearable="true"
             />
           </u-form-item>
         </u-form>
@@ -115,18 +180,203 @@
         size="default"
         type="primary"
         shape="circle"
+        @click="handleReport"
       >保存</u-button>
     </view>
+    <u-picker
+      v-model="showTime"
+      mode="time"
+      :params="timeParams"
+      @confirm="handleConfirm"
+    ></u-picker>
   </view>
 </template>
 
 <script>
+import { phoneValidator } from "../../common/validate";
+import { getProDetailBBApi } from "@/api/index";
+import { postReportApi } from "@/api/channel";
+import { currentEnvConfig } from "../../env-config.js";
+import uInput from "../../uview-ui/components/u-input/u-input.vue";
 export default {
   name: "clientReport",
   data() {
     return {
-      form: {},
+      showTime: false,
+      info: {
+        proId: "",
+        proName: "",
+        city: "",
+        districtName: "海珠区",
+        proAddr: "",
+        projectPic: "",
+        exMarket: 0,
+        startDivisionId: "",
+      },
+      channelForm: {
+        channelName: "",
+        channelId: "",
+        reportName: "",
+        reportMobile: "",
+      },
+      custormInfo: {
+        name: "",
+        sex: "Ms",
+        mobile: "",
+      },
+      reportForm: {
+        expectedNumber: "",
+        expectedTime: "",
+        remark: "",
+      },
+      channelRules: {
+        channelName: [
+          { required: true, message: "请选择渠道公司", trigger: "change" },
+        ],
+        reportName: [
+          { required: true, message: "请输入经纪人姓名", trigger: "change" },
+        ],
+        reportMobile: [
+          { required: true, message: "请输入经纪人号码", trigger: "change" },
+          { validator: phoneValidator, trigger: "change" },
+        ],
+      },
+      custormRules: {
+        name: [{ required: true, message: "请输入姓名", trigger: "change" }],
+        sex: [{ required: true, message: "请选择性别", trigger: "change" }],
+        mobile: [
+          { required: true, message: "请输入手机号", trigger: "change" },
+          { validator: phoneValidator, trigger: "change" },
+        ],
+      },
+      reportRules: {
+        expectedNumber: [
+          {
+            required: true,
+            message: "请输入预计到访人数",
+            trigger: "change",
+          },
+        ],
+        expectedTime: [
+          {
+            required: true,
+            message: "请输入预计到访时间",
+            trigger: "change",
+          },
+        ],
+      },
+      timeParams: {
+        year: true,
+        month: true,
+        day: true,
+        hour: true,
+        minute: true,
+        second: false,
+      },
+      keyword: "搜索楼盘",
     };
+  },
+  onReady() {
+    this.$nextTick(() => {
+      this.$refs.channelForm.setRules(this.channelRules);
+      this.$refs.custormInfo.setRules(this.custormRules);
+      this.$refs.reportForm.setRules(this.reportRules);
+    });
+  },
+  async onShow() {
+    let item = getApp().globalData.searchBackData;
+    if (item && item.type === "project") {
+      this.info.proId = item.data.proId;
+      const res = await getProDetailBBApi(this.info.proId);
+      this.info.proName = res.proName;
+      this.keyword = res.proName;
+      this.info.districtName = res.districtName;
+      this.info.proAddr = res.proAddr;
+      this.info.city = res.city;
+      this.info.exMarket = res.exMarket;
+      this.info.projectPic = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${res.projectPic}`;
+      getApp().globalData.searchBackData = {};
+    } else if (item && item.type === "channel") {
+      this.channelForm.channelName = item.data.name;
+      this.channelForm.channelId = item.data.id;
+      getApp().globalData.searchBackData = {};
+    }
+  },
+  methods: {
+    // 项目跳转搜索页
+    projectSearch() {
+      getApp().globalData.searchParams = {
+        api: "getFuzzySearchByCityApi",
+        key: "proName",
+        id: "proId",
+        type: "project",
+      };
+      uni.navigateTo({
+        url: "/pages/search/index/index",
+      });
+    },
+    // 渠道公司
+    channelSearch() {
+      if (this.info.proId) {
+        getApp().globalData.searchParams = {
+          api: "postChannelByNameApi",
+          key: "name",
+          id: "id",
+          type: "channel",
+          other: {
+            cycleCity: this.info.city,
+            departmentOrgId: this.info.startDivisionId,
+          },
+        };
+        uni.navigateTo({
+          url: "/pages/search/index/index",
+        });
+      } else {
+        this.$tool.toast("请选择报备楼盘");
+      }
+    },
+    // 确定选择时间
+    handleConfirm(value) {
+      this.reportForm.expectedTime = `${value.year}-${value.month}-${value.day} ${value.hour}:${value.minute}`;
+    },
+    // 表单验证
+    formDataRules() {
+      let arr = [];
+      const channelForm = new Promise((resolve, reject) => {
+        this.$refs.channelForm.validate((val) => {
+          val ? resolve() : reject(err);
+        });
+      });
+      const custormInfo = new Promise((resolve, reject) => {
+        this.$refs.custormInfo.validate((val) => {
+          val ? resolve() : reject(err);
+        });
+      });
+      const reportForm = new Promise((resolve, reject) => {
+        this.$refs.reportForm.validate((val) => {
+          val ? resolve() : reject(err);
+        });
+      });
+      arr.push(channelForm, custormInfo, reportForm);
+      return arr;
+    },
+    handleReport() {
+      let formDataRules = this.formDataRules();
+      Promise.all(formDataRules).then(async () => {
+        let obj = {};
+        obj = { ...this.reportForm, ...this.custormInfo, ...this.channelForm };
+        obj.exMarket = this.info.exMarket;
+        obj.helpRecord = 1;
+        obj.proId = this.info.proId;
+        obj.reportType = "FullNumber";
+        console.log(obj);
+        await postReportApi(obj);
+        this.$tool.toast("报备成功");
+        uni.redirectTo({
+          url: `/staffPackage/homeTab/index`,
+        });
+      });
+    },
   },
 };
 </script>
