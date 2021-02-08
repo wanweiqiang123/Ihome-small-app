@@ -14,8 +14,9 @@
         <u-form :model="postData" ref="uForm" label-width="190">
           <u-form-item
             label="项目周期"
+            required
             class="hide-icon"
-            right-icon="arrow-right">
+            right-icon="arrow-right" prop="cycleName">
             <u-input
               v-model="postData.cycleName"
               @click="handleSelectCycle"
@@ -24,8 +25,9 @@
           </u-form-item>
           <u-form-item
             label="细分业务模式"
+            required
             class="hide-icon"
-            right-icon="arrow-right">
+            right-icon="arrow-right" prop="refineModelName">
             <u-input
               v-model="postData.refineModelName"
               :select-open="showRefineModel"
@@ -35,8 +37,9 @@
           </u-form-item>
           <u-form-item
             label="成交阶段"
+            required
             class="hide-icon"
-            right-icon="arrow-right">
+            right-icon="arrow-right" prop="stageName">
             <u-input
               v-model="postData.stageName"
               :select-open="showStage"
@@ -46,8 +49,9 @@
           </u-form-item>
           <u-form-item
             label="物业类型"
+            required
             class="hide-icon"
-            right-icon="arrow-right">
+            right-icon="arrow-right" prop="propertyTypeName">
             <u-input
               v-model="postData.propertyTypeName"
               :select-open="showPropertyType"
@@ -56,9 +60,10 @@
               placeholder="请选择物业类型"/>
           </u-form-item>
           <u-form-item
+            :required="!isNoRequired"
             label="栋 座"
             class="hide-icon"
-            right-icon="arrow-right">
+            right-icon="arrow-right" prop="buildingName">
             <u-input
               v-model="postData.buildingName"
               :select-open="showBuild"
@@ -67,9 +72,10 @@
               placeholder="请选择栋座"/>
           </u-form-item>
           <u-form-item
+            :required="!isNoRequired"
             label="房 号"
             class="hide-icon"
-            right-icon="arrow-right">
+            right-icon="arrow-right" prop="roomNo">
             <u-input
               v-model="postData.roomNo"
               :select-open="showRoom"
@@ -79,8 +85,9 @@
           </u-form-item>
           <u-form-item
             label="合同类型"
+            required
             class="hide-icon"
-            right-icon="arrow-right">
+            right-icon="arrow-right" prop="contTypeName">
             <u-input
               v-model="postData.contTypeName"
               :select-open="showContType"
@@ -90,9 +97,10 @@
           </u-form-item>
           <u-form-item
             v-if="postData.contType === 'DistriDeal'"
+            required
             label="分销协议编号"
             class="hide-icon"
-            right-icon="arrow-right">
+            right-icon="arrow-right" prop="contNo">
             <u-input
               v-model="postData.contNo"
               :select-open="showContNo"
@@ -102,11 +110,13 @@
           </u-form-item>
           <u-form-item
             v-if="postData.recordStr"
+            required
             label="报备信息">
             <u-input disabled v-model="postData.recordStr"/>
           </u-form-item>
           <u-form-item
             v-if="postData.contType === 'DistriDeal'"
+            required
             label="渠道公司"
             class="hide-icon"
             right-icon="arrow-right">
@@ -117,6 +127,7 @@
           </u-form-item>
           <u-form-item
             v-if="postData.contType === 'DistriDeal'"
+            required
             label="经纪人"
             class="hide-icon"
             right-icon="arrow-right">
@@ -125,7 +136,9 @@
               disabled
               type="select"/>
           </u-form-item>
-          <u-form-item label="认购价格">
+          <u-form-item
+            :required="['Subscribe', 'SignUp'].includes(postData.stage)"
+            label="认购价格" prop="subscribePrice">
             <u-input
               disabled
               @click="handleInputPrice('subscribePrice')"
@@ -133,9 +146,10 @@
               placeholder="请输入认购价格"/>
           </u-form-item>
           <u-form-item
+            :required="['Subscribe', 'SignUp'].includes(postData.stage)"
             label="认购日期"
             class="hide-icon"
-            right-icon="arrow-right">
+            right-icon="arrow-right" prop="subscribeDate">
             <u-input
               v-model="postData.subscribeDate"
               :select-open="showDate"
@@ -143,7 +157,9 @@
               type="select"
               placeholder="请选择认购日期"/>
           </u-form-item>
-          <u-form-item label="签约价格">
+          <u-form-item
+            :required="['SignUp'].includes(postData.stage)"
+            label="签约价格" prop="signPrice">
             <u-input
               disabled
               @click="handleInputPrice('signPrice')"
@@ -151,9 +167,10 @@
               placeholder="请输入签约价格"/>
           </u-form-item>
           <u-form-item
+            :required="['SignUp'].includes(postData.stage)"
             label="签约日期"
             class="hide-icon"
-            right-icon="arrow-right">
+            right-icon="arrow-right" prop="signDate">
             <u-input
               v-model="postData.signDate"
               :select-open="showDate"
@@ -448,10 +465,101 @@ import tool from "@/common/tool";
 import {getImgUrl} from "@/api/channel";
 import {currentEnvConfig} from "@/env-config";
 import storageTool from "@/common/storageTool";
+import {phoneValidator} from "@/common/validate";
 export default {
   name: "performanceEdit",
   components: { PopupIndex },
   data() {
+    // 栋座
+    let buildingNameValidator = (rule, value, callback) => {
+      if (this.baseInfoByTerm.termStageEnum === "Recognize" && this.postData.stage === "Recognize") {
+        callback();
+        return;
+      } else {
+        if (!value) {
+          callback(new Error('栋座必选'));
+          return;
+        } else {
+          callback();
+          return;
+        }
+      }
+    }
+    // 房号
+    let roomNoValidator = (rule, value, callback) => {
+      if (this.baseInfoByTerm.termStageEnum === "Recognize" && this.postData.stage === "Recognize") {
+        callback();
+        return;
+      } else {
+        if (!value) {
+          callback(new Error('房号必选'));
+          return;
+        } else {
+          callback();
+          return;
+        }
+      }
+    }
+    // 认购价格
+    let subscribePriceValidator = (rule, value, callback) => {
+      if (['Subscribe', 'SignUp'].includes(this.postData.stage)) {
+        if (!value) {
+          callback(new Error('认购价格不能为空'));
+          return;
+        } else {
+          callback();
+          return;
+        }
+      } else {
+        callback();
+        return;
+      }
+    }
+    // 认购日期
+    let subscribeDateValidator = (rule, value, callback) => {
+      if (['Subscribe', 'SignUp'].includes(this.postData.stage)) {
+        if (!value) {
+          callback(new Error('认购日期不能为空'));
+          return;
+        } else {
+          callback();
+          return;
+        }
+      } else {
+        callback();
+        return;
+      }
+    }
+    // 签约价格
+    let signPriceValidator = (rule, value, callback) => {
+      if (['SignUp'].includes(this.postData.stage)) {
+        if (!value) {
+          callback(new Error('签约价格不能为空'));
+          return;
+        } else {
+          callback();
+          return;
+        }
+      } else {
+        callback();
+        return;
+      }
+    }
+    // 签约日期
+    let signDateValidator = (rule, value, callback) => {
+      if (['SignUp'].includes(this.postData.stage)) {
+        if (!value) {
+          callback(new Error('签约日期不能为空'));
+          return;
+        } else {
+          callback();
+          return;
+        }
+      } else {
+        callback();
+        return;
+      }
+    }
     return {
       showPackage: false, // 选择收派套餐弹窗标识
       packageData: {}, // 收派套餐查询条件
@@ -558,6 +666,8 @@ export default {
         signType:null,
         returnRatio:null,
         dataSign:null,
+        oneAgentTeam: null,
+        oneAgentTeamId: null,
         offerNoticeVO: [], // 优惠告知书
         customerVO: [], // 客户信息
         agencyVO: [], // 渠道信息
@@ -565,6 +675,45 @@ export default {
         serviceReceiveVO: [], // 收派金额 --- 服务费vo
         receiveAchieveVO: [], // 应收信息
         documentVO: [], // 附件信息
+      },
+      rules: {
+        cycleName: [
+          {required: true, message: "项目周期必选", trigger: "change"},
+        ],
+        contTypeName: [
+          {required: true, message: "合同类型必选", trigger: "change"},
+        ],
+        refineModelName: [
+          {required: true, message: "细分模式必选", trigger: "blur"},
+        ],
+        stageName: [
+          {required: true, message: "成交阶段必选", trigger: "change"},
+        ],
+        propertyTypeName: [
+          {required: true, message: "物业类型必选", trigger: "change"},
+        ],
+        buildingName: [
+          {validator: buildingNameValidator, trigger: "change"},
+        ],
+        roomNo: [
+          {validator: roomNoValidator, trigger: "change"},
+        ],
+        contNo: [
+          {required: true, message: "分销协议必选", trigger: "change"},
+        ],
+        subscribePrice: [
+          {validator: subscribePriceValidator, trigger: "change"},
+        ],
+        subscribeDate: [
+          {validator: subscribeDateValidator, trigger: "change"},
+        ],
+        signPrice: [
+          {validator: signPriceValidator, trigger: "change"},
+        ],
+        signDate: [
+          {validator: signDateValidator, trigger: "change"},
+        ],
+        notEmpty: []
       },
       packageIdsList: [], // 收派套餐ids：分销模式---选择分销协议后获取；非分销协议---请求接口获取
       baseInfoByTerm: {
@@ -662,6 +811,17 @@ export default {
         }
       }
       return obj;
+    },
+    // 判断栋座、房号是否必填项
+    isNoRequired() {
+      let flag = true;
+      if (this.baseInfoByTerm.termStageEnum === "Recognize" && this.postData.stage === "Recognize") {
+        // 项目周期是认筹 + 成交阶段是认筹，则是非必填
+        flag = true;
+      } else {
+        flag = false;
+      }
+      return flag;
     }
   },
   async onLoad() {
@@ -674,9 +834,7 @@ export default {
     let item = getApp().globalData.searchBackData;
     // console.log('item', item);
     if (item && item.type === "term") {
-      this.postData.cycleId = item.data.termId;
-      this.postData.cycleName= item.data.termName;
-      await this.getBaseDealInfo(item.data.termId);
+      await this.confirmSelectCycle(item.data);
       getApp().globalData.searchBackData = {};
     }
     if (item && item.type === "custom") {
@@ -883,6 +1041,48 @@ export default {
       uni.navigateTo({
         url: "/pages/search/index/index",
       });
+    },
+    // 确定选择项目周期
+    async confirmSelectCycle(data) {
+      if (data.termId) {
+        if (this.postData.cycleId) {
+          this.postData.agentReceiveVO = []; // 收派金额 - 代理费
+          this.postData.serviceReceiveVO = []; // 收派金额 - 服务费
+          this.postData.documentVO = []; // 上传附件
+          this.postData.oneAgentTeam = '';
+          this.postData.oneAgentTeamId = '';
+          this.postData.refineModel = '';
+          this.postData.refineModelName = '';
+          this.postData.stage = '';
+          this.postData.stageName = '';
+          this.postData.propertyType = '';
+          this.postData.propertyTypeName = '';
+          this.postData.buildingId = '';
+          this.postData.buildingName = '';
+          this.postData.roomId = '';
+          this.postData.roomNo = '';
+          await this.resetData();
+        }
+        this.$nextTick(async () => {
+          this.postData.cycleId = data.termId;
+          this.postData.cycleName= data.termName;
+          await this.getBaseDealInfo(data.termId);
+        });
+      }
+    },
+    // 清空数据 - 主要是和初始化数据有关的数据
+    resetData() {
+      this.tempSubscribePrice = null;
+      this.tempSignPrice = null;
+      this.contNoList = []; // 分销协议编号
+      this.packageIdsList = []; // ids
+      this.postData.customerVO = []; // 客户信息
+      this.postData.offerNoticeVO = []; // 优惠告知书
+      // this.postData.documentVO = []; // 上传附件
+      let list = ['contType', 'contTypeName', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall',
+        'toilet', 'propertyNo', 'signType', 'returnRatio', 'subscribePrice', 'subscribeDate',
+        'signPrice', 'signDate', 'agencyId', 'agencyName', 'channelLevel', 'channelLevelName']
+      this.resetObject('postData', list);
     },
     // 通过项目周期id获取基础信息
     async getBaseDealInfo(id = "") {
@@ -1319,11 +1519,11 @@ export default {
       if (!objName || !this[objName]) return;
       if (keyList.length > 0) {
         keyList.forEach((item) => {
-          this[objName][item] = null;
+          this[objName][item] = "";
         })
       } else {
         for (let keys in this[objName]) {
-          this[objName][keys] = null;
+          this[objName][keys] = "";
         }
       }
     },
@@ -1717,7 +1917,18 @@ export default {
     },
     // 提交
     handleSubmit() {
-      console.log(this.postData.documentVO);
+      let self = this;
+      self.$refs.uForm.setRules(self.rules);
+      self.$nextTick(() => {
+        self.$refs.uForm.validate(valid => {
+          if (valid) {
+            console.log('验证通过');
+          } else {
+            console.log('验证失败');
+          }
+        });
+      });
+      console.log(self.postData.documentVO);
     }
   }
 };
