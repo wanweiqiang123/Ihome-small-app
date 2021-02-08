@@ -299,7 +299,7 @@
       </view>
     </view>
     <view class="performance-btn">
-      <u-button shape="circle" type="primary">确认</u-button>
+      <u-button shape="circle" type="primary" @click="handleSubmit">提交</u-button>
     </view>
     <!-- 下拉框 -->
     <u-select
@@ -395,6 +395,38 @@
       @close="closeSelectPackage"
       v-if="showPackage"
       :query-data="packageData"></PopupIndex>
+    <!-- 选择上传附件类型菜单 -->
+    <u-action-sheet
+      :safe-area-inset-bottom="true"
+      :list="actionList"
+      v-model="showActionShow"
+      @click="handleUpload"></u-action-sheet>
+    <u-popup v-model="showBank" mode="right" length="100%">
+      <view class="select-bank-list-wrapper">
+        <view class="top-wrapper">
+          <u-search
+            class="search"
+            shape="round"
+            height="72"
+            @change="changeSearch"
+            @search="getBankList"
+            placeholder-color="#BDBDBD"
+            search-icon-color="#BDBDBD"
+            bg-color="#FFFFFF"
+            border-color="#DCDCDC"
+            :show-action="false"
+            placeholder="请输入开户银行名搜索"
+            v-model="queryPageParameters.bankName"></u-search>
+        </view>
+        <scroll-view :scroll-top="0" scroll-y="true" class="scroll-y-wrapper" @scrolltolower="scrollLower">
+          <view
+            class="bank-item"
+            v-for="(item, index) in bankList" :key="index"
+            @click="handleSelectBank(item)">{{item.branchName}}</view>
+          <u-divider v-if="isMore" :fontSize="30" :margin-top="30" half-width="100%">没有更多了</u-divider>
+        </scroll-view>
+      </view>
+    </u-popup>
   </view>
 </template>
 
@@ -415,6 +447,7 @@ import {getAllDictByType} from "@/api";
 import tool from "@/common/tool";
 import {getImgUrl} from "@/api/channel";
 import {currentEnvConfig} from "@/env-config";
+import storageTool from "@/common/storageTool";
 export default {
   name: "performanceEdit",
   components: { PopupIndex },
@@ -423,7 +456,21 @@ export default {
       showPackage: false, // 选择收派套餐弹窗标识
       packageData: {}, // 收派套餐查询条件
       currentUploadType: null, // 上传的附件类型
-      showActionShow: false,
+      showActionShow: false, // 上传附件类型菜单
+      actionList: [
+        {
+          text: '上传图片',
+          color: '',
+          fontSize: 30,
+          subText: '大小不能超过10M'
+        },
+        {
+          text: '上传文件',
+          color: '',
+          fontSize: 30,
+          subText: 'pdf、word、excel文件，大小不能超过10M'
+        }
+      ],
       imgUrl:`${currentEnvConfig['protocol']}://${currentEnvConfig['apiDomain']}/sales-api/sales-document-cover/file/browse/`,
       showDeleteWin: false, // 删除图片提示框
       deleteIndex: null,
@@ -550,12 +597,9 @@ export default {
       tempDocumentList: [], // 记录来访确认单和成交确认单
       currentPackageType: null, // 当前收派金额类型
       currentPackageIndex: null, // 当前收派金额序号
-      action: "",
-      fileList: [
-        {
-          url: "http://pics.sc.chinaz.com/files/pic/pic9/201912/hpic1886.jpg",
-        },
-      ],
+      uploadAction: `${currentEnvConfig['protocol']}://${currentEnvConfig['apiDomain']}/sales-api/sales-document-cover/file/upload`,
+      uploadHeader: {}, // 请求header
+      uploadName: 'files', // 供后端取值用
     };
   },
   computed: {
@@ -624,6 +668,7 @@ export default {
     this.dictList = await this.getAllDictByTypes(this.dictObj);
     this.NotificationTypeList = await this.getSignDict("NotificationType");
     this.FeeTypeList = await this.getSignDict("FeeType");
+    await this.getToken();
   },
   async onShow() {
     let item = getApp().globalData.searchBackData;
@@ -936,6 +981,7 @@ export default {
         return !["VisitConfirForm", "DealConfirForm"].includes(item.code);
       });
       this.postData.documentVO = JSON.parse(JSON.stringify(fileList));
+      console.log('documentVO', this.postData.documentVO);
     },
     // 初始化收派金额信息，置为0
     initReceiveVOS(data = []) {
@@ -1167,7 +1213,7 @@ export default {
                     item.name = item.fileName;
                   });
                 }
-                list.defaultFileList = this.postData.roomId && baseInfo.visitConfirmForms && baseInfo.visitConfirmForms.length ? baseInfo.visitConfirmForms : [];
+                list.fileList = this.postData.roomId && baseInfo.visitConfirmForms && baseInfo.visitConfirmForms.length ? baseInfo.visitConfirmForms : [];
                 break;
               case "DealConfirForm":
                 // 成交确认书
@@ -1176,7 +1222,7 @@ export default {
                     item.name = item.fileName;
                   });
                 }
-                list.defaultFileList = this.postData.roomId && baseInfo.dealConfirmForms && baseInfo.dealConfirmForms.length ? baseInfo.dealConfirmForms : [];
+                list.fileList = this.postData.roomId && baseInfo.dealConfirmForms && baseInfo.dealConfirmForms.length ? baseInfo.dealConfirmForms : [];
                 break;
             }
           });
@@ -1195,7 +1241,7 @@ export default {
                 item.name = item.fileName;
               });
             }
-            list.defaultFileList = this.postData.roomId && baseInfo.noticePDF && baseInfo.noticePDF.length  ? baseInfo.noticePDF : [];
+            list.fileList = this.postData.roomId && baseInfo.noticePDF && baseInfo.noticePDF.length  ? baseInfo.noticePDF : [];
             break;
           case "OwnerID":
             // 业主身份证
@@ -1204,7 +1250,7 @@ export default {
                 item.name = item.fileName;
               });
             }
-            list.defaultFileList = this.postData.roomId && baseInfo.customerIds && baseInfo.customerIds.length ? baseInfo.customerIds : [];
+            list.fileList = this.postData.roomId && baseInfo.customerIds && baseInfo.customerIds.length ? baseInfo.customerIds : [];
             break;
         }
       });
@@ -1331,8 +1377,164 @@ export default {
     },
     // 上传
     uploadByType(item) {
+      console.log(item);
       this.currentUploadType = item.code;
       this.showActionShow = true;
+    },
+    // 上传选择
+    handleUpload(index) {
+      let self = this;
+      if (index === 0) {
+        uni.chooseImage({
+          count: 1, // 默认9
+          success: (res) => {
+            // console.log(res);
+            if (res && res.tempFiles && res.tempFiles.length > 0) {
+              let flag = false;
+              flag = self.validFileSizeAndType(res.tempFiles, 'img');
+              if (!flag) {
+                tool.toast('图片大小不能超过10M!');
+                return;
+              }
+              // 上传
+              res.tempFilePaths.forEach((path) => {
+                uni.uploadFile({
+                  url: self.uploadAction, //仅为示例，非真实的接口地址
+                  filePath: path,
+                  name: self.uploadName,
+                  header: self.uploadHeader,
+                  success: (res) => {
+                    let data = JSON.parse(res.data);
+                    // console.log('图片：', data);
+                    self.postData.documentVO.forEach((item) => {
+                      if (item.code === self.currentUploadType) {
+                        item.fileList.push(
+                          {
+                            ...data.data[0],
+                            fileUrls: ''
+                          }
+                        )
+                      }
+                    });
+                  },
+                  fail: (error) => {
+                    tool.toast('上传失败，请重新上传' + error);
+                    console.log(error);
+                  }
+                });
+              });
+            }
+          }
+        });
+      } else {
+        wx.chooseMessageFile({
+          count: 1, // 最大可选
+          type: 'file',
+          success: (res) => {
+            // console.log(res);
+            if (res && res.tempFiles && res.tempFiles.length > 0) {
+              let flag = false;
+              flag = self.validFileSizeAndType(res.tempFiles, 'file');
+              if (!flag) {
+                tool.toast('请上传符合要求的文件！');
+                return;
+              }
+              // 上传
+              res.tempFiles.forEach((list) => {
+                uni.uploadFile({
+                  url: self.uploadAction, //仅为示例，非真实的接口地址
+                  filePath: list.path,
+                  name: self.uploadName,
+                  header: self.uploadHeader,
+                  success: (res) => {
+                    let data = JSON.parse(res.data);
+                    // console.log('文件：', data);
+                    self.postData.documentVO.forEach((item) => {
+                      if (item.code === self.currentUploadType) {
+                        item.fileList.push(
+                          {
+                            ...data.data[0],
+                            fileUrls: self.getFileImg(data.data[0])
+                          }
+                        )
+                      }
+                    });
+                  },
+                  fail: (error) => {
+                    tool.toast('上传失败，请重新上传' + error);
+                    console.log(error);
+                  }
+                });
+              });
+            }
+          },
+        })
+      }
+    },
+    // 校验上传的图片的大小和类型是否符合要求
+    validFileSizeAndType(fileList = [], type = '') {
+      if (fileList.length > 0) {
+        const FILE_SIZE = 10 * 1024 * 1024; // 文件大小
+        const RegStr = /.doc$|.docx$|.xls$|.xlsx$|.pdf$/i; // 上传文件的类型 --- 图片不校验类型
+        let sizeList = [];
+        let typeList = [];
+        if (type === 'img') {
+          // 校验图片
+          sizeList = fileList.filter((list) => {
+            return list.size > FILE_SIZE;
+          });
+          if (sizeList.length > 0) {
+            return false;
+          } else {
+            return true;
+          }
+        } else {
+          // 校验文件
+          fileList.forEach((list) => {
+            if (list.size > FILE_SIZE) {
+              sizeList.push(list);
+            }
+            if (!RegStr.test(list.name)) {
+              typeList.push(list);
+            }
+          })
+          if (sizeList.length > 0 || typeList.length > 0) {
+            return false;
+          } else {
+            return true;
+          }
+        }
+      } else {
+        return false;
+      }
+    },
+    // 获取文件的图片
+    getFileImg(file) {
+      let url = '';
+      let pdfReg = /pdf/i;
+      let wordReg = /doc|docx/i;
+      let excelReg = /xls|xlsx/i;
+      let fileTypes = '';
+      if (pdfReg.test(file.generateFileType)) {
+        fileTypes = 'pdf';
+        url = this.pdfImg;
+      }
+      if (wordReg.test(file.generateFileType)) {
+        fileTypes = 'word';
+        url = this.wordImg;
+      }
+      if (excelReg.test(file.generateFileType)) {
+        fileTypes = 'excel';
+        url = this.excelImg;
+      }
+      return url;
+    },
+    // 获取token
+    getToken() {
+      this.uploadHeader = {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `bearer ${storageTool.getToken()}`
+      };
     },
     // 添加优惠告知书
     handleSelectNotice() {
@@ -1512,6 +1714,10 @@ export default {
     // 取消选择收派套餐
     closeSelectPackage() {
       this.showPackage = false;
+    },
+    // 提交
+    handleSubmit() {
+      console.log(this.postData.documentVO);
     }
   }
 };
