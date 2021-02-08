@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
- * @LastEditors: zyc
- * @LastEditTime: 2021-02-03 10:42:51
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-02-07 10:41:01
 -->
 
 <template>
@@ -295,16 +295,11 @@ export default {
           });
           break;
         case "Paid":
-          // 分公司业管待审核
-          uni.navigateTo({
-            url: `/staffPackage/noticeConfirm/index?id=${item.id}`,
-          });
-          break;
         case "BecomeEffective":
           if (item.notificationType === "Notification") {
             // 优惠告知书
             uni.navigateTo({
-              url: `/staffPackage/noticeInfo/index?id=${item.id}&tempType=${item.templateType}`,
+              url: `/staffPackage/noticeInfo/index?id=${item.id}`,
             });
           } else {
             let url = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${item.templateId}`;

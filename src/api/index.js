@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 10:09:50
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-08 14:44:01
+ * @LastEditTime: 2021-02-08 16:53:30
  */
 
 import { getApi, postApi } from '../common/http.js';
@@ -97,6 +97,11 @@ export async function postProjectsApi(data = {}, option = {}) {
     return await postApi('/sales-api/project/project/getList', data, option)
 }
 
+/* 查询项目周期列表 */
+export async function postAllTermApi(data = {}, option = {}) {
+    return await postApi('/sales-api/project/term/getList', data, option)
+}
+
 /**字典列表，全部数据*/
 export async function getDictGetAllApi(data = {}, option = {}) {
     return await getApi('/sales-api/system/dict/getAll', data, option);
@@ -186,4 +191,13 @@ export async function getProDetailBBApi(data, option = {}) {
 /**根据渠道商名称模糊查渠道商id、名字分页列表*/
 export async function postChannelByNameApi(data, option = {}) {
     return await postApi('/sales-api/channel/channel/getListByName', data, option)
+}
+/**
+ * @description: 查询指定类型的所有字典项
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function getAllDictByType(data = {}, option = {}) {
+    return await postApi(`/sales-api/system/dict/getAllByTypes`, data, option)
 }

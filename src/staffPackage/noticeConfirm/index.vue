@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 17:32:25
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-25 18:27:05
+ * @LastEditTime: 2021-02-06 17:53:41
 -->
 <template>
   <LoginPage>
@@ -57,19 +57,19 @@
               >业主信息</view>
               <u-form-item
                 :key="n"
-                label="业主姓名"
+                :label="isEnterprise ? '公司名称' : '业主姓名'"
               >
                 <view class="text-right">{{i.ownerName}}</view>
               </u-form-item>
               <u-form-item
                 :key="n"
-                label="手机号码"
+                :label="isEnterprise ? '经办人号码' : '手机号码'"
               >
                 <view class="text-right">{{i.ownerMobile}}</view>
               </u-form-item>
               <u-form-item
                 :key="n"
-                label="身份证号"
+                :label="isEnterprise ? '营业执照编号' : '身份证号'"
               >
                 <view class="text-right">{{i.ownerCertificateNo}}</view>
               </u-form-item>
@@ -78,59 +78,70 @@
               height="20"
               bg-color="#f1f1f1"
             ></u-gap>
+            <u-form-item label="优惠告知书附件">
+              <view class="text-right">
+                <u-button
+                  size="mini"
+                  type="success"
+                  @click="noticePreview"
+                >预览</u-button>
+              </view>
+            </u-form-item>
+            <u-gap
+              height="20"
+              bg-color="#f1f1f1"
+            ></u-gap>
+            <u-form-item label="认购书附件">
+              <view class="text-right">
+                <u-button
+                  size="mini"
+                  type="success"
+                  @click="subscriptionPreview"
+                >预览</u-button>
+              </view>
+            </u-form-item>
+            <u-gap
+              height="20"
+              bg-color="#f1f1f1"
+            ></u-gap>
             <u-form-item
-              label="优惠告知书附件"
+              label="审核意见"
               label-position="top"
-              v-if="fileList.length"
             >
-              <u-upload
-                width="180"
-                height="180"
-                name="files"
-                :file-list="fileList"
-                :deletable="fasle"
-              ></u-upload>
+              <u-input
+                type="textarea"
+                v-model="reviewOpinion"
+                border
+                maxlength="40"
+              ></u-input>
             </u-form-item>
           </u-form>
         </view>
       </view>
       <view class="btn-container safe-area-inset-bottom">
         <u-button
+          shape="circle"
+          type="error"
+          class="ih-btn"
+          @click="submit('No')"
+        >拒 接</u-button>
+        <u-button
           size="default"
           type="primary"
           shape="circle"
-          @click="submit"
-        >确认</u-button>
+          class="ih-btn"
+          @click="submit('Yes')"
+        >通 过</u-button>
       </view>
-      <!-- 选择器 -->
-      <u-select
-        v-model="buildShow"
-        :list="selectBuildList"
-        safe-area-inset-bottom
-        title="选择栋座"
-        value-name="buildingId"
-        label-name="buildingName"
-        @confirm="buildConfirm"
-      ></u-select>
-      <u-select
-        v-model="roomShow"
-        :list="roomSelectList"
-        safe-area-inset-bottom
-        title="选择房号"
-        value-name="roomId"
-        label-name="roomNo"
-        @confirm="roomConfirm"
-      ></u-select>
     </view>
   </LoginPage>
 </template>
 
 <script>
+import { currentEnvConfig } from "../../env-config.js";
 import {
   getNoticeInfo,
   postNoticeManagement,
-  postBuildByProId,
-  postRoomByProId,
   getRecognizeById,
 } from "../../api/staff";
 
@@ -148,14 +159,20 @@ export default {
         explain: "",
         buyUnit: "",
         buyUnitName: "",
+        ownerType: "",
+        subscriptionAnnex: [],
+        noticeAttachmentList: [],
+        templateType: "",
       },
-      buildShow: false,
-      selectBuildList: [],
-      roomShow: false,
-      roomSelectList: [],
+      reviewOpinion: "",
       fileList: [],
       isRecognize: false,
     };
+  },
+  computed: {
+    isEnterprise() {
+      return this.form.ownerType === "Enterprise";
+    },
   },
   methods: {
     async getInfo(id) {
@@ -170,42 +187,76 @@ export default {
           }));
       }
     },
-    roomConfirm(val) {
-      let item = val[0];
-      this.form.roomNumberId = item.value;
-      this.form.roomNumberName = item.label;
+    noticePreview() {
+      let val = this.form;
+      if (val.templateType === "ElectronicTemplate") {
+        let url = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${val.templateId}.pdf`;
+        uni.downloadFile({
+          url: url,
+          success: function (res) {
+            var filePath = res.tempFilePath;
+            uni.openDocument({
+              filePath: filePath,
+              fileType: "pdf",
+              showMenu: true,
+              success: function (res) {
+                console.log("打开文档成功");
+              },
+            });
+          },
+        });
+      } else {
+        if (val.noticeAttachmentList.length) {
+          let preList = val.noticeAttachmentList.map(
+            (i) =>
+              `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${i.fileNo}`
+          );
+          uni.previewImage({
+            urls: preList,
+            current: 1,
+          });
+        } else {
+          this.$tool.toast("附件为空");
+        }
+      }
     },
-    async handleShowRoom() {
-      this.roomSelectList = await postRoomByProId({
-        proId: this.form.projectId,
-        buildingId: this.form.buyUnit,
-      });
-      this.roomShow = true;
+    subscriptionPreview() {
+      if (this.form.subscriptionAnnex.length) {
+        let preList = this.form.subscriptionAnnex.map(
+          (i) =>
+            `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${i.fileNo}`
+        );
+        uni.previewImage({
+          urls: preList,
+          current: 1,
+        });
+      } else {
+        this.$tool.toast("认购书为空");
+      }
     },
-    buildConfirm(val) {
-      let item = val[0];
-      this.form.buyUnit = item.value;
-      this.form.buyUnitName = item.label;
-      this.form.roomNumberName = "";
-    },
-    async submit() {
+    async submit(status) {
+      if (!this.reviewOpinion.length) {
+        this.$tool.toast("审核意见不能为空");
+        return;
+      }
       try {
-        await postNoticeManagement(this.form.id);
-        this.$tool.toast("确认成功");
+        await postNoticeManagement({
+          id: this.form.id,
+          reviewOpinion: this.reviewOpinion,
+          status,
+        });
+        this.$tool.toast(`${status === "Yes" ? "审核通过" : "操作成功"}`);
         this.$tool.back(null, {
           type: "update",
-          data: { ...this.form, notificationStatus: "WaitBeSigned" },
+          data: { ...this.form, reviewStatus: "Audited" },
         });
       } catch (error) {
         console.log(error);
       }
     },
   },
-  async onLoad(option) {
-    await this.getInfo(option.id);
-    this.selectBuildList = await postBuildByProId({
-      proId: this.form.projectId,
-    });
+  onLoad(option) {
+    this.getInfo(option.id);
   },
 };
 </script>
@@ -255,6 +306,7 @@ export default {
 }
 .btn-container {
   position: fixed;
+  display: flex;
   bottom: 0;
   left: 0;
   right: 0;
@@ -265,6 +317,12 @@ export default {
   padding-left: 30rpx;
   padding-right: 30rpx;
   background: #fff;
+  .ih-btn {
+    flex: 1;
+  }
+  .ih-btn + .ih-btn {
+    padding-left: 20rpx;
+  }
 }
 .text-right {
   text-align: right;

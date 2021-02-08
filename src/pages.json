@@ -387,6 +387,13 @@
 					}
 				},
 				{
+					"path": "noticeSpecial/index",
+					"style": {
+						"navigationBarTitleText": "审核特殊优惠告知书列表",
+						"enablePullDownRefresh": true
+					}
+				},
+				{
 					"path": "noticeList/index",
 					"style": {
 						"navigationBarTitleText": "优惠告知书",

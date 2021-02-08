@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-18 11:38:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-28 16:04:36
+ * @LastEditTime: 2021-02-07 10:39:40
 -->
 <template>
   <LoginPage>
@@ -118,6 +118,29 @@
                 @on-remove="removeChange"
               ></u-upload>
             </u-form-item>
+            <template v-if="isOther">
+              <u-gap
+                height="20"
+                bg-color="#f1f1f1"
+              ></u-gap>
+              <u-form-item label="认购书附件">
+                <view class="text-right">
+                  <u-button
+                    size="mini"
+                    type="success"
+                    @click="subscriptionPreview"
+                  >预览</u-button>
+                </view>
+              </u-form-item>
+              <u-gap
+                height="20"
+                bg-color="#f1f1f1"
+              ></u-gap>
+              <u-form-item
+                label="审核意见"
+                label-position="top"
+              >{{form.reviewOpinion || '-'}}</u-form-item>
+            </template>
           </u-form>
         </view>
         <template v-if="isPaper">
@@ -171,6 +194,7 @@ export default {
         buyUnit: "",
         buyUnitName: "",
         ownerType: "",
+        promotionMethod: "",
       },
       option: {},
       isPaper: false,
@@ -189,6 +213,9 @@ export default {
     isEnterprise() {
       return this.form.ownerType === "Enterprise";
     },
+    isOther() {
+      return this.form.promotionMethod === "Manual";
+    },
   },
   methods: {
     async getInfo(id) {
@@ -202,11 +229,26 @@ export default {
             url: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${val.fileNo}`,
           }));
         console.log(this.fileList);
+        this.isPaper = res.templateType === "PaperTemplate";
       }
     },
     handleShow() {
       this.downUrl = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/download/${this.form.templateId}.pdf`;
       this.isShow = true;
+    },
+    subscriptionPreview() {
+      if (this.form.subscriptionAnnex.length) {
+        let preList = this.form.subscriptionAnnex.map(
+          (i) =>
+            `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${i.fileNo}`
+        );
+        uni.previewImage({
+          urls: preList,
+          current: 1,
+        });
+      } else {
+        this.$tool.toast("认购书为空");
+      }
     },
     handleGoto() {
       let url = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${this.form.templateId}.pdf`;
@@ -290,7 +332,6 @@ export default {
   onLoad(option) {
     this.getInfo(option.id);
     this.option = option;
-    this.isPaper = option.tempType === "PaperTemplate";
   },
 };
 </script>
