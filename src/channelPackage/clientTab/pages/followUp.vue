@@ -17,7 +17,10 @@
       <view>
         <u-subsection
           active-color="#ff9900"
-          :list="followTypeList" :current="currentType" @change="changeType"></u-subsection>
+          :list="followTypeList"
+          :current="currentType"
+          @change="changeType"
+        ></u-subsection>
       </view>
     </view>
     <view class="client-info u-margin-top-30">
@@ -25,11 +28,19 @@
       <view>
         <u-input
           :clearable="false"
-          v-model="followCase" type="textarea" :border="true" :height="150" :auto-height="false" />
+          v-model="followCase"
+          type="textarea"
+          :border="true"
+          :height="150"
+          :auto-height="false"
+        />
       </view>
     </view>
     <view class="bottom-btn">
-      <u-button type="primary" @click="saveEnter">保存</u-button>
+      <u-button
+        type="primary"
+        @click="saveEnter"
+      >保存</u-button>
     </view>
   </view>
 </template>
@@ -40,17 +51,17 @@ export default {
     return {
       followTypeList: [
         {
-          name: '电联'
+          name: "电联",
         },
         {
-          name: '约看'
+          name: "约看",
         },
         {
-          name: '面谈'
-        }
+          name: "面谈",
+        },
       ],
       currentType: 0,
-      followCase: ''
+      followCase: "",
     };
   },
   onLoad() {},
@@ -62,42 +73,43 @@ export default {
     // 保存
     saveEnter() {
       uni.redirectTo({
-        url: `/channelPackage/clientTab/index`
+        url: `/channelPackage/clientTab/index`,
       });
-    }
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-  .follow-up-wrapper {
-    width: 100%;
-    height: calc(100vh - 120rpx);
-    box-sizing: border-box;
-    background-color: #F5F5F5;
+.follow-up-wrapper {
+  width: 100%;
+  height: calc(100vh - 120rpx);
+  box-sizing: border-box;
+  background-color: #f5f5f5;
 
-    .name {
-      font-size: 38rpx;
-      font-weight: 600;
-    }
-
-    .client-info, .follow-wrapper {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 20rpx;
-      background-color: #FCFCFC;
-    }
-
-    .bottom-btn {
-      width: 100%;
-      height: 100rpx;
-      box-sizing: border-box;
-      padding: 10rpx 50rpx;
-      background-color: #FFFFFF;
-      position: fixed;
-      left: 0rpx;
-      bottom: 0rpx;
-      z-index: 9999;
-    }
+  .name {
+    font-size: 38rpx;
+    font-weight: 600;
   }
+
+  .client-info,
+  .follow-wrapper {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 20rpx;
+    background-color: #fcfcfc;
+  }
+
+  .bottom-btn {
+    width: 100%;
+    height: 100rpx;
+    box-sizing: border-box;
+    padding: 10rpx 50rpx;
+    background-color: #ffffff;
+    position: fixed;
+    left: 0rpx;
+    bottom: 0rpx;
+    z-index: 9999;
+  }
+}
 </style>
