@@ -166,7 +166,9 @@
       <view class="performance-form">
         <view class="form-title u-border-bottom">
           <text>优惠告知书信息</text>
-          <view v-if="hasAddNoticeFlag">
+          <view
+            v-if="baseInfoByTerm.termId && hasAddNoticeFlag"
+            @click="handleSelectNotice">
             <u-icon name="plus" />添加
           </view>
         </view>
@@ -175,14 +177,21 @@
             :label="getDictName(item.notificationType, NotificationTypeList)"
             v-for="(item, index) in postData.offerNoticeVO" :key="index">
             <view>{{item.noticeNo}}</view>
-            <u-icon slot="right" name="close-circle-fill" color="#fa3534" size="40"></u-icon>
+            <u-icon
+              v-if="index === 0"
+              @click.native="deleteNotice(index)"
+              slot="right"
+              name="close-circle-fill"
+              color="#fa3534" size="40"></u-icon>
           </u-form-item>
         </u-form>
       </view>
       <view class="performance-form">
         <view class="form-title u-border-bottom">
           <text>客户信息</text>
-          <view>
+          <view
+            v-if="!baseInfoInDeal.customerAddVOS.length && baseInfoInDeal.dealNoticeStatus !== 'MultipleNotice' && postData.roomId"
+            @click="handleSelectCustomer">
             <u-icon name="plus" />添加
           </view>
         </view>
@@ -191,7 +200,11 @@
             :label="item.customerName"
             v-for="(item, index) in postData.customerVO" :key="index">
             <view>{{item.customerPhone}}</view>
-            <u-icon slot="right" name="close-circle-fill" color="#fa3534" size="40"></u-icon>
+            <u-icon
+              @click.native="deleteCustom(index)"
+              slot="right"
+              name="close-circle-fill"
+              color="#fa3534" size="40"></u-icon>
           </u-form-item>
         </u-form>
       </view>
@@ -201,11 +214,15 @@
           <view class="form-title u-border-bottom">代理费套餐</view>
           <u-form label-width="170">
             <u-form-item
+              class="hide-icon"
+              right-icon="arrow-right"
               v-for="(item, index) in postData.agentReceiveVO" :key="index"
               :label="item.partyACustomerName">
-              <view v-if="item.packageId">收派标准</view>
-              <view v-else>请选择收派标准</view>
-              <u-icon slot="right" name="arrow-right"></u-icon>
+              <view
+                :class="item.packageId ? 'active-package' : ''"
+                @click.native="handleSelectPackage(item, 'agentReceiveVO', index)">
+                {{item.packageId ? "收派标准" : "请选择收派标准"}}
+              </view>
             </u-form-item>
           </u-form>
         </view>
@@ -213,11 +230,15 @@
           <view class="form-title u-border-bottom">服务费套餐</view>
           <u-form label-width="170">
             <u-form-item
+              class="hide-icon"
+              right-icon="arrow-right"
               v-for="(item, index) in postData.serviceReceiveVO" :key="index"
               :label="item.partyACustomerName">
-              <view v-if="item.packageId">收派标准</view>
-              <view v-else>请选择收派标准</view>
-              <u-icon slot="right" name="arrow-right"></u-icon>
+              <view
+                :class="item.packageId ? 'active-package' : ''"
+                @click.native="handleSelectPackage(item, 'serviceReceiveVO', index)">
+                {{item.packageId ? "收派标准" : "请选择收派标准"}}
+              </view>
             </u-form-item>
           </u-form>
         </view>
@@ -232,21 +253,21 @@
           </u-tr>
           <u-tr>
             <u-td>服务费</u-td>
-            <u-td>1000.00</u-td>
-            <u-td>1000.00</u-td>
-            <u-td>1000.00</u-td>
+            <u-td>{{serviceTotal.receivableAmout}}</u-td>
+            <u-td>{{serviceTotal.sendAmount}}</u-td>
+            <u-td>{{serviceTotal.sendInAmount}}</u-td>
           </u-tr>
           <u-tr>
             <u-td>代理费</u-td>
-            <u-td>1000.00</u-td>
-            <u-td>1000.00</u-td>
-            <u-td>1000.00</u-td>
+            <u-td>{{agentTotal.receivableAmout}}</u-td>
+            <u-td>{{agentTotal.sendAmount}}</u-td>
+            <u-td>{{agentTotal.sendInAmount}}</u-td>
           </u-tr>
           <u-tr>
             <u-td>合计</u-td>
-            <u-td>1000.00</u-td>
-            <u-td>1000.00</u-td>
-            <u-td>1000.00</u-td>
+            <u-td>{{$tool.add(serviceTotal.receivableAmout, agentTotal.receivableAmout)}}</u-td>
+            <u-td>{{$tool.add(serviceTotal.sendAmount, agentTotal.sendAmount)}}</u-td>
+            <u-td>{{$tool.add(serviceTotal.sendInAmount, agentTotal.sendInAmount)}}</u-td>
           </u-tr>
         </u-table>
       </view>
@@ -361,20 +382,30 @@
       :show-tips="false"
       :cancel-btn="false"
     ></u-keyboard>
+    <!-- 删除提示 -->
     <u-modal
       @confirm="handleDelete"
       @cancel="showDeleteWin = false"
       :mask-close-able="true"
       :show-cancel-button="true"
       v-model="showDeleteWin" content="您确定要删除此项吗？"></u-modal>
+    <!-- 收派套餐页面 -->
+    <PopupIndex
+      @finish="finishSelectPackage"
+      @close="closeSelectPackage"
+      v-if="showPackage"
+      :query-data="packageData"></PopupIndex>
   </view>
 </template>
 
 <script>
+import PopupIndex from "./popup/index.vue";
 import {
   post_buModelContType_subList,
   post_buModelContType_getList,
   post_pageData_dealCheckNotice,
+  post_notice_deal_details__noticeId,
+  post_pageData_calculateReceiveAmount,
   post_pageData_initBasic,
   getBaseDealInfo,
   postBuildByProId,
@@ -383,10 +414,17 @@ import {
 import {getAllDictByType} from "@/api";
 import tool from "@/common/tool";
 import {getImgUrl} from "@/api/channel";
+import {currentEnvConfig} from "@/env-config";
 export default {
   name: "performanceEdit",
+  components: { PopupIndex },
   data() {
     return {
+      showPackage: false, // 选择收派套餐弹窗标识
+      packageData: {}, // 收派套餐查询条件
+      currentUploadType: null, // 上传的附件类型
+      showActionShow: false,
+      imgUrl:`${currentEnvConfig['protocol']}://${currentEnvConfig['apiDomain']}/sales-api/sales-document-cover/file/browse/`,
       showDeleteWin: false, // 删除图片提示框
       deleteIndex: null,
       deleteItem: null,
@@ -508,6 +546,10 @@ export default {
         dealNoticeStatus: null, // 同房号是否存在多份优惠告知书(NoneNotice-没有优惠告知书、OneNotice-一份优惠告知书、MultipleNotice-多份优惠告知书)
       }, // 通过initPage接口获取到的成交信息(项目周期 + 房号)
       hasAddNoticeFlag: true, // 是否有添加(删除)优惠告知书的标识：true-可以；false-不可以
+      tempList: [], // 临时的收派金额信息
+      tempDocumentList: [], // 记录来访确认单和成交确认单
+      currentPackageType: null, // 当前收派金额类型
+      currentPackageIndex: null, // 当前收派金额序号
       action: "",
       fileList: [
         {
@@ -515,6 +557,68 @@ export default {
         },
       ],
     };
+  },
+  computed: {
+    serviceTotal() {
+      let obj = {
+        receivableAmout: 0,
+        sendAmount: 0,
+        sendInAmount: 0
+      }
+      // this.$tool.addArr(arr)
+      let receivableAmoutArr = [];
+      let sendAmountArr = [];
+      let sendInAmountArr = [];
+      if (this.postData.serviceReceiveVO && this.postData.serviceReceiveVO.length) {
+        this.postData.serviceReceiveVO.forEach((vo) => {
+          if (vo.receiveAmount) {
+            receivableAmoutArr.push(vo.receiveAmount);
+          }
+          if (vo.commAmount) {
+            sendAmountArr.push(vo.commAmount);
+          }
+          if (vo.rewardAmount) {
+            sendInAmountArr.push(vo.rewardAmount);
+          }
+        });
+        obj = {
+          receivableAmout: receivableAmoutArr.length ? this.$tool.addArr(receivableAmoutArr) : 0,
+          sendAmount: sendAmountArr.length ? this.$tool.addArr(sendAmountArr) : 0,
+          sendInAmount: sendInAmountArr.length ? this.$tool.addArr(sendInAmountArr) : 0,
+        }
+      }
+      return obj;
+    },
+    agentTotal() {
+      let obj = {
+        receivableAmout: 0,
+        sendAmount: 0,
+        sendInAmount: 0
+      }
+      // this.$tool.addArr(arr)
+      let receivableAmoutArr = [];
+      let sendAmountArr = [];
+      let sendInAmountArr = [];
+      if (this.postData.agentReceiveVO && this.postData.agentReceiveVO.length) {
+        this.postData.agentReceiveVO.forEach((vo) => {
+          if (vo.receiveAmount) {
+            receivableAmoutArr.push(vo.receiveAmount);
+          }
+          if (vo.commAmount) {
+            sendAmountArr.push(vo.commAmount);
+          }
+          if (vo.rewardAmount) {
+            sendInAmountArr.push(vo.rewardAmount);
+          }
+        });
+        obj = {
+          receivableAmout: receivableAmoutArr.length ? this.$tool.addArr(receivableAmoutArr) : 0,
+          sendAmount: sendAmountArr.length ? this.$tool.addArr(sendAmountArr) : 0,
+          sendInAmount: sendInAmountArr.length ? this.$tool.addArr(sendInAmountArr) : 0,
+        }
+      }
+      return obj;
+    }
   },
   async onLoad() {
     this.dictList = await this.getAllDictByTypes(this.dictObj);
@@ -528,6 +632,14 @@ export default {
       this.postData.cycleId = item.data.termId;
       this.postData.cycleName= item.data.termName;
       await this.getBaseDealInfo(item.data.termId);
+      getApp().globalData.searchBackData = {};
+    }
+    if (item && item.type === "custom") {
+      await this.finishAddCustomer(item.data);
+      getApp().globalData.searchBackData = {};
+    }
+    if (item && item.type === "notice") {
+      await this.finishAddNotice(item.data);
       getApp().globalData.searchBackData = {};
     }
   },
@@ -624,10 +736,10 @@ export default {
         this.postData.contType = item[0].value;
         // 初始化收派套餐
         await this.initReceive();
-        // 选择房号后构建附件表格数据
+        // 构建附件表格数据
         await this.getDocumentList(item[0].value);
         // 判断是否可以手动添加优惠告知书
-        await this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus);
+        await this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus, null);
       }
     },
     // 确定选择分销协议
@@ -673,8 +785,11 @@ export default {
     },
     // 合同类型、分销协议编号、细分业务模式、认购价格、签约价格改变之后要初始化收派金额
     initReceive() {
-      if (this.postData.receiveVO.length) {
-        this.postData.receiveVO = this.resetReceiveVOS(this.postData.receiveVO);
+      if (this.postData.agentReceiveVO.length) {
+        this.postData.agentReceiveVO = this.resetReceiveVOS(this.postData.agentReceiveVO);
+      }
+      if (this.postData.serviceReceiveVO.length) {
+        this.postData.serviceReceiveVO = this.resetReceiveVOS(this.postData.serviceReceiveVO);
       }
     },
     // 判断是否可以手动添加优惠告知书
@@ -767,12 +882,12 @@ export default {
           }
         }
         // 收派金额部分信息 --- 服务费
-        this.postData.agentReceiveVO = [];
-        if (baseInfo.chargeEnum !== 'Service') {
+        this.postData.serviceReceiveVO = [];
+        if (baseInfo.chargeEnum !== 'Agent') {
           let tempList = [];
           tempList.push(
             {
-              type: 'AgencyFee', // 代理费
+              type: 'ServiceFee', // 服务费
               partyACustomer: null,
               partyACustomerName: '客户',
               packgeName: null,
@@ -787,7 +902,7 @@ export default {
           );
           let list = this.initReceiveVOS(tempList);
           this.$nextTick(() => {
-            this.postData.agentReceiveVO.push(...list);
+            this.postData.serviceReceiveVO.push(...list);
           });
         }
         // 初始化附件信息
@@ -805,9 +920,10 @@ export default {
           vo.fileList = []; // 存放新上传的数据
         });
       }
-      // 隐藏来访确认单和成交确认单
-      fileList = fileList.filter((item) => {
-        return !["VisitConfirForm", "DealConfirForm"].includes(item.code);
+      // 保存来访确认单和成交确认单
+      this.tempDocumentList = [];
+      this.tempDocumentList = fileList.filter((item) => {
+        return ["VisitConfirForm", "DealConfirForm"].includes(item.code);
       });
       if (info.chargeEnum === 'Agent') {
         // 项目周期的收费模式为代理费的话，隐藏优惠告知书
@@ -815,6 +931,10 @@ export default {
           return item.code !== "Notice";
         });
       }
+      // 隐藏来访确认单和成交确认单
+      fileList = fileList.filter((item) => {
+        return !["VisitConfirForm", "DealConfirForm"].includes(item.code);
+      });
       this.postData.documentVO = JSON.parse(JSON.stringify(fileList));
     },
     // 初始化收派金额信息，置为0
@@ -1209,6 +1329,190 @@ export default {
         urls: [url]
       })
     },
+    // 上传
+    uploadByType(item) {
+      this.currentUploadType = item.code;
+      this.showActionShow = true;
+    },
+    // 添加优惠告知书
+    handleSelectNotice() {
+      getApp().globalData.searchParams = {
+        api: "postNoticeDealList",
+        key: "noticeNo",
+        id: "id",
+        type: "notice",
+        other: {
+          cycleId: this.baseInfoByTerm.termId,
+          projectId: this.baseInfoByTerm.proId,
+          buyUnit: this.postData.buildingId, // 栋座
+          roomId: this.postData.roomId, // 多分优惠告知书下需要通过房号去限制
+          notificationTypes: ['Notification'], // 只查优惠告知书
+          notificationStatuses: ['BecomeEffective'] // 主成交下优惠告知书要是已生效状态
+        }
+      };
+      uni.navigateTo({
+        url: "/pages/search/index/index",
+      });
+    },
+    // 确定添加优惠告知书
+    async finishAddNotice(data) {
+      if (data.length === 0) return;
+      let postData = {
+        noticeId: data[0].id
+      }
+      let noticeInfo = await post_notice_deal_details__noticeId(postData);
+      if (noticeInfo.dealNotices && noticeInfo.dealNotices.length) {
+        noticeInfo.dealNotices.forEach((item) => {
+          item.noticeId = item.id;
+          item.addType = "manual";
+        });
+      }
+      if (noticeInfo.customerConvertResponse && noticeInfo.customerConvertResponse.length) {
+        noticeInfo.customerConvertResponse.forEach((item, index) => {
+          if (index === 0) {
+            item.isCustomer = "Yes";
+          } else {
+            item.isCustomer = "No";
+          }
+          item.addId = item.id; // 手动添加的时候保存id --- 为了回显收派金额
+        });
+      }
+      this.postData.offerNoticeVO = noticeInfo.dealNotices;
+      this.postData.customerVO = noticeInfo.customerConvertResponse;
+    },
+    // 删除优惠告知书
+    deleteNotice() {
+      this.postData.offerNoticeVO = [];
+      if (this.baseInfoInDeal.dealNoticeStatus === 'MultipleNotice') {
+        // 多份优惠告知书下，删除了优惠告知书，对应的客户也要删除
+        this.postData.customerVO = [];
+      }
+    },
+    // 添加客户
+    handleSelectCustomer() {
+      getApp().globalData.searchParams = {
+        api: "postCustomerGetCustList",
+        key: "custName",
+        id: "id",
+        type: "custom",
+      };
+      uni.navigateTo({
+        url: "/pages/search/index/index",
+      });
+    },
+    // 确定添加客户
+    finishAddCustomer(data) {
+      if (data.length === 0) return;
+      let customData = {
+        addId: data.id, // 手动添加的时候保存id --- 为了回显收派金额
+        cardNo: data.certificateNumber,
+        cardType: data.cardType,
+        customerName: data.custName,
+        customerNo: data.custCode,
+        customerPhone: data.custTel,
+        customerType: data.custType,
+        email: data.email,
+        isCustomer: null // 是否主要客户
+      }
+      if (this.postData.customerVO.length > 0) {
+        customData.isCustomer = "No";
+        this.postData.customerVO.push(customData);
+      } else {
+        customData.isCustomer = "Yes";
+        this.postData.customerVO.push(customData);
+      }
+    },
+    // 删除客户
+    deleteCustom(deleteIndex) {
+      if (this.postData.customerVO && this.postData.customerVO.length) {
+        this.postData.customerVO = this.postData.customerVO.filter((item, index) => {
+          return index !== deleteIndex;
+        });
+      }
+    },
+    // 选择收派套餐
+    handleSelectPackage(item, type, index) {
+      // console.log(item);
+      if (this.postData.hasRecord) {
+        // 分销模式
+        if (!this.postData.contNo) {
+          this.$tool.toast("请先选择分销协议编号");
+          return;
+        }
+      } else {
+        // 非分销模式
+        // 合同类型contType + 物业类型propertyType + 细分业务类型refineModel + 立项周期cycleId，这几个条件必须满足
+        let tips = [];
+        if (!this.baseInfoByTerm.termId) {
+          tips.push('项目周期');
+        }
+        if (!this.postData.refineModel) {
+          tips.push('细分业务模式');
+        }
+        if (!this.postData.propertyType) {
+          tips.push('物业类型');
+        }
+        if (!this.postData.contType) {
+          tips.push('合同类型');
+        }
+        if (tips.length) {
+          this.$tool.toast(`请先选择${tips.join('，')}`);
+          return;
+        }
+      }
+      if (!this.postData.signPrice && !this.postData.subscribePrice) {
+        this.$tool.toast("认购价格、签约价格不能都为空！");
+        return;
+      }
+      this.currentPackageType = type;
+      this.currentPackageIndex = index;
+      this.packageData = {
+        termId: this.baseInfoByTerm.termId, // 项目周期id
+        contType: this.postData.contType, // 合同类型
+        hasRecord: this.postData.hasRecord, // 是否有成交报备(是否分销成交)
+        contNo: this.postData.contNo, // 分销协议编号
+        distributionIds: this.packageIdsList, // 分销成交 --- 选择分销协议后的ids
+        feeType: item.type, // 费用类型
+        partyACustomerId: item.partyACustomer, // 甲方或客户
+        property: this.postData.propertyType, // 物业类型
+        subdivide: this.postData.refineModel, // 细分业务模式
+      };
+      this.showPackage = true;
+    },
+    // 确定选择收派套餐
+    async finishSelectPackage(data) {
+      console.log('finishSelectPackage', data);
+      if (!data.packageId) return;
+      let dataObj = data;
+      delete dataObj['typeName']; // 删除typeName属性
+      let postData = {
+        detail: dataObj,
+        signPrice: this.postData.signPrice ? this.postData.signPrice : null,
+        subscribePrice: this.postData.subscribePrice ? this.postData.subscribePrice : null
+      }
+      let info = await post_pageData_calculateReceiveAmount(postData);
+      // console.log(info);
+      if (this.postData[this.currentPackageType] && this.postData[this.currentPackageType].length > 0) {
+        this.postData[this.currentPackageType].forEach((vo, index) => {
+          if (index === this.currentPackageIndex) {
+            vo.showData = data;
+            vo.packageId = data.packageMxId;
+            vo.receiveAmount = info.receiveAmount;
+            vo.commAmount = info.comm;
+            vo.rewardAmount = info.reward;
+            vo.totalPackageAmount = info.totalBag;
+            vo.distributionAmount = info.distri;
+            vo.otherChannelFees = info.other;
+          }
+        });
+      }
+      console.log('package', this.postData[this.currentPackageType]);
+      this.showPackage = false;
+    },
+    // 取消选择收派套餐
+    closeSelectPackage() {
+      this.showPackage = false;
+    }
   }
 };
 </script>
@@ -1329,5 +1633,9 @@ export default {
 }
 .form-upload {
   padding: 10rpx 12rpx;
+}
+.active-package {
+  color: $u-type-primary;
+  text-decoration: underline;
 }
 </style>
