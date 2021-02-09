@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-25 14:26:33
- * @LastEditors: lsj
- * @LastEditTime: 2020-11-25 16:40:35
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-09 10:35:07
 -->
 <template>
   <view class="enter-client-wrapper">
@@ -12,7 +12,7 @@
       <view class="title">客户信息</view>
       <view class="form-wrapper">
         <u-form
-          :model="infoForm"
+          :model="info"
           :rules="infoFormRules"
           ref="infoForm"
           :label-width="150"
@@ -23,7 +23,7 @@
             prop="name"
           >
             <u-input
-              v-model="infoForm.name"
+              v-model="info.name"
               placeholder="姓名"
               :clearable="true"
               input-align="left"
@@ -35,7 +35,7 @@
             prop="sex"
           >
             <u-radio-group
-              v-model="infoForm.sex"
+              v-model="info.sex"
               class="group-wrapper"
             >
               <u-radio
@@ -52,7 +52,7 @@
           >
             <u-input
               type="number"
-              v-model="infoForm.mobile"
+              v-model="info.mobile"
               placeholder="手机号"
               :clearable="true"
               input-align="left"
@@ -65,8 +65,8 @@
       <view class="title">客户来源</view>
       <view class="form-wrapper">
         <u-form
-          :model="sourceForm"
-          ref="sourceForm"
+          :model="info"
+          ref="info"
           :label-width="150"
         >
           <u-form-item
@@ -76,7 +76,7 @@
           >
             <u-input
               @click="showSource = true"
-              v-model="sourceForm.sourceName"
+              v-model="info.sourceName"
               type="select"
               placeholder="来源渠道"
               :clearable="true"
@@ -90,8 +90,8 @@
       <view class="title">客户需求</view>
       <view class="form-wrapper">
         <u-form
-          :model="demandForm"
-          ref="demandForm"
+          :model="info"
+          ref="info"
           :label-width="150"
         >
           <u-form-item
@@ -101,7 +101,7 @@
           >
             <u-input
               @click="selectRegion('intention')"
-              v-model="demandForm.region"
+              v-model="info.region"
               type="select"
               placeholder="意向区域"
               :clearable="true"
@@ -175,8 +175,8 @@
       <view class="title">客户详情</view>
       <view class="form-wrapper">
         <u-form
-          :model="detailForm"
-          ref="detailForm"
+          :model="info"
+          ref="info"
           :label-width="150"
         >
           <u-form-item
@@ -186,7 +186,7 @@
           >
             <u-input
               @click="showAge = true"
-              v-model="detailForm.ageRange"
+              v-model="info.ageRange"
               type="select"
               placeholder="年龄段"
               :clearable="true"
@@ -200,7 +200,7 @@
           >
             <u-input
               @click="selectRegion('nowlive')"
-              v-model="detailForm.currentLocation"
+              v-model="info.currentLocation"
               type="select"
               placeholder="现住区域"
               :clearable="true"
@@ -214,7 +214,7 @@
           >
             <u-input
               @click="selectRegion('work')"
-              v-model="detailForm.workLocation"
+              v-model="info.workLocation"
               type="select"
               placeholder="工作区域"
               :clearable="true"
@@ -250,32 +250,23 @@
 </template>
 
 <script>
-import { getAreaList, addCustomer } from "@/api/channel";
+import {
+  getAreaList,
+  addCustomer,
+  getCustomerById,
+  editCustomer,
+} from "@/api/channel";
 import { getAllByTypeApi } from "@/api/index";
 import { phoneValidator } from "@/common/validate";
 export default {
   data() {
     return {
-      infoForm: {
+      info: {
         name: "",
         sex: "",
         mobile: "",
-      },
-      infoFormRules: {
-        name: [
-          { required: true, message: "请输入您的姓名", trigger: ["blur"] },
-        ],
-        sex: [{ required: true, message: "请选择您的性别", trigger: ["blur"] }],
-        mobile: [{ validator: phoneValidator, trigger: ["blur"] }],
-      },
-      sourceForm: {
         sourceName: "",
         source: "",
-      },
-      sexList: [],
-      showSource: false,
-      sourceList: [],
-      demandForm: {
         region: "",
         intentionProvince: "", // 省
         intentionCity: "", // 市
@@ -285,15 +276,6 @@ export default {
         unitType: "",
         decoration: "",
         factor: "",
-      },
-      areaRegion: [], // 省市区
-      showRegion: false,
-      targetList: [],
-      areaList: [],
-      unitTypeList: [],
-      decorationList: [],
-      factorList: [],
-      detailForm: {
         ageRange: "", // 年龄段显示值
         ageGroup: "", // 年龄段id
         currentLocation: "", // 现住城市
@@ -305,14 +287,34 @@ export default {
         workCity: "",
         workCounty: "",
       },
+      infoFormRules: {
+        name: [
+          { required: true, message: "请输入您的姓名", trigger: ["blur"] },
+        ],
+        sex: [{ required: true, message: "请选择您的性别", trigger: ["blur"] }],
+        mobile: [{ validator: phoneValidator, trigger: ["blur"] }],
+      },
+      sexList: [],
+      showSource: false,
+      sourceList: [],
+      areaRegion: [], // 省市区
+      showRegion: false,
+      targetList: [],
+      areaList: [],
+      unitTypeList: [],
+      decorationList: [],
+      factorList: [],
       currentSelectRegionType: "", // 意向区域、现住区域、工作区域类型
       showAge: false,
       ageList: [],
+      areaDictList: [],
+      addOrEdit: "",
+      detailId: "",
     };
   },
   onReady() {
     // 必须要在onReady生命周期，因为onLoad生命周期组件可能尚未创建完毕
-    this.$refs.infoForm.setRules(this.infoFormRules);
+    this.$refs.info.setRules(this.infoFormRules);
   },
   async onLoad(option) {
     this.sexList = await this.getDictByType("SexType");
@@ -324,21 +326,79 @@ export default {
     this.decorationList = await this.getDictByType("RenovatLevel");
     this.factorList = await this.getDictByType("FocusElementType");
     this.ageList = await this.getDictByType("AgeType");
-    // console.log('ageList', this.ageList);
-    console.log(option);
     if (option.id) {
+      this.detailId = option.id;
       uni.setNavigationBarTitle({
         title: "编辑客户",
       });
+      this.addOrEdit = "edit";
+      const res = await getCustomerById(option.id);
+      this.info = {
+        ...res,
+        sourceName: res.source
+          ? this.sourceList.find((v) => v.value === res.source).label
+          : "",
+        region:
+          this.getDictName(res.intentionProvince, this.areaDictList) +
+          this.getDictName(res.intentionCity, this.areaDictList) +
+          this.getDictName(res.intentionCounty, this.areaDictList),
+        ageRange: res.ageGroup
+          ? this.ageList.find((v) => v.value === res.ageGroup).label
+          : "",
+        currentLocation:
+          this.getDictName(res.nowliveProvince, this.areaDictList) +
+          this.getDictName(res.nowliveCity, this.areaDictList) +
+          this.getDictName(res.nowliveCounty, this.areaDictList),
+        workLocation:
+          this.getDictName(res.workProvince, this.areaDictList) +
+          this.getDictName(res.workCity, this.areaDictList) +
+          this.getDictName(res.workCounty, this.areaDictList),
+      };
+      this.targetList.forEach((j) => {
+        if (res.purposeOfPurchases.includes(j.value)) {
+          j.checked = true;
+        } else {
+          j.checked = false;
+        }
+      });
+      this.areaList.forEach((j) => {
+        if (res.intentAreas.includes(j.value)) {
+          j.checked = true;
+        } else {
+          j.checked = false;
+        }
+      });
+      this.unitTypeList.forEach((j) => {
+        if (res.intentHouseTypes.includes(j.value)) {
+          j.checked = true;
+        } else {
+          j.checked = false;
+        }
+      });
+      this.decorationList.forEach((j) => {
+        if (res.houseDecorations.includes(j.value)) {
+          j.checked = true;
+        } else {
+          j.checked = false;
+        }
+      });
+      this.factorList.forEach((j) => {
+        if (res.factorsOfConcerns.includes(j.value)) {
+          j.checked = true;
+        } else {
+          j.checked = false;
+        }
+      });
+    } else {
+      this.addOrEdit = "add";
     }
   },
   methods: {
     // 选择来源
     confirmSource(e) {
-      // console.log(e);
       if (e && e.length > 0) {
-        this.sourceForm.sourceName = e[0].label;
-        this.sourceForm.source = e[0].value;
+        this.info.sourceName = e[0].label;
+        this.info.source = e[0].value;
       }
     },
     // 显示省市区下拉选项
@@ -349,40 +409,47 @@ export default {
     },
     // 确认选择区域
     confirmRegion(e) {
-      // console.log(e);
       if (!this.currentSelectRegionType) return;
       if (e && e.length === 3) {
         switch (this.currentSelectRegionType) {
           case "intention":
             // 意向区域
-            this.demandForm.region = `${e[0].label}${e[1].label}${e[2].label}`;
-            this.demandForm.intentionProvince = e[0].value;
-            this.demandForm.intentionCity = e[1].value;
-            this.demandForm.intentionCounty = e[2].value;
+            this.info.region = `${e[0].label}${e[1].label}${e[2].label}`;
+            this.info.intentionProvince = e[0].value;
+            this.info.intentionCity = e[1].value;
+            this.info.intentionCounty = e[2].value;
             break;
           case "nowlive":
             // 现住区域
-            this.detailForm.currentLocation = `${e[0].label}${e[1].label}${e[2].label}`;
-            this.detailForm.nowliveProvince = e[0].value;
-            this.detailForm.nowliveCity = e[1].value;
-            this.detailForm.nowliveCounty = e[2].value;
+            this.info.currentLocation = `${e[0].label}${e[1].label}${e[2].label}`;
+            this.info.nowliveProvince = e[0].value;
+            this.info.nowliveCity = e[1].value;
+            this.info.nowliveCounty = e[2].value;
             break;
           case "work":
             // 工作区域
-            this.detailForm.workLocation = `${e[0].label}${e[1].label}${e[2].label}`;
-            this.detailForm.workProvince = e[0].value;
-            this.detailForm.workCity = e[1].value;
-            this.detailForm.workCounty = e[2].value;
+            this.info.workLocation = `${e[0].label}${e[1].label}${e[2].label}`;
+            this.info.workProvince = e[0].value;
+            this.info.workCity = e[1].value;
+            this.info.workCounty = e[2].value;
             break;
         }
       }
     },
     // 选择年龄段
     confirmAge(e) {
-      // console.log(e);
       if (e && e.length > 0) {
-        this.detailForm.ageRange = e[0].label;
-        this.detailForm.ageGroup = e[0].value;
+        this.info.ageRange = e[0].label;
+        this.info.ageGroup = e[0].value;
+      }
+    },
+    // 获取对应字典name
+    getDictName(code, list) {
+      if (list.length) {
+        const item = list.find((v) => v.code === code);
+        return item?.name;
+      } else {
+        return "";
       }
     },
     // 保存
@@ -391,9 +458,7 @@ export default {
         if (valid) {
           // 构建参数
           let postData = {
-            ...this.infoForm,
-            ...this.detailForm,
-            ...this.demandForm,
+            ...this.info,
             factorsOfConcerns: [], // 关注因素集合
             houseDecorations: [], // 房屋装修集合
             intentAreas: [], // 意向面积集合
@@ -413,14 +478,33 @@ export default {
     },
     // 确定保存
     async handleSubmit(data) {
-      await addCustomer(data);
-      uni.showToast({
-        title: "录入成功",
-        icon: "success",
-      });
-      uni.redirectTo({
-        url: "/channelPackage/clientTab/index",
-      });
+      if (this.addOrEdit === "add") {
+        try {
+          await addCustomer(data);
+          uni.showToast({
+            title: "录入成功",
+            icon: "success",
+          });
+          uni.reLaunch({
+            url: "/channelPackage/clientTab/index",
+          });
+        } catch (err) {
+          console.log(err);
+        }
+      } else {
+        try {
+          await editCustomer(data);
+          uni.showToast({
+            title: "编辑成功",
+            icon: "success",
+          });
+          uni.redirectTo({
+            url: `/channelPackage/clientTab/pages/clientDetails?id=${this.detailId}`,
+          });
+        } catch (err) {
+          console.log(err);
+        }
+      }
     },
     // 获取关注因素、房屋装修、意向面积、意向户型、购房目的多选值
     getTargetList(type = "") {
@@ -456,6 +540,7 @@ export default {
     // 获取省市区
     async getArea() {
       let list = await getAreaList();
+      this.areaDictList = list;
       let first = this.$u.deepClone(list[0]);
       list.splice(0, 1);
       list = list.map((v) => ({

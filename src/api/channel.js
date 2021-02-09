@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-15 10:10:10
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-04 20:28:48
+ * @LastEditTime: 2021-02-09 09:23:45
  */
 import { getApi, postApi } from '@/common/http';
 import { currentEnvConfig } from '@/env-config';
@@ -83,6 +83,11 @@ export async function getCustomerList(data = {}, option = {}) {
 // 客户 --- 录入客户
 export async function addCustomer(data = {}, option = {}) {
   return await postApi('/sales-api/customer/reportCustomer/add', data, option);
+}
+
+// 客户 --- 编辑客户
+export async function editCustomer(data = {}, option = {}) {
+  return await postApi('/sales-api/customer/reportCustomer/update', data, option);
 }
 
 // 客户 --- 查看客户
@@ -291,4 +296,14 @@ export async function postAddDealtApi(data = {}, option = {}) {
 // 查询该报备的所有附件
 export async function postReportAttachmentGetAllApi(data = {}, option = {}) {
   return await postApi(`/sales-api/customer/reportAttachment/getAll`, data, option);
+}
+
+// 查询报备客户基本信息
+export async function getInfoByIdApi(data = {}, option = {}) {
+  return await getApi(`/sales-api/customer/reportCustomer/getInfoById/${data}`, option);
+}
+
+// 写跟进
+export async function postReportCustomerFollowupApi(data = {}, option = {}) {
+  return await postApi(`/sales-api/customer/reportCustomerFollowup/add`, data, option);
 }

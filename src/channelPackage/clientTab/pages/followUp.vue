@@ -3,14 +3,14 @@
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-26 09:02:05
- * @LastEditors: lsj
- * @LastEditTime: 2020-11-26 10:01:10
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-09 10:15:56
 -->
 <template>
   <view class="follow-up-wrapper">
     <view class="client-info">
-      <view class="name u-padding-bottom-20">陈某某</view>
-      <view>18333334444</view>
+      <view class="name u-padding-bottom-20">{{info.name}}</view>
+      <view>{{info.mobile}}</view>
     </view>
     <view class="client-info u-margin-top-30 u-padding-bottom-20">
       <view class="name u-padding-bottom-20">跟进方式</view>
@@ -28,7 +28,7 @@
       <view>
         <u-input
           :clearable="false"
-          v-model="followCase"
+          v-model="describe"
           type="textarea"
           :border="true"
           :height="150"
@@ -46,35 +46,58 @@
 </template>
 
 <script>
+import { getInfoByIdApi, postReportCustomerFollowupApi } from "@/api/channel";
 export default {
   data() {
     return {
       followTypeList: [
         {
           name: "电联",
+          code: "Tel",
         },
         {
           name: "约看",
+          code: "Look",
         },
         {
           name: "面谈",
+          code: "Interview",
         },
       ],
       currentType: 0,
-      followCase: "",
+      followId: "",
+      info: {},
+      type: "Tel",
     };
   },
-  onLoad() {},
+  onLoad(option) {
+    this.followId = option.id;
+    if (this.followId) this.getInfo();
+  },
   methods: {
+    async getInfo() {
+      this.info = await getInfoByIdApi(this.followId);
+    },
     // 选择跟进方式
     changeType(index) {
       this.currentType = index;
+      this.type = this.followTypeList[index].code;
     },
     // 保存
-    saveEnter() {
-      uni.redirectTo({
-        url: `/channelPackage/clientTab/index`,
-      });
+    async saveEnter() {
+      if (this.describe) {
+        let obj = {};
+        obj.reportCustomerId = this.followId;
+        obj.describe = this.describe;
+        obj.type = this.type;
+        await postReportCustomerFollowupApi(obj);
+        this.$tool.toast("保存成功");
+        uni.redirectTo({
+          url: `/channelPackage/clientTab/pages/clientDetails?id=${this.followId}`,
+        });
+      } else {
+        this.$tool.toast("请填写跟进情况");
+      }
     },
   },
 };
