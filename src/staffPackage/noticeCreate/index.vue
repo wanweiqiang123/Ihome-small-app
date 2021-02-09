@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-07 10:32:43
+ * @LastEditTime: 2021-02-09 14:20:19
 -->
 <template>
   <LoginPage>
@@ -902,6 +902,7 @@ export default {
           ...this.form,
           notificationStatus: "WaitBeSigned",
           noticeAttachmentList: list,
+          exDeal: 0,
         });
         this.$tool.toast("保存成功");
         if (this.form.templateType === "ElectronicTemplate") {
