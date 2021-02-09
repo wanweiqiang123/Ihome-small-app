@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-10 15:30:58
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-07 09:35:59
+ * @LastEditTime: 2021-02-09 10:10:50
  */
 import { getApi, postApi } from '../common/http.js';
 
@@ -241,6 +241,33 @@ export async function getNotCheckListApi(data = {}, option = {}) {
  */
 export async function getPreviewApi(data = {}, option = {}) {
   return await getApi(`/sales-api/contract/notice/preview/sign/${data}`, option)
+}
+/**
+ * @description: 查询我的到访列表-小程序端案场岗
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function getMyReportList(data = {}, option = {}) {
+  return await postApi('/sales-api/customer/report/getMyReportList', data, option)
+}
+/**
+ * @description: 报备有效无效操作
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function postReportValid(data = {}, option = {}) {
+  return await postApi('/sales-api/customer/report/visitValidOrInvalid', data, option)
+}
+/**
+ * @description: 成交有效无效操作
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function postReportDeal(data = {}, option = {}) {
+  return await postApi('/sales-api/customer/report/dealValidOrInvalid', data, option)
 }
 
 /**
