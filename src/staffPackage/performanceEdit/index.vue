@@ -300,6 +300,7 @@
             <template v-if="item.fileList.length > 0">
               <view class="file-list-wrapper" v-for="list in item.fileList" :key="list.fileId">
                 <u-icon
+                  v-if="!list.canDelete"
                   @click="deleteImg(infoIndex, list)"
                   class="icon" name="close-circle-fill" color="#FA3534" size="50"></u-icon>
                 <u-image
@@ -456,6 +457,8 @@ import {
   post_notice_deal_details__noticeId,
   post_pageData_calculateReceiveAmount,
   post_pageData_initBasic,
+  post_deal_entryDealBasicInf,
+  post_deal_updateDealBasicInf,
   getBaseDealInfo,
   postBuildByProId,
   postRoomByProId,
@@ -561,6 +564,7 @@ export default {
       }
     }
     return {
+      id: null, // 成交id-编辑用
       showPackage: false, // 选择收派套餐弹窗标识
       packageData: {}, // 收派套餐查询条件
       currentUploadType: null, // 上传的附件类型
@@ -749,19 +753,25 @@ export default {
       uploadAction: `${currentEnvConfig['protocol']}://${currentEnvConfig['apiDomain']}/sales-api/sales-document-cover/file/upload`,
       uploadHeader: {}, // 请求header
       uploadName: 'files', // 供后端取值用
+      // 编辑功能相关字段
+      editBaseInfo: null, // 编辑初始化页面数据
     };
   },
   computed: {
     serviceTotal() {
       let obj = {
-        receivableAmout: 0,
+        receivableAmout: 0, // 本单应收 - 服务费
         sendAmount: 0,
-        sendInAmount: 0
+        sendInAmount: 0,
+        achieveAmount: 0, // 本单业绩 - 服务费
+        otherChannelFees: 0, // 其他渠道费用 - 服务费
       }
       // this.$tool.addArr(arr)
       let receivableAmoutArr = [];
       let sendAmountArr = [];
       let sendInAmountArr = [];
+      let achieveAmountArr = [];
+      let otherChannelFeesArr = [];
       if (this.postData.serviceReceiveVO && this.postData.serviceReceiveVO.length) {
         this.postData.serviceReceiveVO.forEach((vo) => {
           if (vo.receiveAmount) {
@@ -769,29 +779,46 @@ export default {
           }
           if (vo.commAmount) {
             sendAmountArr.push(vo.commAmount);
+            achieveAmountArr.push(vo.commAmount);
           }
           if (vo.rewardAmount) {
             sendInAmountArr.push(vo.rewardAmount);
+            achieveAmountArr.push(vo.rewardAmount);
+          }
+          if (vo.totalPackageAmount) {
+            achieveAmountArr.push(vo.totalPackageAmount);
+          }
+          if (vo.distributionAmount) {
+            achieveAmountArr.push(vo.distributionAmount);
+          }
+          if (vo.otherChannelFees) {
+            otherChannelFeesArr.push(vo.otherChannelFees);
           }
         });
         obj = {
           receivableAmout: receivableAmoutArr.length ? this.$tool.addArr(receivableAmoutArr) : 0,
           sendAmount: sendAmountArr.length ? this.$tool.addArr(sendAmountArr) : 0,
           sendInAmount: sendInAmountArr.length ? this.$tool.addArr(sendInAmountArr) : 0,
+          achieveAmount: achieveAmountArr.length ? this.$tool.addArr(achieveAmountArr) : 0,
+          otherChannelFees: otherChannelFeesArr.length ? this.$tool.addArr(otherChannelFeesArr) : 0,
         }
       }
       return obj;
     },
     agentTotal() {
       let obj = {
-        receivableAmout: 0,
+        receivableAmout: 0, // 本单应收 - 代理费
         sendAmount: 0,
-        sendInAmount: 0
+        sendInAmount: 0,
+        achieveAmount: 0, // 本单业绩 - 代理费
+        otherChannelFees: 0, // 其他渠道费用 - 代理费
       }
       // this.$tool.addArr(arr)
       let receivableAmoutArr = [];
       let sendAmountArr = [];
       let sendInAmountArr = [];
+      let achieveAmountArr = [];
+      let otherChannelFeesArr = [];
       if (this.postData.agentReceiveVO && this.postData.agentReceiveVO.length) {
         this.postData.agentReceiveVO.forEach((vo) => {
           if (vo.receiveAmount) {
@@ -799,15 +826,28 @@ export default {
           }
           if (vo.commAmount) {
             sendAmountArr.push(vo.commAmount);
+            achieveAmountArr.push(vo.commAmount);
           }
           if (vo.rewardAmount) {
             sendInAmountArr.push(vo.rewardAmount);
+            achieveAmountArr.push(vo.rewardAmount);
+          }
+          if (vo.totalPackageAmount) {
+            achieveAmountArr.push(vo.totalPackageAmount);
+          }
+          if (vo.distributionAmount) {
+            achieveAmountArr.push(vo.distributionAmount);
+          }
+          if (vo.otherChannelFees) {
+            otherChannelFeesArr.push(vo.otherChannelFees);
           }
         });
         obj = {
           receivableAmout: receivableAmoutArr.length ? this.$tool.addArr(receivableAmoutArr) : 0,
           sendAmount: sendAmountArr.length ? this.$tool.addArr(sendAmountArr) : 0,
           sendInAmount: sendInAmountArr.length ? this.$tool.addArr(sendInAmountArr) : 0,
+          achieveAmount: achieveAmountArr.length ? this.$tool.addArr(achieveAmountArr) : 0,
+          otherChannelFees: otherChannelFeesArr.length ? this.$tool.addArr(otherChannelFeesArr) : 0,
         }
       }
       return obj;
@@ -862,6 +902,8 @@ export default {
       if (item && item.length) {
         this.postData.refineModelName = item[0].label;
         this.postData.refineModel = item[0].value;
+        // 初始化收派套餐
+        this.initReceive();
       }
     },
     // 确定选择成交阶段
@@ -880,8 +922,19 @@ export default {
           proId: this.baseInfoByTerm.proId,
           propertyEnum: item[0].value,
         });
-        console.log('this.buildSelectList', this.buildSelectList);
+        this.postData.roomId = '';
+        this.postData.roomNo = 'null';
+        this.postData.buildingId = 'null';
+        this.postData.buildingName = 'null';
+        await this.initDocument(this.baseInfoByTerm);
+        await this.resetReceiveVO();
+        await this.resetData();
+        // console.log('this.buildSelectList', this.buildSelectList);
       }
+    },
+    // 物业类型、栋座、房号改变，收派金额模块只需要清空代理费
+    resetReceiveVO() {
+      this.postData.agentReceiveVO = [];
     },
     // 选择栋座
     handleShowBuild() {
@@ -901,7 +954,12 @@ export default {
           buildingId: item[0].value,
           exDeal: 0
         });
-        console.log('this.roomSelectList', this.roomSelectList);
+        this.postData.roomId = null;
+        this.postData.roomNo = null;
+        await this.resetReceiveVO();
+        await this.initDocument(this.baseInfoByTerm);
+        await this.resetData();
+        // console.log('this.roomSelectList', this.roomSelectList);
       }
     },
     // 选择房号
@@ -917,6 +975,8 @@ export default {
       if (item && item.length) {
         this.postData.roomNo = item[0].label;
         this.postData.roomId = item[0].value;
+        await this.resetReceiveVO();
+        await this.resetData(); // 重置数据
         await this.initPageById(this.baseInfoByTerm.termId, item[0].value, this.postData.propertyType);
       }
     },
@@ -1411,6 +1471,7 @@ export default {
                 if (baseInfo.visitConfirmForms && baseInfo.visitConfirmForms.length) {
                   this.baseInfoInDeal.visitConfirmForms.forEach((item) => {
                     item.name = item.fileName;
+                    item.canDelete = true; // 是否可以删除
                   });
                 }
                 list.fileList = this.postData.roomId && baseInfo.visitConfirmForms && baseInfo.visitConfirmForms.length ? baseInfo.visitConfirmForms : [];
@@ -1420,6 +1481,7 @@ export default {
                 if (baseInfo.dealConfirmForms && baseInfo.dealConfirmForms.length) {
                   baseInfo.dealConfirmForms.forEach((item) => {
                     item.name = item.fileName;
+                    item.canDelete = true; // 是否可以删除
                   });
                 }
                 list.fileList = this.postData.roomId && baseInfo.dealConfirmForms && baseInfo.dealConfirmForms.length ? baseInfo.dealConfirmForms : [];
@@ -1439,6 +1501,7 @@ export default {
             if (baseInfo.noticePDF && baseInfo.noticePDF.length) {
               baseInfo.noticePDF.forEach((item) => {
                 item.name = item.fileName;
+                item.canDelete = true; // 是否可以删除
               });
             }
             list.fileList = this.postData.roomId && baseInfo.noticePDF && baseInfo.noticePDF.length  ? baseInfo.noticePDF : [];
@@ -1448,6 +1511,7 @@ export default {
             if (baseInfo.customerIds && baseInfo.customerIds.length) {
               baseInfo.customerIds.forEach((item) => {
                 item.name = item.fileName;
+                item.canDelete = true; // 是否可以删除
               });
             }
             list.fileList = this.postData.roomId && baseInfo.customerIds && baseInfo.customerIds.length ? baseInfo.customerIds : [];
@@ -1920,15 +1984,266 @@ export default {
       let self = this;
       self.$refs.uForm.setRules(self.rules);
       self.$nextTick(() => {
+        // 1.校验收派金额是都有收派套餐
+        let flag = self.validReceiveData();
+        console.log('flag', flag);
+        if (!flag) {
+          self.$tool.toast("收派金额信息有无，请检查");
+          return;
+        }
         self.$refs.uForm.validate(valid => {
           if (valid) {
-            console.log('验证通过');
+            this.submit();
           } else {
             console.log('验证失败');
           }
         });
       });
       console.log(self.postData.documentVO);
+    },
+    // 确定提交
+    async submit() {
+      let postData = this.getPostData();
+      if (this.id) {
+        postData.dealVO.dealCode = this.editBaseInfo?.dealCode;
+        postData.dealVO.id = this.editBaseInfo?.id;
+        postData.dealVO.parentId = this.editBaseInfo?.parentId;
+        postData.dealVO.entryDate = this.editBaseInfo?.entryDate;
+        postData.dealVO.entryPersonId = this.editBaseInfo?.entryPersonId;
+        await post_deal_updateDealBasicInf(postData);
+        this.$tool.toast("修改成功");
+      } else {
+        await post_deal_entryDealBasicInf(postData);
+        this.$tool.toast("新增成功");
+      }
+      uni.redirectTo({
+        url: "/staffPackage/performance/index",
+      });
+    },
+    // 检验收派金额是否都有收派套餐
+    validReceiveData() {
+      let flag = false; // 默认无
+      let tempList = [...this.postData.agentReceiveVO, ...this.postData.serviceReceiveVO];
+      if (tempList && tempList.length) {
+        flag = tempList.every((item) => {
+          return (item.showData && item.showData.length > 0);
+        });
+      }
+      return flag;
+    },
+    // 构建参数
+    getPostData() {
+      let obj = {
+        agencyVO: [], // 渠道商信息
+        customerVO: [], // 客户信息
+        dealVO: {
+          "businessType": "",
+          "charge": "",
+          "contNo": "",
+          "contType": "",
+          "cycleId": '',
+          "dataSign": "",
+          "dealOrgId": '',
+          "isConsign": "",
+          "isMarketProject": "",
+          "isMat": "",
+          "modelCode": "",
+          "noticeIds": [],
+          "oneAgentTeamId": "",
+          "recordState": "",
+          "refineModel": "",
+          "reportId": '',
+          "sceneSales": "",
+          "signDate": "",
+          "signPrice": '',
+          "signType": "",
+          "stage": "",
+          "status": "",
+          "subscribeDate": "",
+          "subscribePrice": ""
+        }, // 成交基础信息
+        documentVO: [], // 上传附件
+        houseVO: {
+          address: "",
+          area: "",
+          buildingId: "",
+          hall: "",
+          propertyNo: "",
+          propertyType: "",
+          room: "",
+          roomId: "",
+          roomNo: "",
+          toilet: ""
+        }, // 房屋信息
+        receiveAchieveVO: [], // 收派金额 --- 汇总
+        receiveVO: [] // 收派金额
+      }
+      // 1. 渠道商信息 --- 分销成交才会有
+      if (this.postData.contType === 'DistriDeal') {
+        if (this.id) {
+          obj.agencyVO.push(
+            {
+              dealId: this.id,
+              agencyId: this.postData.agencyId,
+              brokerId: this.postData.brokerId,
+              channelLevel: this.postData.channelLevel,
+            }
+          )
+        } else {
+          obj.agencyVO.push(
+            {
+              agencyId: this.postData.agencyId,
+              brokerId: this.postData.brokerId,
+              channelLevel: this.postData.channelLevel,
+            }
+          )
+        }
+        obj.dealVO.contNo = this.postData.contNo;
+        obj.dealVO.isMat = this.postData.isMat;
+      }
+      // 2. 客户信息
+      if (this.postData.customerVO.length > 0) {
+        this.postData.customerVO.forEach((item, index) => {
+          if (index === 0) {
+            item.isCustomer = 'Yes';
+          } else {
+            item.isCustomer = 'No';
+          }
+          if (this.id) {
+            item.dealId = this.id;
+          }
+        });
+        obj.customerVO = this.postData.customerVO;
+      }
+      // 3.基础信息
+      obj.dealVO.businessType = this.baseInfoByTerm.busTypeEnum;
+      obj.dealVO.charge = this.baseInfoByTerm.chargeEnum;
+      obj.dealVO.contType = this.postData.contType;
+      obj.dealVO.cycleId = this.postData.cycleId;
+      obj.dealVO.dataSign = this.postData.dataSign;
+      obj.dealVO.dealOrgId = this.postData.dealOrgId;
+      obj.dealVO.isConsign = this.postData.isConsign;
+      obj.dealVO.isMarketProject = this.postData.isMarketProject;
+      obj.dealVO.modelCode = this.postData.modelCode;
+      // 优惠告知书ids
+      if (this.postData.offerNoticeVO.length > 0) {
+        let firstNoticeList = []; // 类型为优惠告知书的id列表
+        let firstId = null; // 第一个类型为优惠告知书的id
+        // 需要拿到优惠告知书信息列表中第一个类型为优惠告知书的id
+        firstNoticeList = this.postData.offerNoticeVO.find((item) => {
+          return item.notificationType === "Notification";
+        });
+        if (firstNoticeList.length) {
+          firstId = firstNoticeList[0].noticeId;
+          obj.dealVO.noticeIds.push(firstId);
+        }
+        this.postData.offerNoticeVO.forEach((vo) => {
+          if (vo.noticeId !== firstId) {
+            obj.dealVO.noticeIds.push(vo.noticeId);
+          }
+        });
+      }
+      obj.dealVO.oneAgentTeamId = this.postData.oneAgentTeamId;
+      obj.dealVO.recordState = this.postData.recordState;
+      obj.dealVO.refineModel = this.postData.refineModel;
+      obj.dealVO.reportId = this.baseInfoInDeal.recordId;
+      obj.dealVO.sceneSales = this.postData.sceneSales;
+      obj.dealVO.signDate = this.postData.signDate;
+      obj.dealVO.signPrice = this.postData.signPrice;
+      obj.dealVO.signType = this.postData.signType;
+      obj.dealVO.stage = this.postData.stage;
+      if (['Recognize', 'Subscribe'].includes(this.postData.stage)) {
+        obj.dealVO.status = 'Draft'; // 草稿
+      } else if (this.postData.stage === 'SignUp') {
+        obj.dealVO.status = 'AchieveDeclareUnconfirm'; // 业绩申报待确认
+      }
+      obj.dealVO.subscribeDate = this.postData.subscribeDate;
+      obj.dealVO.subscribePrice = this.postData.subscribePrice;
+      obj.houseVO.address = this.postData.address;
+      obj.houseVO.area = this.postData.area;
+      obj.houseVO.buildingId = this.postData.buildingId;
+      obj.houseVO.hall = this.postData.hall;
+      obj.houseVO.hall = this.postData.hall;
+      obj.houseVO.propertyNo = this.postData.propertyNo;
+      obj.houseVO.propertyType = this.postData.propertyType;
+      obj.houseVO.room = this.postData.room;
+      obj.houseVO.roomId = this.postData.roomId;
+      obj.houseVO.roomNo = this.postData.roomId ? this.postData.roomNo : null;
+      obj.houseVO.toilet = this.postData.toilet;
+      if (this.id) {
+        obj.houseVO.id = this.editBaseInfo?.house?.id;
+        obj.houseVO.dealId = this.id;
+      }
+      // 附件信息
+      if (this.postData.documentVO.length > 0) {
+        // console.log('this.postData.documentVO', this.postData.documentVO);
+        this.postData.documentVO.forEach((item) => {
+          // 重新上传的
+          if (item.fileList.length > 0) {
+            item.fileList.forEach((list) => {
+              obj.documentVO.push(
+                {
+                  fileId: list.fileId,
+                  fileName: list.name,
+                  fileType: item.code
+                }
+              )
+            });
+          }
+        });
+        console.log('obj.documentVO', obj.documentVO);
+      }
+      if (this.id && obj.documentVO && obj.documentVO.length) {
+        // 编辑情况
+        obj.documentVO.forEach((vo) => {
+          vo.dealId = this.id;
+        });
+      }
+      // 派发金额合计
+      if (this.id) {
+        // 编辑情况
+        if (this.editBaseInfo && this.editBaseInfo.receiveAchieveList && this.editBaseInfo.receiveAchieveList.length) {
+          obj.receiveAchieveVO.push(
+            {
+              dealId: this.editBaseInfo.receiveAchieveList[0].dealId,
+              id: this.editBaseInfo.receiveAchieveList[0].id,
+              achieveAmount: this.$tool.add(this.agentTotal?.achieveAmount, this.serviceTotal?.achieveAmount),
+              otherChannelFees: this.$tool.add(this.agentTotal?.otherChannelFees, this.serviceTotal?.otherChannelFees),
+              receiveAmount: this.$tool.add(this.agentTotal?.receivableAmout, this.serviceTotal?.receivableAmout),
+            }
+          )
+        } else {
+          obj.receiveAchieveVO.push(
+            {
+              dealId: null,
+              id: null,
+              achieveAmount: this.$tool.add(this.agentTotal?.achieveAmount, this.serviceTotal?.achieveAmount),
+              otherChannelFees: this.$tool.add(this.agentTotal?.otherChannelFees, this.serviceTotal?.otherChannelFees),
+              receiveAmount: this.$tool.add(this.agentTotal?.receivableAmout, this.serviceTotal?.receivableAmout),
+            }
+          )
+        }
+      } else {
+        // 新增情况
+        obj.receiveAchieveVO.push(
+          {
+            achieveAmount: this.$tool.add(this.agentTotal?.achieveAmount, this.serviceTotal?.achieveAmount),
+            otherChannelFees: this.$tool.add(this.agentTotal?.otherChannelFees, this.serviceTotal?.otherChannelFees),
+            receiveAmount: this.$tool.add(this.agentTotal?.receivableAmout, this.serviceTotal?.receivableAmout),
+          }
+        )
+      }
+      // 派发金额
+      let tempList = [...this.postData.agentReceiveVO, ...this.postData.serviceReceiveVO];
+      obj.receiveVO = JSON.parse(JSON.stringify(tempList));
+      if (obj.receiveVO.length) {
+        obj.receiveVO.forEach((vo) => {
+          if (vo.type === 'AgentFee' && [null, undefined, 0, ""].includes(vo.otherChannelFees)) {
+            vo.otherChannelFees = null; // 后台要置null
+          }
+        });
+      }
+      return obj;
     }
   }
 };
