@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-10 15:30:58
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-07 09:35:59
+ * @LastEditTime: 2021-02-09 10:10:50
  */
 import { getApi, postApi } from '../common/http.js';
 
@@ -242,6 +242,33 @@ export async function getNotCheckListApi(data = {}, option = {}) {
 export async function getPreviewApi(data = {}, option = {}) {
   return await getApi(`/sales-api/contract/notice/preview/sign/${data}`, option)
 }
+/**
+ * @description: 查询我的到访列表-小程序端案场岗
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function getMyReportList(data = {}, option = {}) {
+  return await postApi('/sales-api/customer/report/getMyReportList', data, option)
+}
+/**
+ * @description: 报备有效无效操作
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function postReportValid(data = {}, option = {}) {
+  return await postApi('/sales-api/customer/report/visitValidOrInvalid', data, option)
+}
+/**
+ * @description: 成交有效无效操作
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function postReportDeal(data = {}, option = {}) {
+  return await postApi('/sales-api/customer/report/dealValidOrInvalid', data, option)
+}
 
 /**
  * @description: 业绩申报列表
@@ -301,4 +328,34 @@ export async function post_pageData_initBasic(data = {}, option = {}) {
  */
 export async function post_pageData_dealCheckNotice(data = {}, option = {}) {
   return await postApi(`/sales-api/deal/pageData/dealCheckNotice`, data, option)
+}
+
+/**
+ * @description: 业绩申报 - 根据选择的优惠告知书获取优惠告知书列表和客户列表 --- 多份优惠告知书的情况下
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function post_notice_deal_details__noticeId(data = {}, option = {}) {
+  return await postApi(`/sales-api/contract/notice/deal/details/${data.noticeId}`, option)
+}
+
+/**
+ * @description: 业绩申报 - 派发套餐明细(选择收派套餐)
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function post_pageData_initSelectablePackage(data = {}, option = {}) {
+  return await postApi(`/sales-api/deal/pageData/initSelectablePackage`, data, option)
+}
+
+/**
+ * @description: 业绩申报 - 派发套餐明细(选择收派套餐)
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function post_pageData_calculateReceiveAmount(data = {}, option = {}) {
+  return await postApi(`/sales-api/deal/pageData/calculateReceiveAmount`, data, option)
 }

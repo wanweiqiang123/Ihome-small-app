@@ -201,3 +201,13 @@ export async function postChannelByNameApi(data, option = {}) {
 export async function getAllDictByType(data = {}, option = {}) {
     return await postApi(`/sales-api/system/dict/getAllByTypes`, data, option)
 }
+
+/**查询客户列表*/
+export async function postCustomerGetCustList(data, option = {}) {
+    return await postApi('/sales-api/customer/customer/getCustList', data, option)
+}
+
+/**查询客户列表*/
+export async function postNoticeDealList(data, option = {}) {
+    return await postApi('/sales-api/contract/notice/deal/list', data, option)
+}
