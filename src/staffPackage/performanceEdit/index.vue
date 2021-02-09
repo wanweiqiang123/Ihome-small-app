@@ -619,8 +619,8 @@ export default {
       ContTypeList: [],
       showContNo: false,
       showDate: false,
-      currentDateType: null, // 当前选择日期的类型
-      currentPriceType: null, // 当前输入价格的input框
+      currentDateType: '', // 当前选择日期的类型
+      currentPriceType: '', // 当前输入价格的input框
       params: {
         year: true,
         month: true,
@@ -631,47 +631,47 @@ export default {
       },
       contNoList: [], // 分销协议列表---initPage接口
       postData: {
-        cycleId: null, // 接口用到的id
-        cycleName: null,
-        modelCode: null,
-        refineModel: null,
-        refineModelName: null,
-        stage: null,
-        stageName: null,
-        propertyType: null,
-        propertyTypeName: null,
-        buildingId: null,
-        buildingName: null,
-        roomNo: null, // 房号
-        roomId: null, // 房号ID
-        contType: null,
-        contTypeName: null,
-        contNo: null,
-        recordStr: null,
+        cycleId: '', // 接口用到的id
+        cycleName: '',
+        modelCode: '',
+        refineModel: '',
+        refineModelName: '',
+        stage: '',
+        stageName: '',
+        propertyType: '',
+        propertyTypeName: '',
+        buildingId: '',
+        buildingName: '',
+        roomNo: '', // 房号
+        roomId: '', // 房号ID
+        contType: '',
+        contTypeName: '',
+        contNo: '',
+        recordStr: '',
         subscribePrice: '',
-        subscribeDate: null,
+        subscribeDate: '',
         signPrice: '',
-        signDate: null,
-        dealOrgName: null,
-        dealOrgId: null,
-        isMat: null,
-        agencyId: null, // 渠道公司Id
-        agencyName: null, // 渠道公司
-        channelLevel: null, // 渠道等级Id
-        channelLevelName: null, // 渠道等级
-        brokerId: null, // 渠道经纪人Id
-        brokerName: null, // 渠道经纪人
-        recordState:null,
-        area:null,
-        room:null,
-        hall:null,
-        toilet:null,
-        propertyNo:null,
-        signType:null,
-        returnRatio:null,
-        dataSign:null,
-        oneAgentTeam: null,
-        oneAgentTeamId: null,
+        signDate: '',
+        dealOrgName: '',
+        dealOrgId: '',
+        isMat: '',
+        agencyId: '', // 渠道公司Id
+        agencyName: '', // 渠道公司
+        channelLevel: '', // 渠道等级Id
+        channelLevelName: '', // 渠道等级
+        brokerId: '', // 渠道经纪人Id
+        brokerName: '', // 渠道经纪人
+        recordState:'',
+        area: '',
+        room: '',
+        hall: '',
+        toilet: '',
+        propertyNo: '',
+        signType: '',
+        returnRatio: '',
+        dataSign: '',
+        oneAgentTeam: '',
+        oneAgentTeamId: '',
         offerNoticeVO: [], // 优惠告知书
         customerVO: [], // 客户信息
         agencyVO: [], // 渠道信息
@@ -721,15 +721,15 @@ export default {
       },
       packageIdsList: [], // 收派套餐ids：分销模式---选择分销协议后获取；非分销协议---请求接口获取
       baseInfoByTerm: {
-        chargeEnum: null,
-        proId: null, // 项目id --- 用于查询分销协议列表
-        termId: null, // 项目周期id
-        termStageEnum: null, // 项目周期阶段
+        chargeEnum: '',
+        proId: '', // 项目id --- 用于查询分销协议列表
+        termId: '', // 项目周期id
+        termStageEnum: '', // 项目周期阶段
         selectableChannelIds: [], // 可选的渠道商ids
       }, // 通过项目周期id获取到的初始化成交基础信息
       baseInfoInDeal: {
         hasRecord: false,
-        contType: null,
+        contType: '',
         notice: [], // 优惠告知书
         myReturnVO: {
           houseVO: {},
@@ -743,13 +743,13 @@ export default {
         dealConfirmForms: [], // 成交确认书
         customerAddVOS: [], // 客户信息
         selectableChannelIds: [], // 可选的渠道商ids
-        dealNoticeStatus: null, // 同房号是否存在多份优惠告知书(NoneNotice-没有优惠告知书、OneNotice-一份优惠告知书、MultipleNotice-多份优惠告知书)
+        dealNoticeStatus: '', // 同房号是否存在多份优惠告知书(NoneNotice-没有优惠告知书、OneNotice-一份优惠告知书、MultipleNotice-多份优惠告知书)
       }, // 通过initPage接口获取到的成交信息(项目周期 + 房号)
       hasAddNoticeFlag: true, // 是否有添加(删除)优惠告知书的标识：true-可以；false-不可以
       tempList: [], // 临时的收派金额信息
       tempDocumentList: [], // 记录来访确认单和成交确认单
-      currentPackageType: null, // 当前收派金额类型
-      currentPackageIndex: null, // 当前收派金额序号
+      currentPackageType: '', // 当前收派金额类型
+      currentPackageIndex: '', // 当前收派金额序号
       uploadAction: `${currentEnvConfig['protocol']}://${currentEnvConfig['apiDomain']}/sales-api/sales-document-cover/file/upload`,
       uploadHeader: {}, // 请求header
       uploadName: 'files', // 供后端取值用
@@ -923,9 +923,9 @@ export default {
           propertyEnum: item[0].value,
         });
         this.postData.roomId = '';
-        this.postData.roomNo = 'null';
-        this.postData.buildingId = 'null';
-        this.postData.buildingName = 'null';
+        this.postData.roomNo = '';
+        this.postData.buildingId = '';
+        this.postData.buildingName = '';
         await this.initDocument(this.baseInfoByTerm);
         await this.resetReceiveVO();
         await this.resetData();
@@ -954,8 +954,8 @@ export default {
           buildingId: item[0].value,
           exDeal: 0
         });
-        this.postData.roomId = null;
-        this.postData.roomNo = null;
+        this.postData.roomId = '';
+        this.postData.roomNo = '';
         await this.resetReceiveVO();
         await this.initDocument(this.baseInfoByTerm);
         await this.resetData();
@@ -1007,7 +1007,7 @@ export default {
     },
     // 确定选择分销协议
     confirmContNo(item) {
-      this.postData.isMat = null;
+      this.postData.isMat = '';
       this.packageIdsList = [];
       let isVoidFlag = false;
       if (item && item.length) {
@@ -1075,8 +1075,8 @@ export default {
     resetReceiveVOS(list = []) {
       list.forEach((item) => {
         item.showData = [];
-        item.packageId = null;
-        item.packgeName = null;
+        item.packageId = '';
+        item.packgeName = '';
         item.receiveAmount = 0;
         item.commAmount = 0;
         item.rewardAmount = 0;
@@ -1132,8 +1132,8 @@ export default {
     },
     // 清空数据 - 主要是和初始化数据有关的数据
     resetData() {
-      this.tempSubscribePrice = null;
-      this.tempSignPrice = null;
+      this.tempSubscribePrice = '';
+      this.tempSignPrice = '';
       this.contNoList = []; // 分销协议编号
       this.packageIdsList = []; // ids
       this.postData.customerVO = []; // 客户信息
@@ -1193,10 +1193,10 @@ export default {
           tempList.push(
             {
               type: 'ServiceFee', // 服务费
-              partyACustomer: null,
+              partyACustomer: '',
               partyACustomerName: '客户',
-              packgeName: null,
-              packageId: null,
+              packgeName: '',
+              packageId: '',
               receiveAmount: null,
               commAmount: null,
               rewardAmount: null,
@@ -1352,8 +1352,8 @@ export default {
       }
       // 多分优惠告知书情况
       // console.log(this.postData.offerNoticeVO);
-      this.postData.contNo = null; // 重置选择的编号
-      this.postData.contNoName = null; // 重置选择的编号
+      this.postData.contNo = ''; // 重置选择的编号
+      this.postData.contNoName = ''; // 重置选择的编号
       if (baseInfo.dealNoticeStatus === 'MultipleNotice') {
         this.$tool.toast("同房号存在多份已生效的优惠告知书");
       } else {
