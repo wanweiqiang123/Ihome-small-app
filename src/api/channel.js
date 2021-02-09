@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-15 10:10:10
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-09 09:23:45
+ * @LastEditTime: 2021-02-09 16:45:15
  */
 import { getApi, postApi } from '@/common/http';
 import { currentEnvConfig } from '@/env-config';
@@ -306,4 +306,14 @@ export async function getInfoByIdApi(data = {}, option = {}) {
 // 写跟进
 export async function postReportCustomerFollowupApi(data = {}, option = {}) {
   return await postApi(`/sales-api/customer/reportCustomerFollowup/add`, data, option);
+}
+
+// 查询成交列表
+export async function postDealListApi(data = {}, option = {}) {
+  return await postApi(`/sales-api/deal/deal/getList`, data, option);
+}
+
+// 根据主成交报告编号及渠道商id，查询房产信息、主客户信息及佣金数据；
+export async function postdealReportRecordApi(data = {}, option = {}) {
+  return await postApi(`/sales-api/deal/deal/dealReportRecord`, data, option);
 }

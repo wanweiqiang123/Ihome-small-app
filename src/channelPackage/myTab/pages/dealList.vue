@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-27 13:05:22
- * @LastEditors: lsj
- * @LastEditTime: 2020-12-12 16:17:10
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-09 16:46:31
 -->
 <template>
   <view class="deal-list-wrapper">
@@ -19,293 +19,346 @@
         border-color="#DCDCDC"
         :show-action="false"
         placeholder="请输入客户姓名或手机号码"
-        v-model="queryPageParameters.projectName"></u-search>
-      <view class="filter-wrapper" @click="showSearchWin = true">筛选</view>
-      <u-icon name="grid-fill" color="#3478F7" size="38" @click="showSearchWin = true"></u-icon>
+        @search="getListMixin()"
+        v-model="keyword"
+      ></u-search>
+      <view
+        class="filter-wrapper"
+        @click="isShow = true"
+      >筛选</view>
+      <u-icon
+        name="grid-fill"
+        color="#3478F7"
+        size="38"
+        @click="isShow = true"
+      ></u-icon>
     </view>
     <view class="list-wrapper">
-      <view class="list-item" v-for="item in [1,2,3,4,5,6,7,8,9,10]" :key="item" @click="viewDealDetail">
+      <view
+        class="list-item"
+        v-for="(item, i) in tablePage"
+        :key="i"
+        @click="viewDealDetail(item.dealCode)"
+      >
         <view class="item-code u-padding-bottom-20">
-          <view class="code">成交报告编号：CJ38135843321</view>
+          <view class="code">{{item.dealCode}}</view>
           <view class="detail">详情</view>
-          <u-icon name="arrow-right" color="#999999" size="28"></u-icon>
+          <u-icon
+            name="arrow-right"
+            color="#999999"
+            size="28"
+          ></u-icon>
         </view>
         <view class="item-content">
           <view class="content-left">
-            <view>项目名称：保利艾特成</view>
-            <view>客户姓名：陈先生</view>
-            <view>客户号码：18300054512</view>
+            <view>项目名称：{{item.projectName}}</view>
+            <view>客户姓名：{{item.customerName}}</view>
+            <view>客户号码：{{item.customerPhone}}</view>
           </view>
           <view class="content-right">
             <view class="right-top">
               <view class="title">可结佣</view>
-              <view class="border">200.00</view>
+              <view class="border">{{item.unpaidCommAmount ? item.unpaidCommAmount : 0}}</view>
             </view>
             <view class="right-bottom">
               <view class="title">已结佣</view>
-              <view class="border">160.00</view>
+              <view class="border">{{item.paidCommAmount ? item.paidCommAmount : 0}}</view>
             </view>
           </view>
         </view>
       </view>
     </view>
-    <u-popup v-model="showSearchWin" mode="right" length="70%">
-      <view class="project-case-wrapper">
-        <view>
-          <u-form :model="searchForm" ref="searchForm" :label-width="140">
-            <u-form-item label="项目名称" right-icon="arrow-right" class="hide-icon">
-              <u-input
-                @click="showProjectName = true"
-                v-model="searchForm.name" type="select"
-                placeholder="项目名称" :clearable="false" input-align="left" />
-            </u-form-item>
-            <u-form-item label="成交阶段" right-icon="arrow-right" class="hide-icon">
-              <u-input
-                @click="showProjectStage = true"
-                v-model="searchForm.stage" type="select"
-                placeholder="成交阶段" :clearable="false" input-align="left" />
-            </u-form-item>
-          </u-form>
-        </view>
-        <view class="add-btn-wrapper">
-          <view class="left" @click="showSearchWin = false">重置</view>
-          <view class="right" @click="showSearchWin = false">确定</view>
-        </view>
-      </view>
-    </u-popup>
-    <u-select v-model="showProjectName" z-index="20000" :list="projectNameList" @confirm="confirmProjectName"></u-select>
-    <u-select v-model="showProjectStage" z-index="20000" :list="projectStageList" @confirm="confirmProjectStage"></u-select>
+    <PopupSearch
+      width="80%"
+      :mask="true"
+      v-model="isShow"
+      @reset="reset()"
+      @confirm="confirm()"
+    >
+      <u-form
+        ref="notice"
+        label-position="top"
+        :border-bottom="false"
+      >
+        <u-form-item
+          label="项目名称"
+          :border-bottom="false"
+        >
+          <u-input
+            v-model="queryPageParameters.proName"
+            @click="handleToSearch"
+            placeholder="请选择项目"
+            type="select"
+            border
+          />
+        </u-form-item>
+        <u-form-item
+          label="成交阶段"
+          :border-bottom="false"
+        >
+          <u-input
+            v-model="queryPageParameters.stageName"
+            placeholder="请选择成交阶段"
+            :select-open="stageShow"
+            @click="stageShow = true"
+            type="select"
+            border
+          />
+        </u-form-item>
+      </u-form>
+    </PopupSearch>
+    <u-select
+      v-model="stageShow"
+      z-index="20000"
+      :list="projectStageList"
+      @confirm="confirmStage"
+    ></u-select>
   </view>
 </template>
 
 <script>
+import { postDealListApi } from "@/api/channel";
+import pagination from "../../../mixins/pagination";
+import PopupSearch from "../../../components/PopupSearch/index.vue";
 export default {
+  mixins: [pagination],
+  components: {
+    PopupSearch,
+  },
   data() {
     return {
+      keyword: "",
       queryPageParameters: {
-        projectName: ''
+        proName: "",
+        stageName: "",
       },
-      showSearchWin: false,
-      searchList: [
-        {
-          name: '已通过',
-          checked: false
-        },
-        {
-          name: '审核中',
-          checked: false
-        },
-        {
-          name: '驳回',
-          checked: false
-        }
-      ],
-      searchForm: {
-        name: '',
-        stage: ''
-      },
-      showProjectName: false,
-      projectNameList: [
-        {
-          value: '1',
-          label: '富力新城'
-        },
-        {
-          value: '2',
-          label: '保利爱立信'
-        },
-        {
-          value: '3',
-          label: '富力广场'
-        },
-        {
-          value: '4',
-          label: '增值税普通发票'
-        }
-      ],
-      showProjectStage: false,
+      stageShow: false,
+      isShow: false,
       projectStageList: [
         {
-          value: '1',
-          label: '认筹'
+          value: "Recognize",
+          label: "认筹",
         },
         {
-          value: '2',
-          label: '认购'
+          value: "Subscribe",
+          label: "认购",
         },
         {
-          value: '3',
-          label: '签约'
-        }
+          value: "SignUp",
+          label: "签约",
+        },
       ],
     };
   },
-  onLoad() {},
+  onLoad() {
+    this.getListMixin();
+  },
+  onShow() {
+    let item = getApp().globalData.searchBackData;
+    if (item && item.type === "project") {
+      this.queryPageParameters.projectCycle = item.data.proId;
+      this.queryPageParameters.proName = item.data.proName;
+      getApp().globalData.searchBackData = {};
+    }
+  },
   methods: {
-    // 选择项目名称
-    confirmProjectName(e) {
-      this.searchForm.name = e[0].label;
+    async getListMixin() {
+      this.tableTotal = 0;
+      this.tablePage = [];
+      this.queryPageParameters.pageNum = 1;
+      this.queryPageParameters.pageSize = 10;
+      if (this.keyword) {
+        this.queryPageParameters.phoneOrCusName = this.keyword;
+      } else {
+        this.queryPageParameters.phoneOrCusName = "";
+      }
+      this.setPageDataMixin(await postDealListApi(this.queryPageParameters));
     },
-    // 选择项目周期
-    confirmProjectStage(e) {
-      this.searchForm.stage = e[0].label;
+    handleToSearch() {
+      getApp().globalData.searchParams = {
+        api: "getFuzzySearchByCityApi",
+        key: "proName",
+        id: "proId",
+        type: "project",
+      };
+      uni.navigateTo({
+        url: "/pages/search/index/index",
+      });
+    },
+    reset() {
+      Object.assign(this.queryPageParameters, {
+        projectCycle: "",
+        proName: "",
+        stageName: "",
+        stage: "",
+      });
+    },
+    async confirm() {
+      this.getListMixin();
+    },
+    confirmStage(e) {
+      this.queryPageParameters.stageName = e[0].label;
+      this.queryPageParameters.stage = e[0].value;
     },
     // 查看中介报备成交详情
-    viewDealDetail() {
+    viewDealDetail(code) {
       uni.navigateTo({
-        url: `/channelPackage/myTab/pages/dealDetails?type=report`
+        url: `/channelPackage/myTab/pages/dealDetails?type=report&&code=${code}`,
       });
-    }
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-  .deal-list-wrapper {
+.deal-list-wrapper {
+  width: 100%;
+  background-color: #f5f5f5;
+
+  .top-wrapper {
     width: 100%;
-    background-color: #F5F5F5;
+    height: 92rpx;
+    box-sizing: border-box;
+    padding: 10rpx 24rpx 10rpx 18rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
 
-    .top-wrapper {
-      width: 100%;
-      height: 92rpx;
+    .search {
+      flex: 1;
       box-sizing: border-box;
-      padding: 10rpx 24rpx 10rpx 18rpx;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: #FFFFFF;
-
-      .search {
-        flex: 1;
-        box-sizing: border-box;
-        margin-right: 20rpx;
-      }
-
-      .filter-wrapper {
-        color: $u-type-primary;
-        font-size: 30rpx;
-      }
+      margin-right: 20rpx;
     }
 
-    .list-wrapper {
-      width: 100%;
-      height: calc(100vh - 95rpx);
-      overflow-y: auto;
-      background-color: #F5F5F5;
+    .filter-wrapper {
+      color: $u-type-primary;
+      font-size: 30rpx;
+    }
+  }
 
-      .list-item {
-        box-sizing: border-box;
-        margin: 20rpx;
-        padding: 20rpx;
-        background-color: #FFFFFF;
-        border: 1rpx solid #DADADA;
+  .list-wrapper {
+    width: 100%;
+    height: calc(100vh - 95rpx);
+    overflow-y: auto;
+    background-color: #f5f5f5;
 
-        .item-code {
-          display: flex;
-          flex-direction: row;
-          justify-content: center;
-          align-items: center;
+    .list-item {
+      box-sizing: border-box;
+      margin: 20rpx;
+      padding: 20rpx;
+      background-color: #ffffff;
+      border: 1rpx solid #dadada;
 
-          .code {
-            flex: 1;
-            font-weight: 600;
-          }
+      .item-code {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
 
-          .detail {
+        .code {
+          flex: 1;
+          font-weight: 600;
+        }
+
+        .detail {
+          box-sizing: border-box;
+          margin: 0rpx 10rpx;
+          color: #999999;
+        }
+      }
+
+      .item-content {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: flex-end;
+
+        .content-left {
+          flex: 1;
+
+          view {
             box-sizing: border-box;
-            margin: 0rpx 10rpx;
-            color: #999999;
+            padding: 10rpx 0rpx 5rpx 0rpx;
           }
         }
 
-        .item-content {
-          width: 100%;
+        .content-right {
           display: flex;
-          flex-direction: row;
-          align-items: flex-end;
+          flex-direction: column;
+          font-size: 26rpx;
 
-          .content-left {
-            flex: 1;
+          .right-top,
+          .right-bottom {
+            //flex: 1;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
 
             view {
-              box-sizing: border-box;
-              padding: 10rpx 0rpx 5rpx 0rpx;
+              padding: 10rpx;
+            }
+
+            .border {
+              color: #999999;
+              border: 1rpx solid #999999;
+              width: 120rpx;
+              text-align: center;
             }
           }
 
-          .content-right {
-            display: flex;
-            flex-direction: column;
-            font-size: 26rpx;
-
-            .right-top, .right-bottom {
-              //flex: 1;
-              display: flex;
-              flex-direction: row;
-              align-items: center;
-
-              view {
-                padding: 10rpx;
-              }
-
-              .border {
-                color: #999999;
-                border: 1rpx solid #999999;
-              }
+          .right-top {
+            .title {
+              text-align: center;
+              color: #ffffff;
+              border: 1rpx solid #fe9400;
+              background-color: #fe9400;
             }
+          }
 
-            .right-top {
-              .title {
-                text-align: center;
-                color: #FFFFFF;
-                border: 1rpx solid #FE9400;
-                background-color: #FE9400;
-              }
-            }
-
-            .right-bottom {
-              .title {
-                text-align: center;
-                color: #FFFFFF;
-                border: 1rpx solid #4BD863;
-                background-color: #4BD863;
-              }
+          .right-bottom {
+            .title {
+              text-align: center;
+              color: #ffffff;
+              border: 1rpx solid #4bd863;
+              background-color: #4bd863;
             }
           }
         }
       }
     }
   }
+}
 
-  .project-case-wrapper {
+.project-case-wrapper {
+  width: 100%;
+  padding: 20rpx 30rpx;
+
+  .add-btn-wrapper {
     width: 100%;
-    padding: 20rpx 30rpx;
+    position: fixed;
+    left: 0rpx;
+    bottom: 0rpx;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 
-    .add-btn-wrapper {
-      width: 100%;
-      position: fixed;
-      left: 0rpx;
-      bottom: 0rpx;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
+    view {
+      height: 80rpx;
+      line-height: 80rpx;
+      flex: 1;
+      text-align: center;
+    }
 
-      view {
-        height: 80rpx;
-        line-height: 80rpx;
-        flex: 1;
-        text-align: center;
-      }
+    .left {
+      color: #999999;
+      background-color: #ffffff;
+    }
 
-      .left {
-        color: #999999;
-        background-color: #FFFFFF;
-      }
-
-      .right {
-        color: #FFFFFF;
-        background-color: $u-type-primary;
-      }
+    .right {
+      color: #ffffff;
+      background-color: $u-type-primary;
     }
   }
+}
 </style>

@@ -291,7 +291,8 @@
 				{
 					"path": "myTab/pages/dealList",
 					"style": {
-						"navigationBarTitleText": "报备成交列表"
+						"navigationBarTitleText": "报备成交列表",
+						"enablePullDownRefresh": true
 					}
 				},
 				{
