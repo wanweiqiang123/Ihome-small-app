@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-23 17:30:18
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-02 10:27:33
+ * @LastEditTime: 2021-02-08 14:51:00
 -->
 <template>
   <view class="project-detail-wrapper">
@@ -129,8 +129,6 @@ import { currentEnvConfig } from "../../../env-config.js";
 export default {
   data() {
     return {
-      banner: require("@/channelPackage/common/img/banner_1.png"),
-      homeImg: require("@/channelPackage/common/img/house.jpg"),
       info: {
         houseName: "",
         picAddr: "",

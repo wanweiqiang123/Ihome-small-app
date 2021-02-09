@@ -329,3 +329,33 @@ export async function post_pageData_initBasic(data = {}, option = {}) {
 export async function post_pageData_dealCheckNotice(data = {}, option = {}) {
   return await postApi(`/sales-api/deal/pageData/dealCheckNotice`, data, option)
 }
+
+/**
+ * @description: 业绩申报 - 根据选择的优惠告知书获取优惠告知书列表和客户列表 --- 多份优惠告知书的情况下
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function post_notice_deal_details__noticeId(data = {}, option = {}) {
+  return await postApi(`/sales-api/contract/notice/deal/details/${data.noticeId}`, option)
+}
+
+/**
+ * @description: 业绩申报 - 派发套餐明细(选择收派套餐)
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function post_pageData_initSelectablePackage(data = {}, option = {}) {
+  return await postApi(`/sales-api/deal/pageData/initSelectablePackage`, data, option)
+}
+
+/**
+ * @description: 业绩申报 - 派发套餐明细(选择收派套餐)
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function post_pageData_calculateReceiveAmount(data = {}, option = {}) {
+  return await postApi(`/sales-api/deal/pageData/calculateReceiveAmount`, data, option)
+}
