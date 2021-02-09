@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-25 16:13:38
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-08 17:00:05
+ * @LastEditTime: 2021-02-09 10:35:18
 -->
 <template>
   <view class="client-details-wrapper">
@@ -18,7 +18,7 @@
           <u-icon
             name="edit-pen"
             size="45"
-            @click="editClient"
+            @click="editClient(detailForm.id)"
           ></u-icon>
         </view>
       </view>
@@ -143,7 +143,7 @@
         <u-button
           type="primary"
           size="medium"
-          @click="handleFollow"
+          @click="handleFollow(detailForm.id)"
         >写跟进</u-button>
       </view>
     </view>
@@ -153,35 +153,32 @@
     >
       <view
         class="details-report-wrapper"
-        v-for="item in [1,2,3,4,5,6]"
-        :key="item"
+        v-for="(item, i) in detailForm.reportDetails"
+        :key="i"
       >
         <view class="report-title">
-          <view class="left">广州保利天际(335金融中心)</view>
+          <view class="left">{{item.proName}}</view>
           <view class="right">
             <u-button
               type="primary"
               size="mini"
-            >审核中</u-button>
+            >{{getDictName(item.reportStatus, ReportStatus)}}</u-button>
           </view>
         </view>
-        <view class="location">天河区</view>
-        <view class="location">
-          <span class="left">佣</span>佣金规则
-        </view>
-        <view class="location">2020-08-27 19:12:20</view>
+        <view class="location">{{item.district}}</view>
+        <view class="location">{{item.reportDate}}</view>
         <view class="btn-wrapper">
           <u-button
             type="warning"
             size="mini"
             shape="circle"
-            @click="uploadAttach"
+            @click="uploadAttach(item.reportId)"
           >上传附件</u-button>
           <u-button
             type="primary"
             size="mini"
             shape="circle"
-            @click="viewDetails"
+            @click="viewDetails(item.reportId)"
           >详情</u-button>
         </view>
       </view>
@@ -221,6 +218,7 @@ export default {
       factorList: [],
       ageList: [],
       followTypeList: [],
+      ReportStatus: [],
     };
   },
   async onLoad(option) {
@@ -234,6 +232,7 @@ export default {
     this.factorList = await this.getDictByType("FocusElementType"); // 关注因素
     this.ageList = await this.getDictByType("AgeType"); // 年龄
     this.followTypeList = await this.getDictByType("FollowUpType"); // 跟进
+    this.ReportStatus = await this.getDictByType("ReportStatusType"); // 报备状态
     if (option && option.id) {
       await this.initPage(option.id);
     }
@@ -244,33 +243,32 @@ export default {
       this.current = index;
     },
     // 编辑客户
-    editClient() {
-      uni.navigateTo({
-        url: `/channelPackage/clientTab/pages/enterClient?id=145`,
+    editClient(id) {
+      uni.redirectTo({
+        url: `/channelPackage/clientTab/pages/enterClient?id=${id}`,
       });
     },
     // 上传附件
-    uploadAttach() {
+    uploadAttach(id) {
       uni.navigateTo({
-        url: `/channelPackage/myTab/pages/uploadAttachment`,
+        url: `/channelPackage/myTab/pages/uploadAttachment?id=${id}`,
       });
     },
     // 详情
-    viewDetails() {
+    viewDetails(id) {
       uni.navigateTo({
-        url: `/channelPackage/myTab/pages/reportDetails`,
+        url: `/channelPackage/myTab/pages/reportDetails?id=${id}`,
       });
     },
     // 写跟进
-    handleFollow() {
-      uni.navigateTo({
-        url: `/channelPackage/clientTab/pages/followUp`,
+    handleFollow(id) {
+      uni.redirectTo({
+        url: `/channelPackage/clientTab/pages/followUp?id=${id}`,
       });
     },
     // 初始化详情页面
     async initPage(id) {
       const info = await getCustomerById(id);
-      console.log("initPage", info);
       this.detailForm = info;
     },
     // 获取字典

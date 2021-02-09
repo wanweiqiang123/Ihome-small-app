@@ -359,3 +359,23 @@ export async function post_pageData_initSelectablePackage(data = {}, option = {}
 export async function post_pageData_calculateReceiveAmount(data = {}, option = {}) {
   return await postApi(`/sales-api/deal/pageData/calculateReceiveAmount`, data, option)
 }
+
+/**
+ * @description: 业绩申报 - 新增
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function post_deal_entryDealBasicInf(data = {}, option = {}) {
+  return await postApi(`/sales-api/deal/deal/entryDealBasicInf`, data, option)
+}
+
+/**
+ * @description: 业绩申报 - 编辑
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function post_deal_updateDealBasicInf(data = {}, option = {}) {
+  return await postApi(`/sales-api/deal/deal/updateDealBasicInf`, data, option)
+}
