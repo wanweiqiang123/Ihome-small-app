@@ -462,7 +462,7 @@ export default {
     this.NotificationTypeList = await this.getSignDict("NotificationType");
     this.FeeTypeList = await this.getSignDict("FeeType");
     if (option && option.id) {
-      await this.init(query.id);
+      await this.init(option.id);
     }
   },
   methods: {

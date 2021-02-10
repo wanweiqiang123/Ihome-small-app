@@ -36,7 +36,7 @@
           <view slot="head">
             <view class="item-title">
               <text class="title-text">成交报告编号：{{item.dealCode}}</text>
-              <u-tag mode="dark" :text="getStatusName(item.status)" :type="tagType" />
+              <u-tag mode="dark" :text="getStatusName(item.status)" :type="getTagType(item.status)" />
             </view>
           </view>
           <view slot="body" class="ih-card-content">
@@ -186,7 +186,6 @@ export default {
   },
   data() {
     return {
-      tagType: 'warning',
       currentUserId: null,
       currentJobId: null,
       showDeleteWin: false,
@@ -233,7 +232,7 @@ export default {
     let userInfo = storageTool.getUserInfo();
     this.currentUserId = userInfo?.id; // 当前用户的id
     this.currentJobId = userInfo?.jobId; // 当前用户的岗位id
-    console.log(this.currentJobId);
+    // console.log(this.currentJobId);
     await this.getListMixin();
     this.contentTypeList = await this.getDictName("ContType");
     // console.log(this.contentTypeList);
@@ -378,19 +377,36 @@ export default {
         switch (type) {
           case "Draft":
             name = "草稿";
-            this.tagType = 'warning';
             break;
           case "AchieveDeclareUnconfirm":
             name = "待确认";
-            this.tagType = 'primary';
             break;
           case "Reject":
             name = "待确认";
-            this.tagType = 'primary';
             break;
           default:
             name = "已确认";
-            this.tagType = 'success';
+            break;
+        }
+      }
+      return name;
+    },
+    // 状态类型
+    getTagType(type) {
+      let name = "";
+      if (type) {
+        switch (type) {
+          case "Draft":
+            name = "warning";
+            break;
+          case "AchieveDeclareUnconfirm":
+            name = "primary";
+            break;
+          case "Reject":
+            name = "primary";
+            break;
+          default:
+            name = "success";
             break;
         }
       }
