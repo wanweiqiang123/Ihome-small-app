@@ -218,6 +218,7 @@
             v-for="(item, index) in postData.customerVO" :key="index">
             <view>{{item.customerPhone}}</view>
             <u-icon
+              v-if="!baseInfoInDeal.customerAddVOS.length && baseInfoInDeal.dealNoticeStatus !== 'MultipleNotice' && baseInfoByTerm.chargeEnum === 'Agent'"
               @click.native="deleteCustom(index)"
               slot="right"
               name="close-circle-fill"
@@ -445,6 +446,13 @@
         </scroll-view>
       </view>
     </u-popup>
+    <!-- 签约阶段提示 -->
+    <u-modal
+      @confirm="confirmSubmit"
+      @cancel="showSubmitWin = false"
+      :mask-close-able="true"
+      :show-cancel-button="true"
+      v-model="showSubmitWin" content="签约阶段的业绩申报提交后将由文员跟进，提交后如需修改信息请联系文员。"></u-modal>
   </view>
 </template>
 
@@ -468,7 +476,6 @@ import tool from "@/common/tool";
 import {getImgUrl} from "@/api/channel";
 import {currentEnvConfig} from "@/env-config";
 import storageTool from "@/common/storageTool";
-import {phoneValidator} from "@/common/validate";
 export default {
   name: "performanceEdit",
   components: { PopupIndex },
@@ -566,6 +573,7 @@ export default {
     return {
       id: null, // 成交id-编辑用
       showPackage: false, // 选择收派套餐弹窗标识
+      showSubmitWin: false, // 签约阶段提示弹窗标识
       packageData: {}, // 收派套餐查询条件
       currentUploadType: null, // 上传的附件类型
       showActionShow: false, // 上传附件类型菜单
@@ -954,6 +962,11 @@ export default {
           buildingId: item[0].value,
           exDeal: 0
         });
+        if (this.roomSelectList.length) {
+          this.roomSelectList = this.roomSelectList.filter((list) => {
+            return list.exDeal === 0; // 获取没有锁定的房号
+          });
+        }
         this.postData.roomId = '';
         this.postData.roomNo = '';
         await this.resetReceiveVO();
@@ -1006,15 +1019,16 @@ export default {
       }
     },
     // 确定选择分销协议
-    confirmContNo(item) {
+    confirmContNo(option) {
+      console.log(option);
       this.postData.isMat = '';
       this.packageIdsList = [];
       let isVoidFlag = false;
-      if (item && item.length) {
-        this.postData.contNo = item[0].value;
+      if (option && option.length) {
+        this.postData.contNo = option[0].value;
         if (this.contNoList && this.contNoList.length) {
           this.contNoList.forEach((item) => {
-            if (item.contractNo === item[0].value) {
+            if (item.contractNo === option[0].value) {
               // 是否垫佣
               this.postData.isMat = item.advancementSituation;
               // 分销模式下获取分销协议返回的收派套餐id
@@ -1210,6 +1224,8 @@ export default {
             this.postData.serviceReceiveVO.push(...list);
           });
         }
+        // 归属组织
+        this.postData.dealOrgId = baseInfo.groupId;
         // 初始化附件信息
         await this.initDocument(baseInfo);
       }
@@ -1445,13 +1461,13 @@ export default {
       // 客户信息
       this.postData.customerVO = baseInfo.customerAddVOS && baseInfo.customerAddVOS.length ? baseInfo.customerAddVOS : [];
       // 收派金额 --- 代理费
-      this.postData.serviceReceiveVO = [];
+      this.postData.agentReceiveVO = [];
       if (baseInfo.receiveVOS && baseInfo.receiveVOS.length) {
         let tempList = await this.initReceiveVOS(baseInfo.receiveVOS);
-        if (this.postData.serviceReceiveVO && this.postData.serviceReceiveVO.length) {
-          this.postData.serviceReceiveVO.push(...tempList);
+        if (this.postData.agentReceiveVO && this.postData.agentReceiveVO.length) {
+          this.postData.agentReceiveVO.push(...tempList);
         } else {
-          this.postData.serviceReceiveVO = tempList;
+          this.postData.agentReceiveVO = tempList;
         }
       }
       // 初始化上传附件表格数据
@@ -1961,7 +1977,7 @@ export default {
       if (this.postData[this.currentPackageType] && this.postData[this.currentPackageType].length > 0) {
         this.postData[this.currentPackageType].forEach((vo, index) => {
           if (index === this.currentPackageIndex) {
-            vo.showData = data;
+            vo.showData = [data];
             vo.packageId = data.packageMxId;
             vo.receiveAmount = info.receiveAmount;
             vo.commAmount = info.comm;
@@ -1981,14 +1997,22 @@ export default {
     },
     // 提交
     handleSubmit() {
+      if(this.postData.stage === "SignUp") {
+        this.showSubmitWin = true;
+      } else {
+        this.confirmSubmit();
+      }
+    },
+    // 确定提交 - 签约
+    confirmSubmit() {
       let self = this;
       self.$refs.uForm.setRules(self.rules);
       self.$nextTick(() => {
         // 1.校验收派金额是都有收派套餐
         let flag = self.validReceiveData();
-        console.log('flag', flag);
+        // console.log('flag', flag);
         if (!flag) {
-          self.$tool.toast("收派金额信息有无，请检查");
+          self.$tool.toast("请先完善收派金额信息！");
           return;
         }
         self.$refs.uForm.validate(valid => {
@@ -1999,7 +2023,7 @@ export default {
           }
         });
       });
-      console.log(self.postData.documentVO);
+      // console.log(self.postData.documentVO);
     },
     // 确定提交
     async submit() {

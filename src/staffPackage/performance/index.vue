@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 14:54:27
  * @LastEditors: lsj
- * @LastEditTime: 2021-02-04 15:33:18
+ * @LastEditTime: 2021-02-09 16:55:22
 -->
 <template>
   <LoginPage>
@@ -36,7 +36,7 @@
           <view slot="head">
             <view class="item-title">
               <text class="title-text">成交报告编号：{{item.dealCode}}</text>
-              <text class="title-icon">{{getStatusName(item.status)}}</text>
+              <u-tag mode="dark" :text="getStatusName(item.status)" :type="tagType" />
             </view>
           </view>
           <view slot="body" class="ih-card-content">
@@ -47,7 +47,8 @@
           </view>
           <view slot="foot" class="ih-card-foot">
             <u-button
-              v-if="item.status === 'Draft'"
+              v-if="isShowBtn(item, 'delete')"
+              @click="handleDelete(item)"
               size="mini"
               type="error"
               shape="circle"
@@ -55,7 +56,7 @@
               :custom-style="{ padding: '0 40rpx' }"
             >删除</u-button>
             <u-button
-              v-if="item.status === 'Draft'"
+              v-if="isShowBtn(item, 'updated')"
               size="mini"
               type="primary"
               shape="circle"
@@ -63,6 +64,7 @@
               :custom-style="{ padding: '0 40rpx' }"
             >修改</u-button>
             <u-button
+              @click="handleViewInfo(item)"
               size="mini"
               type="success"
               shape="circle"
@@ -75,7 +77,9 @@
       <view v-else style="height: 100vh">
         <u-empty text="列表为空" mode="list"></u-empty>
       </view>
-      <view class="performance-btn safe-area-inset-bottom">
+      <view
+        v-if="currentJobId === 4"
+        class="performance-btn safe-area-inset-bottom">
         <u-button shape="circle" type="primary" @click="handleGo()">业绩申报</u-button>
       </view>
       <!-- 筛选弹出 -->
@@ -143,6 +147,13 @@
         label-name="name"
         @confirm="confirmStatus"
       ></u-select>
+      <!-- 删除提示 -->
+      <u-modal
+        @confirm="confirmDelete"
+        @cancel="showDeleteWin = false"
+        :mask-close-able="true"
+        :show-cancel-button="true"
+        v-model="showDeleteWin" content="您确定要删除这条成交报告吗？"></u-modal>
     </view>
   </LoginPage>
 </template>
@@ -150,8 +161,12 @@
 <script>
 import PopupSearch from "../../components/PopupSearch/index.vue";
 import pagination from "../../mixins/pagination";
-import {getDealList} from "@/api/staff";
+import {
+  getDealList,
+  post_deal_delete__id
+} from "@/api/staff";
 import {getAllByTypeApi} from "@/api";
+import storageTool from "@/common/storageTool";
 
 export default {
   name: "performance",
@@ -171,6 +186,11 @@ export default {
   },
   data() {
     return {
+      tagType: 'warning',
+      currentUserId: null,
+      currentJobId: null,
+      showDeleteWin: false,
+      currentDeleteId: "", // 当前删除的成交报告id
       queryPageParameters: {
         dealCodeOrCusName: null,
         projectCycle: null,
@@ -210,6 +230,10 @@ export default {
     };
   },
   async onLoad() {
+    let userInfo = storageTool.getUserInfo();
+    this.currentUserId = userInfo?.id; // 当前用户的id
+    this.currentJobId = userInfo?.jobId; // 当前用户的岗位id
+    console.log(this.currentJobId);
     await this.getListMixin();
     this.contentTypeList = await this.getDictName("ContType");
     // console.log(this.contentTypeList);
@@ -226,6 +250,32 @@ export default {
     }
   },
   methods: {
+    // 删除
+    async handleDelete(item) {
+      if (item.id) {
+        this.currentDeleteId = item.id;
+        this.showDeleteWin = true;
+      }
+    },
+    // 确定删除
+    async confirmDelete() {
+      try {
+        await post_deal_delete__id({id: this.currentDeleteId});
+        this.$tool.toast("删除成功");
+        this.tablePage = [];
+        await this.getListMixin();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    // 详情
+    handleViewInfo(item) {
+      if (item.id) {
+        uni.navigateTo({
+          url: `/staffPackage/performance/info?id=${item.id}`,
+        });
+      }
+    },
     // 业绩申报
     handleGo() {
       uni.navigateTo({
@@ -328,19 +378,42 @@ export default {
         switch (type) {
           case "Draft":
             name = "草稿";
+            this.tagType = 'warning';
             break;
           case "AchieveDeclareUnconfirm":
             name = "待确认";
+            this.tagType = 'primary';
             break;
           case "Reject":
             name = "待确认";
+            this.tagType = 'primary';
             break;
           default:
             name = "已确认";
+            this.tagType = 'success';
             break;
         }
       }
       return name;
+    },
+    // 删除、详情、修改按钮的权限判断
+    isShowBtn(item, type) {
+      let flag = false; // 默认不显示
+      switch (type) {
+        case "delete":
+          // 删除
+          if (item.status === "Draft" && item.entryPersonId === this.currentUserId) {
+            flag = true;
+          }
+          break;
+        case "updated":
+          // 修改
+          if (item.status === "Draft" && item.entryPersonId === this.currentUserId) {
+            flag = true;
+          }
+          break;
+      }
+      return flag;
     }
   },
 };
@@ -416,6 +489,7 @@ export default {
       line-height: 1;
     }
     .title-text {
+      flex: 1;
       white-space: nowrap;
       font-weight: bold;
       font-size: 30rpx;
