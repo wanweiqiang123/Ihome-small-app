@@ -28,7 +28,7 @@
             <u-input
               v-model="postData.refineModelName"
               disabled
-              type="select">
+              type="select"/>
           </u-form-item>
           <u-form-item
             label="成交阶段"
@@ -100,7 +100,6 @@
           </u-form-item>
           <u-form-item
             v-if="postData.contType === 'DistriDeal'"
-            required
             label="经纪人"
             class="hide-icon"
             right-icon="arrow-right">
@@ -115,7 +114,6 @@
               v-model="postData.subscribePrice"/>
           </u-form-item>
           <u-form-item
-            :required="['Subscribe', 'SignUp'].includes(postData.stage)"
             label="认购日期"
             class="hide-icon"
             right-icon="arrow-right" prop="subscribeDate">
@@ -227,11 +225,7 @@
       <view class="performance-form">
         <view class="form-title u-border-bottom">上传附件</view>
         <view class="annex-list-wrapper" v-for="(item, infoIndex) in postData.documentVO" :key="item.id">
-          <view class="annex-type">
-            <text v-if="item.subType === 'must'"
-                  class="annex-required">*</text>
-            {{item.name}}
-          </view>
+          <view class="annex-type">{{item.name}}</view>
           <view class="upload-file-wrapper">
             <template v-if="item.fileList.length > 0">
               <view class="file-list-wrapper" v-for="list in item.fileList" :key="list.fileId">
@@ -252,7 +246,8 @@
 
 <script>
 import {
-  get_deal_get__id
+  get_deal_get__id,
+  post_notice_customer_information
 } from "@/api/staff";
 import {getAllDictByType} from "@/api";
 import {getImgUrl} from "@/api/channel";
@@ -277,6 +272,11 @@ export default {
           "NotificationType"
         ]
       }, // 需要用到的字典类型参数
+      SubdivideList: [],
+      DealStageList: [],
+      PropertyList: [],
+      ContTypeList: [],
+      DealFileTypeList: [],
       NotificationTypeList: [],
       FeeTypeList: [],
       dictList: null, // 部分字典数据
@@ -459,6 +459,11 @@ export default {
   },
   async onLoad(option) {
     this.dictList = await this.getAllDictByTypes(this.dictObj);
+    this.SubdivideList = await this.getSignDict("Subdivide");
+    this.DealStageList = await this.getSignDict("DealStage");
+    this.PropertyList = await this.getSignDict("Property");
+    this.ContTypeList = await this.getSignDict("ContType");
+    this.DealFileTypeList = await this.getSignDict("DealFileType");
     this.NotificationTypeList = await this.getSignDict("NotificationType");
     this.FeeTypeList = await this.getSignDict("FeeType");
     if (option && option.id) {
@@ -467,9 +472,83 @@ export default {
   },
   methods: {
     // 初始化页面
-    init(id) {
-      let info  = get_deal_get__id({id: id});
+    async init(id) {
+      let info  = await get_deal_get__id({id: id});
       console.log(info);
+      this.postData.cycleName = info?.cycleName;
+      this.postData.refineModelName = info?.refineModel ? this.getDictName(info?.refineModel, this.SubdivideList) : '';
+      this.postData.refineModel = info?.refineModel ? info?.refineModel : '';
+      this.postData.stageName = info?.stage ? this.getDictName(info?.stage, this.DealStageList) : '';
+      this.postData.stage = info?.stage ? info?.stage : '';
+      this.postData.propertyTypeName = info?.house?.propertyType ? this.getDictName(info?.house?.propertyType, this.PropertyList) : '';
+      this.postData.buildingName = info?.house?.buildingName ? info?.house?.buildingName : '';
+      this.postData.buildingName = info?.house?.buildingName ? info?.house?.buildingName : '';
+      this.postData.roomNo = info?.house?.roomNo ? info?.house?.roomNo : '';
+      this.postData.contTypeName = info?.contType ? this.getDictName(info?.contType, this.ContTypeList) : '';
+      this.postData.contType = info?.contType ? info?.contType : '';
+      this.postData.contNo = info?.contNo ? info?.contNo : '';
+      this.postData.recordStr = info?.recordStr ? info?.recordStr : '';
+      if (info.agencyList && info.agencyList.length) {
+        this.postData.agencyName = info.agencyList[0].agencyName;
+        this.postData.brokerName = info.agencyList[0].broker;
+      }
+      this.postData.subscribeDate = info?.subscribeDate ? info?.subscribeDate : '';
+      this.postData.subscribePrice = info?.subscribePrice ? info?.subscribePrice : '';
+      this.postData.signDate = info?.signDate ? info?.signDate : '';
+      this.postData.signPrice = info?.signPrice ? info?.signPrice : '';
+      // 优惠告知书
+      await this.getInformation(info?.id);
+      // 客户
+      this.postData.customerVO = info.customerList;
+      // 收派金额
+      this.postData.agentReceiveVO = [];
+      this.postData.serviceReceiveVO = [];
+      if (info.receiveList && info.receiveList.length) {
+        info.receiveList.forEach((list) => {
+          if (list.type === "AgencyFee") {
+            this.postData.agentReceiveVO.push(list);
+          }
+          if (list.type === "ServiceFee") {
+            this.postData.serviceReceiveVO.push(list);
+          }
+        });
+      }
+      // 附件
+      this.postData.documentVO = [];
+      if (info.documentList && info.documentList.length) {
+        this.postData.documentVO = this.initDocumentList(info.documentList);
+      }
+    },
+    // 获取优惠告知书列表
+    async getInformation(id = '') {
+      if (!id) return ;
+      let list = await post_notice_customer_information({dealId: id});
+      if (list && list.length > 0) {
+        this.postData.offerNoticeVO = list;
+      } else {
+        this.postData.offerNoticeVO = [];
+      }
+    },
+    // 构建附件信息
+    initDocumentList(list = []) {
+      let fileList = JSON.parse(JSON.stringify(this.DealFileTypeList)); // 附件类型
+      // 附件类型增加key
+      if (fileList.length > 0 && list.length > 0) {
+        fileList.forEach((vo) => {
+          vo.fileList = []; // 存放新上传的数据
+          list.forEach((item) => {
+            if (vo.code === item.fileType) {
+              vo.fileList.push(
+                {
+                  ...item,
+                  name: item.fileName
+                }
+              );
+            }
+          });
+        });
+      }
+      return fileList;
     },
     // 获取对应类型的字典集合
     async getAllDictByTypes(obj) {
@@ -499,7 +578,7 @@ export default {
           }
         });
       }
-      return name
+      return name;
     },
     // 预览图片
     viewImg(file) {

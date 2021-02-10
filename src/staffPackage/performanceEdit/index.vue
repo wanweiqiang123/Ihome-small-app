@@ -1373,16 +1373,16 @@ export default {
       if (baseInfo.dealNoticeStatus === 'MultipleNotice') {
         this.$tool.toast("同房号存在多份已生效的优惠告知书");
       } else {
-        // 分销协议编号
-        if (baseInfo.contracts && baseInfo.contracts.length > 0) {
-          this.contNoList = baseInfo.contracts;
-        } else {
-          this.contNoList = [];
-        }
         // 优惠告知书
         if (!this.postData.offerNoticeVO.length) {
           this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
         }
+      }
+      // 分销协议编号
+      if (baseInfo.contracts && baseInfo.contracts.length > 0) {
+        this.contNoList = baseInfo.contracts;
+      } else {
+        this.contNoList = [];
       }
       // 分销成交和非分销成交不一样
       if (baseInfo.contType === 'DistriDeal') {

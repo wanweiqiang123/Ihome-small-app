@@ -399,3 +399,13 @@ export async function get_deal_get__id(data = {}, option = {}) {
 export async function post_deal_delete__id(data = {}, option = {}) {
   return await postApi(`/sales-api/deal/deal/delete/${data.id}`, option)
 }
+
+/**
+ * @description: 业绩申报 - 详情 - 获取优惠告知书
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function post_notice_customer_information(data = {}, option = {}) {
+  return await postApi(`/sales-api/contract/notice/customer/information`, data, option)
+}
