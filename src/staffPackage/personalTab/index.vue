@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-11-23 11:22:52
- * @LastEditors: ywl
- * @LastEditTime: 2021-01-28 16:21:17
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-02-14 11:34:41
 -->
 <template>
   <StaffTabBar>
@@ -23,11 +23,11 @@
       </view>
       <view class="person-item-wrapper">
         <u-cell-group>
-          <u-cell-item
+          <!-- <u-cell-item
             icon="rmb-circle"
             title="我的购房信息"
             :arrow="true"
-          ></u-cell-item>
+          ></u-cell-item> -->
 
           <u-cell-item
             @click="userSwitchClick()"

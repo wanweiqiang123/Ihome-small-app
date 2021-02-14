@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-12 10:53:18
- * @LastEditors: ywl
- * @LastEditTime: 2021-01-22 14:19:14
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-02-14 11:33:51
 -->
 <template>
   <view>
@@ -33,13 +33,13 @@ let tablePage = [
     // isDot: true,
     customIcon: false,
   },
-  {
-    pagePath: "/staffPackage/reportTab/index",
-    iconPath: require("@/staffPackage/common/icon/tabicon/collect.png"),
-    selectedIconPath: require("@/staffPackage/common/icon/tabicon/collectactive.png"),
-    text: "报备汇总",
-    customIcon: false,
-  },
+  // {
+  //   pagePath: "/staffPackage/reportTab/index",
+  //   iconPath: require("@/staffPackage/common/icon/tabicon/collect.png"),
+  //   selectedIconPath: require("@/staffPackage/common/icon/tabicon/collectactive.png"),
+  //   text: "报备汇总",
+  //   customIcon: false,
+  // },
   {
     pagePath: "/staffPackage/personalTab/index",
     iconPath: require("@/staffPackage/common/icon/tabicon/me.png"),
