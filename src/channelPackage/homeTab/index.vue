@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-12 10:16:57
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-01 09:19:29
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-02-14 14:25:24
 -->
 <template>
   <ChannelTabBar>
@@ -164,17 +164,10 @@ export default {
       ],
       list: [
         {
-          image: require("@/channelPackage/common/img/banner_1.png"),
+          image: require("@/channelPackage/common/img/banner_3.jpg"),
           title: "昨夜星辰昨夜风，画楼西畔桂堂东",
         },
-        {
-          image: require("@/channelPackage/common/img/banner_2.jpeg"),
-          title: "身无彩凤双飞翼，心有灵犀一点通",
-        },
-        {
-          image: require("@/channelPackage/common/img/banner_3.jpg"),
-          title: "谁念西风独自凉，萧萧黄叶闭疏窗，沉思往事立残阳",
-        },
+         
       ],
       houseImg: require("@/channelPackage/common/img/house.jpg"),
       icon_1: require("@/channelPackage/common/icon/list.png"),

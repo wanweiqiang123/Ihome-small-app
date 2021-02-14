@@ -53,7 +53,7 @@ import storageTool from "../../../common/storageTool";
 export default {
   data() {
     return {
-      pic: "/static/img/head.jpg",
+      pic: "/static/img/photo.png",
       show: true,
     };
   },

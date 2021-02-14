@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-09 14:38:31
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-01 09:35:10
+ * @LastEditTime: 2021-02-14 14:34:15
 -->
 <template>
   <TabBarPage> 
@@ -29,7 +29,7 @@
             <u-image
               width="160rpx"
               height="160rpx"
-              src="/static/img/head.jpg"
+              src="/static/img/photo.png"
             ></u-image>
           </view>
           <view class="wrap-item-right">
