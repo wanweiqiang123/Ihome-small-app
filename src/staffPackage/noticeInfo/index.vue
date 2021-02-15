@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-18 11:38:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-07 10:39:40
+ * @LastEditTime: 2021-02-15 19:41:36
 -->
 <template>
   <LoginPage>
@@ -84,6 +84,7 @@
             >
               <view class="text-right">
                 <u-button
+                  v-if="form.notificationStatus !== 'Invalidation'"
                   size="mini"
                   type="primary"
                   :custom-style="{
@@ -252,11 +253,6 @@ export default {
     },
     handleGoto() {
       let url = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${this.form.templateId}.pdf`;
-      // getApp().globalData.webViewSrc = `https://intapi.polyihome.com/sales-api/sales-document-cover/file/browse/601226638dff4d00080480c2.pdf`;
-      // console.log(url);
-      // uni.navigateTo({
-      //   url: `/customerPackage/webView/index`,
-      // });
       uni.downloadFile({
         url: url,
         success: function (res) {

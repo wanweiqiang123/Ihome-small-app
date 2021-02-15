@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-07 10:41:01
+ * @LastEditTime: 2021-02-15 19:21:27
 -->
 
 <template>
@@ -294,8 +294,7 @@ export default {
             url: `/staffPackage/receiptInfo/index?id=${item.id}`,
           });
           break;
-        case "Paid":
-        case "BecomeEffective":
+        default:
           if (item.notificationType === "Notification") {
             // 优惠告知书
             uni.navigateTo({
@@ -322,8 +321,6 @@ export default {
               },
             });
           }
-          break;
-        default:
           break;
       }
     },

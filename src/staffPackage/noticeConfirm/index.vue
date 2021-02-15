@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 17:32:25
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-06 17:53:41
+ * @LastEditTime: 2021-02-15 19:48:46
 -->
 <template>
   <LoginPage>
@@ -143,6 +143,7 @@ import {
   getNoticeInfo,
   postNoticeManagement,
   getRecognizeById,
+  getPreviewApi,
 } from "../../api/staff";
 
 export default {
@@ -187,24 +188,37 @@ export default {
           }));
       }
     },
-    noticePreview() {
+    async noticePreview() {
       let val = this.form;
       if (val.templateType === "ElectronicTemplate") {
-        let url = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${val.templateId}.pdf`;
-        uni.downloadFile({
-          url: url,
-          success: function (res) {
-            var filePath = res.tempFilePath;
-            uni.openDocument({
-              filePath: filePath,
-              fileType: "pdf",
-              showMenu: true,
-              success: function (res) {
-                console.log("打开文档成功");
-              },
+        if (
+          val.notificationStatus === "WaitPay" ||
+          val.notificationStatus === "Paid"
+        ) {
+          const res = await getPreviewApi(val.id);
+          if (res) {
+            getApp().globalData.webViewSrc = res;
+            uni.navigateTo({
+              url: `/pages/webView/preview/index`,
             });
-          },
-        });
+          }
+        } else {
+          let url = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${val.templateId}.pdf`;
+          uni.downloadFile({
+            url: url,
+            success: function (res) {
+              var filePath = res.tempFilePath;
+              uni.openDocument({
+                filePath: filePath,
+                fileType: "pdf",
+                showMenu: true,
+                success: function (res) {
+                  console.log("打开文档成功");
+                },
+              });
+            },
+          });
+        }
       } else {
         if (val.noticeAttachmentList.length) {
           let preList = val.noticeAttachmentList.map(
