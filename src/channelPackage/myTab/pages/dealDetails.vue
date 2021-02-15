@@ -4,21 +4,17 @@
  * @Author: lsj
  * @Date: 2020-11-27 08:14:50
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-09 16:51:21
+ * @LastEditTime: 2021-02-15 14:00:04
 -->
 <template>
   <view class="deal-details-wrapper">
     <view class="info-item">
       <view class="form-title u-border-bottom">客户信息</view>
-      <u-form
-        :model="paymentForm"
-        ref="paymentForm"
-        :label-width="190"
-      >
-        <u-form-item label="张小刚">
+      <u-form :label-width="190">
+        <u-form-item :label="customer.customerName">
           <u-input
-            v-model="paymentForm.account"
-            placeholder="张小刚"
+            v-model="customer.customerPhone"
+            placeholder="联系方式"
             disabled
             :clearable="false"
             input-align="left"
@@ -28,14 +24,10 @@
     </view>
     <view class="info-item">
       <view class="form-title u-border-bottom">房产信息</view>
-      <u-form
-        :model="paymentForm"
-        ref="paymentForm"
-        :label-width="190"
-      >
+      <u-form :label-width="190">
         <u-form-item label="楼盘名称">
           <u-input
-            v-model="paymentForm.account"
+            v-model="info.projectCycle"
             placeholder="楼盘名称"
             disabled
             :clearable="false"
@@ -44,7 +36,7 @@
         </u-form-item>
         <u-form-item label="物业类型">
           <u-input
-            v-model="paymentForm.invoiceType"
+            v-model="info.house.propertyType"
             placeholder="物业类型"
             disabled
             :clearable="false"
@@ -53,7 +45,7 @@
         </u-form-item>
         <u-form-item label="栋座">
           <u-input
-            v-model="paymentForm.invoiceTaxRate"
+            v-model="info.house.buildingName"
             placeholder="栋座"
             disabled
             :clearable="false"
@@ -62,7 +54,7 @@
         </u-form-item>
         <u-form-item label="房号">
           <u-input
-            v-model="paymentForm.invoiceTaxRate"
+            v-model="info.house.roomNo"
             placeholder="房号"
             disabled
             :clearable="false"
@@ -76,11 +68,7 @@
       v-if="detailsType === 'commission'"
     >
       <view class="form-title u-border-bottom">结佣信息</view>
-      <u-form
-        :model="paymentForm"
-        ref="paymentForm"
-        :label-width="190"
-      >
+      <u-form :label-width="190">
         <u-form-item label="可结佣金">
           <u-input
             v-model="paymentForm.estateName"
@@ -169,18 +157,24 @@
     >
       <view class="form-title u-border-bottom">附件信息</view>
       <view class="form-img">
-        <view
-          class="img-item"
-          v-for="(item, index) in annexList"
-          :key="index"
-        >
-          <view class="img-upload">
-            <u-upload
-              :action="action"
-              :file-list="fileList"
-            ></u-upload>
+        <view class="image-item">
+          <view
+            class="images"
+            v-for="(item, index) in dictList"
+            :key="index"
+          >
+            <template v-if="item.srcList.length">
+              <text class="img-type">{{item.name}}</text>
+              <u-image
+                v-for="(image, h) in item.srcList"
+                :key="h"
+                width="160"
+                height="160"
+                :src="image"
+                @click="imageShow(item.srcList)"
+              ></u-image>
+            </template>
           </view>
-          <view class="img-type">{{item.typeName}}</view>
         </view>
       </view>
     </view>
@@ -188,6 +182,9 @@
 </template>
 
 <script>
+import { postdealReportRecordApi } from "@/api/channel";
+import { getAllByTypeApi } from "@/api/index";
+import { currentEnvConfig } from "../../../env-config.js";
 export default {
   data() {
     return {
@@ -216,45 +213,19 @@ export default {
             name: "未结佣",
           },
         ],
-        trList: [
-          {
-            id: "1",
-            value: ["服务费", "1000.00", "1000.00", "1000.00"],
-          },
-          {
-            id: "2",
-            value: ["代理费", "2000.00", "2000.00", "2000.00"],
-          },
-          {
-            id: "3",
-            value: ["合计", "3000.00", "3000.00", "3000.00"],
-          },
-        ],
+        trList: [],
       },
-      annexList: [
-        {
-          typeName: "来访确认单",
-        },
-        {
-          typeName: "成交确认单",
-        },
-        {
-          typeName: "签约凭证",
-        },
-        {
-          typeName: "POS单",
-        },
-        {
-          typeName: "业主身份证",
-        },
-      ],
-      action: "http://www.example.com/upload",
-      fileList: [],
-      info: {},
+      info: {
+        house: {},
+      },
+      customer: {},
+      PropertyType: [],
+      dictList: [],
     };
   },
-  onLoad(option) {
-    console.log("dealDetails", option);
+  async onLoad(option) {
+    this.PropertyType = await this.getDictAll("Property");
+    let DealFileType = await this.getDictAll("DealFileType");
     this.detailsType = option.type;
     this.detailsCode = option.code;
     if (option.type === "report") {
@@ -262,19 +233,125 @@ export default {
       uni.setNavigationBarTitle({
         title: "报备成交信息详情",
       });
+      DealFileType = DealFileType.filter((v) => {
+        if (
+          [
+            "VisitConfirForm",
+            "DealConfirForm",
+            "SignVoucher",
+            "POSForm",
+            "OwnerID",
+          ].includes(v.code)
+        ) {
+          return {
+            ...v,
+          };
+        }
+      });
+      this.dictList = DealFileType.map((v) => ({
+        code: v.code,
+        name: v.name,
+        srcList: [],
+      }));
+      this.getInfo();
     } else {
       // 结佣成交详情
       uni.setNavigationBarTitle({
         title: "成交详情",
       });
     }
-    this.getInfo();
   },
   methods: {
     async getInfo() {
-      this.info = await postdealReportRecordApi({
+      const res = await postdealReportRecordApi({
         channelId: this.$storageTool.getUserInfo().channelId,
         dealCode: this.detailsCode,
+      });
+      this.info = {
+        ...res,
+        house: {
+          ...res.house,
+          propertyType: this.getDictName(
+            res.house.propertyType,
+            this.PropertyType
+          ),
+        },
+      };
+      this.tableData.trList = [
+        {
+          id: "1",
+          value: [
+            "服务费",
+            res.channelServiceComm,
+            res.paidChannelServiceComm,
+            res.unpaidChannelServiceComm,
+          ],
+        },
+        {
+          id: "2",
+          value: [
+            "代理费",
+            res.channelAgentComm,
+            res.paidChannelAgentComm,
+            res.unpaidChannelAgentComm,
+          ],
+        },
+        {
+          id: "3",
+          value: [
+            "合计",
+            this.$tool.tofixed(
+              this.$tool.add(res.channelServiceComm, res.channelAgentComm),
+              2
+            ),
+            this.$tool.tofixed(
+              this.$tool.add(
+                res.paidChannelServiceComm,
+                res.paidChannelAgentComm
+              ),
+              2
+            ),
+            this.$tool.tofixed(
+              this.$tool.add(
+                res.unpaidChannelServiceComm,
+                res.unpaidChannelAgentComm
+              ),
+              2
+            ),
+          ],
+        },
+      ];
+      this.customer = this.info.customerList.find(
+        (v) => v.isCustomer === "Yes"
+      );
+      res.documentShowList.forEach((v) => {
+        this.dictList.forEach((j) => {
+          if (v.fileType === j.code) {
+            j.srcList.push(
+              `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${v.fileId}`
+            );
+          }
+        });
+      });
+    },
+    // 获取字典
+    async getDictAll(type) {
+      const dictList = await getAllByTypeApi({ type });
+      return dictList;
+    },
+    // 获取对应字典name
+    getDictName(code, list) {
+      if (list.length) {
+        const item = list.find((v) => v.code === code);
+        return item?.name;
+      } else {
+        return "";
+      }
+    },
+    imageShow(src) {
+      uni.previewImage({
+        urls: src,
+        current: 1,
       });
     },
   },
@@ -342,11 +419,9 @@ export default {
       flex-direction: row;
       flex-wrap: wrap;
       align-items: center;
-      margin-bottom: 20rpx;
-      //justify-content: space-between;
+      padding: 10rpx;
 
-      .img-item {
-        //width: 30%;
+      .image-item {
         display: flex;
         flex-direction: column;
         margin-right: 10rpx;
