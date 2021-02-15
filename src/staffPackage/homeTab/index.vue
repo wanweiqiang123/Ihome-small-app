@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-06 14:15:14
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-02-14 11:37:21
 -->
 <template>
   <StaffTabBar>
@@ -60,19 +60,19 @@
           <view class="info-data">
             <view class="item">
               <view>报备数</view>
-              <text class="red">999</text>
+              <text class="red">--</text>
             </view>
             <view class="item">
               <view>已到访</view>
-              <text class="red">999</text>
+              <text class="red">--</text>
             </view>
             <view class="item">
               <view>已成交</view>
-              <text class="red">999</text>
+              <text class="red">--</text>
             </view>
             <view class="item">
               <view>无效报备</view>
-              <text class="red">999</text>
+              <text class="red">--</text>
             </view>
           </view>
         </view>

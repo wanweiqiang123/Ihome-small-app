@@ -379,3 +379,33 @@ export async function post_deal_entryDealBasicInf(data = {}, option = {}) {
 export async function post_deal_updateDealBasicInf(data = {}, option = {}) {
   return await postApi(`/sales-api/deal/deal/updateDealBasicInf`, data, option)
 }
+
+/**
+ * @description: 业绩申报 - 详情
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function get_deal_get__id(data = {}, option = {}) {
+  return await getApi(`/sales-api/deal/deal/get/${data.id}`, option)
+}
+
+/**
+ * @description: 业绩申报 - 删除
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function post_deal_delete__id(data = {}, option = {}) {
+  return await postApi(`/sales-api/deal/deal/delete/${data.id}`, option)
+}
+
+/**
+ * @description: 业绩申报 - 详情 - 获取优惠告知书
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function post_notice_customer_information(data = {}, option = {}) {
+  return await postApi(`/sales-api/contract/notice/customer/information`, data, option)
+}

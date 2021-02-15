@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-23 11:15:50
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-02 10:43:35
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-02-14 14:23:34
 -->
 <template>
   <view class="project-detail-wrapper">
@@ -167,7 +167,7 @@ export default {
         proId: "",
         proName: "",
       }, // 详情信息
-      banner: require("@/channelPackage/common/img/banner_1.png"),
+      banner: require("@/channelPackage/common/img/house.jpg"),
       homeImg: require("@/channelPackage/common/img/house.jpg"),
       tabList: [
         {
