@@ -953,7 +953,10 @@ export default {
       this.postData.recordStr = info?.recordStr ? info?.recordStr : '';
       if (info.agencyList && info.agencyList.length) {
         this.postData.agencyName = info.agencyList[0].agencyName;
+        this.postData.agencyId = info.agencyList[0].agencyId;
+        this.postData.channelLevel = info.agencyList[0].channelLevel;
         this.postData.brokerName = info.agencyList[0].broker;
+        this.postData.brokerId = info.agencyList[0].brokerId;
       }
       this.postData.subscribeDate = info?.subscribeDate ? info?.subscribeDate : '';
       this.postData.subscribePrice = info?.subscribePrice ? info?.subscribePrice : '';
