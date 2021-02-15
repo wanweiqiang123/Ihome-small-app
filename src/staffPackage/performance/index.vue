@@ -57,6 +57,7 @@
             >删除</u-button>
             <u-button
               v-if="isShowBtn(item, 'updated')"
+              @click="handleUpdated(item)"
               size="mini"
               type="primary"
               shape="circle"
@@ -265,6 +266,14 @@ export default {
         await this.getListMixin();
       } catch (error) {
         console.log(error);
+      }
+    },
+    // 修改
+    handleUpdated(item) {
+      if (item.id) {
+        uni.navigateTo({
+          url: `/staffPackage/performanceEdit/index?id=${item.id}`,
+        });
       }
     },
     // 详情

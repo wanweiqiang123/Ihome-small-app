@@ -470,6 +470,8 @@ import {
   getBaseDealInfo,
   postBuildByProId,
   postRoomByProId,
+  get_deal_get__id,
+  post_notice_customer_information
 } from "@/api/staff";
 import {getAllDictByType} from "@/api";
 import tool from "@/common/tool";
@@ -610,6 +612,10 @@ export default {
           "NotificationType"
         ]
       }, // 需要用到的字典类型参数
+      DealFileTypeList: [],
+      SubdivideList: [],
+      DealStageList: [],
+      PropertyList: [],
       NotificationTypeList: [],
       FeeTypeList: [],
       dictList: null, // 部分字典数据
@@ -639,6 +645,7 @@ export default {
       },
       contNoList: [], // 分销协议列表---initPage接口
       postData: {
+        dealCode: '',
         cycleId: '', // 接口用到的id
         cycleName: '',
         modelCode: '',
@@ -766,6 +773,7 @@ export default {
     };
   },
   computed: {
+    // 服务费合计
     serviceTotal() {
       let obj = {
         receivableAmout: 0, // 本单应收 - 服务费
@@ -813,6 +821,7 @@ export default {
       }
       return obj;
     },
+    // 代理费合计
     agentTotal() {
       let obj = {
         receivableAmout: 0, // 本单应收 - 代理费
@@ -872,11 +881,21 @@ export default {
       return flag;
     }
   },
-  async onLoad() {
+  async onLoad(option) {
+    console.log('performanceEdit:', option);
     this.dictList = await this.getAllDictByTypes(this.dictObj);
+    this.SubdivideList = await this.getSignDict("Subdivide");
+    this.DealStageList = await this.getSignDict("DealStage");
+    this.PropertyList = await this.getSignDict("Property");
+    this.ContTypeList = await this.getSignDict("ContType");
+    this.DealFileTypeList = await this.getSignDict("DealFileType");
     this.NotificationTypeList = await this.getSignDict("NotificationType");
     this.FeeTypeList = await this.getSignDict("FeeType");
     await this.getToken();
+    if (option && option.id) {
+      this.id = option.id;
+      await this.initEditPage(option.id);
+    }
   },
   async onShow() {
     let item = getApp().globalData.searchBackData;
@@ -895,6 +914,187 @@ export default {
     }
   },
   methods: {
+    // 编辑 - 初始化页面
+    async initEditPage(id) {
+      let info  = await get_deal_get__id({id: id});
+      this.editBaseInfo = JSON.parse(JSON.stringify(info || {}));
+      console.log(info);
+      // 分割
+      this.postData = {
+        ...this.postData,
+        ...info
+      }
+      this.postData.dealCode = info?.dealCode;
+      this.postData.dataSign = info?.dataSign;
+      this.postData.dealOrgId = info?.dealOrgId;
+      this.postData.isConsign = info?.isConsign;
+      this.postData.isMarketProject = info?.isMarketProject;
+      this.postData.modelCode = info?.modelCode;
+      this.postData.oneAgentTeamId = info?.oneAgentTeamId;
+      this.postData.recordState = info?.recordState;
+      this.postData.reportId = info?.reportId;
+      this.postData.sceneSales = info?.sceneSales;
+      // 分割
+      this.postData.cycleId = info?.cycleId;
+      this.postData.cycleName = info?.cycleName;
+      this.postData.refineModelName = info?.refineModel ? this.getDictName(info?.refineModel, this.SubdivideList) : '';
+      this.postData.refineModel = info?.refineModel ? info?.refineModel : '';
+      this.postData.stageName = info?.stage ? this.getDictName(info?.stage, this.DealStageList) : '';
+      this.postData.stage = info?.stage ? info?.stage : '';
+      this.postData.propertyType = info?.house?.propertyType ? info?.house?.propertyType : '';
+      this.postData.propertyTypeName = info?.house?.propertyType ? this.getDictName(info?.house?.propertyType, this.PropertyList) : '';
+      this.postData.buildingName = info?.house?.buildingName ? info?.house?.buildingName : '';
+      this.postData.buildingId = info?.house?.buildingId ? info?.house?.buildingId : '';
+      this.postData.roomId = info?.house?.roomId ? info?.house?.roomId : '';
+      this.postData.roomNo = info?.house?.roomNo ? info?.house?.roomNo : '';
+      this.postData.contType = info?.contType ? info?.contType : '';
+      this.postData.contTypeName = info?.contType ? this.getDictName(info?.contType, this.ContTypeList) : '';
+      this.postData.contNo = info?.contNo ? info?.contNo : '';
+      this.postData.recordStr = info?.recordStr ? info?.recordStr : '';
+      if (info.agencyList && info.agencyList.length) {
+        this.postData.agencyName = info.agencyList[0].agencyName;
+        this.postData.brokerName = info.agencyList[0].broker;
+      }
+      this.postData.subscribeDate = info?.subscribeDate ? info?.subscribeDate : '';
+      this.postData.subscribePrice = info?.subscribePrice ? info?.subscribePrice : '';
+      this.postData.signDate = info?.signDate ? info?.signDate : '';
+      this.postData.signPrice = info?.signPrice ? info?.signPrice : '';
+      // 优惠告知书
+      await this.getInformation(info?.id);
+      // 客户
+      this.postData.customerVO = info.customerList;
+      // 收派金额
+      this.postData.agentReceiveVO = [];
+      this.postData.serviceReceiveVO = [];
+      if (info.receiveList && info.receiveList.length) {
+        info.receiveList.forEach((list) => {
+          if (list.type === "AgencyFee") {
+            this.postData.agentReceiveVO.push(
+              {
+                ...list,
+                showData: [list.collectandsendDetailDealVO]
+              }
+            );
+          }
+          if (list.type === "ServiceFee") {
+            this.postData.serviceReceiveVO.push(
+              {
+                ...list,
+                showData: [list.collectandsendDetailDealVO]
+              }
+            );
+          }
+        });
+      }
+      // 附件
+      this.postData.documentVO = [];
+      if (info.documentList && info.documentList.length) {
+        this.postData.documentVO = this.initDocumentList(info.documentList);
+      }
+      // 通过项目周期id获取基础信息
+      await this.editBaseDealInfo(info.cycleId, info?.house?.buildingId, info?.house?.propertyType);
+      await this.editPageById(info.cycleId, info?.house?.roomId, info?.house?.propertyType);
+    },
+    // 编辑 - 通过项目周期id获取基础信息
+    async editBaseDealInfo(id = "", buildingId, property) {
+      if (!id) return;
+      let baseInfo = await getBaseDealInfo({cycleId: id});
+      console.log('baseInfo', baseInfo);
+      this.baseInfoByTerm = JSON.parse(JSON.stringify(baseInfo));
+      this.refineModelList = await this.getRefineModelList(baseInfo.busEnum);
+      // 成交阶段的选项
+      this.stageList = [];
+      if (baseInfo.termStageEnum) {
+        let stageList = await this.getSignDict('DealStage');
+        console.log('stageList', stageList);
+        if (stageList && stageList.length > 0) {
+          switch(baseInfo.termStageEnum){
+            case 'Subscription':
+              // 认购周期 --- 只有认购+签约
+              this.stageList = stageList.filter((item) => {
+                return item.code !== 'Recognize';
+              });
+              break;
+            case 'Recognize':
+              // 认筹周期 --- 全部
+              this.stageList = JSON.parse(JSON.stringify(stageList));
+              break;
+          }
+        }
+      }
+      // 物业类型
+      this.propertyTypeList = await this.initPropertyType(baseInfo.propertyEnums);
+      this.buildSelectList = await postBuildByProId({
+        proId: baseInfo.proId,
+        propertyEnum: property,
+      });
+      this.ContTypeList = await this.getContTypeList(baseInfo.busEnum); // 获取合同类型
+      // 初始化房号选择列表
+      await this.editInitRoomList(baseInfo.proId, buildingId);
+    },
+    // 编辑 - 获取房号选项
+    async editInitRoomList(proId = '', buildingId = '') {
+      if (!proId || !buildingId) return;
+      this.roomSelectList = await postRoomByProId({
+        proId: proId,
+        buildingId: buildingId,
+        exDeal: 0
+      });
+      if (this.roomSelectList.length) {
+        this.roomSelectList = this.roomSelectList.filter((list) => {
+          return list.exDeal === 0; // 获取没有锁定的房号
+        });
+      }
+    },
+    // 编辑 - 根据项目周期和房号初始化页面数据
+    async editPageById(cycleId, roomId, propertyType = '') {
+      if (!cycleId || !roomId || !propertyType) return;
+      let params = {
+        cycleId: cycleId,
+        roomId: roomId,
+        isMainDeal: true, // 是否主成交
+        property: propertyType, // 物业类型
+      };
+      let baseInfo = await post_pageData_initBasic(params);
+      this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || {}));
+      // 分销协议编号
+      if (baseInfo.contracts && baseInfo.contracts.length > 0) {
+        this.contNoList = baseInfo.contracts;
+      } else {
+        this.contNoList = [];
+      }
+    },
+    // 编辑 - 获取优惠告知书列表
+    async getInformation(id = '') {
+      if (!id) return ;
+      let list = await post_notice_customer_information({dealId: id});
+      if (list && list.length > 0) {
+        this.postData.offerNoticeVO = list;
+      } else {
+        this.postData.offerNoticeVO = [];
+      }
+    },
+    // 编辑 - 构建附件信息
+    initDocumentList(list = []) {
+      let fileList = JSON.parse(JSON.stringify(this.DealFileTypeList)); // 附件类型
+      // 附件类型增加key
+      if (fileList.length > 0 && list.length > 0) {
+        fileList.forEach((vo) => {
+          vo.fileList = []; // 存放新上传的数据
+          list.forEach((item) => {
+            if (vo.code === item.fileType) {
+              vo.fileList.push(
+                {
+                  ...item,
+                  name: item.fileName
+                }
+              );
+            }
+          });
+        });
+      }
+      return fileList;
+    },
     // 选择细分业务模式
     handleShowRefineModel() {
       if (!this.postData.cycleId) {

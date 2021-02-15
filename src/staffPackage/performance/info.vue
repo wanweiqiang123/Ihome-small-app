@@ -280,7 +280,6 @@ export default {
       NotificationTypeList: [],
       FeeTypeList: [],
       dictList: null, // 部分字典数据
-      contNoList: [], // 分销协议列表---initPage接口
       postData: {
         cycleId: '', // 接口用到的id
         cycleName: '',
@@ -331,34 +330,6 @@ export default {
         receiveAchieveVO: [], // 应收信息
         documentVO: [], // 附件信息
       },
-      baseInfoByTerm: {
-        chargeEnum: '',
-        proId: '', // 项目id --- 用于查询分销协议列表
-        termId: '', // 项目周期id
-        termStageEnum: '', // 项目周期阶段
-        selectableChannelIds: [], // 可选的渠道商ids
-      }, // 通过项目周期id获取到的初始化成交基础信息
-      baseInfoInDeal: {
-        hasRecord: false,
-        contType: '',
-        notice: [], // 优惠告知书
-        myReturnVO: {
-          houseVO: {},
-          customerVOS: {},
-          dealVO: {},
-          dataSign: ''
-        }, // 明源数据
-        noticePDF: [], // 优惠告知书PDF
-        customerIds: [], // 业主身份证
-        visitConfirmForms: [], // 来访确认书
-        dealConfirmForms: [], // 成交确认书
-        customerAddVOS: [], // 客户信息
-        selectableChannelIds: [], // 可选的渠道商ids
-        dealNoticeStatus: '', // 同房号是否存在多份优惠告知书(NoneNotice-没有优惠告知书、OneNotice-一份优惠告知书、MultipleNotice-多份优惠告知书)
-      }, // 通过initPage接口获取到的成交信息(项目周期 + 房号)
-      tempList: [], // 临时的收派金额信息
-      // 编辑功能相关字段
-      editBaseInfo: null, // 编辑初始化页面数据
     };
   },
   computed: {
@@ -482,7 +453,7 @@ export default {
       this.postData.stage = info?.stage ? info?.stage : '';
       this.postData.propertyTypeName = info?.house?.propertyType ? this.getDictName(info?.house?.propertyType, this.PropertyList) : '';
       this.postData.buildingName = info?.house?.buildingName ? info?.house?.buildingName : '';
-      this.postData.buildingName = info?.house?.buildingName ? info?.house?.buildingName : '';
+      this.postData.buildingId = info?.house?.buildingId ? info?.house?.buildingId : '';
       this.postData.roomNo = info?.house?.roomNo ? info?.house?.roomNo : '';
       this.postData.contTypeName = info?.contType ? this.getDictName(info?.contType, this.ContTypeList) : '';
       this.postData.contType = info?.contType ? info?.contType : '';
