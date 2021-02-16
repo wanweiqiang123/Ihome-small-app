@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-18 11:38:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-16 09:49:35
+ * @LastEditTime: 2021-02-16 10:08:27
 -->
 <template>
   <LoginPage>
@@ -140,7 +140,7 @@
               <u-form-item
                 label="审核意见"
                 label-position="top"
-              >{{form.reviewOpinion || '-'}}</u-form-item>
+              >{{form.reviewOpinion || (form.notificationStatus === 'Invalidation' ? '不通过' : '-')}}</u-form-item>
             </template>
           </u-form>
         </view>
