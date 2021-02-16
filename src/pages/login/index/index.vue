@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-29 15:58:19
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-29 14:53:25
+ * @LastEditTime: 2021-02-16 10:01:20
 -->
 <template>
   <view class="page login-page-style">
@@ -285,11 +285,11 @@ export default {
               storageTool.setUUID(infoRes.uuid);
             })
             .catch((err) => {
-              uni.showToast({
-                title: "[启动异常,请重新进入小程序]" + err.msg,
-                icon: "none",
-                duration: 3000,
-              });
+              // uni.showToast({
+              //   title: "[启动异常,请重新进入小程序]" + err.msg,
+              //   icon: "none",
+              //   duration: 3000,
+              // });
             });
         },
       });
