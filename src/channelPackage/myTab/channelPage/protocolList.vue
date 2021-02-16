@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-09 14:38:31
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-03 20:13:30
+ * @LastEditTime: 2021-02-16 15:37:14
 -->
 <template>
   <LoginPage>
@@ -15,9 +15,10 @@
           v-model="queryPageParameters.keyword"
           type="text"
           :border="true"
-          placeholder="搜索"
-          @focus="projectSearch"
+          placeholder="点击刷选项目"
+          @click.stop="projectSearch"
         />
+        <text class="reset" @click.stop="reset()">清空</text>
       </view>
       <view class="wrap">
         <view
@@ -68,9 +69,12 @@ export default {
 
     if (item && item.type === "project") {
       console.log(item.data.proId, item.data.proName);
-      this.queryPageParameters.projectId;
+      this.queryPageParameters.projectId = item.data.proId;
+      this.queryPageParameters.keyword = item.data.proName;
       this.queryPageParameters.pageNum = 1;
       getApp().globalData.searchBackData = {};
+      this.tablePage = null;
+      this.tablePage = [];
       this.getListMixin();
     }
   },
@@ -106,6 +110,14 @@ export default {
       uni.navigateTo({
         url: `/channelPackage/myTab/channelPage/protocolDetails?id=` + item.id,
       });
+    },
+    reset() {
+      this.queryPageParameters.projectId = null;
+      this.queryPageParameters.keyword = null;
+      this.queryPageParameters.pageNum = 1;
+      this.tablePage = null;
+      this.tablePage = [];
+      this.getListMixin();
     },
   },
 };
@@ -147,5 +159,10 @@ export default {
 }
 .wrap-item-right {
   width: 40rpx;
+}
+.reset {
+  width: 100rpx;
+  text-align: right;
+  line-height: 72rpx;
 }
 </style>

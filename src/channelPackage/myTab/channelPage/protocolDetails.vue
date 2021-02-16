@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-27 20:02:11
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-04 11:01:11
+ * @LastEditTime: 2021-02-16 15:12:43
 -->
 <template>
   <view class="protocol-details-wrapper">
@@ -27,15 +27,12 @@
           </view>
         </u-form-item>
       </u-form>
-      <view class="title u-margin-top-30" 
-        >合同附件</view
-      >
+      <view class="title u-margin-top-30">合同附件</view>
       <view class="annex-wrapper">
         <view
           class="annex-item"
-          v-for="(item, index) in infoForm.annexList || []"
+          v-for="(item, index) in infoForm.annexList"
           :key="index"
-          @click="preFileItem(item)"
         >
           <view class="item-type">{{ item.type | typeFilter }}</view>
           <view class="item-value">
@@ -43,6 +40,7 @@
               width="200rpx"
               height="200rpx"
               :src="item.fileUrl"
+              @click.stop="preFileItem(item)"
             ></u-image>
           </view>
         </view>
@@ -61,18 +59,7 @@ export default {
         electronicContractNo: "",
         contractTitle: "",
         partyCompany: "",
-        type: "保利爱家地产有限公司",
       },
-      annexItem: [
-        {
-          type: "未盖章版协议",
-          value: "https://cdn.uviewui.com/uview/example/fade.jpg",
-        },
-        {
-          type: "已盖章版协议",
-          value: "https://cdn.uviewui.com/uview/example/fade.jpg",
-        },
-      ],
     };
   },
   filters: {
@@ -114,6 +101,14 @@ export default {
   methods: {
     preFileItem(item) {
       console.log(item);
+      if (item.attachmentSuffix.endsWith("pdf")) {
+        tool.toast("pdf暂不支持预览");
+      } else {
+        uni.previewImage({
+          urls: [item.fileUrl],
+          current: 1,
+        });
+      }
     },
   },
 };
