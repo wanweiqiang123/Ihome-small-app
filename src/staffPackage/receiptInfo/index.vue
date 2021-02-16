@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-19 15:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-02 19:59:28
+ * @LastEditTime: 2021-02-16 09:54:45
 -->
 <template>
   <view class="receipt info">
@@ -386,6 +386,7 @@ export default {
         switch (val.notificationStatus) {
           case "WaitPay":
           case "WaitReview":
+          case "Paid":
             const res = await getPreviewApi(this.noticeId);
             if (res) {
               getApp().globalData.webViewSrc = res;

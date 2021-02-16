@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-15 19:21:27
+ * @LastEditTime: 2021-02-16 09:45:20
 -->
 
 <template>
@@ -287,12 +287,6 @@ export default {
               url: `/staffPackage/noticePreview/index?id=${item.id}&tId=${item.templateId}&type=${item.notificationType}&sign=${item.notificationStatus}`,
             });
           }
-          break;
-        case "WaitPay":
-          // 客户待支付
-          uni.navigateTo({
-            url: `/staffPackage/receiptInfo/index?id=${item.id}`,
-          });
           break;
         default:
           if (item.notificationType === "Notification") {
