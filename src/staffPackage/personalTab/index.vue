@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 11:22:52
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-14 11:34:41
+ * @LastEditTime: 2021-02-16 10:46:04
 -->
 <template>
   <StaffTabBar>
@@ -35,15 +35,19 @@
             title="切换用户"
             :arrow="true"
           ></u-cell-item>
+          <u-cell-item v-if="qrcodeShow"
+            @click="qrcodeGoto()"
+            icon="share"
+            title="模拟二维码跳转"
+            :arrow="true"
+          ></u-cell-item>
         </u-cell-group>
       </view>
 
       <view class="btn-container">
-        <u-button
-          shape="circle"
-          type="primary"
-          @click="handleLoginOut"
-        >退出账号</u-button>
+        <u-button shape="circle" type="primary" @click="handleLoginOut"
+          >退出账号</u-button
+        >
       </view>
     </view>
     <!-- 退出 -->

@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-12 10:17:34
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-09 17:31:07
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-02-16 10:47:05
 -->
 <template>
   <CustomerTabBar>
@@ -27,6 +27,12 @@
             @click="userSwitchClick()"
             icon="account"
             title="切换用户"
+            :arrow="true"
+          ></u-cell-item>
+           <u-cell-item v-if="qrcodeShow"
+            @click="qrcodeGoto()"
+            icon="share"
+            title="模拟二维码跳转"
             :arrow="true"
           ></u-cell-item>
         </u-cell-group>

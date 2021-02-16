@@ -10,6 +10,12 @@
 			}
 		},
 		{
+			"path": "pages/qrcodeGo",
+			"style": {
+				"navigationBarTitleText": "模拟二维码跳转"
+			}
+		},
+		{
 			"path": "pages/register/channel",
 			"style": {
 				"navigationBarTitleText": "渠道注册"

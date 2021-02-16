@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-16 15:34:28
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-01 14:39:31
+ * @LastEditTime: 2021-02-16 10:49:03
 -->
 <template>
   <ChannelTabBar>
@@ -70,6 +70,19 @@
             </view>
           </view>
         </view>
+
+        <view class="person-item-wrapper">
+          <u-cell-group>
+            <u-cell-item
+              v-if="qrcodeShow"
+              @click="qrcodeGoto()"
+              icon="share"
+              title="模拟二维码跳转"
+              :arrow="true"
+            ></u-cell-item>
+          </u-cell-group>
+        </view>
+
         <view class="my-btn">
           <u-button shape="circle" @click="handleLoginOut">退出登录</u-button>
         </view>

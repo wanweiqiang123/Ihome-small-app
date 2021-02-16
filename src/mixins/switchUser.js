@@ -4,13 +4,15 @@
  * @Author: zyc
  * @Date: 2021-01-09 15:59:32
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-19 19:31:40
+ * @LastEditTime: 2021-02-16 10:46:23
  */
 import storageTool from "../common/storageTool";
 import { userSwitchApi, getUserInfoApi } from "../api/index";
+
 export default {
     data() {
         return {
+            qrcodeShow: __wxConfig.envVersion != 'release',
             userSwitchShow: false,
             userTypeList: [],
             isShow: false,
@@ -35,6 +37,13 @@ export default {
         }
     },
     methods: {
+        //模拟二维码跳转
+        qrcodeGoto() {
+            uni.navigateTo({
+                url: `/pages/qrcodeGo`,
+            });
+
+        },
         // 退出登录
         handleLoginOut() {
             this.isShow = true;
