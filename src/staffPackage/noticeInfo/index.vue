@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-18 11:38:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-15 19:41:36
+ * @LastEditTime: 2021-02-16 09:49:35
 -->
 <template>
   <LoginPage>
@@ -84,7 +84,7 @@
             >
               <view class="text-right">
                 <u-button
-                  v-if="form.notificationStatus !== 'Invalidation'"
+                  v-if="form.notificationStatus === 'BecomeEffective'"
                   size="mini"
                   type="primary"
                   :custom-style="{
@@ -156,6 +156,18 @@
             @click="submitFile()"
           >提交附件</u-button>
         </template>
+        <template v-if="form.notificationStatus === 'WaitPay'">
+          <u-gap
+            height="20"
+            bg-color="#f1f1f1"
+          ></u-gap>
+          <u-button
+            shape="circle"
+            type="primary"
+            class="ih-btn"
+            @click="handleToReceipt()"
+          >去添加收款</u-button>
+        </template>
       </view>
       <u-modal
         v-model="isShow"
@@ -178,6 +190,7 @@ import {
   getNoticeInfo,
   postUploadAnnex,
   getRecognizeById,
+  getPreviewApi,
 } from "../../api/staff";
 
 export default {
@@ -196,6 +209,7 @@ export default {
         buyUnitName: "",
         ownerType: "",
         promotionMethod: "",
+        notificationStatus: "",
       },
       option: {},
       isPaper: false,
@@ -251,22 +265,39 @@ export default {
         this.$tool.toast("认购书为空");
       }
     },
-    handleGoto() {
-      let url = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${this.form.templateId}.pdf`;
-      uni.downloadFile({
-        url: url,
-        success: function (res) {
-          var filePath = res.tempFilePath;
-          uni.openDocument({
-            filePath: filePath,
-            fileType: "pdf",
-            showMenu: true,
-            success: function (res) {
-              console.log("打开文档成功");
-            },
-          });
-        },
+    handleToReceipt() {
+      // 客户待支付
+      uni.navigateTo({
+        url: `/staffPackage/receiptInfo/index?id=${this.form.id}`,
       });
+    },
+    async handleGoto() {
+      const list = ["Paid", "WaitPay"];
+      if (list.includes(this.form.notificationStatus)) {
+        const res = await getPreviewApi(this.form.id);
+        if (res) {
+          getApp().globalData.webViewSrc = res;
+          uni.navigateTo({
+            url: `/pages/webView/preview/index`,
+          });
+        }
+      } else {
+        let url = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${this.form.templateId}.pdf`;
+        uni.downloadFile({
+          url: url,
+          success: function (res) {
+            var filePath = res.tempFilePath;
+            uni.openDocument({
+              filePath: filePath,
+              fileType: "pdf",
+              showMenu: true,
+              success: function (res) {
+                console.log("打开文档成功");
+              },
+            });
+          },
+        });
+      }
     },
     modalConfirm() {
       uni.setClipboardData({
