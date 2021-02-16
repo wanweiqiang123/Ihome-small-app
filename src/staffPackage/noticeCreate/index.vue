@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-09 14:20:19
+ * @LastEditTime: 2021-02-16 11:17:22
 -->
 <template>
   <LoginPage>
@@ -882,7 +882,7 @@ export default {
         const res = await postNoticeCreate(this.form);
         this.$tool.toast("保存成功");
         if (this.form.templateType === "ElectronicTemplate") {
-          uni.navigateTo({
+          uni.redirectTo({
             url: `/staffPackage/noticePreview/index?id=${res.noticeId}&tId=${res.templateId}&type=Notification`,
           });
         } else {
@@ -906,7 +906,7 @@ export default {
         });
         this.$tool.toast("保存成功");
         if (this.form.templateType === "ElectronicTemplate") {
-          uni.navigateTo({
+          uni.redirectTo({
             url: `/staffPackage/noticePreview/index?id=${this.form.noticeId}&tId=${res.templateId}&type=Notification`,
           });
         } else {
