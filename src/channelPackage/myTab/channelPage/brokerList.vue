@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-09 14:38:31
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-03 16:57:01
+ * @LastEditTime: 2021-02-17 10:09:37
 -->
 <template>
   <LoginPage>
@@ -42,7 +42,7 @@
               <text style="padding-right: 20rpx">{{ item.name }}</text>
               <text>{{ item.mobile }}</text>
             </view>
-            <view class="list-item-right">
+            <view class="list-item-right" v-show="!currentClick">
               <view v-if="item.status == 'Valid'" style="color: #4881f9">
                 <text>{{ item.settlementFlag | settlementFlagFilter }}</text>
               </view>
@@ -96,6 +96,15 @@
           </u-form-item>
         </u-form>
       </PopupSearch>
+      <u-modal
+        :show-confirm-button="true"
+        :show-cancel-button="true"
+        v-model="removeShow"
+        @confirm="confirm"
+        @cancel="removeShow = false"
+        ref="uModal"
+        content="是否删除数据？"
+      ></u-modal>
     </view>
   </LoginPage>
 </template>
@@ -140,6 +149,9 @@ export default {
   },
   data() {
     return {
+      removeShow: false,
+      removeData: null,
+      removeIndex: null,
       statusList: [
         { name: "不限", code: "" },
         { name: "有效", code: "Valid" },
@@ -207,8 +219,13 @@ export default {
       // console.log(this.queryPageParameters);
     },
     async removeItem(item, index) {
-      await postChannelDeleteApi(item.id);
-      this.tablePage.splice(index, 1);
+      this.removeData = item;
+      this.removeIndex = index;
+      this.removeShow = true;
+    },
+    async confirm() {
+      await postChannelDeleteApi(this.removeData.id);
+      this.tablePage.splice(this.removeIndex, 1);
       tool.toast("删除成功");
     },
     async getListMixin() {

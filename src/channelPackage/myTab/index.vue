@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-16 15:34:28
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-16 10:49:03
+ * @LastEditTime: 2021-02-17 09:19:02
 -->
 <template>
   <ChannelTabBar>
@@ -24,7 +24,7 @@
           <view class="phone">{{ userInfo.mobilePhone }}</view>
         </view>
         <view class="my-item-wrapper u-padding-right-14">
-          <u-grid :col="4" :border="false" @click="goToGrid">
+          <u-grid :col="3" :border="false" @click="goToGrid">
             <u-grid-item
               v-for="item in gridList"
               :key="item.id"
@@ -119,12 +119,12 @@ export default {
     return {
       myAvatar: require("@/channelPackage/common/icon/avatar.png"),
       gridList: [
-        {
-          id: 1,
-          icon: require("@/channelPackage/common/icon/password.png"),
-          name: "修改密码",
-          url: "",
-        },
+        // {
+        //   id: 1,
+        //   icon: require("@/channelPackage/common/icon/password.png"),
+        //   name: "修改密码",
+        //   url: "",
+        // },
         {
           id: 2,
           icon: require("@/channelPackage/common/icon/money.png"),

@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-27 19:34:30
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-03 17:02:09
+ * @LastEditTime: 2021-02-17 10:17:43
 -->
 <template>
   <view class="add-broker-wrapper">
@@ -161,11 +161,19 @@ export default {
 
           this.addForm.channelId = userInfo?.channelId;
           this.addForm.userId = userInfo.id;
-          await postChannelAgentAddApi(this.addForm);
-          tool.toast("新增成功");
-          uni.redirectTo({
-            url: `/channelPackage/myTab/channelPage/brokerList`,
-          });
+          if (this.addForm.id > 0) {
+            await postChannelAgentEditApi(this.addForm);
+            tool.toast("编辑成功");
+            uni.redirectTo({
+              url: `/channelPackage/myTab/channelPage/brokerList`,
+            });
+          } else {
+            await postChannelAgentAddApi(this.addForm);
+            tool.toast("新增成功");
+            uni.redirectTo({
+              url: `/channelPackage/myTab/channelPage/brokerList`,
+            });
+          }
         } else {
           console.log("验证失败");
         }

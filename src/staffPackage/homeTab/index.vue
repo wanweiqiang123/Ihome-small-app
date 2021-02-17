@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-14 11:37:21
+ * @LastEditTime: 2021-02-17 10:53:59
 -->
 <template>
   <StaffTabBar>
@@ -132,11 +132,11 @@ export default {
           path: "/staffPackage/noticeCode/index",
           item: "查询优惠码",
         },
-        {
-          icon: require("../common/icon/channel.png"),
-          path: "/staffPackage/channelAccount/index",
-          item: "渠道结佣情况",
-        },
+        // {
+        //   icon: require("../common/icon/channel.png"),
+        //   path: "/staffPackage/channelAccount/index",
+        //   item: "渠道结佣情况",
+        // },
         {
           icon: require("../common/icon/notice.png"),
           path: "/staffPackage/noticeSpecial/index",
