@@ -384,13 +384,21 @@
 				{
 					"path": "visitConfirm/index",
 					"style": {
-						"navigationBarTitleText": "到访确认页"
+						"navigationBarTitleText": "到访确认页",
+						"enablePullDownRefresh": true
 					}
 				},
 				{
 					"path": "dealConfirm/index",
 					"style": {
-						"navigationBarTitleText": "成交确认页"
+						"navigationBarTitleText": "成交确认页",
+						"enablePullDownRefresh": true
+					}
+				},
+				{
+					"path": "upload/index",
+					"style": {
+						"navigationBarTitleText": "上传附件"
 					}
 				},
 				{

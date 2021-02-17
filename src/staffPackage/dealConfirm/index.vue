@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-13 15:13:13
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-09 10:19:44
+ * @LastEditTime: 2021-02-17 18:36:55
 -->
 <template>
   <view class="container safe-area-inset-bottom">
@@ -98,6 +98,7 @@
             :custom-style="{ padding: '0 40rpx', marginRight: '20rpx' }"
             size="mini"
             type="primary"
+            @click="handleGoto(i)"
           >上传附件</u-button>
           <u-button
             v-if="current === 1 && !i.dealCode"
@@ -292,6 +293,11 @@ export default {
           reportStatus: this.reportStatus,
         })
       );
+    },
+    handleGoto(item) {
+      uni.navigateTo({
+        url: `/staffPackage/upload/index?id=${item.id}`,
+      });
     },
   },
   onLoad() {
