@@ -4,81 +4,78 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-17 10:53:59
+ * @LastEditTime: 2021-02-17 11:25:53
 -->
 <template>
-  <StaffTabBar>
-    <view class="home-tab-container">
-      <view class="nav-grid">
-        <swiper
-          @change="handleChangeSwiper"
-          class="ih-grid-swiper"
-        >
-          <swiper-item
-            v-for="(gridItem, i) in handleFilterList(8, gridList)"
-            :key="i"
-          >
-            <u-grid
-              :col="4"
-              :border="false"
+  <LoginPage>
+    <StaffTabBar>
+      <view class="home-tab-container">
+        <view class="nav-grid">
+          <swiper @change="handleChangeSwiper" class="ih-grid-swiper">
+            <swiper-item
+              v-for="(gridItem, i) in handleFilterList(8, gridList)"
+              :key="i"
             >
-              <u-grid-item
-                v-for="(item, index) in gridItem"
-                :index="item.path"
-                :key="index"
-                :custom-style="{padding:'20rpx 0'}"
-                @click="handleGoto()"
-              >
-                <!-- <u-badge
+              <u-grid :col="4" :border="false">
+                <u-grid-item
+                  v-for="(item, index) in gridItem"
+                  :index="item.path"
+                  :key="index"
+                  :custom-style="{ padding: '20rpx 0' }"
+                  @click="handleGoto()"
+                  v-show="item.isShow"
+                >
+                  <!-- <u-badge
                   count="0"
                   :offset="[15, 45]"
                 ></u-badge> -->
-                <u-icon
-                  :name="item.icon"
-                  :size="82"
-                ></u-icon>
-                <text class="grid-text">{{ item.item }}</text>
-              </u-grid-item>
-            </u-grid>
-          </swiper-item>
-        </swiper>
-        <view class="indicator-dots">
-          <template v-for="(item, index) in handleFilterList(8, gridList)">
-            <view
-              :class="['indicator-dots-item', {'indicator-dots-active': current === index}]"
-              :key="index"
-            ></view>
-          </template>
+                  <u-icon :name="item.icon" :size="82"></u-icon>
+                  <text class="grid-text">{{ item.item }}</text>
+                </u-grid-item>
+              </u-grid>
+            </swiper-item>
+          </swiper>
+          <view class="indicator-dots">
+            <template v-for="(item, index) in handleFilterList(8, gridList)">
+              <view
+                :class="[
+                  'indicator-dots-item',
+                  { 'indicator-dots-active': current === index },
+                ]"
+                :key="index"
+              ></view>
+            </template>
+          </view>
         </view>
-      </view>
-      <view class="info-container">
-        <view class="info-title">
-          <view class="title"></view>
-        </view>
-        <u-line />
-        <view class="info-content">
-          <view class="info-data">
-            <view class="item">
-              <view>报备数</view>
-              <text class="red">--</text>
-            </view>
-            <view class="item">
-              <view>已到访</view>
-              <text class="red">--</text>
-            </view>
-            <view class="item">
-              <view>已成交</view>
-              <text class="red">--</text>
-            </view>
-            <view class="item">
-              <view>无效报备</view>
-              <text class="red">--</text>
+        <view class="info-container">
+          <view class="info-title">
+            <view class="title"></view>
+          </view>
+          <u-line />
+          <view class="info-content">
+            <view class="info-data">
+              <view class="item">
+                <view>报备数</view>
+                <text class="red">--</text>
+              </view>
+              <view class="item">
+                <view>已到访</view>
+                <text class="red">--</text>
+              </view>
+              <view class="item">
+                <view>已成交</view>
+                <text class="red">--</text>
+              </view>
+              <view class="item">
+                <view>无效报备</view>
+                <text class="red">--</text>
+              </view>
             </view>
           </view>
         </view>
       </view>
-    </view>
-  </StaffTabBar>
+    </StaffTabBar>
+  </LoginPage>
 </template>
 
 <script>
@@ -86,64 +83,77 @@ export default {
   data() {
     return {
       current: 0,
-      gridList: [
-        {
-          icon: require("../common/icon/report.png"),
-          path: "/staffPackage/reportConfirm/index",
-          item: "报备确认",
-        },
-        {
-          icon: require("../common/icon/visit.png"),
-          path: "/staffPackage/visitConfirm/index",
-          item: "到访确认",
-        },
-        {
-          icon: require("../common/icon/deal.png"),
-          path: "/staffPackage/dealConfirm/index",
-          item: "成交确认",
-        },
-        {
-          icon: require("../common/icon/notice.png"),
-          path: "/staffPackage/noticeList/index",
-          item: "优惠告知书",
-        },
-        {
-          icon: require("../common/icon/client.png"),
-          path: "/staffPackage/clientReport/index",
-          item: "帮录报备",
-        },
-        {
-          icon: require("../common/icon/performance.png"),
-          path: "/staffPackage/performance/index",
-          item: "业绩申报",
-        },
-        {
-          icon: require("../common/icon/payment.png"),
-          path: "/staffPackage/payment/index",
-          item: "结佣付款",
-        },
-        {
-          icon: require("../common/icon/receipt.png"),
-          path: "/staffPackage/receipt/index",
-          item: "收款管理",
-        },
-        {
-          icon: require("../common/icon/code.png"),
-          path: "/staffPackage/noticeCode/index",
-          item: "查询优惠码",
-        },
-        // {
-        //   icon: require("../common/icon/channel.png"),
-        //   path: "/staffPackage/channelAccount/index",
-        //   item: "渠道结佣情况",
-        // },
-        {
-          icon: require("../common/icon/notice.png"),
-          path: "/staffPackage/noticeSpecial/index",
-          item: "审核优惠告知书",
-        },
-      ],
+      gridList: [],
     };
+  },
+  created() {
+    this.gridList = [
+      {
+        icon: require("../common/icon/report.png"),
+        path: "/staffPackage/reportConfirm/index",
+        item: "报备确认",
+        isShow: this.$has("B.WXAPP.STAFF.STAFFHOME.REPORT"),
+      },
+      {
+        icon: require("../common/icon/visit.png"),
+        path: "/staffPackage/visitConfirm/index",
+        item: "到访确认",
+        isShow: this.$has("B.WXAPP.STAFF.STAFFHOME.ARRIVE"),
+      },
+      {
+        icon: require("../common/icon/deal.png"),
+        path: "/staffPackage/dealConfirm/index",
+        item: "成交确认",
+        isShow: this.$has("B.WXAPP.STAFF.STAFFHOME.DEAL"),
+      },
+      {
+        icon: require("../common/icon/notice.png"),
+        path: "/staffPackage/noticeList/index",
+        item: "优惠告知书",
+        isShow: this.$has("B.WXAPP.STAFF.STAFFHOME.DISCOUNT"),
+      },
+      {
+        icon: require("../common/icon/client.png"),
+        path: "/staffPackage/clientReport/index",
+        item: "帮录报备",
+        isShow: this.$has("B.WXAPP.STAFF.STAFFHOME.GANGLU"),
+      },
+      {
+        icon: require("../common/icon/performance.png"),
+        path: "/staffPackage/performance/index",
+        item: "业绩申报",
+        isShow: this.$has("B.WXAPP.STAFF.STAFFHOME.DECLARE"),
+      },
+      // {
+      //   icon: require("../common/icon/payment.png"),
+      //   path: "/staffPackage/payment/index",
+      //   item: "结佣付款",
+      // },
+      {
+        icon: require("../common/icon/receipt.png"),
+        path: "/staffPackage/receipt/index",
+        item: "收款管理",
+        isShow: this.$has("B.WXAPP.STAFF.STAFFHOME.COLLECTION"),
+      },
+      {
+        icon: require("../common/icon/code.png"),
+        path: "/staffPackage/noticeCode/index",
+        item: "查询优惠码",
+        isShow: this.$has("B.WXAPP.STAFF.STAFFHOME.SELECTDISCOUNT"),
+      },
+      // {
+      //   icon: require("../common/icon/channel.png"),
+      //   path: "/staffPackage/channelAccount/index",
+      //   item: "渠道结佣情况",
+      // },
+      {
+        icon: require("../common/icon/notice.png"),
+        path: "/staffPackage/noticeSpecial/index",
+        item: "审核优惠告知书",
+        isShow: this.$has("B.WXAPP.STAFF.STAFFHOME.NOTIFICATION"),
+      },
+    ];
+    console.log(this.gridList);
   },
   onLoad() {},
   methods: {
