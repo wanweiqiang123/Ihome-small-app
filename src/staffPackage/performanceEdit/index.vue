@@ -992,7 +992,7 @@ export default {
       // 附件
       this.postData.documentVO = [];
       if (info.documentList && info.documentList.length) {
-        this.postData.documentVO = this.initDocumentList(info.documentList);
+        this.postData.documentVO = this.initDocumentList(info.charge, info.contType, info.documentList);
       }
       // 通过项目周期id获取基础信息
       await this.editBaseDealInfo(info.cycleId, info?.house?.buildingId, info?.house?.propertyType);
@@ -1077,9 +1077,27 @@ export default {
         this.postData.offerNoticeVO = [];
       }
     },
-    // 编辑 - 构建附件信息
-    initDocumentList(list = []) {
+    /*
+    * 编辑 --- 构建上传附件数据
+    * charge：收费模式
+    * contType：合同类型
+    * list：回显的值
+    * */
+    initDocumentList(charge = '', contType = '', list = []) {
       let fileList = JSON.parse(JSON.stringify(this.DealFileTypeList)); // 附件类型
+      // 根据收费模式过滤
+      if (charge === 'Agent') {
+        fileList = fileList.filter((item) => {
+          return item.code !== "Notice";
+        });
+      }
+      // 根据合同类型过滤
+      if (contType === 'DistriDeal') {
+        // 项目周期的收费模式为代理费的话，隐藏优惠告知书
+        fileList = fileList.filter((item) => {
+          return !["VisitConfirForm", "DealConfirForm"].includes(item.code);
+        });
+      }
       // 附件类型增加key
       if (fileList.length > 0 && list.length > 0) {
         fileList.forEach((vo) => {
@@ -1089,7 +1107,8 @@ export default {
               vo.fileList.push(
                 {
                   ...item,
-                  name: item.fileName
+                  name: item.fileName,
+                  canDelete: true
                 }
               );
             }
