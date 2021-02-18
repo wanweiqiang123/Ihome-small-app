@@ -1,10 +1,10 @@
 <!--
- * @Description: 业绩申报
+ * @Description: 业绩申报 - 成交报备跳转的页面
  * @version: 
- * @Author: ywl
- * @Date: 2020-11-26 09:38:11
+ * @Author: lsj
+ * @Date: 2021-02-17 18:16:20
  * @LastEditors: lsj
- * @LastEditTime: 2021-02-02 11:46:28
+ * @LastEditTime: 2021-02-17 19:15:20
 -->
 <template>
   <view class="performance">
@@ -433,6 +433,7 @@
 <script>
 import PopupIndex from "./popup/index.vue";
 import {
+  getReportById,
   post_buModelContType_subList,
   post_buModelContType_getList,
   post_pageData_dealCheckNotice,
@@ -444,7 +445,6 @@ import {
   getBaseDealInfo,
   postBuildByProId,
   postRoomByProId,
-  get_deal_get__id,
   post_notice_customer_information
 } from "@/api/staff";
 import {getAllDictByType} from "@/api";
@@ -453,7 +453,7 @@ import {getImgUrl} from "@/api/channel";
 import {currentEnvConfig} from "@/env-config";
 import storageTool from "@/common/storageTool";
 export default {
-  name: "performanceEdit",
+  name: "entryDeal",
   components: { PopupIndex },
   data() {
     // 栋座
@@ -856,7 +856,7 @@ export default {
     }
   },
   async onLoad(option) {
-    console.log('performanceEdit:', option);
+    console.log('entryDeal:', option);
     this.dictList = await this.getAllDictByTypes(this.dictObj);
     this.SubdivideList = await this.getSignDict("Subdivide");
     this.DealStageList = await this.getSignDict("DealStage");
@@ -890,7 +890,7 @@ export default {
   methods: {
     // 编辑 - 初始化页面
     async initEditPage(id) {
-      let info  = await get_deal_get__id({id: id});
+      let info  = await getReportById({id: id});
       this.editBaseInfo = JSON.parse(JSON.stringify(info || {}));
       console.log(info);
       // 分割
