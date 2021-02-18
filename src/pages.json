@@ -396,6 +396,12 @@
 					}
 				},
 				{
+					"path": "dealConfirm/entryDeal",
+					"style": {
+						"navigationBarTitleText": "业绩申报"
+					}
+				},
+				{
 					"path": "upload/index",
 					"style": {
 						"navigationBarTitleText": "上传附件"

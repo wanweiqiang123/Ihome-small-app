@@ -409,3 +409,13 @@ export async function post_deal_delete__id(data = {}, option = {}) {
 export async function post_notice_customer_information(data = {}, option = {}) {
   return await postApi(`/sales-api/contract/notice/customer/information`, data, option)
 }
+
+/**
+ * @description: 查询报备成交详情-小程序端
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function getReportById(data = {}, option = {}) {
+  return await getApi(`/sales-api/customer/report/getReportById/${data.id}`, option)
+}

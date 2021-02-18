@@ -100,13 +100,14 @@
             type="primary"
             @click="handleGoto(i)"
           >上传附件</u-button>
-          <u-button
-            v-if="current === 1 && !i.dealCode"
-            shape="circle"
-            :custom-style="{ padding: '0 40rpx' }"
-            size="mini"
-            type="success"
-          >生成成交报告</u-button>
+<!--          <u-button-->
+<!--            v-if="current === 1 && !i.dealCode"-->
+<!--            shape="circle"-->
+<!--            :custom-style="{ padding: '0 40rpx' }"-->
+<!--            size="mini"-->
+<!--            @click="handleAddDeal(i)"-->
+<!--            type="success"-->
+<!--          >生成成交报告</u-button>-->
           <template v-if="current === 0">
             <u-button
               size="mini"
@@ -297,6 +298,13 @@ export default {
     handleGoto(item) {
       uni.navigateTo({
         url: `/staffPackage/upload/index?id=${item.id}`,
+      });
+    },
+    // 生成成交报告
+    handleAddDeal(item) {
+      if (!item.id) return;
+      uni.navigateTo({
+        url: `/staffPackage/dealConfirm/entryDeal?id=${item.id}`,
       });
     },
   },
