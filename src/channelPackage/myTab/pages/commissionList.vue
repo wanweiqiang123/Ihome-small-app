@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-26 10:15:18
- * @LastEditors: lsj
- * @LastEditTime: 2020-12-12 17:03:50
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-02-18 19:11:56
 -->
 <template>
   <view class="commission-wrapper">
@@ -19,258 +19,336 @@
         border-color="#DCDCDC"
         :show-action="false"
         placeholder="请输入结佣单号搜索"
-        v-model="queryPageParameters.projectName"></u-search>
-      <view class="filter-wrapper">筛选</view>
-      <u-icon name="grid-fill" color="#3478F7" size="38" @click="showSearchWin = true"></u-icon>
+        v-model="keyword"
+        @search="confirm"
+      ></u-search>
+      <view
+        class="filter-wrapper"
+        @click="showSearchWin = true"
+      >筛选</view>
     </view>
-    <view class="list-wrapper">
-      <view class="list-item" v-for="item in [1,2,3,4,5,6,7,8,9,10]" :key="item" @click="viewCommissionDetails">
+    <view
+      class="list-wrapper"
+      v-if="tablePage.length"
+    >
+      <view
+        class="list-item"
+        v-for="(item, index) in tablePage"
+        :key="index"
+        @click="viewCommissionDetails"
+      >
         <view class="item-code u-padding-bottom-20">
-          <view class="code">结佣申请单号：CJ38135843321</view>
-          <view class="status">审核中</view>
+          <view class="code">结佣申请单号：{{item.applyCode}}</view>
+          <view
+            class="status bg-red"
+            v-if="item.rejectionMark === 'Yes'"
+          >驳回</view>
+          <view
+            class="status"
+            v-else-if="['Unconfirm', 'PlatformClerkUnreview', 'BranchBusinessManageUnreview', 'BranchFinanceUnreview', 'OAReviewing'].includes(item.status)"
+          >审核中</view>
+          <view
+            class="status bg-success"
+            v-else-if="item.status === 'ReviewPass'"
+          >终审通过</view>
+          <view
+            class="status bg-success"
+            v-else-if="item.status === 'ConfirmingPay'"
+          >支付确认中</view>
+          <view
+            class="status bg-success"
+            v-else-if="item.status === 'PaymentSuccessful'"
+          >支付成功</view>
         </view>
-        <view class="price u-padding-bottom-10">申请佣金：1000.00</view>
-        <view class="price u-padding-bottom-10">扣除金额：1000.00</view>
-        <view class="price u-padding-bottom-10">实结佣金：1000.00</view>
-        <view class="price u-padding-bottom-10">申请时间：2020-10-18 18:20:20</view>
+        <view class="price u-padding-bottom-10">申请佣金：{{item.applyAmount}}</view>
+        <view class="price u-padding-bottom-10">扣除金额：{{item.deductAmount}}</view>
+        <view class="price u-padding-bottom-10">实结佣金：{{item.actualAmount}}</view>
+        <view class="price u-padding-bottom-10">申请时间：{{item.makerTime}}</view>
         <view class="detail u-padding-bottom-10">
           <text>详情</text>
-          <u-icon name="arrow-right" size="28"></u-icon>
+          <u-icon
+            name="arrow-right"
+            size="28"
+          ></u-icon>
         </view>
       </view>
+    </view>
+    <view
+      v-else
+      class="list-wrapper"
+    >
+      <u-empty
+        text="列表为空"
+        mode="list"
+      ></u-empty>
     </view>
     <view class="bottom-btn">
-      <u-button type="primary" @click="sponsorCommission">发起结佣申请</u-button>
+      <u-button
+        type="primary"
+        @click="sponsorCommission"
+      >发起结佣申请</u-button>
     </view>
-    <u-popup v-model="showSearchWin" mode="right" length="80%">
-      <view class="commission-popup-wrapper">
-        <view class="status u-padding-20">状态</view>
-        <view class="search-item-wrapper u-padding-20">
-          <view
-            @click="selectType(item)"
-            :class="item.checked ? 'item selected' : 'item'"
-            v-for="(item, index) in searchList"
-            :key="index">{{item.name}}</view>
-        </view>
-        <view class="btn-wrapper">
-          <view class="reset" @click="showSearchWin = false">重置</view>
-          <view class="submit" @click="showSearchWin = false">确定</view>
-        </view>
-      </view>
-    </u-popup>
+    <PopupSearch
+      v-model="showSearchWin"
+      @reset="reset()"
+      @confirm="confirm()"
+    >
+      <u-form
+        label-position="top"
+        :border-bottom="false"
+      >
+        <u-form-item
+          label="状态"
+          :border-bottom="false"
+        >
+          <IhCheckbox
+            v-model="queryPageParameters.statusList"
+            :arr="searchList"
+            :alias="{ name: 'name', value: 'code' }"
+          ></IhCheckbox>
+        </u-form-item>
+      </u-form>
+    </PopupSearch>
   </view>
 </template>
 
 <script>
+import PopupSearch from "../../../components/PopupSearch/index.vue";
+import IhCheckbox from "../../../components/IhCheckbox/index";
+import pagination from "../../../mixins/pagination";
+import { getAllByTypeApi } from "../../../api/index";
+import { payApplyList } from "../../../api/channel";
+
 export default {
+  components: {
+    PopupSearch,
+    IhCheckbox,
+  },
+  mixins: [pagination],
   data() {
     return {
+      keyword: "",
       queryPageParameters: {
-        projectName: ''
+        statusList: [],
       },
       showSearchWin: false,
-      searchList: [
-        {
-          name: '已通过',
-          checked: false
-        },
-        {
-          name: '审核中',
-          checked: false
-        },
-        {
-          name: '驳回',
-          checked: false
-        }
-      ]
+      searchList: [],
     };
   },
-  onLoad() {},
   methods: {
     // 发起结佣申请
     sponsorCommission() {
       uni.navigateTo({
-        url: `/channelPackage/myTab/pages/initiateCommission`
+        url: `/channelPackage/myTab/pages/initiateCommission`,
       });
-    },
-    // 选择
-    selectType(item) {
-      item.checked = !item.checked;
     },
     // 结佣详情
     viewCommissionDetails() {
       uni.navigateTo({
-        url: `/channelPackage/myTab/pages/commissionDetails`
+        url: `/channelPackage/myTab/pages/commissionDetails`,
       });
-    }
+    },
+    checkText() {},
+    reset() {
+      Object.assign(this.queryPageParameters, {
+        statusList: [],
+      });
+    },
+    confirm() {
+      this.tablePage = [];
+      this.queryPageParameters.pageNum = 1;
+      this.getListMixin();
+    },
+    async getDictName(type) {
+      const dictList = await getAllByTypeApi({ type });
+      return dictList;
+    },
+    async getListMixin() {
+      this.setPageDataMixin(
+        await payApplyList({
+          ...this.queryPageParameters,
+          applyCode: this.keyword,
+        })
+      );
+    },
+  },
+  async onLoad() {
+    this.getListMixin();
+    this.searchList = await this.getDictName("AppletsChannelInquiry");
   },
 };
 </script>
 
 <style lang="scss" scoped>
-  .commission-wrapper {
+.commission-wrapper {
+  width: 100%;
+  background-color: #f5f5f5;
+
+  .top-wrapper {
     width: 100%;
-    background-color: #F5F5F5;
+    height: 92rpx;
+    box-sizing: border-box;
+    padding: 10rpx 24rpx 10rpx 18rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f1f1f1;
 
-    .top-wrapper {
-      width: 100%;
-      height: 92rpx;
+    .search {
+      flex: 1;
       box-sizing: border-box;
-      padding: 10rpx 24rpx 10rpx 18rpx;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: #F1F1F1;
+      margin-right: 20rpx;
+    }
 
-      .search {
-        flex: 1;
+    .filter-wrapper {
+      color: $u-type-primary;
+      font-size: 30rpx;
+    }
+  }
+
+  .list-wrapper {
+    width: 100%;
+    height: calc(100vh - 230rpx);
+    overflow-y: auto;
+    background-color: #f1f1f1;
+
+    .list-item {
+      box-sizing: border-box;
+      margin: 10rpx 20rpx 20rpx 20rpx;
+      padding: 20rpx;
+      background-color: #ffffff;
+      //border: 1rpx solid #DADADA;
+
+      .item-code {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+
+        .code {
+          flex: 1;
+          font-family: PingFang SC;
+          font-weight: 600;
+          color: #1f1f1f;
+          line-height: 48rpx;
+        }
+
+        .status {
+          width: 91rpx;
+          background: #eb7734;
+          border-radius: 4rpx;
+          font-family: PingFang SC;
+          font-size: 24rpx;
+          font-weight: 600;
+          color: #ffffff;
+          line-height: 46rpx;
+          text-align: center;
+          &.bg-red {
+            background: $u-type-error;
+          }
+          &.bg-success {
+            background: $u-type-success;
+          }
+        }
+      }
+
+      .detail {
+        width: 100%;
+        text-align: right;
         box-sizing: border-box;
         margin-right: 20rpx;
-      }
+        font-size: 26rpx;
+        font-family: Source Han Sans CN;
+        font-weight: bold;
+        color: #888888;
+        line-height: 42rpx;
+        display: flex;
+        flex-direction: row;
 
-      .filter-wrapper {
-        color: $u-type-primary;
-        font-size: 30rpx;
-      }
-    }
-
-    .list-wrapper {
-      width: 100%;
-      height: calc(100vh - 230rpx);
-      overflow-y: auto;
-      background-color: #F1F1F1;
-
-      .list-item {
-        box-sizing: border-box;
-        margin: 10rpx 20rpx 20rpx 20rpx;
-        padding: 20rpx;
-        background-color: #FFFFFF;
-        //border: 1rpx solid #DADADA;
-
-        .item-code {
-          display: flex;
-          flex-direction: row;
-          justify-content: center;
-          align-items: center;
-
-          .code {
-            flex: 1;
-            font-family: PingFang SC;
-            font-weight: 600;
-            color: #1F1F1F;
-            line-height: 48rpx;
-          }
-
-          .status {
-            width: 91rpx;
-            background: #EB7734;
-            border-radius: 4rpx;
-            font-family: PingFang SC;
-            font-size: 24rpx;
-            font-weight: 600;
-            color: #FFFFFF;
-            line-height: 46rpx;
-            text-align: center;
-          }
-        }
-
-        .detail {
-          width: 100%;
-          text-align: right;
-          box-sizing: border-box;
-          margin-right: 20rpx;
-          font-size: 26rpx;
-          font-family: Source Han Sans CN;
-          font-weight: bold;
-          color: #888888;
-          line-height: 42rpx;
-          display: flex;
-          flex-direction: row;
-
-          text {
-            flex: 1;
-          }
-        }
-
-        .price {
-          font-size: 26rpx;
-          font-family: Source Han Sans CN;
-          font-weight: bold;
-          color: #606266;
-          line-height: 42rpx;
+        text {
+          flex: 1;
         }
       }
-    }
 
-    .bottom-btn {
-      width: 100%;
-      height: 100rpx;
-      box-sizing: border-box;
-      padding: 10rpx 50rpx;
-      background-color: #FFFFFF;
-      position: fixed;
-      left: 0rpx;
-      bottom: 0rpx;
-      z-index: 9999;
+      .price {
+        font-size: 26rpx;
+        font-family: Source Han Sans CN;
+        font-weight: bold;
+        color: #606266;
+        line-height: 42rpx;
+      }
     }
   }
 
-  .commission-popup-wrapper {
+  .bottom-btn {
     width: 100%;
-    height: 100vh;
-    position: relative;
+    height: 100rpx;
+    box-sizing: border-box;
+    padding: 10rpx 50rpx;
+    background-color: #ffffff;
+    position: fixed;
+    left: 0rpx;
+    bottom: 0rpx;
+    z-index: 9999;
+  }
+}
 
-    .status {
-      color: #999999;
+.commission-popup-wrapper {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+
+  .status {
+    color: #999999;
+  }
+
+  .search-item-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    .item {
+      text-align: center;
+      box-sizing: border-box;
+      margin-right: 10rpx;
+      padding: 15rpx 25rpx;
+      background-color: #ffffff;
+      border: 1rpx solid #f2f2f2;
     }
 
-    .search-item-wrapper {
-      width: 100%;
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-
-      .item {
-        text-align: center;
-        box-sizing: border-box;
-        margin-right: 10rpx;
-        padding: 15rpx 25rpx;
-        background-color: #FFFFFF;
-        border: 1rpx solid #F2F2F2;
-      }
-
-      .selected {
-        border: 1rpx solid $u-type-primary;
-        color: $u-type-primary;
-      }
-    }
-
-    .btn-wrapper {
-      width: 100%;
-      position: absolute;
-      left: 0rpx;
-      bottom: 0rpx;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      view {
-        flex: 1;
-        height: 80rpx;
-        line-height: 80rpx;
-        text-align: center;
-      }
-
-      .reset {
-        border-top: 1rpx solid #E4E4E4;
-        background-color: #FFFFFF;
-        color: $u-type-primary;
-      }
-
-      .submit {
-        background-color: $u-type-primary;
-        color: #FFFFFF;
-      }
+    .selected {
+      border: 1rpx solid $u-type-primary;
+      color: $u-type-primary;
     }
   }
+
+  .btn-wrapper {
+    width: 100%;
+    position: absolute;
+    left: 0rpx;
+    bottom: 0rpx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    view {
+      flex: 1;
+      height: 80rpx;
+      line-height: 80rpx;
+      text-align: center;
+    }
+
+    .reset {
+      border-top: 1rpx solid #e4e4e4;
+      background-color: #ffffff;
+      color: $u-type-primary;
+    }
+
+    .submit {
+      background-color: $u-type-primary;
+      color: #ffffff;
+    }
+  }
+}
 </style>

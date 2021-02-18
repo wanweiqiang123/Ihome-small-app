@@ -3,8 +3,8 @@
  * @version:
  * @Author: lsj
  * @Date: 2020-12-15 10:10:10
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-09 16:45:15
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-02-18 11:08:28
  */
 import { getApi, postApi } from '@/common/http';
 import { currentEnvConfig } from '@/env-config';
@@ -244,8 +244,15 @@ export async function getDistributionDetailApi(id, option = {}) {
   return await getApi(url, {}, option);
 }
 
-
-
+/**
+ * @description: 查询结佣列表
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function payApplyList(data = {}, option = {}) {
+  return await postApi('/sales-api/payoff/payApply/wechat/staff/list', data, option)
+}
 
 
 // 收藏或者取消项目
