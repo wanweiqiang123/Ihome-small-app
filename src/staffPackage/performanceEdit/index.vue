@@ -1061,13 +1061,14 @@ export default {
       let fileList = JSON.parse(JSON.stringify(this.DealFileTypeList)); // 附件类型
       // 根据收费模式过滤
       if (charge === 'Agent') {
+        // 项目周期的收费模式为代理费的话，隐藏优惠告知书
         fileList = fileList.filter((item) => {
           return item.code !== "Notice";
         });
       }
       // 根据合同类型过滤
-      if (contType === 'DistriDeal') {
-        // 项目周期的收费模式为代理费的话，隐藏优惠告知书
+      if (contType !== 'DistriDeal') {
+        // 合同类型不是分销成交的话隐藏
         fileList = fileList.filter((item) => {
           return !["VisitConfirForm", "DealConfirForm"].includes(item.code);
         });

@@ -110,22 +110,30 @@
       <u-button type="primary" @click="handleSave">保存并注册</u-button>
     </view>
     <u-picker
+      safe-area-inset-bottom
       @confirm="confirmDate"
       v-model="showDate"
       mode="time"
       :params="dateParams"></u-picker>
     <u-select
+      safe-area-inset-bottom
       v-model="showRegion"
       mode="mutil-column-auto"
       :list="areaList"
       @confirm="confirmRegion"></u-select>
-    <u-select v-model="showCompanyType" :list="companyTypeList" @confirm="confirmCompanyType"></u-select>
+    <u-select
+      safe-area-inset-bottom
+      v-model="showCompanyType"
+      :list="companyTypeList"
+      @confirm="confirmCompanyType"></u-select>
     <u-action-sheet
       :safe-area-inset-bottom="true"
       :list="actionList"
       v-model="showActionShow"
       @click="handleUpload"></u-action-sheet>
-    <u-popup v-model="showBank" mode="right" length="100%">
+    <u-popup
+      safe-area-inset-bottom
+      v-model="showBank" mode="right" length="100%">
       <view class="select-bank-list-wrapper">
         <view class="top-wrapper">
           <u-search
