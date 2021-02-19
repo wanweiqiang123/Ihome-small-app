@@ -68,7 +68,7 @@
       <u-form :label-width="190">
         <u-form-item label="可结佣金">
           <u-input
-            v-model="paymentForm.estateName"
+            v-model="paymentForm.totalCanCommFees"
             placeholder="可结佣金"
             disabled
             :clearable="false"
@@ -77,7 +77,7 @@
         </u-form-item>
         <u-form-item label="已结佣金">
           <u-input
-            v-model="paymentForm.roof"
+            v-model="paymentForm.totalSettledCommFees"
             placeholder="已结佣金"
             disabled
             :clearable="false"
@@ -86,7 +86,7 @@
         </u-form-item>
         <u-form-item label="未结佣金">
           <u-input
-            v-model="paymentForm.room"
+            v-model="paymentForm.totalUnsetCommFees"
             placeholder="未结佣金"
             disabled
             :clearable="false"
@@ -95,7 +95,7 @@
         </u-form-item>
         <u-form-item label="在结佣金">
           <u-input
-            v-model="paymentForm.room"
+            v-model="paymentForm.totalInCommFees"
             placeholder="在结佣金"
             disabled
             :clearable="false"
@@ -107,12 +107,14 @@
     <view class="info-item" v-if="detailsType === 'commission'">
       <view class="form-title u-border-bottom">结佣记录</view>
       <view class="form u-padding-0">
-        <view class="record-list" v-for="item in [2, 3, 4, 5, 6]" :key="item">
+        <view
+          class="record-list"
+          v-for="(item, index) in paymentForm.commissionRecordResponseList" :key="index">
           <view class="record-code">
-            <view class="code">JY013246683</view>
-            <view class="price">结佣金额：500.00</view>
+            <view class="code">{{item.applyCode}}</view>
+            <view class="price">结佣金额：{{item.applyAmount}}</view>
           </view>
-          <view class="record-time">2020-10-08 12:15:30</view>
+          <view class="record-time">{{item.createTime}}</view>
         </view>
       </view>
     </view>
@@ -161,17 +163,23 @@
 </template>
 
 <script>
-import { postdealReportRecordApi } from "@/api/channel";
+import {
+  postdealReportRecordApi,
+  geiPayDealDetail
+} from "@/api/channel";
 import { getAllByTypeApi } from "@/api/index";
 import { currentEnvConfig } from "../../../env-config.js";
 export default {
   data() {
     return {
       detailsType: "",
+      detailsCode: "",
       paymentForm: {
-        account: "",
-        invoiceType: "",
-        invoiceTaxRate: "",
+        totalCanCommFees: "",
+        totalSettledCommFees: "",
+        totalUnsetCommFees: "",
+        totalInCommFees: "",
+        commissionRecordResponseList: []
       },
       tableData: {
         thList: [
@@ -197,7 +205,10 @@ export default {
       info: {
         house: {},
       },
-      customer: {},
+      customer: {
+        customerName: '',
+        customerPhone: ''
+      },
       PropertyType: [],
       dictList: [],
     };
@@ -232,12 +243,13 @@ export default {
         name: v.name,
         srcList: [],
       }));
-      this.getInfo();
+      await this.getInfo();
     } else {
       // 结佣成交详情
       uni.setNavigationBarTitle({
         title: "成交详情",
       });
+      await this.initPageByCommission()
     }
   },
   methods: {
@@ -312,6 +324,22 @@ export default {
           }
         });
       });
+    },
+    // 结佣-成交详情初始化页面
+    async initPageByCommission() {
+      if (!this.detailsCode) return;
+      let info = await geiPayDealDetail({dealCode: this.detailsCode});
+      console.log(info);
+      this.customer.customerName = info?.customerName;
+      this.customer.customerPhone = info?.customerPhone;
+      this.info.projectCycle = info?.proName;
+      this.info.house.propertyType = info?.propertyType ? this.getDictName(info?.propertyType, this.PropertyType) : '';
+      this.info.house.buildingName = info?.buildingNo;
+      this.info.house.roomNo = info?.roomNo;
+      this.paymentForm = {
+        ...this.paymentForm,
+        ...this.info
+      }
     },
     // 获取字典
     async getDictAll(type) {
