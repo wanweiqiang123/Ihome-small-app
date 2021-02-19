@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-19 14:49:26
+ * @LastEditTime: 2021-02-19 15:06:31
 -->
 <template>
   <LoginPage>
@@ -630,6 +630,7 @@ export default {
         type: "term",
         other: {
           auditEnums: ["ConstractAdopt"],
+          excludeChargeEnum: "Agent",
         },
       };
       uni.navigateTo({
