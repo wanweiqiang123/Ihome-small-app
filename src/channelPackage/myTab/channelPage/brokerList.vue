@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-09 14:38:31
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-17 10:09:37
+ * @LastEditTime: 2021-02-19 11:26:25
 -->
 <template>
   <LoginPage>
@@ -28,33 +28,38 @@
         </view>
       </view>
       <view class="wrap">
-        <view class="wrap-item" v-for="(item, index) in tablePage" :key="index">
-          <view class="list-item">
-            <view class="list-item-left">
-              <u-button
-                v-show="currentClick"
-                type="error"
-                size="mini"
-                @click="removeItem(item, index)"
-                style="margin-right: 20rpx"
-                >点击删除</u-button
-              >
-              <text style="padding-right: 20rpx">{{ item.name }}</text>
-              <text>{{ item.mobile }}</text>
-            </view>
-            <view class="list-item-right" v-show="!currentClick">
-              <view v-if="item.status == 'Valid'" style="color: #4881f9">
-                <text>{{ item.settlementFlag | settlementFlagFilter }}</text>
+        <checkbox-group @change="changeCheck">
+          <view
+            class="wrap-item"
+            v-for="(item, index) in tablePage"
+            :key="index"
+          >
+            <view class="list-item">
+              <view class="list-item-left">
+                <checkbox
+                  v-show="currentClick"
+                  :value="item.id"
+                  :checked="item.checked"
+                  style="transform: scale(0.8)"
+                />
+
+                <text style="padding-right: 20rpx">{{ item.name }}</text>
+                <text>{{ item.mobile }}</text>
               </view>
-              <view style="color: red">
-                <text>{{ item.status | statusFilter }}</text>
-              </view>
-              <view style="margin-top: 40rpx" @click="addBroker(item)">
-                编辑
+              <view class="list-item-right" v-show="!currentClick">
+                <view v-if="item.status == 'Valid'" style="color: #4881f9">
+                  <text>{{ item.settlementFlag | settlementFlagFilter }}</text>
+                </view>
+                <view style="color: red">
+                  <text>{{ item.status | statusFilter }}</text>
+                </view>
+                <view style="margin-top: 40rpx" @click="addBroker(item)">
+                  编辑
+                </view>
               </view>
             </view>
           </view>
-        </view>
+        </checkbox-group>
         <!-- <EmptyLoading :total="tableTotal"></EmptyLoading> -->
         <u-loadmore :status="loadingStatus" />
       </view>
@@ -62,22 +67,16 @@
       <view class="bottom-btn" v-show="!currentClick">
         <u-button type="primary" @click="addBroker()">添加经纪人</u-button>
       </view>
+      <view class="bottom-btn" v-show="currentClick">
+        <u-button type="error" @click="removeBatch()">删除</u-button>
+      </view>
 
-      <u-modal
-        v-model="showPopup"
-        @confirm="handleSubmit"
-        @cancel="showPopup = false"
-        :show-confirm-button="true"
-        :show-cancel-button="true"
-        ref="uModal"
-        content="是否确定删除？"
-      ></u-modal>
       <PopupSearch
         width="80%"
         :mask="true"
         v-model="searchPopup"
         @reset="reset()"
-        @confirm="confirm()"
+        @confirm="searchConfirm()"
       >
         <u-form ref="notice" label-position="top" :border-bottom="false">
           <u-form-item label="状态" :border-bottom="false">
@@ -118,6 +117,7 @@ import {
   postCollectGetList,
   postChannelAgentGetListApi,
   postChannelDeleteApi,
+  postChannelBatchDeleteApi,
 } from "../../../api/channel";
 import tool from "../../../common/tool";
 import PopupSearch from "../../../components/PopupSearch/index.vue";
@@ -149,9 +149,8 @@ export default {
   },
   data() {
     return {
+      selectRemoveList: [],
       removeShow: false,
-      removeData: null,
-      removeIndex: null,
       statusList: [
         { name: "不限", code: "" },
         { name: "有效", code: "Valid" },
@@ -174,7 +173,7 @@ export default {
         name: "",
         nameOrMobile: "",
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 20,
         settlementFlag: "",
         status: "",
       },
@@ -207,35 +206,39 @@ export default {
         name: "",
         nameOrMobile: "",
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 20,
         settlementFlag: "",
         status: "",
       });
     },
+
     async confirm() {
-      this.tablePage = [];
-      this.queryPageParameters.pageNum = 1;
-      this.getListMixin();
-      // console.log(this.queryPageParameters);
-    },
-    async removeItem(item, index) {
-      this.removeData = item;
-      this.removeIndex = index;
-      this.removeShow = true;
-    },
-    async confirm() {
-      await postChannelDeleteApi(this.removeData.id);
-      this.tablePage.splice(this.removeIndex, 1);
-      tool.toast("删除成功");
+      if (this.selectRemoveList.length > 0) {
+        let userInfo = storageTool.getUserInfo();
+        let postData = {
+          channelId: userInfo.channelId,
+          ids: this.selectRemoveList,
+        };
+        console.log(postData);
+        const res = await postChannelBatchDeleteApi(postData);
+        tool.toast("删除成功");
+
+        postData.ids.forEach((item) => {
+          this.remove(item);
+        });
+        console.log(this.tablePage);
+      } else {
+        tool.toast("请选勾选需要删除的数据");
+      }
     },
     async getListMixin() {
       this.setPageDataMixin(
         await postChannelAgentGetListApi(this.queryPageParameters)
       );
-      // this.tablePage.map((item) => {
-      //   item.checked = item.checked || false;
-      //   return item;
-      // });
+      this.tablePage.map((item) => {
+        item.checked = item.checked || false;
+        return item;
+      });
       console.log(this.tablePage);
     },
     async search() {
@@ -245,26 +248,6 @@ export default {
       this.getListMixin();
     },
 
-    async handleSubmit() {
-      let list = this.tablePage.filter((item) => {
-        return item.checked;
-      });
-      console.log(list);
-      if (list.length > 0) {
-        let postData = {
-          ids: list.map((item) => item.id),
-          status: "Invalid",
-        };
-        console.log(postData);
-        const res = await postCollectBatchUpdateApi(postData);
-        tool.toast("删除成功");
-
-        postData.ids.forEach((item) => {
-          this.remove(item);
-        });
-        console.log(this.tablePage);
-      }
-    },
     async deleteCheck() {
       this.showPopup = true;
     },
@@ -277,13 +260,6 @@ export default {
       }
     },
 
-    viewProjectDetail(item) {
-      if (!this.currentClick) {
-        uni.navigateTo({
-          url: `/channelPackage/homeTab/pages/projectDetail?id=` + item.id,
-        });
-      }
-    },
     addBroker(item) {
       if (item) {
         uni.navigateTo({
@@ -294,6 +270,21 @@ export default {
           url: `/channelPackage/myTab/channelPage/addBroker`,
         });
       }
+    },
+    async removeBatch() {
+      if (this.selectRemoveList.length > 0) {
+        this.removeShow = true;
+      } else {
+        tool.toast("请选勾选需要删除的数据");
+      }
+    },
+    changeCheck(e) {
+      this.selectRemoveList = e.detail.value;
+    },
+    async searchConfirm() {
+      this.tablePage = [];
+      this.queryPageParameters.pageNum = 1;
+      this.getListMixin();
     },
   },
 };

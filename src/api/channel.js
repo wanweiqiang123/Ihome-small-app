@@ -3,8 +3,8 @@
  * @version:
  * @Author: lsj
  * @Date: 2020-12-15 10:10:10
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-18 19:32:05
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-02-19 11:03:12
  */
 import { getApi, postApi } from '@/common/http';
 import { currentEnvConfig } from '@/env-config';
@@ -224,6 +224,16 @@ export async function postChannelDeleteApi(id, option = {}) {
   let url = `/sales-api/channel/channelAgent/delete/${id}`;
   return await postApi(url, {}, option);
 }
+/** 批量删除渠道经纪人信息
+ * @param {*} data
+ * @param {*} option
+ * @return {*}
+ */
+export async function postChannelBatchDeleteApi(data = {}, option = {}) {
+  let url = `/sales-api/channel/channelAgent/batchDelete`;
+  return await postApi(url, data, option);
+}
+
 /**  查询渠道分销协议列表
  * @param {*} data
  * @param {*} option
