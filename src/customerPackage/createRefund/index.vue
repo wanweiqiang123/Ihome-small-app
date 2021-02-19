@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-17 09:23:15
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-05 16:19:14
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-02-19 09:39:00
 -->
 <template>
   <view>
@@ -247,9 +247,9 @@ export default {
           getApp().noticeInfo = {
             ...res,
             notificationType: "RefundApplication",
-            type: "view",
+            type: "sign",
           };
-          uni.navigateTo({
+          uni.redirectTo({
             url: `/customerPackage/notification/index`,
           });
         } else {
