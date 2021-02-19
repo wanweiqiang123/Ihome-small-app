@@ -339,6 +339,7 @@ export async function postdealReportRecordApi(data = {}, option = {}) {
 export async function geiPayApplyDetail(data = {}, option = {}) {
   return await postApi(`/sales-api/payoff/payApply/wechat/detail/${data.id}`, option);
 }
+
 // 员工成交列表查询
 export async function postPayDealApi(data = {}, option = {}) {
   return await postApi(`/sales-api/payoff/payDeal/wechat/staff/getList`, data, option);
@@ -347,4 +348,9 @@ export async function postPayDealApi(data = {}, option = {}) {
 // 创建付款申请单
 export async function postCreatepayApplyApi(data = {}, option = {}) {
   return await postApi(`/sales-api/payoff/payApply/wechat/create`, data, option);
+}
+
+// 查询结佣成交详情
+export async function geiPayDealDetail(data = {}, option = {}) {
+  return await postApi(`/sales-api/payoff/payApply/wechat/deal/detail/${data.dealCode}`, option);
 }
