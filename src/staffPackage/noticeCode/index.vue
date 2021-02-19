@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 17:10:39
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-21 15:05:06
+ * @LastEditTime: 2021-02-19 17:36:07
 -->
 <template>
   <LoginPage>
@@ -71,12 +71,16 @@
               @click="preview(src)"
             ></u-image>
           </view>
-          <view class="btn">
-            <u-button
+          <view
+            class="btn"
+            style="font-size: 26rpx; text-align: center;"
+          >
+            下载二维码, 可以点击二维码进行长按保存
+            <!-- <u-button
               type="primary"
               :loading="loading"
               @click="savePoster()"
-            >下载二维码</u-button>
+            >下载二维码</u-button> -->
           </view>
         </view>
       </u-popup>
