@@ -324,3 +324,8 @@ export async function postDealListApi(data = {}, option = {}) {
 export async function postdealReportRecordApi(data = {}, option = {}) {
   return await postApi(`/sales-api/deal/deal/dealReportRecord`, data, option);
 }
+
+// 查询结佣详情
+export async function geiPayApplyDetail(data = {}, option = {}) {
+  return await postApi(`/sales-api/payoff/payApply/wechat/detail/${data.id}`, option);
+}
