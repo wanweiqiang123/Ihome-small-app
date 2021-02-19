@@ -4,14 +4,13 @@
  * @Author: lsj
  * @Date: 2020-11-26 14:24:10
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-19 14:05:37
+ * @LastEditTime: 2021-02-19 15:59:38
 -->
 <template>
   <view class="initiate-commission-wrapper">
     <view class="form-wrapper">
       <u-form
         :model="info"
-        ref="info"
         :label-width="190"
       >
         <u-form-item
@@ -69,7 +68,7 @@
     <view class="form-wrapper">
       <view class="form-title u-border-bottom">收款信息</view>
       <u-form
-        :model="info"
+        :model="info.payApplyVO"
         ref="info"
         :label-width="190"
       >
@@ -77,6 +76,8 @@
           label="收款帐号"
           right-icon="arrow-right"
           class="hide-icon"
+          required
+          prop="receiveAccount"
         >
           <u-input
             @click="showAccount = true"
@@ -90,6 +91,8 @@
           label="发票类型"
           right-icon="arrow-right"
           class="hide-icon"
+          required
+          prop="invoiceTypeName"
         >
           <u-input
             @click="showInvoiceType = true"
@@ -103,6 +106,8 @@
           label="发票税率"
           right-icon="arrow-right"
           class="hide-icon"
+          required
+          prop="taxRateName"
         >
           <u-input
             @click="showInvoiceTaxRate = true"
@@ -118,7 +123,6 @@
       <view class="form-title u-border-bottom">佣金结算</view>
       <u-form
         :model="info"
-        ref="info"
         :label-width="190"
       >
         <u-form-item label="本单佣金">
@@ -175,7 +179,6 @@
       <view class="form-title u-border-bottom">说明</view>
       <u-form
         :model="info"
-        ref="info"
         :label-width="190"
       >
         <u-form-item label="申请说明">
@@ -359,6 +362,8 @@ export default {
           agencyName: "",
           invoiceType: "",
           receiveAccount: "",
+          invoiceTypeName: "",
+          taxRateName: "",
           taxRate: "",
           bendanNum: 0,
           noTaxAmount: 0,
@@ -366,6 +371,17 @@ export default {
         },
         documentList: [], //附件信息
         payApplyDetailList: [], // 待付款列表信息
+      },
+      infoRules: {
+        receiveAccount: [
+          { required: true, message: "请选择收款帐号", trigger: "change" },
+        ],
+        invoiceTypeName: [
+          { required: true, message: "请选择发票类型", trigger: "change" },
+        ],
+        taxRateName: [
+          { required: true, message: "请选择发票税率", trigger: "change" },
+        ],
       },
       dealList: [], // 成交报告list
       showDealList: [], // 展示的成交报告list
@@ -407,6 +423,11 @@ export default {
         return false;
       }
     },
+  },
+  onReady() {
+    this.$nextTick(() => {
+      this.$refs.info.setRules(this.infoRules);
+    });
   },
   async onLoad() {
     this.info.payApplyVO.agencyId = this.$storageTool.getUserInfo().channelId;
@@ -696,25 +717,29 @@ export default {
     },
     // 提交
     async handleSubmit() {
-      let obj = {
-        payApplyVO: {},
-        documentList: [],
-        payApplyDetailList: [],
-      };
-      let arr = [];
-      obj.payApplyVO = { ...this.info.payApplyVO };
-      this.showDealList.forEach((v) => {
-        arr = arr.concat(v.dealList);
-      });
-      obj.payApplyDetailList = arr;
-      this.dictList.forEach((v) => {
-        obj.documentList = obj.documentList.concat(v.fileList);
-      });
-      console.log(obj);
-      await postCreatepayApplyApi(obj);
-      this.$tool.toast("提交成功");
-      uni.redirectTo({
-        url: `/channelPackage/myTab/pages/commissionList`,
+      this.$refs.info.validate(async (valid) => {
+        if (valid) {
+          let obj = {
+            payApplyVO: {},
+            documentList: [],
+            payApplyDetailList: [],
+          };
+          let arr = [];
+          obj.payApplyVO = { ...this.info.payApplyVO };
+          this.showDealList.forEach((v) => {
+            arr = arr.concat(v.dealList);
+          });
+          obj.payApplyDetailList = arr;
+          this.dictList.forEach((v) => {
+            obj.documentList = obj.documentList.concat(v.fileList);
+          });
+          console.log(obj);
+          await postCreatepayApplyApi(obj);
+          this.$tool.toast("提交成功");
+          uni.redirectTo({
+            url: `/channelPackage/myTab/pages/commissionList`,
+          });
+        }
       });
     },
   },

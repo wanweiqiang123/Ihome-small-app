@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-24 16:24:02
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-03 19:18:51
+ * @LastEditTime: 2021-02-19 15:40:30
 -->
 <template>
   <view class="report-detail-wrapper">
@@ -55,7 +55,7 @@
     <view class="step-wrapper">
       <view
         :class="currentStep === 0 ? 'step-item step-bg' : 'step-item'"
-        @click="handleStep(0)"
+        @click="handleStep('baobei')"
       >报备</view>
       <view>
         <u-line
@@ -65,7 +65,7 @@
       </view>
       <view
         :class="currentStep === 1 ? 'step-item step-bg' : 'step-item'"
-        @click="handleStep(1)"
+        @click="handleStep('daofang')"
       >到访</view>
       <view>
         <u-line
@@ -75,7 +75,7 @@
       </view>
       <view
         :class="currentStep === 2 ? 'step-item step-bg' : 'step-item'"
-        @click="handleStep(2)"
+        @click="handleStep('chengjiao')"
       >成交</view>
     </view>
     <view
@@ -157,11 +157,11 @@
           </view>
           <view class="item-wrapper">
             <view class="item-title">拍照上传时间</view>
-            <view class="item-value">{{info.visitPhotoDate}}</view>
+            <view class="item-value">{{info.visitPhotoDate ? info.visitPhotoDate : '--'}}</view>
           </view>
           <view class="item-wrapper">
             <view class="item-title">到访时间</view>
-            <view class="item-value">{{info.visitDate}}</view>
+            <view class="item-value">{{info.visitDate ? info.visitDate : '--'}}</view>
           </view>
         </view>
       </view>
@@ -176,11 +176,11 @@
         <view class="info-item-wrapper">
           <view class="item-wrapper">
             <view class="item-title">审核结果</view>
-            <view class="item-value">{{info.visitDate}}</view>
+            <view class="item-value">{{info.visitDate ? info.visitDate : '--'}}</view>
           </view>
           <view class="item-wrapper">
             <view class="item-title">到访时间</view>
-            <view class="item-value">{{info.visitDate}}</view>
+            <view class="item-value">{{info.visitDate ? info.visitDate : '--'}}</view>
           </view>
         </view>
       </view>
@@ -275,6 +275,7 @@ export default {
         ...res,
         projectPic: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${res.projectPic}`,
       };
+      console.log(res);
     },
     // 获取字典
     async getDictAll(type) {
@@ -296,8 +297,26 @@ export default {
       this.laterNum = this.info.mobile.slice(7);
     },
     // 当前进度
-    handleStep(index) {
-      this.currentStep = index;
+    handleStep(val) {
+      switch (val) {
+        case "daofang":
+          if (["ValidVisit", "InvalidVisit"].includes(this.info.reportStatus)) {
+            this.currentStep = 1;
+          }
+          break;
+        case "chengjiao":
+          if (
+            ["NewDeal", "ValidDeal", "InvalidDeal"].includes(
+              this.info.reportStatus
+            )
+          ) {
+            this.currentStep = 2;
+          }
+          break;
+        default:
+          this.currentStep = 0;
+          break;
+      }
     },
     changePhone(value) {
       this.allPhoneNumber = value;
