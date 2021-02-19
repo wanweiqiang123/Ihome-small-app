@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-16 11:17:22
+ * @LastEditTime: 2021-02-19 14:49:26
 -->
 <template>
   <LoginPage>
@@ -424,6 +424,7 @@ import {
   phoneValidator,
   validIdentityCard,
   noTrim,
+  isNumberValidato,
 } from "../../common/validate.js";
 import { currentEnvConfig } from "../../env-config.js";
 import storageTool from "../../common/storageTool.js";
@@ -523,7 +524,8 @@ export default {
         ],
         ownerMobile: [
           { required: true, message: "请输入经办人号码", trigger: "change" },
-          { validator: phoneValidator, trigger: "change" },
+          { validator: isNumberValidato, trigger: "change" },
+          { max: 12, message: "长度不能超过12位", trigger: "change" },
         ],
         ownerCertificateNo: [
           { required: true, message: "请输入营业执照编号", trigger: "change" },
