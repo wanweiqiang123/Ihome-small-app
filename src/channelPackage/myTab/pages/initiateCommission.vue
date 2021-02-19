@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-26 14:24:10
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-19 11:11:24
+ * @LastEditTime: 2021-02-19 11:46:54
 -->
 <template>
   <view class="initiate-commission-wrapper">
@@ -54,7 +54,7 @@
         v-for="(key, k) in item.dealList"
         :key="k"
       >
-        <view>
+        <view @click="viewDealDetail(key.dealCode)">
           <view class="code">成交报告编号：{{key.dealCode}}</view>
           <view>本单佣金：{{key.actualAmount}}</view>
         </view>
@@ -247,7 +247,7 @@
             <view class="u-padding-bottom-15">成交日期：{{item.signDate}}</view>
           </view>
         </view>
-        <view class="add-btn-wrapper">
+        <view class="add-btn-wrapper safe-area-inset-bottom">
           <view
             class="left"
             @click="showProject = false"
@@ -271,6 +271,7 @@
             :model="projectCaseForm"
             ref="projectCaseForm"
             :label-width="190"
+            label-position="top"
           >
             <u-form-item
               label="项目周期"
@@ -294,7 +295,7 @@
             </u-form-item>
           </u-form>
         </view>
-        <view class="add-btn-wrapper">
+        <view class="add-btn-wrapper safe-area-inset-bottom">
           <view
             class="left"
             @click="projectCaseFormReset"
@@ -396,19 +397,23 @@ export default {
   },
   computed: {
     allChecked() {
-      if (this.dealList.every((v) => v.checked)) {
-        return true;
+      if (this.dealList.length) {
+        if (this.dealList.every((v) => v.checked)) {
+          return true;
+        } else {
+          return false;
+        }
       } else {
         return false;
       }
     },
   },
   async onLoad() {
-    // this.info.payApplyVO.agencyId = this.$storageTool.getUserInfo().channelId;
-    // this.info.payApplyVO.agencyName = this.$storageTool.getUserInfo().name;
+    this.info.payApplyVO.agencyId = this.$storageTool.getUserInfo().channelId;
+    this.info.payApplyVO.agencyName = this.$storageTool.getUserInfo().name;
     // 假数据
-    this.info.payApplyVO.agencyId = 508;
-    this.info.payApplyVO.agencyName = "渠道1232020";
+    // this.info.payApplyVO.agencyId = 508;
+    // this.info.payApplyVO.agencyName = "渠道1232020";
     this.getChannelInfo(this.info.payApplyVO.agencyId);
     let res = await this.getDictAll("PayoffFileType");
     this.PayoffFileType = res.filter((v) =>
@@ -552,8 +557,7 @@ export default {
     async getDealList() {
       const res = await postPayDealApi({
         projectId: this.info.payApplyVO.projectId,
-        // agencyId: this.$storageTool.getUserInfo().channelId,
-        agencyId: 508,
+        agencyId: this.$storageTool.getUserInfo().channelId,
         pageNum: 1,
         pageSize: 500,
         ...this.projectCaseForm,
@@ -685,10 +689,9 @@ export default {
       });
     },
     // 查看结佣成交详情
-    viewDealDetail(item) {
-      console.log(item);
+    viewDealDetail(code) {
       uni.navigateTo({
-        url: `/channelPackage/myTab/pages/dealDetails`,
+        url: `/channelPackage/myTab/pages/dealDetails?code=${code}&&type=commission`,
       });
     },
     // 提交

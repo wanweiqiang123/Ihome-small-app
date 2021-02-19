@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-26 10:15:18
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-18 20:19:33
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-19 11:58:23
 -->
 <template>
   <view class="commission-wrapper">
@@ -82,7 +82,7 @@
         mode="list"
       ></u-empty>
     </view>
-    <view class="bottom-btn">
+    <view class="bottom-btn safe-area-inset-bottom">
       <u-button
         type="primary"
         @click="sponsorCommission"
@@ -281,13 +281,15 @@ export default {
   }
 
   .bottom-btn {
-    width: 100%;
-    height: 100rpx;
-    box-sizing: border-box;
-    padding: 10rpx 50rpx;
+    height: 90rpx;
+    box-sizing: content-box;
+    padding-top: 10rpx;
+    padding-left: 50rpx;
+    padding-right: 50rpx;
     background-color: #ffffff;
     position: fixed;
     left: 0rpx;
+    right: 0;
     bottom: 0rpx;
     z-index: 9999;
   }

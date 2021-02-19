@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-12-17 14:29:26
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-18 14:27:54
+ * @LastEditTime: 2021-02-19 11:34:31
  */
 
 /**各环境变量参数
@@ -12,7 +12,7 @@
  * @return {*}
  */
 const envConfig = {
-    trial: {
+    develop: {
         //开发环境
         "env": "develop",
         "envName": "开发环境",
@@ -23,7 +23,7 @@ const envConfig = {
         "pcDomain": "web.polyihome.develop",
 
     },
-    develop: {
+    trial: {
         //测试环境（体验版）
         "env": "trial",
         "envName": "测试环境（体验版）",
