@@ -1212,7 +1212,7 @@ export default {
         // 构建附件表格数据
         await this.getDocumentList(item[0].value);
         // 判断是否可以手动添加优惠告知书
-        await this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus, null);
+        await this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.baseInfoByTerm.termStageEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus, null);
       }
     },
     // 确定选择分销协议
@@ -1238,7 +1238,7 @@ export default {
       // 初始化收派套餐
       this.initReceive();
       // 判断是否可以手动添加优惠告知书
-      this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus, isVoidFlag);
+      this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.baseInfoByTerm.termStageEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus, isVoidFlag);
     },
     // 选择时间
     handleSelectDate(type) {
@@ -1267,9 +1267,10 @@ export default {
       }
     },
     // 判断是否可以手动添加优惠告知书
-    canAddNoticeItem(charge = '', contType = '', Status = '', isVoidService = null) {
+    canAddNoticeItem(charge = '', termStageEnum = '', contType = '', Status = '', isVoidService = null) {
       let postData = {
         charge: charge, // 启动模式(Service-服务费、Agent-代理费、ServiAndAgen-服务费+代理费)
+        termStageEnum: termStageEnum, // 项目周期阶段
         contType: contType, // 合同类型(DistriDeal-分销成交、NaturalVisitDeal-自然来访成交、SelfChannelDeal-自渠成交)
         dealNoticeStatus: Status, // 优惠告知书情况(NoneNotice-没有优惠告知书、OneNotice-一份优惠告知书、MultipleNotice-多份优惠告知书)
         isVoidService: isVoidService, // 是否免受服务费
