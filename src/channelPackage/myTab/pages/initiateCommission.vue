@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-26 14:24:10
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-19 15:59:38
+ * @LastEditTime: 2021-02-19 17:32:02
 -->
 <template>
   <view class="initiate-commission-wrapper">
@@ -736,7 +736,7 @@ export default {
           console.log(obj);
           await postCreatepayApplyApi(obj);
           this.$tool.toast("提交成功");
-          uni.redirectTo({
+          uni.reLaunch({
             url: `/channelPackage/myTab/pages/commissionList`,
           });
         }
