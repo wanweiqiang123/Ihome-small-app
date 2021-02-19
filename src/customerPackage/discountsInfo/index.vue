@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-03 16:55:56
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-02-19 09:35:29
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -50,8 +50,9 @@
             <view
               style="color: #F56C6C"
               class="receipt-text"
-              @click="gotoSign('RefundApplication')"
+              @click="handleToRefund"
             >您有一份退款申请待签署，点击前往处理</view>
+            <!-- gotoSign('RefundApplication') -->
           </template>
           <template v-else>
             <view class="info-first-paid">未付金额</view>
@@ -427,6 +428,12 @@ export default {
         this.info = { ...res };
         this.payAuditNum = await getNotCheckNumApi(this.noticeId);
       }
+    },
+
+    handleToRefund() {
+      uni.navigateTo({
+        url: "/customerPackage/createRefund/index?id=" + this.noticeId,
+      });
     },
 
     gotoSign(type) {

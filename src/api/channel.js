@@ -3,8 +3,8 @@
  * @version:
  * @Author: lsj
  * @Date: 2020-12-15 10:10:10
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-09 16:45:15
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-02-18 19:32:05
  */
 import { getApi, postApi } from '@/common/http';
 import { currentEnvConfig } from '@/env-config';
@@ -244,8 +244,15 @@ export async function getDistributionDetailApi(id, option = {}) {
   return await getApi(url, {}, option);
 }
 
-
-
+/**
+ * @description: 查询结佣列表
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function payApplyList(data = {}, option = {}) {
+  return await postApi('/sales-api/payoff/payApply/wechat/channel/list', data, option)
+}
 
 
 // 收藏或者取消项目
@@ -316,4 +323,9 @@ export async function postDealListApi(data = {}, option = {}) {
 // 根据主成交报告编号及渠道商id，查询房产信息、主客户信息及佣金数据；
 export async function postdealReportRecordApi(data = {}, option = {}) {
   return await postApi(`/sales-api/deal/deal/dealReportRecord`, data, option);
+}
+
+// 查询结佣详情
+export async function geiPayApplyDetail(data = {}, option = {}) {
+  return await postApi(`/sales-api/payoff/payApply/wechat/detail/${data.id}`, option);
 }

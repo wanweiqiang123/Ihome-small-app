@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-27 08:14:50
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-15 14:00:04
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-02-18 11:20:45
 -->
 <template>
   <view class="deal-details-wrapper">
@@ -63,10 +63,7 @@
         </u-form-item>
       </u-form>
     </view>
-    <view
-      class="info-item"
-      v-if="detailsType === 'commission'"
-    >
+    <view class="info-item" v-if="detailsType === 'commission'">
       <view class="form-title u-border-bottom">结佣信息</view>
       <u-form :label-width="190">
         <u-form-item label="可结佣金">
@@ -107,17 +104,10 @@
         </u-form-item>
       </u-form>
     </view>
-    <view
-      class="info-item"
-      v-if="detailsType === 'commission'"
-    >
+    <view class="info-item" v-if="detailsType === 'commission'">
       <view class="form-title u-border-bottom">结佣记录</view>
       <view class="form u-padding-0">
-        <view
-          class="record-list"
-          v-for="item in [2,3,4,5,6]"
-          :key="item"
-        >
+        <view class="record-list" v-for="item in [2, 3, 4, 5, 6]" :key="item">
           <view class="record-code">
             <view class="code">JY013246683</view>
             <view class="price">结佣金额：500.00</view>
@@ -126,52 +116,41 @@
         </view>
       </view>
     </view>
-    <view
-      class="info-item"
-      v-if="detailsType === 'report'"
-    >
+    <view class="info-item" v-if="detailsType === 'report'">
       <view class="form-title u-border-bottom">结佣信息</view>
       <view class="u-margin-20">
         <u-table>
           <u-tr>
-            <u-th
-              v-for="thItem in tableData.thList"
-              :key="thItem.id"
-            >{{thItem.name}}</u-th>
+            <u-th v-for="thItem in tableData.thList" :key="thItem.id">{{
+              thItem.name
+            }}</u-th>
           </u-tr>
-          <u-tr
-            v-for="trItem in tableData.trList"
-            :key="trItem.id"
-          >
-            <u-td
-              v-for="tdItem in trItem.value"
-              :key="tdItem.id"
-            >{{tdItem}}</u-td>
+          <u-tr v-for="trItem in tableData.trList" :key="trItem.id">
+            <u-td v-for="tdItem in trItem.value" :key="tdItem.id">{{
+              tdItem
+            }}</u-td>
           </u-tr>
         </u-table>
       </view>
     </view>
-    <view
-      class="info-item"
-      v-if="detailsType === 'report'"
-    >
+    <view class="info-item" v-if="detailsType === 'report'">
       <view class="form-title u-border-bottom">附件信息</view>
       <view class="form-img">
         <view class="image-item">
-          <view
-            class="images"
-            v-for="(item, index) in dictList"
-            :key="index"
-          >
+          <view class="images" v-for="(item, index) in dictList" :key="index">
             <template v-if="item.srcList.length">
-              <text class="img-type">{{item.name}}</text>
+              <view>
+                <text class="img-type">{{ item.name }}</text>
+              </view>
+
               <u-image
                 v-for="(image, h) in item.srcList"
                 :key="h"
                 width="160"
                 height="160"
                 :src="image"
-                @click="imageShow(item.srcList)"
+                style="display: inline-block; padding: 10rpx"
+                @click="imageShow(item.srcList, h)"
               ></u-image>
             </template>
           </view>
@@ -348,10 +327,10 @@ export default {
         return "";
       }
     },
-    imageShow(src) {
+    imageShow(src, i) {
       uni.previewImage({
         urls: src,
-        current: 1,
+        current: i,
       });
     },
   },

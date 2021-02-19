@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-13 15:13:13
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-09 10:19:44
+ * @LastEditTime: 2021-02-17 18:36:55
 -->
 <template>
   <view class="container safe-area-inset-bottom">
@@ -98,14 +98,16 @@
             :custom-style="{ padding: '0 40rpx', marginRight: '20rpx' }"
             size="mini"
             type="primary"
+            @click="handleGoto(i)"
           >上传附件</u-button>
-          <u-button
-            v-if="current === 1 && !i.dealCode"
-            shape="circle"
-            :custom-style="{ padding: '0 40rpx' }"
-            size="mini"
-            type="success"
-          >生成成交报告</u-button>
+<!--          <u-button-->
+<!--            v-if="current === 1 && !i.dealCode"-->
+<!--            shape="circle"-->
+<!--            :custom-style="{ padding: '0 40rpx' }"-->
+<!--            size="mini"-->
+<!--            @click="handleAddDeal(i)"-->
+<!--            type="success"-->
+<!--          >生成成交报告</u-button>-->
           <template v-if="current === 0">
             <u-button
               size="mini"
@@ -292,6 +294,18 @@ export default {
           reportStatus: this.reportStatus,
         })
       );
+    },
+    handleGoto(item) {
+      uni.navigateTo({
+        url: `/staffPackage/upload/index?id=${item.id}`,
+      });
+    },
+    // 生成成交报告
+    handleAddDeal(item) {
+      if (!item.id) return;
+      uni.navigateTo({
+        url: `/staffPackage/dealConfirm/entryDeal?id=${item.id}`,
+      });
     },
   },
   onLoad() {

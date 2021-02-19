@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-17 10:54:41
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-09 09:39:01
+ * @LastEditTime: 2021-02-17 18:32:17
 -->
 <template>
   <view class="container safe-area-inset-bottom">
@@ -88,6 +88,7 @@
             :custom-style="{ padding: '0 40rpx', marginRight: '20rpx' }"
             size="mini"
             type="primary"
+            @click="handleGoto(i)"
           >上传附件</u-button>
           <template v-if="current === 0">
             <u-button
@@ -271,6 +272,11 @@ export default {
       this.tablePage = [];
       this.queryPageParameters.pageNum = 1;
       this.getListMixin();
+    },
+    handleGoto(item) {
+      uni.navigateTo({
+        url: `/staffPackage/upload/index?id=${item.id}`,
+      });
     },
   },
   onLoad() {

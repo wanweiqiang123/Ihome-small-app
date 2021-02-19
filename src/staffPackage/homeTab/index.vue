@@ -3,20 +3,26 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
- * @LastEditors: zyc
- * @LastEditTime: 2021-02-17 11:25:53
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-02-18 09:45:10
 -->
 <template>
   <LoginPage>
     <StaffTabBar>
       <view class="home-tab-container">
         <view class="nav-grid">
-          <swiper @change="handleChangeSwiper" class="ih-grid-swiper">
+          <swiper
+            @change="handleChangeSwiper"
+            class="ih-grid-swiper"
+          >
             <swiper-item
               v-for="(gridItem, i) in handleFilterList(8, gridList)"
               :key="i"
             >
-              <u-grid :col="4" :border="false">
+              <u-grid
+                :col="4"
+                :border="false"
+              >
                 <u-grid-item
                   v-for="(item, index) in gridItem"
                   :index="item.path"
@@ -29,7 +35,10 @@
                   count="0"
                   :offset="[15, 45]"
                 ></u-badge> -->
-                  <u-icon :name="item.icon" :size="82"></u-icon>
+                  <u-icon
+                    :name="item.icon"
+                    :size="82"
+                  ></u-icon>
                   <text class="grid-text">{{ item.item }}</text>
                 </u-grid-item>
               </u-grid>
@@ -87,7 +96,7 @@ export default {
     };
   },
   created() {
-    this.gridList = [
+    let gridList = [
       {
         icon: require("../common/icon/report.png"),
         path: "/staffPackage/reportConfirm/index",
@@ -153,6 +162,7 @@ export default {
         isShow: this.$has("B.WXAPP.STAFF.STAFFHOME.NOTIFICATION"),
       },
     ];
+    this.gridList = gridList.filter((i) => i.isShow);
     console.log(this.gridList);
   },
   onLoad() {},
