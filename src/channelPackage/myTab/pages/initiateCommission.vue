@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-26 14:24:10
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-19 11:46:54
+ * @LastEditTime: 2021-02-19 14:05:37
 -->
 <template>
   <view class="initiate-commission-wrapper">
@@ -710,6 +710,7 @@ export default {
       this.dictList.forEach((v) => {
         obj.documentList = obj.documentList.concat(v.fileList);
       });
+      console.log(obj);
       await postCreatepayApplyApi(obj);
       this.$tool.toast("提交成功");
       uni.redirectTo({

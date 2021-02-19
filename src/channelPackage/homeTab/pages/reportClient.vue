@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-24 09:58:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-18 11:03:18
+ * @LastEditTime: 2021-02-19 15:19:42
 -->
 <template>
   <view class="report-client-wrapper">
@@ -346,6 +346,13 @@ export default {
         title: "成交登记",
       });
       this.pageType = "dealReg";
+      const msg = getApp().myReport;
+      this.custormInfo.name = msg.name;
+      this.custormInfo.sex = msg.sex;
+      this.custormInfo.mobile = msg.mobile;
+      this.info.proId = msg.proId;
+      this.info.proName = msg.proName;
+      this.homeImg = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${msg.projectPic}`;
     } else {
       this.pageType = "";
     }
@@ -463,6 +470,7 @@ export default {
           obj.roomId = this.buildForm.roomId;
           obj.subBuildingId = this.buildForm.subBuildingId;
           await postAddDealtApi(obj);
+          getApp().myReport = {};
           this.$tool.toast("登记成功");
           uni.redirectTo({
             url: `/channelPackage/myTab/pages/myReport`,

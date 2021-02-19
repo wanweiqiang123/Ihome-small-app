@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-24 15:22:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-04 11:29:40
+ * @LastEditTime: 2021-02-19 14:57:22
 -->
 <template>
   <view class="my-report-wrapper">
@@ -63,7 +63,7 @@
           <u-button
             shape="circle"
             type="error"
-            @click="handleDealRegister(item.id)"
+            @click="handleDealRegister(item)"
             v-show="currentTabs === 1"
           >成交登记</u-button>
         </view>
@@ -143,9 +143,10 @@ export default {
       this.getListMixin();
     },
     // 成交登记
-    handleDealRegister(id) {
+    handleDealRegister(item) {
+      getApp().myReport = { ...item };
       uni.navigateTo({
-        url: `/channelPackage/homeTab/pages/reportClient?type=dealReg&&id=${id}`,
+        url: `/channelPackage/homeTab/pages/reportClient?type=dealReg&&id=${item.id}`,
       });
     },
     // 上传附件

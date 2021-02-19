@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-01 16:18:21
+ * @LastEditTime: 2021-02-19 15:23:47
 -->
 <template>
   <LoginPage>
@@ -365,6 +365,7 @@ export default {
       Promise.all(this.arr)
         .then(async () => {
           this.form.ownerList = [...this.ownerList];
+          console.log(this.form);
           const res = await postNoticeCreateApi(this.form);
           uni.showToast({
             title: "保存成功",
