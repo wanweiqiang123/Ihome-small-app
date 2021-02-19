@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-01 16:18:21
+ * @LastEditTime: 2021-02-19 16:53:03
 -->
 <template>
   <LoginPage>
@@ -284,6 +284,7 @@ export default {
     // 获取页面信息
     async getInfo() {
       const res = await getDetailApi(this.noticeId);
+      console.log(res);
       this.form = {
         channel: "Customer",
         cycleId: res.termId,
@@ -301,6 +302,7 @@ export default {
         buyUnitName: "",
         roomNo: "",
         roomNumberId: "",
+        exPreferentialItem: res.exPreferentialItem,
       };
       this.proId = res.proId;
       this.buildingBlockList = await postBuildByProId({
@@ -365,15 +367,17 @@ export default {
       Promise.all(this.arr)
         .then(async () => {
           this.form.ownerList = [...this.ownerList];
+          console.log(this.form);
           const res = await postNoticeCreateApi(this.form);
           uni.showToast({
             title: "保存成功",
             icon: "none",
           });
           getApp().noticeInfo = {
-            ...res,
+            id: res.noticeId,
+            templateId: res.templateId,
             notificationType: "Notification",
-            type: "view",
+            type: "sign",
           };
           uni.navigateTo({
             url: `/customerPackage/notification/index`,

@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-19 09:35:29
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-19 16:29:14
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -444,7 +444,9 @@ export default {
     },
 
     gotoSignMore() {
-      getApp().signMoreData = this.info.noticeList;
+      getApp().signMoreData = this.info.noticeList.filter(
+        (v) => v.notificationStatus === "WaitPay"
+      );
       uni.navigateTo({
         url: `/customerPackage/signMore/index`,
       });
