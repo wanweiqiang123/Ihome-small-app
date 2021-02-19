@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-19 16:45:11
+ * @LastEditTime: 2021-02-19 16:53:03
 -->
 <template>
   <LoginPage>
@@ -374,7 +374,8 @@ export default {
             icon: "none",
           });
           getApp().noticeInfo = {
-            ...res,
+            id: res.noticeId,
+            templateId: res.templateId,
             notificationType: "Notification",
             type: "sign",
           };
