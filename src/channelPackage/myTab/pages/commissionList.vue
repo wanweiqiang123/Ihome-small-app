@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-26 10:15:18
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-18 19:11:56
+ * @LastEditTime: 2021-02-18 20:19:33
 -->
 <template>
   <view class="commission-wrapper">
@@ -102,7 +102,7 @@
           :border-bottom="false"
         >
           <IhCheckbox
-            v-model="queryPageParameters.statusList"
+            v-model="queryPageParameters.appletsChannelInquiryList"
             :arr="searchList"
             :alias="{ name: 'name', value: 'code' }"
           ></IhCheckbox>
@@ -129,7 +129,7 @@ export default {
     return {
       keyword: "",
       queryPageParameters: {
-        statusList: [],
+        appletsChannelInquiryList: [],
       },
       showSearchWin: false,
       searchList: [],
@@ -151,7 +151,7 @@ export default {
     checkText() {},
     reset() {
       Object.assign(this.queryPageParameters, {
-        statusList: [],
+        appletsChannelInquiryList: [],
       });
     },
     confirm() {

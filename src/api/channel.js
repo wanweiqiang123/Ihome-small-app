@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-15 10:10:10
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-18 11:08:28
+ * @LastEditTime: 2021-02-18 19:32:05
  */
 import { getApi, postApi } from '@/common/http';
 import { currentEnvConfig } from '@/env-config';
@@ -251,7 +251,7 @@ export async function getDistributionDetailApi(id, option = {}) {
  * @return {*} Promise
  */
 export async function payApplyList(data = {}, option = {}) {
-  return await postApi('/sales-api/payoff/payApply/wechat/staff/list', data, option)
+  return await postApi('/sales-api/payoff/payApply/wechat/channel/list', data, option)
 }
 
 
