@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-12-17 14:29:26
- * @LastEditors: zyc
- * @LastEditTime: 2021-01-21 20:54:38
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-18 14:27:54
  */
 
 /**各环境变量参数
@@ -12,7 +12,7 @@
  * @return {*}
  */
 const envConfig = {
-    develop: {
+    trial: {
         //开发环境
         "env": "develop",
         "envName": "开发环境",
@@ -21,9 +21,9 @@ const envConfig = {
         "apiDomain": "devapi.polyihome.com",
         "h5Domain": "m.polyihome.develop",
         "pcDomain": "web.polyihome.develop",
- 
+
     },
-    trial: {
+    develop: {
         //测试环境（体验版）
         "env": "trial",
         "envName": "测试环境（体验版）",

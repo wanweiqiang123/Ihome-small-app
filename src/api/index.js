@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 10:09:50
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-08 16:53:30
+ * @LastEditTime: 2021-02-19 10:00:47
  */
 
 import { getApi, postApi } from '../common/http.js';
@@ -201,13 +201,15 @@ export async function postChannelByNameApi(data, option = {}) {
 export async function getAllDictByType(data = {}, option = {}) {
     return await postApi(`/sales-api/system/dict/getAllByTypes`, data, option)
 }
-
 /**查询客户列表*/
 export async function postCustomerGetCustList(data, option = {}) {
     return await postApi('/sales-api/customer/customer/getCustList', data, option)
 }
-
 /**查询客户列表*/
 export async function postNoticeDealList(data, option = {}) {
     return await postApi('/sales-api/contract/notice/deal/list', data, option)
+}
+// 通过项目ID获取已经审核周期列表【移动端】
+export async function postTermListByProIdApi(data = {}, option = {}) {
+    return await postApi(`/sales-api/project/term/getTermListByProId`, data, option);
 }

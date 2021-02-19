@@ -3,8 +3,8 @@
  * @version:
  * @Author: lsj
  * @Date: 2020-12-15 10:10:10
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-18 19:32:05
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-19 10:32:21
  */
 import { getApi, postApi } from '@/common/http';
 import { currentEnvConfig } from '@/env-config';
@@ -328,4 +328,13 @@ export async function postdealReportRecordApi(data = {}, option = {}) {
 // 查询结佣详情
 export async function geiPayApplyDetail(data = {}, option = {}) {
   return await postApi(`/sales-api/payoff/payApply/wechat/detail/${data.id}`, option);
+}
+// 员工成交列表查询
+export async function postPayDealApi(data = {}, option = {}) {
+  return await postApi(`/sales-api/payoff/payDeal/wechat/staff/getList`, data, option);
+}
+
+// 创建付款申请单
+export async function postCreatepayApplyApi(data = {}, option = {}) {
+  return await postApi(`/sales-api/payoff/payApply/wechat/create`, data, option);
 }
