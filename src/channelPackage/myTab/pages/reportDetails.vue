@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-24 16:24:02
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-19 15:40:30
+ * @LastEditTime: 2021-02-19 16:09:06
 -->
 <template>
   <view class="report-detail-wrapper">
@@ -89,31 +89,31 @@
         <view class="info-item-wrapper">
           <view class="item-wrapper">
             <view class="item-title">报备人</view>
-            <view class="item-value">{{info.reportUser}}</view>
+            <view class="item-value">{{info.reportUser ? info.reportUser : '--'}}</view>
           </view>
           <view class="item-wrapper">
             <view class="item-title">联系电话</view>
-            <view class="item-value">{{info.reportMobile}}</view>
+            <view class="item-value">{{info.reportMobile ? info.reportMobile : '--'}}</view>
           </view>
           <view class="item-wrapper">
             <view class="item-title">报备时间</view>
-            <view class="item-value">{{info.reportDate}}</view>
+            <view class="item-value">{{info.reportDate ? info.reportDate : '--'}}</view>
           </view>
           <view class="item-wrapper">
             <view class="item-title">所属公司</view>
-            <view class="item-value">{{info.channelName}}</view>
+            <view class="item-value">{{info.channelName ? info.channelName : '--'}}</view>
           </view>
           <view class="item-wrapper">
             <view class="item-title">预计到访人数</view>
-            <view class="item-value">{{info.expectedNumber}}</view>
+            <view class="item-value">{{info.expectedNumber ? info.expectedNumber : '--'}}</view>
           </view>
           <view class="item-wrapper">
             <view class="item-title">预计到访时间</view>
-            <view class="item-value">{{info.expectedTime}}</view>
+            <view class="item-value">{{info.expectedTime ? info.expectedTime : '--'}}</view>
           </view>
           <view class="item-wrapper">
             <view class="item-title">备注信息</view>
-            <view class="item-value">{{info.remark}}</view>
+            <view class="item-value">{{info.remark ? info.remark : '--'}}</view>
           </view>
         </view>
       </view>
@@ -128,11 +128,11 @@
         <view class="info-item-wrapper">
           <view class="item-wrapper">
             <view class="item-title">审核结果</view>
-            <view class="item-value">{{getDictName(info.reportStatus, ReportStatus)}}</view>
+            <view class="item-value">{{info.reportStatus ? getDictName(info.reportStatus, ReportStatus) : '--'}}</view>
           </view>
           <view class="item-wrapper">
             <view class="item-title">审核时间</view>
-            <view class="item-value">{{info.reportReviewDate}}</view>
+            <view class="item-value">{{info.reportReviewDate ? info.reportReviewDate : '--'}}</view>
           </view>
         </view>
       </view>
@@ -148,7 +148,7 @@
         <view class="info-item-wrapper">
           <view class="item-wrapper">
             <view class="item-title">是否拍照</view>
-            <view class="item-value">{{info.isPhotoVisit}}</view>
+            <view class="item-value">{{info.isPhotoVisit ? info.isPhotoVisit : '否'}}</view>
             <view
               v-if="info.isPhotoVisit === '是'"
               style="color: #0079fe"
@@ -196,15 +196,15 @@
         <view class="info-item-wrapper">
           <view class="item-wrapper">
             <view class="item-title">认购栋座</view>
-            <view class="item-value">{{info.subBuildingName}}</view>
+            <view class="item-value">{{info.subBuildingName ? info.subBuildingName : '--'}}</view>
           </view>
           <view class="item-wrapper">
             <view class="item-title">认购房号</view>
-            <view class="item-value">{{info.roomName}}</view>
+            <view class="item-value">{{info.roomName ? info.roomName : '--'}}</view>
           </view>
           <view class="item-wrapper">
             <view class="item-title">是否拍照</view>
-            <view class="item-value">{{info.isPhotoDeal}}</view>
+            <view class="item-value">{{info.isPhotoDeal ? info.isPhotoDeal : '否'}}</view>
             <view
               v-if="info.isPhotoDeal === '是'"
               style="color: #0079fe"
@@ -213,11 +213,11 @@
           </view>
           <view class="item-wrapper">
             <view class="item-title">拍照上传时间</view>
-            <view class="item-value">{{info.dealPhotoDate}}</view>
+            <view class="item-value">{{info.dealPhotoDate ? info.dealPhotoDate : '--'}}</view>
           </view>
           <view class="item-wrapper">
             <view class="item-title">成交时间</view>
-            <view class="item-value">{{info.dealDate}}</view>
+            <view class="item-value">{{info.dealDate ? info.dealDate : '--'}}</view>
           </view>
         </view>
       </view>

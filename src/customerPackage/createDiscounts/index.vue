@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-19 15:23:47
+ * @LastEditTime: 2021-02-19 16:24:56
 -->
 <template>
   <LoginPage>
@@ -301,6 +301,7 @@ export default {
         buyUnitName: "",
         roomNo: "",
         roomNumberId: "",
+        exPreferentialItem: res.exPreferentialItem,
       };
       this.proId = res.proId;
       this.buildingBlockList = await postBuildByProId({
