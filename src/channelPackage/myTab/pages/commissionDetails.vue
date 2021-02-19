@@ -151,18 +151,25 @@
           <view class="title">结佣材料清单</view>
           <view class="btn" @click="handleCancel">取消</view>
         </view>
-        <view
-          class="down-load-title"
-          v-for="(item, index) in downLoadList" :key="index">
+        <view class="down-load-title">
           <view class="title">
-            <u-image width="50rpx" height="50rpx" src=""></u-image>
+            <u-image width="50rpx" height="50rpx" :src="excelImg"></u-image>
             <text>结佣明细未盖章版</text>
           </view>
           <view class="btn">
-            <u-button type="primary" size="mini" shape="square" @click="handleConfirmDownLoad(item.fileId)">下载</u-button>
+            <u-button type="primary" size="mini" shape="square" @click="handleConfirmDownLoad('billForm')">下载</u-button>
           </view>
         </view>
-        <view class="down-load-tip">选择需要下载的附件材料点击下方按钮进行下载</view>
+        <view class="down-load-title">
+          <view class="title">
+            <u-image width="50rpx" height="50rpx" :src="pdfImg"></u-image>
+            <text>请款单未盖章版</text>
+          </view>
+          <view class="btn">
+            <u-button type="primary" size="mini" shape="square" @click="handleConfirmDownLoad('requestForm')">下载</u-button>
+          </view>
+        </view>
+        <view class="down-load-tip">点击下载后在文件预览页面通过右上角菜单可以转发、下载文件。</view>
       </view>
     </u-popup>
   </view>
@@ -203,10 +210,14 @@ export default {
         noTaxAmount: '',
         tax: '',
         description: '',
-        documentList: []
+        documentList: [],
+        billForm: '', // 结算单
+        requestForm: '', // 请款单
       },
       statusType: 'primary',
-      downLoadList: [{checked: false},{checked: false},{checked: false}]
+      downLoadList: [{checked: false},{checked: false},{checked: false}],
+      pdfImg: require('@/channelPackage/common/img/pdf.jpg'),
+      excelImg: require('@/channelPackage/common/img/excel.png'),
     };
   },
   async onLoad(option) {
@@ -255,10 +266,14 @@ export default {
       }
     },
     // 确定下载
-    handleConfirmDownLoad(fileId) {
-      console.log('确定下载');
-      if (!fileId) return;
-      let fileUrl = `${currentEnvConfig['protocol']}://${currentEnvConfig['apiDomain']}/sales-api/sales-document-cover/static/channel/模版-委托书.docx`;
+    handleConfirmDownLoad(type = '') {
+      // console.log('确定下载');
+      let fileId = this.paymentForm[type];
+      if (!fileId) {
+        this.$tool.toast("下载出错");
+        return;
+      }
+      let fileUrl = `${currentEnvConfig['protocol']}://${currentEnvConfig['apiDomain']}/sales-api/sales-document-cover/file/download/${fileId}`;
       uni.downloadFile({
         url: fileUrl,
         success: (res) => {
