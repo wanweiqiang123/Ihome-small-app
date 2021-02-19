@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-24 09:58:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-08 16:49:22
+ * @LastEditTime: 2021-02-18 11:03:18
 -->
 <template>
   <view class="report-client-wrapper">
@@ -41,14 +41,6 @@
               type="info"
             />
           </view>
-          <!-- <view class="price-wrapper">
-            <span class="price">均价23000</span>
-            <span class="unit">元/m<span class="two">2</span></span>
-          </view> -->
-          <!-- <view class="rule">
-            <span class="rule-tap">佣</span>
-            <span>佣金规则</span>
-          </view> -->
         </view>
       </view>
     </view>

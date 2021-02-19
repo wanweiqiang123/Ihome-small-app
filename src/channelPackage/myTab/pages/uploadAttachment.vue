@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-25 09:01:02
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-05 09:53:55
+ * @LastEditTime: 2021-02-18 18:56:58
 -->
 <template>
   <view class="upload-attachment-wrapper">
@@ -60,7 +60,6 @@ export default {
         currentEnvConfig["apiDomain"] +
         "/sales-api/sales-document-cover/file/upload",
       dictList: [],
-      showUploadList: true,
       header: {
         Authorization: "bearer " + storageTool.getToken(),
       },
@@ -123,7 +122,7 @@ export default {
         }
       });
     },
-    async successChange(data, code) {
+    successChange(data, code) {
       this.dictList.forEach((v) => {
         if (v.code === code) {
           if (v.fileList.length) {
