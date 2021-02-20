@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-27 14:02:13
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-09 11:16:20
+ * @LastEditTime: 2021-02-20 18:08:16
 -->
 <template>
   <view class="company-information-wrapper">
@@ -140,7 +140,8 @@
 
 <script>
   import storageTool from "@/common/storageTool";
-  import {getAreaList, getChannelInfo, getImgUrl, backToDraft} from "@/api/channel"
+  import {getAreaList, getChannelInfo, backToDraft} from "@/api/channel";
+  import tool from "@/common/tool";
   import { getAllByTypeApi } from "@/api/index";
 
   export default {
@@ -236,7 +237,7 @@
                 list.fileList.push(
                   {
                     ...item,
-                    fileSrc: getImgUrl(item.fileId)
+                    fileSrc: tool.getFileUrl(item.fileId)
                   }
                 );
               }
