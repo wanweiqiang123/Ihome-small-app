@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-12-17 14:29:26
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-20 08:18:48
+ * @LastEditTime: 2021-02-20 09:53:00
  */
 
 /**各环境变量参数
@@ -23,28 +23,28 @@ const envConfig = {
         "pcDomain": "web.polyihome.develop",
 
     },
-    // trial: {
-    //     //测试环境（体验版）
-    //     "env": "trial",
-    //     "envName": "测试环境（体验版）",
-    //     "protocol": 'https',
-    //     "fileDomain": "intapi.polyihome.com",
-    //     "apiDomain": "intapi.polyihome.com",
-    //     "h5Domain": "testm.polyihome.com",
-    //     "pcDomain": "testweb.polyihome.com",
-
-    // },
     trial: {
-        //预生产，用户环境（体验版）
+        //测试环境（体验版）
         "env": "trial",
         "envName": "测试环境（体验版）",
         "protocol": 'https',
-        "fileDomain": "testapi.polyihome.com",
-        "apiDomain": "testapi.polyihome.com",
+        "fileDomain": "intapi.polyihome.com",
+        "apiDomain": "intapi.polyihome.com",
         "h5Domain": "testm.polyihome.com",
         "pcDomain": "testweb.polyihome.com",
 
     },
+    // trial: {
+    //     //预生产，用户环境（体验版）
+    //     "env": "trial",
+    //     "envName": "测试环境（体验版）",
+    //     "protocol": 'https',
+    //     "fileDomain": "testapi.polyihome.com",
+    //     "apiDomain": "testapi.polyihome.com",
+    //     "h5Domain": "testm.polyihome.com",
+    //     "pcDomain": "testweb.polyihome.com",
+
+    // },
     release: {
         //生产环境
         "env": "release",
