@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2021-02-17 18:16:20
  * @LastEditors: lsj
- * @LastEditTime: 2021-02-17 19:15:20
+ * @LastEditTime: 2021-02-20 17:40:20
 -->
 <template>
   <view class="performance">
@@ -19,7 +19,6 @@
             right-icon="arrow-right" prop="cycleName">
             <u-input
               v-model="postData.cycleName"
-              @click="handleSelectCycle"
               type="select"
               placeholder="请选择项目周期"/>
           </u-form-item>
@@ -60,7 +59,7 @@
               placeholder="请选择物业类型"/>
           </u-form-item>
           <u-form-item
-            :required="!isNoRequired"
+            required
             label="栋 座"
             class="hide-icon"
             right-icon="arrow-right" prop="buildingName">
@@ -72,7 +71,7 @@
               placeholder="请选择栋座"/>
           </u-form-item>
           <u-form-item
-            :required="!isNoRequired"
+            required
             label="房 号"
             class="hide-icon"
             right-icon="arrow-right" prop="roomNo">
@@ -306,7 +305,7 @@
                   class="icon" name="close-circle-fill" color="#FA3534" size="50"></u-icon>
                 <u-image
                   @click="viewImg(list)"
-                  width="100%" height="100%" :src="list.fileUrls ? list.fileUrls : imgUrl + list.fileId"></u-image>
+                  width="100%" height="100%" :src="list.fileUrls ? list.fileUrls : getUrl(list.fileId)"></u-image>
               </view>
             </template>
             <view class="upload-icon" @click="uploadByType(item)">
@@ -449,8 +448,6 @@ import {
 } from "@/api/staff";
 import {getAllDictByType} from "@/api";
 import tool from "@/common/tool";
-import {getImgUrl} from "@/api/channel";
-import {currentEnvConfig} from "@/env-config";
 import storageTool from "@/common/storageTool";
 export default {
   name: "entryDeal",
@@ -567,7 +564,6 @@ export default {
           subText: 'pdf、word、excel文件，大小不能超过10M'
         }
       ],
-      imgUrl:`${currentEnvConfig['protocol']}://${currentEnvConfig['apiDomain']}/sales-api/sales-document-cover/file/browse/`,
       showDeleteWin: false, // 删除图片提示框
       deleteIndex: null,
       deleteItem: null,
@@ -739,7 +735,6 @@ export default {
       tempDocumentList: [], // 记录来访确认单和成交确认单
       currentPackageType: '', // 当前收派金额类型
       currentPackageIndex: '', // 当前收派金额序号
-      uploadAction: `${currentEnvConfig['protocol']}://${currentEnvConfig['apiDomain']}/sales-api/sales-document-cover/file/upload`,
       uploadHeader: {}, // 请求header
       uploadName: 'files', // 供后端取值用
       // 编辑功能相关字段
@@ -842,17 +837,6 @@ export default {
         }
       }
       return obj;
-    },
-    // 判断栋座、房号是否必填项
-    isNoRequired() {
-      let flag = true;
-      if (this.baseInfoByTerm.termStageEnum === "Recognize" && this.postData.stage === "Recognize") {
-        // 项目周期是认筹 + 成交阶段是认筹，则是非必填
-        flag = true;
-      } else {
-        flag = false;
-      }
-      return flag;
     }
   },
   async onLoad(option) {
@@ -868,7 +852,7 @@ export default {
     await this.getToken();
     if (option && option.id) {
       this.id = option.id;
-      await this.initEditPage(option.id);
+      await this.initPage(option.id);
     }
   },
   async onShow() {
@@ -888,6 +872,11 @@ export default {
     }
   },
   methods: {
+    // 初始化也没
+    async initPage(id) {
+      let info  = await getReportById({id: id});
+      console.log(info);
+    },
     // 编辑 - 初始化页面
     async initEditPage(id) {
       let info  = await getReportById({id: id});
@@ -1845,7 +1834,7 @@ export default {
       if (file.fileUrls) {
         url = file.fileUrls;
       } else {
-        url = getImgUrl(file.fileId);
+        url = tool.getFileUrl(file.fileId);
       }
       uni.previewImage({
         urls: [url]
@@ -1875,7 +1864,7 @@ export default {
               // 上传
               res.tempFilePaths.forEach((path) => {
                 uni.uploadFile({
-                  url: self.uploadAction, //仅为示例，非真实的接口地址
+                  url: tool.getUploadUrl(),
                   filePath: path,
                   name: self.uploadName,
                   header: self.uploadHeader,
@@ -1918,7 +1907,7 @@ export default {
               // 上传
               res.tempFiles.forEach((list) => {
                 uni.uploadFile({
-                  url: self.uploadAction, //仅为示例，非真实的接口地址
+                  url: tool.getUploadUrl(),
                   filePath: list.path,
                   name: self.uploadName,
                   header: self.uploadHeader,
@@ -2003,6 +1992,12 @@ export default {
         fileTypes = 'excel';
         url = this.excelImg;
       }
+      return url;
+    },
+    // 获取图片完整路径
+    getUrl(id) {
+      if (!id) return '';
+      let url = tool.getFileUrl(id);
       return url;
     },
     // 获取token

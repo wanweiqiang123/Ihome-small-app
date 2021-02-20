@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2021-02-09 15:47:25
  * @LastEditors: lsj
- * @LastEditTime: 2021-02-09 16:25:33
+ * @LastEditTime: 2021-02-20 17:44:36
 -->
 <template>
   <view class="performance">
@@ -231,7 +231,7 @@
               <view class="file-list-wrapper" v-for="list in item.fileList" :key="list.fileId">
                 <u-image
                   @click="viewImg(list)"
-                  width="100%" height="100%" :src="list.fileUrls ? list.fileUrls : imgUrl + list.fileId"></u-image>
+                  width="100%" height="100%" :src="list.fileUrls ? list.fileUrls : getUrl(list.fileId)"></u-image>
               </view>
             </template>
           </view>
@@ -250,14 +250,12 @@ import {
   post_notice_customer_information
 } from "@/api/staff";
 import {getAllDictByType} from "@/api";
-import {getImgUrl} from "@/api/channel";
-import {currentEnvConfig} from "@/env-config";
+import tool from "@/common/tool";
 export default {
   name: "performanceInfo",
   data() {
     return {
       id: null, // 成交id-编辑用
-      imgUrl:`${currentEnvConfig['protocol']}://${currentEnvConfig['apiDomain']}/sales-api/sales-document-cover/file/browse/`,
       dictObj: {
         types: [
           "BusinessModel",
@@ -557,7 +555,7 @@ export default {
       if (file.fileUrls) {
         url = file.fileUrls;
       } else {
-        url = getImgUrl(file.fileId);
+        url = tool.getFileUrl(file.fileId);
       }
       uni.previewImage({
         urls: [url]
@@ -568,7 +566,13 @@ export default {
       uni.redirectTo({
         url: "/staffPackage/performance/index",
       });
-    }
+    },
+    // 获取图片完整路径
+    getUrl(id) {
+      if (!id) return '';
+      let url = tool.getFileUrl(id);
+      return url;
+    },
   }
 };
 </script>

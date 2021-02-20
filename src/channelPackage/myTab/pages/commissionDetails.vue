@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-26 17:14:10
  * @LastEditors: lsj
- * @LastEditTime: 2021-02-18 14:35:15
+ * @LastEditTime: 2021-02-20 17:54:55
 -->
 <template>
   <view class="commission-details-wrapper safe-area-inset-bottom">
@@ -178,7 +178,7 @@
 <script>
 import {getAllDictByType} from "@/api";
 import {geiPayApplyDetail} from "@/api/channel";
-import {currentEnvConfig} from "@/env-config";
+import tool from "@/common/tool";
 
 export default {
   data() {
@@ -273,7 +273,7 @@ export default {
         this.$tool.toast("下载出错");
         return;
       }
-      let fileUrl = `${currentEnvConfig['protocol']}://${currentEnvConfig['apiDomain']}/sales-api/sales-document-cover/file/download/${fileId}`;
+      let fileUrl = tool.getFileDownloadUrl(fileId);
       uni.downloadFile({
         url: fileUrl,
         success: (res) => {

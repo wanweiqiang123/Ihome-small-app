@@ -3,11 +3,27 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-10 15:29:08
- * @LastEditors: zyc
- * @LastEditTime: 2021-02-20 14:48:09
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-02-20 17:22:38
  */
 import { baseUrl } from '../env-config'
 const tool = {
+    /**渠道商注册-下载模版-委托书
+     * @param {*} title
+     * @return {*}
+     */
+    getTemplateDocUrl() {
+        let url = baseUrl + `/sales-api/sales-document-cover/static/channel/模版-委托书.docx`
+        return url;
+    },
+    /**获取文件上传路径
+     * @param {*} title
+     * @return {*}
+     */
+    getUploadUrl() {
+        let url = baseUrl + `/sales-api/sales-document-cover/file/upload`
+        return url;
+    },
     /**获取文件预览路径
    * @param {*} title
    * @return {*}

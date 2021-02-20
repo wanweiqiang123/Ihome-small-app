@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-26 09:38:11
  * @LastEditors: lsj
- * @LastEditTime: 2021-02-02 11:46:28
+ * @LastEditTime: 2021-02-20 17:47:58
 -->
 <template>
   <view class="performance">
@@ -306,7 +306,7 @@
                   class="icon" name="close-circle-fill" color="#FA3534" size="50"></u-icon>
                 <u-image
                   @click="viewImg(list)"
-                  width="100%" height="100%" :src="list.fileUrls ? list.fileUrls : imgUrl + list.fileId"></u-image>
+                  width="100%" height="100%" :src="list.fileUrls ? list.fileUrls : getUrl(list.fileId)"></u-image>
               </view>
             </template>
             <view class="upload-icon" @click="uploadByType(item)">
@@ -449,8 +449,6 @@ import {
 } from "@/api/staff";
 import {getAllDictByType} from "@/api";
 import tool from "@/common/tool";
-import {getImgUrl} from "@/api/channel";
-import {currentEnvConfig} from "@/env-config";
 import storageTool from "@/common/storageTool";
 export default {
   name: "performanceEdit",
@@ -567,7 +565,6 @@ export default {
           subText: 'pdf、word、excel文件，大小不能超过10M'
         }
       ],
-      imgUrl:`${currentEnvConfig['protocol']}://${currentEnvConfig['apiDomain']}/sales-api/sales-document-cover/file/browse/`,
       showDeleteWin: false, // 删除图片提示框
       deleteIndex: null,
       deleteItem: null,
@@ -739,7 +736,6 @@ export default {
       tempDocumentList: [], // 记录来访确认单和成交确认单
       currentPackageType: '', // 当前收派金额类型
       currentPackageIndex: '', // 当前收派金额序号
-      uploadAction: `${currentEnvConfig['protocol']}://${currentEnvConfig['apiDomain']}/sales-api/sales-document-cover/file/upload`,
       uploadHeader: {}, // 请求header
       uploadName: 'files', // 供后端取值用
       // 编辑功能相关字段
@@ -1847,7 +1843,7 @@ export default {
       if (file.fileUrls) {
         url = file.fileUrls;
       } else {
-        url = getImgUrl(file.fileId);
+        url = tool.getFileUrl(file.fileId);
       }
       uni.previewImage({
         urls: [url]
@@ -1877,7 +1873,7 @@ export default {
               // 上传
               res.tempFilePaths.forEach((path) => {
                 uni.uploadFile({
-                  url: self.uploadAction, //仅为示例，非真实的接口地址
+                  url: tool.getUploadUrl(),
                   filePath: path,
                   name: self.uploadName,
                   header: self.uploadHeader,
@@ -1920,7 +1916,7 @@ export default {
               // 上传
               res.tempFiles.forEach((list) => {
                 uni.uploadFile({
-                  url: self.uploadAction, //仅为示例，非真实的接口地址
+                  url: tool.getUploadUrl(),
                   filePath: list.path,
                   name: self.uploadName,
                   header: self.uploadHeader,
@@ -2466,7 +2462,13 @@ export default {
         });
       }
       return obj;
-    }
+    },
+    // 获取图片完整路径
+    getUrl(id) {
+      if (!id) return '';
+      let url = tool.getFileUrl(id);
+      return url;
+    },
   }
 };
 </script>
