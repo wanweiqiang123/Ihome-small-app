@@ -709,7 +709,7 @@ export default {
     changeSearch(value) {
       this.isMore = false;
       this.queryPageParameters.pageNum = 1;
-      this.queryPageParameters.pageSize = 10;
+      this.queryPageParameters.pageSize = 20;
       if (!!(value.trim())) {
         debounce(this.getBankList, 500);
       } else {
