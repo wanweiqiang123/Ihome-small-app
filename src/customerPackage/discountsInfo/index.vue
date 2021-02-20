@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-19 16:29:14
+ * @LastEditTime: 2021-02-20 10:09:36
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -404,10 +404,11 @@ export default {
       }
     },
     isSupplementaryAgreementOne() {
-      let item = this.info.noticeList.find(
-        (v) => v.notificationType === "SupplementaryAgreement"
-      );
-      if (item) return true;
+      let arr = [];
+      arr = this.info.noticeList.filter((v) => {
+        return v.notificationType === "SupplementaryAgreement";
+      });
+      if (arr.length === 1) return true;
       else return false;
     },
     isSupplementaryAgreementMore() {
