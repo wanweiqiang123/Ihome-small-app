@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-24 09:58:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-19 15:19:42
+ * @LastEditTime: 2021-02-20 15:12:43
 -->
 <template>
   <view class="report-client-wrapper">
@@ -339,7 +339,7 @@ export default {
       this.$refs.custormInfo.setRules(this.custormRules);
     });
   },
-  onLoad(option) {
+  async onLoad(option) {
     this.reportId = option.id;
     if (option.type && option.type === "dealReg") {
       uni.setNavigationBarTitle({
@@ -353,6 +353,9 @@ export default {
       this.info.proId = msg.proId;
       this.info.proName = msg.proName;
       this.homeImg = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${msg.projectPic}`;
+      this.buildingBlockList = await postBuildByProId({
+        proId: this.info.proId,
+      });
     } else {
       this.pageType = "";
     }
