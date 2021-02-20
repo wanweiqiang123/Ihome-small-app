@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-20 10:23:44
+ * @LastEditTime: 2021-02-20 10:27:59
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -480,6 +480,7 @@ export default {
         switch (val.notificationStatus) {
           case "WaitPay":
           case "WaitReview":
+          case "Paid":
             const res = await getPreviewApi(this.noticeId);
             if (res) {
               getApp().globalData.webViewSrc = res;
