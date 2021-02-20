@@ -148,7 +148,7 @@
             border-color="#DCDCDC"
             :show-action="false"
             placeholder="请输入开户银行名搜索"
-            v-model="queryPageParameters.bankName"></u-search>
+            v-model="queryPageParameters.branchName"></u-search>
         </view>
         <scroll-view :scroll-top="0" scroll-y="true" class="scroll-y-wrapper" @scrolltolower="scrollLower">
           <view
@@ -289,7 +289,7 @@ export default {
       queryPageParameters: {
         pageNum: 1,
         pageSize: 20,
-        bankName: null
+        branchName: null
       },
       bankList: [],
       isMore: false,
@@ -625,7 +625,7 @@ export default {
     handleSelectBank(item) {
       // console.log(item);
       if (item.id) {
-        this.companyForm.branchName = item.bankName;
+        this.companyForm.branchName = item.branchName;
         this.companyForm.branchNo = item.branchNo;
         this.showBank = false;
       }
