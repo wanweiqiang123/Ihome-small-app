@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-20 10:15:34
+ * @LastEditTime: 2021-02-20 10:23:44
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -240,7 +240,7 @@
               </view>
               <view class="swiper-item-btn">
                 <u-button
-                  v-if="['BecomeEffective', 'WaitPay', 'WaitReview', 'Invalidation'].includes(item.notificationStatus)"
+                  v-if="['BecomeEffective', 'WaitPay', 'WaitReview', 'Invalidation', 'Paid'].includes(item.notificationStatus)"
                   type="primary"
                   size="medium"
                   shape="circle"
