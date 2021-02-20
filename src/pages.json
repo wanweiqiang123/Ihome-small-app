@@ -10,6 +10,12 @@
 			}
 		},
 		{
+			"path": "pages/login/index/switchEnv",
+			"style": {
+				"navigationBarTitleText": "切换环境"
+			}
+		},
+		{
 			"path": "pages/qrcodeGo",
 			"style": {
 				"navigationBarTitleText": "模拟二维码跳转"

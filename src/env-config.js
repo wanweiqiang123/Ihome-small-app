@@ -3,16 +3,65 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-12-17 14:29:26
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-20 09:53:00
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-02-20 14:17:42
  */
+
+import storageTool from './common/storageTool'
 
 /**各环境变量参数
  * @param {*}
  * @return {*}
  */
-const envConfig = {
-    develop: {
+// const envConfig = {
+//     develop: {
+//         //开发环境
+//         "env": "develop",
+//         "envName": "开发环境",
+//         "protocol": 'https',
+//         "fileDomain": "devapi.polyihome.com",
+//         "apiDomain": "devapi.polyihome.com",
+//         "h5Domain": "m.polyihome.develop",
+//         "pcDomain": "web.polyihome.develop",
+
+//     },
+//     trial: {
+//         //测试环境（体验版）
+//         "env": "trial",
+//         "envName": "测试环境（体验版）",
+//         "protocol": 'https',
+//         "fileDomain": "intapi.polyihome.com",
+//         "apiDomain": "intapi.polyihome.com",
+//         "h5Domain": "testm.polyihome.com",
+//         "pcDomain": "testweb.polyihome.com",
+
+//     },
+//     // trial: {
+//     //     //预生产，用户环境（体验版）
+//     //     "env": "trial",
+//     //     "envName": "测试环境（体验版）",
+//     //     "protocol": 'https',
+//     //     "fileDomain": "testapi.polyihome.com",
+//     //     "apiDomain": "testapi.polyihome.com",
+//     //     "h5Domain": "testm.polyihome.com",
+//     //     "pcDomain": "testweb.polyihome.com",
+
+//     // },
+//     release: {
+//         //生产环境
+//         "env": "release",
+//         "envName": "生产环境",
+//         "protocol": 'https',
+//         "fileDomain": "api.polyihome.com",
+//         "apiDomain": "api.polyihome.com",
+//         "h5Domain": "m.polyihome.com",
+//         "pcDomain": "web.polyihome.com",
+
+//     }
+// }
+
+const envAll = {
+    dev: {
         //开发环境
         "env": "develop",
         "envName": "开发环境",
@@ -21,9 +70,8 @@ const envConfig = {
         "apiDomain": "devapi.polyihome.com",
         "h5Domain": "m.polyihome.develop",
         "pcDomain": "web.polyihome.develop",
-
     },
-    trial: {
+    int: {
         //测试环境（体验版）
         "env": "trial",
         "envName": "测试环境（体验版）",
@@ -32,20 +80,18 @@ const envConfig = {
         "apiDomain": "intapi.polyihome.com",
         "h5Domain": "testm.polyihome.com",
         "pcDomain": "testweb.polyihome.com",
-
     },
-    // trial: {
-    //     //预生产，用户环境（体验版）
-    //     "env": "trial",
-    //     "envName": "测试环境（体验版）",
-    //     "protocol": 'https',
-    //     "fileDomain": "testapi.polyihome.com",
-    //     "apiDomain": "testapi.polyihome.com",
-    //     "h5Domain": "testm.polyihome.com",
-    //     "pcDomain": "testweb.polyihome.com",
-
-    // },
-    release: {
+    uat: {
+        //预生产，用户环境（体验版）
+        "env": "trial",
+        "envName": "测试环境（体验版）",
+        "protocol": 'https',
+        "fileDomain": "testapi.polyihome.com",
+        "apiDomain": "testapi.polyihome.com",
+        "h5Domain": "testm.polyihome.com",
+        "pcDomain": "testweb.polyihome.com",
+    },
+    prd: {
         //生产环境
         "env": "release",
         "envName": "生产环境",
@@ -54,15 +100,12 @@ const envConfig = {
         "apiDomain": "api.polyihome.com",
         "h5Domain": "m.polyihome.com",
         "pcDomain": "web.polyihome.com",
-
     }
+
 }
 
-/**当前环境变量参数
- * @param {*}
- * @return {*}
- */
-const currentEnvConfig = envConfig[__wxConfig.envVersion];
+let env = storageTool.getEnv();
+const currentEnvConfig = envAll[env];
 
 /** api请求域名，带协议
  * @param {*}
@@ -70,4 +113,34 @@ const currentEnvConfig = envConfig[__wxConfig.envVersion];
  */
 const baseUrl = currentEnvConfig['protocol'] + '://' + currentEnvConfig['apiDomain'];
 
-export { envConfig, currentEnvConfig, baseUrl }
+
+
+// const currentEnv = {
+//     getBaseUrl() {
+//         let config = this.getConfig();
+//         const _baseUrl = config['protocol'] + '://' + config['apiDomain'];
+//         return _baseUrl;
+//     },
+//     getConfig() {
+//         let env = storageTool.getEnv();
+//         let config;
+//         if (env) {
+//             config = envAll[env];
+//         } else {
+//             switch (__wxConfig.envVersion) {
+//                 case 'develop':
+//                     config = envAll['dev'];
+//                     break;
+//                 case 'trial':
+//                     config = envAll['uat'];
+//                     break;
+//                 default:
+//                     config = envAll['prd'];
+//             }
+//         }
+//         return config;
+//     }
+// }
+
+
+export { currentEnvConfig, baseUrl }

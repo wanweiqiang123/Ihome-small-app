@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-29 15:58:19
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-16 10:01:20
+ * @LastEditTime: 2021-02-20 14:28:23
 -->
 <template>
   <view class="page login-page-style">
@@ -12,7 +12,9 @@
     <view class="img-logo">
       <image src="../../../static/login/logo.png" mode="scaleToFill"></image>
     </view>
-    <view style="margin: 70rpx"></view>
+    <view style="margin: 70rpx; text-align: center">
+      <text v-if="!isPrd" @click="gotoEnv()">当前环境：{{ currentEnv }}</text>
+    </view>
 
     <view style="padding: 10rpx 70rpx" v-show="!loginWechat">
       <view class="page-tab">
@@ -230,6 +232,8 @@ import tool from "../../../common/tool";
 export default {
   data() {
     return {
+      isPrd: true,
+      currentEnv: "",
       customStyle: {
         border: "1px solid  #4881f9",
         background: "#fff",
@@ -269,6 +273,9 @@ export default {
     console.log("this.redirect", this.redirect);
   },
   onShow() {
+    this.currentEnv = storageTool.getEnv();
+    this.isPrd = __wxConfig.envVersion == "release";
+    console.log(this.isPrd);
     console.log("login,onShow");
     this.wxLogin();
   },
@@ -434,6 +441,11 @@ export default {
     goResetPassword() {
       uni.navigateTo({
         url: "/pages/login/resetPassword/first",
+      });
+    },
+    gotoEnv() {
+      uni.navigateTo({
+        url: "/pages/login/index/switchEnv",
       });
     },
   },

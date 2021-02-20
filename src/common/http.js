@@ -3,16 +3,13 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-10 10:17:55
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-18 20:08:34
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-02-20 14:42:05
  */
 import storageTool from './storageTool'
 import tool from './tool'
 import { baseUrl } from '../env-config'
-
-console.log(baseUrl);
-// const baseUrl = 'http://api.polyihome.develop';
-
+console.log('当前api地址：' + baseUrl);
 
 /**请求接口
  * @method http

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 15:30:00
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-04 11:02:34
+ * @LastEditTime: 2021-02-20 14:24:33
  */
 const tokenKey = 'token';//token的key
 const expiresInKey = 'expires_in';//token的key的过期时间
@@ -12,7 +12,7 @@ const userInfoKey = 'userInfo';//用户信息的key
 const loginUserTypeLogKey = 'loginUserTypeLog';//登录类别记录
 
 const UUIDKey = "uuid";//微信code换取uuid
-
+const envKey = 'env';//环境变量key，值  dev,int,uat,prd
 const storageTool = {
 
     hidePay() {
@@ -111,7 +111,7 @@ const storageTool = {
         return uni.getStorageSync(UUIDKey);
     },
     removeUUID() {
-        return uni.getStorageSync(UUIDKey);
+        return uni.removeStorageSync(UUIDKey);
     },
 
 
@@ -157,6 +157,41 @@ const storageTool = {
             });
         }
 
-    }
+    },
+
+
+    /**设置环境变量
+     * @param {*} d
+     * @return {*}
+     */
+    setEnv(d) {
+        uni.setStorageSync(envKey, d);
+    },
+    removeEnv() {
+        uni.removeStorageSync(envKey);
+    },
+    /**获取环境变量
+     * @param {*}
+     * @return {*}
+     */
+    getEnv() {
+        let env = uni.getStorageSync(envKey);
+        if (!env) {
+            switch (__wxConfig.envVersion) {
+                case 'develop':
+                    env = 'dev'
+                    break;
+                case 'trial':
+                    env = 'uat'
+                    break;
+                default:
+                    env = 'prd'
+            }
+        }
+        return env;
+    },
+
+
+
 }
 export default storageTool;

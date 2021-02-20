@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 15:29:08
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-04 10:57:08
+ * @LastEditTime: 2021-02-20 14:48:09
  */
 import { baseUrl } from '../env-config'
 const tool = {
@@ -14,6 +14,14 @@ const tool = {
    */
     getFileUrl(fid) {
         let url = baseUrl + `/sales-api/sales-document-cover/file/browse/${fid}`
+        return url;
+    },
+    /**获取文件下载路径
+  * @param {*} title
+  * @return {*}
+  */
+    getFileDownloadUrl(fid) {
+        let url = baseUrl + `/sales-api/sales-document-cover/file/download/${fid}`
         return url;
     },
     /**弹出提示 uni.showToast   icon: "none"
