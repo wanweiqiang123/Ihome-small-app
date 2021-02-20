@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-20 10:09:36
+ * @LastEditTime: 2021-02-20 10:15:34
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -268,7 +268,7 @@
         </view>
       </view>
       <view
-        v-if='info.noticeList.length > 1'
+        v-if='isSupplementaryAgreementMore'
         class="gotoSign"
         @click="gotoSignMore"
       >
