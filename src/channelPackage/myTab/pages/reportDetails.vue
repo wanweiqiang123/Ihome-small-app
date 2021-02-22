@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-24 16:24:02
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 11:45:42
+ * @LastEditTime: 2021-02-22 17:30:12
 -->
 <template>
   <view class="report-detail-wrapper">
@@ -298,8 +298,19 @@ export default {
     // 当前进度
     handleStep(val) {
       switch (val) {
+        case "baobei":
+          this.currentStep = 0;
+          break;
         case "daofang":
-          if (["ValidVisit", "InvalidVisit"].includes(this.info.reportStatus)) {
+          if (
+            [
+              "ValidVisit",
+              "InvalidVisit",
+              "NewDeal",
+              "ValidDeal",
+              "InvalidDeal",
+            ].includes(this.info.reportStatus)
+          ) {
             this.currentStep = 1;
           }
           break;
@@ -311,9 +322,6 @@ export default {
           ) {
             this.currentStep = 2;
           }
-          break;
-        default:
-          this.currentStep = 0;
           break;
       }
     },

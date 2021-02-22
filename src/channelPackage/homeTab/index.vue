@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-12 10:16:57
- * @LastEditors: lsj
- * @LastEditTime: 2021-02-20 18:06:25
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-22 17:12:31
 -->
 <template>
   <ChannelTabBar>
@@ -169,7 +169,6 @@ export default {
           image: require("@/channelPackage/common/img/banner_3.jpg"),
           title: "昨夜星辰昨夜风，画楼西畔桂堂东",
         },
-         
       ],
       houseImg: require("@/channelPackage/common/img/house.jpg"),
       icon_1: require("@/channelPackage/common/icon/list.png"),
@@ -213,7 +212,7 @@ export default {
     },
     // 跳转Tabs页
     goToItem(index) {
-      // console.log(index);
+      getApp().myReport = {};
       uni.navigateTo({
         url: `/channelPackage/${index}`,
       });
