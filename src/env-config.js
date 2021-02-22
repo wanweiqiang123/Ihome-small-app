@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-12-17 14:29:26
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 11:07:43
+ * @LastEditTime: 2021-02-22 14:27:18
  */
 
 import storageTool from './common/storageTool'
@@ -61,7 +61,7 @@ import storageTool from './common/storageTool'
 // }
 
 const envAll = {
-    int: {
+    dev: {
         //开发环境
         "env": "develop",
         "envName": "开发环境",
@@ -71,7 +71,7 @@ const envAll = {
         "h5Domain": "m.polyihome.develop",
         "pcDomain": "web.polyihome.develop",
     },
-    dev: {
+    int: {
         //测试环境（体验版）
         "env": "trial",
         "envName": "测试环境（体验版）",
@@ -113,6 +113,12 @@ const currentEnvConfig = envAll[env];
  */
 const baseUrl = currentEnvConfig['protocol'] + '://' + currentEnvConfig['apiDomain'];
 
+/** h5请求域名，带协议
+ * @param {*}
+ * @return {*}
+ */
+const h5Url = currentEnvConfig['protocol'] + '://' + currentEnvConfig['h5Domain'];
+
 
 
 // const currentEnv = {
@@ -143,4 +149,4 @@ const baseUrl = currentEnvConfig['protocol'] + '://' + currentEnvConfig['apiDoma
 // }
 
 
-export { currentEnvConfig, baseUrl }
+export { currentEnvConfig, baseUrl, h5Url }

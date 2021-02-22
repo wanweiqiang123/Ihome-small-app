@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-22 09:57:11
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-22 14:15:56
 -->
 
 <template>
@@ -221,7 +221,6 @@
 </template>
 
 <script>
-import { currentEnvConfig } from "../../env-config.js";
 import PopupSearch from "../../components/PopupSearch/index.vue";
 import IhCheckbox from "../../components/IhCheckbox/index.vue";
 import pagination from "../../mixins/pagination";

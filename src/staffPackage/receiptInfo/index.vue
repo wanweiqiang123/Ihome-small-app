@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2021-01-19 15:46:14
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-22 10:16:37
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-22 14:17:11
 -->
 <template>
   <view class="receipt info">
@@ -274,7 +274,6 @@
 </template>
 
 <script>
-import { currentEnvConfig } from "../../env-config.js";
 import { getAllByTypeApi } from "../../api/index";
 import {
   getWechatNoticeInfoApi,

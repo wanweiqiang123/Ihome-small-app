@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2021-01-18 11:38:42
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-22 09:55:56
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-22 14:15:00
 -->
 <template>
   <LoginPage>
@@ -110,7 +110,7 @@
                 name="files"
                 ref="fileRef"
                 :file-list="fileList"
-                :action="action"
+                :action="$tool.getUploadUrl()"
                 :header="header"
                 :show-progress="false"
                 :before-upload="beforeUpload"
@@ -184,7 +184,6 @@
 </template>
 
 <script>
-import { currentEnvConfig } from "../../env-config.js";
 import storageTool from "../../common/storageTool.js";
 import {
   getNoticeInfo,
@@ -213,7 +212,6 @@ export default {
       },
       option: {},
       isPaper: false,
-      action: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/upload`,
       header: {
         Authorization: "bearer " + storageTool.getToken(),
       },

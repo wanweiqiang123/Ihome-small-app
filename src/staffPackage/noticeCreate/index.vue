@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-19 15:06:31
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-22 14:14:31
 -->
 <template>
   <LoginPage>
@@ -242,7 +242,7 @@
                   width="180"
                   height="180"
                   name="files"
-                  :action="action"
+                  :action="$tool.getUploadUrl()"
                   :header="header"
                   :show-progress="false"
                   :before-upload="beforeUpload"
@@ -302,7 +302,7 @@
                   width="180"
                   height="180"
                   name="files"
-                  :action="action"
+                  :action="$tool.getUploadUrl()"
                   :header="header"
                   :show-progress="false"
                   :before-upload="beforeUpload"
@@ -327,7 +327,7 @@
                 width="180"
                 height="180"
                 name="files"
-                :action="action"
+                :action="$tool.getUploadUrl()"
                 :header="header"
                 :show-progress="false"
                 :before-upload="beforeUpload"
@@ -426,7 +426,6 @@ import {
   noTrim,
   isNumberValidato,
 } from "../../common/validate.js";
-import { currentEnvConfig } from "../../env-config.js";
 import storageTool from "../../common/storageTool.js";
 import { getAllByTypeApi } from "../../api/index.js";
 import {
@@ -568,7 +567,6 @@ export default {
           { validator: validIdentityCard, trigger: "change" },
         ],
       },
-      action: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/upload`,
       header: {
         Authorization: "bearer " + storageTool.getToken(),
       },
@@ -978,7 +976,7 @@ export default {
       this.fileList = info.noticeAttachmentList
         .filter((i) => i.type === "NoticeAttachment")
         .map((val) => ({
-          url: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${val.fileNo}`,
+          url: this.$tool.getFileUrl(val.fileNo),
         }));
       // 是不是自定义
       if (info.promotionMethod === "Manual") {
@@ -986,7 +984,7 @@ export default {
         this.form.manner = "自定义";
         this.subFileList = info.subscriptionAnnex.map((val) => ({
           ...val,
-          url: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${val.fileNo}`,
+          url: this.$tool.getFileUrl(val.fileNo),
         }));
       }
       try {

@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2021-01-28 19:01:58
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-22 10:13:18
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-22 14:16:54
 -->
 <template>
   <view class="box">
@@ -82,7 +82,6 @@
 <script>
 import { getNotCheckListApi, paymentdeleteApi } from "../../api/staff";
 import { getAllByTypeApi } from "../../api/index";
-import { currentEnvConfig } from "../../env-config.js";
 export default {
   components: {},
   data() {

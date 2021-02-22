@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2021-01-04 11:20:06
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-22 10:07:29
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-22 14:16:11
 -->
 <template>
   <LoginPage>
@@ -68,7 +68,6 @@
 </template>
 
 <script>
-import { currentEnvConfig } from "../../env-config.js";
 import { getPdf2PicApi, getAllByTypeApi } from "../../api/index";
 import { postNoticeDelete } from "../../api/staff";
 

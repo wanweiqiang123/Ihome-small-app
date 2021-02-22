@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 15:26:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-29 16:03:08
+ * @LastEditTime: 2021-02-22 14:26:12
 -->
 <template>
   <u-popup
@@ -44,7 +44,6 @@
 </template>
 <script>
 import { getPayStatusApi } from "../../api/customer";
-import { currentEnvConfig } from "../../env-config.js";
 export default {
   props: {
     value: {
@@ -70,7 +69,7 @@ export default {
       immediate: true,
       handler(v) {
         if (v) {
-          this.url = `${currentEnvConfig["protocol"]}://${currentEnvConfig["h5Domain"]}/sales-h5/${this.payType}?id=${this.payId}`;
+          this.url = this.$tool.getH5Url(this.payType, this.payId);
           if (this.linkToTimer) {
             clearInterval(this.linkToTimer);
             this.linkToTimer = null;

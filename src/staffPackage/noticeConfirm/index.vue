@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-11-23 17:32:25
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-22 09:44:24
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-22 14:12:49
 -->
 <template>
   <LoginPage>
@@ -138,7 +138,6 @@
 </template>
 
 <script>
-import { currentEnvConfig } from "../../env-config.js";
 import {
   getNoticeInfo,
   postNoticeManagement,

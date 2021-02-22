@@ -4,10 +4,18 @@
  * @Author: zyc
  * @Date: 2020-11-10 15:29:08
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 14:03:48
+ * @LastEditTime: 2021-02-22 14:27:45
  */
-import { baseUrl } from '../env-config'
+import { baseUrl, h5Url } from '../env-config'
 const tool = {
+    /**h5地址
+     * @param {*} title
+     * @return {*}
+     */
+    getH5Url(type, id) {
+        let url = h5Url + `/sales-h5/${type}?id=${id}`
+        return url;
+    },
     /**生成二维码
      * @param {*} title
      * @return {*}

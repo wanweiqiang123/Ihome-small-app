@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-24 09:58:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 11:44:20
+ * @LastEditTime: 2021-02-22 16:53:35
 -->
 <template>
   <view class="report-client-wrapper">
@@ -340,21 +340,22 @@ export default {
   },
   async onLoad(option) {
     this.reportId = option.id;
+    const msg = getApp().myReport;
+    this.info.proId = msg?.proId;
+    this.info.proName = msg?.proName;
+    this.homeImg = this.$tool.getFileUrl(msg?.projectPic);
+    this.district = msg.district;
+    this.buildingBlockList = await postBuildByProId({
+      proId: this.info.proId,
+    });
     if (option.type && option.type === "dealReg") {
       uni.setNavigationBarTitle({
         title: "成交登记",
       });
       this.pageType = "dealReg";
-      const msg = getApp().myReport;
-      this.custormInfo.name = msg.name;
-      this.custormInfo.sex = msg.sex;
-      this.custormInfo.mobile = msg.mobile;
-      this.info.proId = msg.proId;
-      this.info.proName = msg.proName;
-      this.homeImg = this.$tool.getFileUrl(msg.projectPic);
-      this.buildingBlockList = await postBuildByProId({
-        proId: this.info.proId,
-      });
+      this.custormInfo.name = msg?.name;
+      this.custormInfo.sex = msg?.sex;
+      this.custormInfo.mobile = msg?.mobile;
     } else {
       this.pageType = "";
     }
@@ -484,6 +485,7 @@ export default {
           obj.reportName = userInfo.name;
           obj.reportType = "FullNumber";
           await postReportApi(obj);
+          getApp().myReport = {};
           this.$tool.toast("报备成功");
           uni.redirectTo({
             url: `/channelPackage/homeTab/index`,

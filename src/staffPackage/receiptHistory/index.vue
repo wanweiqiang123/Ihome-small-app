@@ -50,7 +50,6 @@
 <script>
 import { getAppListApi } from "../../api/staff";
 import { getAllByTypeApi, getPdf2PicApi } from "../../api/index";
-import { currentEnvConfig } from "../../env-config.js";
 export default {
   components: {},
   data() {

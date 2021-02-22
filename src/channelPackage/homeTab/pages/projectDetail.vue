@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-23 11:15:50
- * @LastEditors: zyc
- * @LastEditTime: 2021-02-14 14:23:34
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-22 16:54:04
 -->
 <template>
   <view class="project-detail-wrapper">
@@ -268,6 +268,12 @@ export default {
     },
     // 报备
     handleReport() {
+      getApp().myReport = {
+        proId: this.detailInfo.proId,
+        proName: this.detailInfo.proName,
+        projectPic: this.detailInfo.projectPic,
+        district: this.detailInfo.districtName,
+      };
       uni.navigateTo({
         url: `/channelPackage/homeTab/pages/reportClient`,
       });

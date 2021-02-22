@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2021-02-17 17:31:28
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-17 17:43:17
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-22 14:18:13
 -->
 <!--
  * @Descripttion: 
@@ -28,7 +28,7 @@
             class="upload"
             width="160"
             height="160"
-            :action="action"
+            :action="$tool.getUploadUrl()"
             @on-success="successChange($event, item.code)"
             @on-remove="removeChange($event, item.code)"
             :show-upload-list="true"
@@ -56,18 +56,12 @@ import {
   postReportAttachmentGetAllApi,
 } from "@/api/channel";
 import { getAllByTypeApi } from "@/api/index";
-import { currentEnvConfig } from "../../env-config.js";
 import storageTool from "../../common/storageTool.js";
 
 export default {
   data() {
     return {
       ReportAttachment: [],
-      action:
-        currentEnvConfig["protocol"] +
-        "://" +
-        currentEnvConfig["apiDomain"] +
-        "/sales-api/sales-document-cover/file/upload",
       dictList: [],
       showUploadList: true,
       header: {
@@ -114,7 +108,7 @@ export default {
               fileId: v.fileId,
               fileName: v.fileName,
               type: v.type,
-              url: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${v.fileId}`,
+              url: this.$tool.getFileUrl(v.fileId),
             });
             j.fileList.push({
               fileId: v.fileId,

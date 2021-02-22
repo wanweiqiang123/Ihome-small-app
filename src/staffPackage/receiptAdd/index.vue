@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2021-01-19 18:44:57
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-03 12:05:07
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-22 14:16:42
 -->
 <template>
   <view class="receipt">
@@ -93,7 +93,7 @@
               width="150"
               height="150"
               name="files"
-              :action="action"
+              :action="$tool.getUploadUrl()"
               :header="header"
               :show-progress="false"
               :before-upload="beforeUpload"
@@ -135,7 +135,6 @@
 </template>
 
 <script>
-import { currentEnvConfig } from "../../env-config.js";
 import storageTool from "../../common/storageTool.js";
 import { getAllByTypeApi } from "../../api/index";
 import {
@@ -196,7 +195,6 @@ export default {
         //   },
         // ],
       },
-      action: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/upload`,
       header: {
         Authorization: "bearer " + storageTool.getToken(),
       },
