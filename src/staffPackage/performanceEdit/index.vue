@@ -739,7 +739,9 @@ export default {
       uploadHeader: {}, // 请求header
       uploadName: 'files', // 供后端取值用
       // 编辑功能相关字段
-      editBaseInfo: null, // 编辑初始化页面数据
+      editBaseInfo: {
+        parentId: null,
+      }, // 编辑初始化页面数据
     };
   },
   computed: {
@@ -966,7 +968,7 @@ export default {
       }
       // 通过项目周期id获取基础信息
       await this.editBaseDealInfo(info.cycleId, info?.house?.buildingId, info?.house?.propertyType);
-      await this.editPageById(info.cycleId, info?.house?.roomId, info?.house?.propertyType);
+      await this.editPageById(info.cycleId, info?.house?.roomId, info?.house?.propertyType, info?.parentId);
     },
     // 编辑 - 通过项目周期id获取基础信息
     async editBaseDealInfo(id = "", buildingId, property) {
@@ -1020,9 +1022,10 @@ export default {
       }
     },
     // 编辑 - 根据项目周期和房号初始化页面数据
-    async editPageById(cycleId, roomId, propertyType = '') {
+    async editPageById(cycleId, roomId, propertyType = '', parentId = '') {
       if (!cycleId || !roomId || !propertyType) return;
       let params = {
+        parentId: parentId,
         cycleId: cycleId,
         roomId: roomId,
         isMainDeal: true, // 是否主成交
@@ -1547,6 +1550,7 @@ export default {
     async initPageById(cycleId, roomId, propertyType = '') {
       if (!cycleId || !roomId || !propertyType) return;
       let params = {
+        parentId: this.id ? this.editBaseInfo.parentId : null,
         cycleId: cycleId,
         roomId: roomId,
         isMainDeal: true, // 是否主成交
