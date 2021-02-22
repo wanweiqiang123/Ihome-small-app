@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-25 11:40:27
- * @LastEditors: ywl
- * @LastEditTime: 2021-01-19 18:14:48
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-22 11:49:46
 -->
 <template>
   <view class="box">
@@ -50,7 +50,6 @@
 <script>
 import { getAppListApi } from "../../api/customer";
 import { getAllByTypeApi, getPdf2PicApi } from "../../api/index";
-import { currentEnvConfig } from "../../env-config.js";
 export default {
   components: {},
   data() {
@@ -58,7 +57,6 @@ export default {
       payId: "",
       info: [],
       PayType: [],
-      codeUrl: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/download/`,
     };
   },
   onLoad(options) {
@@ -92,7 +90,7 @@ export default {
       item.loading = true;
       const file = await getPdf2PicApi(item.fileIds[0]);
       uni.downloadFile({
-        url: `${this.codeUrl}${file.fileId}`,
+        url: this.$tool.getFileDownloadUrl(file.fileId),
         success: (res) => {
           console.log(res, "succrss");
           let filePath = res.tempFilePath;

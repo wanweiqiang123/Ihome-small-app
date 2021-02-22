@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-30 10:23:11
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-19 16:56:01
+ * @LastEditTime: 2021-02-22 11:47:34
 -->
 <template>
   <LoginPage>
@@ -40,7 +40,6 @@
   </LoginPage>
 </template>
 <script>
-import { currentEnvConfig } from "../../env-config.js";
 import { getPdf2PicApi } from "../../api/index";
 import { postSignApi } from "../../api/customer";
 import { getAllByTypeApi } from "../../api/index";
@@ -76,7 +75,7 @@ export default {
     });
     if (this.type === "sign") this.$refs.uCode.start();
     const res = await getPdf2PicApi(this.templateId);
-    this.src = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${res.fileId}`;
+    this.src = this.$tool.getFileUrl(res.fileId);
   },
   methods: {
     end() {

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-25 18:37:07
+ * @LastEditTime: 2021-02-22 10:45:06
 -->
 <template>
   <LoginPage>
@@ -150,7 +150,7 @@ export default {
     return {
       hidePayStatus: true,
       payData: {},
-      payType: "WeChatPay",
+      payType: "Pos",
       payNum: 0,
       payTypeOptions: [],
       payParam: {},
@@ -174,11 +174,6 @@ export default {
   },
   async onLoad() {
     this.payData = { ...getApp().paidData };
-
-    // console.log(res);
-    // this.payTypeOptions = res.filter(
-    //   (v) => !["WeChatPay", "Alipay"].includes(v.code)
-    // );
   },
   async onShow() {
     this.hidePayStatus = this.$storageTool.hidePay();
@@ -201,7 +196,7 @@ export default {
     this.payNum =
       (Number(this.payData.paymentAmount) - Number(res.amountPaid)).toFixed(2) +
       "";
-    this.payType = res.payType ? res.payType : "WeChatPay";
+    this.payType = res.payType ? res.payType : "Pos";
   },
   methods: {
     // 字典翻译

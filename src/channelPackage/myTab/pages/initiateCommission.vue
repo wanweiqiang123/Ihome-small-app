@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-26 14:24:10
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-19 17:32:02
+ * @LastEditTime: 2021-02-22 11:41:55
 -->
 <template>
   <view class="initiate-commission-wrapper">
@@ -164,7 +164,7 @@
           class="upload"
           width="160"
           height="160"
-          :action="action"
+          :action="$tool.getUploadUrl()"
           @on-success="successChange($event, item.code)"
           @on-remove="removeChange($event, item.code)"
           :show-upload-list="true"
@@ -348,7 +348,6 @@ import {
   postCreatepayApplyApi,
 } from "@/api/channel";
 import { getAllByTypeApi } from "@/api";
-import { currentEnvConfig } from "../../../env-config.js";
 import storageTool from "../../../common/storageTool.js";
 export default {
   data() {
@@ -388,11 +387,6 @@ export default {
       channelBanks: [], // 渠道收款信息
       invoiceTypeList: [],
       invoiceTaxRateList: [],
-      action:
-        currentEnvConfig["protocol"] +
-        "://" +
-        currentEnvConfig["apiDomain"] +
-        "/sales-api/sales-document-cover/file/upload",
       dictList: [],
       header: {
         Authorization: "bearer " + storageTool.getToken(),

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 15:27:32
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-29 16:01:27
+ * @LastEditTime: 2021-02-22 14:04:26
 -->
 <template>
   <u-popup
@@ -38,7 +38,6 @@
 import { getPaymentQRCodeInfoApi, getPayStatusApi } from "../../api/customer";
 import storageTool from "../../common/storageTool";
 import { getAllByTypeApi } from "../../api/index";
-import { currentEnvConfig } from "../../env-config.js";
 import UPopup from "../../uview-ui/components/u-popup/u-popup.vue";
 export default {
   components: { UPopup },
@@ -110,7 +109,7 @@ export default {
         Authorization: "bearer " + token,
       };
       uni.request({
-        url: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/qrcode`,
+        url: this.$tool.getQrcodeUrl(),
         method: "POST",
         header: {
           ...header,
@@ -118,7 +117,7 @@ export default {
         },
         data: obj,
         success: (res) => {
-          this.url = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${res.data.data.fileId}`;
+          this.url = this.$tool.getFileUrl(res.data.data.fileId);
         },
       });
     },

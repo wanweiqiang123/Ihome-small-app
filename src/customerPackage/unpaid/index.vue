@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-16 14:19:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 15:36:12
+ * @LastEditTime: 2021-02-22 10:45:21
 -->
 <template>
   <view class="pay safe-area-inset-bottom">
@@ -75,7 +75,7 @@ export default {
       noticeId: "",
       payRecod: {
         amount: 0,
-        payType: "WeChatPay",
+        payType: "Pos",
       },
       padId: "",
       PayType: [],

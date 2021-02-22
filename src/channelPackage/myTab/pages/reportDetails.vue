@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-24 16:24:02
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-19 16:09:06
+ * @LastEditTime: 2021-02-22 11:45:42
 -->
 <template>
   <view class="report-detail-wrapper">
@@ -248,7 +248,6 @@
 <script>
 import { getReportByIdApi, postCustomerMobileApi } from "@/api/channel";
 import { getAllByTypeApi } from "@/api/index";
-import { currentEnvConfig } from "../../../env-config.js";
 export default {
   data() {
     return {
@@ -273,7 +272,7 @@ export default {
       let res = await getReportByIdApi(this.detailId);
       this.info = {
         ...res,
-        projectPic: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${res.projectPic}`,
+        projectPic: this.$tool.getFileUrl(res.projectPic),
       };
       console.log(res);
     },
@@ -334,9 +333,8 @@ export default {
     // 到访信息查看照片
     viewVisit() {
       uni.previewImage({
-        urls: this.info.visitAttachments.map(
-          (v) =>
-            `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${v.fileId}`
+        urls: this.info.visitAttachments.map((v) =>
+          this.$tool.getFileUrl(v.fileId)
         ),
         current: 1,
       });
@@ -344,9 +342,8 @@ export default {
     // 成交信息查看图片
     viewDeal() {
       uni.previewImage({
-        urls: this.info.dealAttachments.map(
-          (v) =>
-            `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${v.fileId}`
+        urls: this.info.dealAttachments.map((v) =>
+          this.$tool.getFileUrl(v.fileId)
         ),
         current: 1,
       });

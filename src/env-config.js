@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-12-17 14:29:26
- * @LastEditors: zyc
- * @LastEditTime: 2021-02-20 15:18:13
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-22 11:07:43
  */
 
 import storageTool from './common/storageTool'
@@ -61,7 +61,7 @@ import storageTool from './common/storageTool'
 // }
 
 const envAll = {
-    dev: {
+    int: {
         //开发环境
         "env": "develop",
         "envName": "开发环境",
@@ -71,7 +71,7 @@ const envAll = {
         "h5Domain": "m.polyihome.develop",
         "pcDomain": "web.polyihome.develop",
     },
-    int: {
+    dev: {
         //测试环境（体验版）
         "env": "trial",
         "envName": "测试环境（体验版）",

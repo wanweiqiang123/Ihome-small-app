@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-20 10:27:59
+ * @LastEditTime: 2021-02-22 11:47:20
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -34,7 +34,16 @@
         </view>
         <!-- 客户待签署 -->
         <template v-if="info.notificationStatus === 'WaitBeSigned'">
+          <template v-if="isRefund">
+            <view
+              style="color: #F56C6C"
+              class="receipt-text"
+              @click="handleToRefund()"
+            >您有一份退款申请待签署，点击前往处理</view>
+            <!-- gotoSign('RefundApplication') -->
+          </template>
           <view
+            v-else
             class="receipt-text"
             style="color: #F56C6C"
             @click="gotoSign('Notification')"
@@ -46,79 +55,69 @@
         </template>
         <!-- 客户待支付 -->
         <template v-else-if="info.notificationStatus === 'WaitPay'">
-          <template v-if="isRefund">
-            <view
-              style="color: #F56C6C"
-              class="receipt-text"
-              @click="handleToRefund"
-            >您有一份退款申请待签署，点击前往处理</view>
-            <!-- gotoSign('RefundApplication') -->
-          </template>
-          <template v-else>
-            <view class="info-first-paid">未付金额</view>
-            <view class="info-first-money">{{ info.discountInformationResponseVo.unpaid }}
-              <text style="margin-left: 20rpx; font-size: 24rpx; font-weight: bold">元</text>
-            </view>
-            <view
-              class="info-first-detail"
-              @click="payHistory(noticeId)"
-            >
-              <u-icon
-                name="arrow-right"
-                width="12"
-                height="22"
-                color="#666666"
-              ></u-icon>
-              <text>付款明细</text>
-            </view>
-            <view
-              v-if="payAuditNum"
-              class="info-first-audit"
-              @click="payAuditing(noticeId)"
-            >
-              <u-icon
-                name="arrow-right"
-                size="28"
-                color="#666666"
-              ></u-icon>
-              <text class="text">您有
-                <text style="color: #ff0000; padding: 0 5rpx">{{
+          <view class="info-first-paid">未付金额</view>
+          <view class="info-first-money">{{ info.discountInformationResponseVo.unpaid }}
+            <text style="margin-left: 20rpx; font-size: 24rpx; font-weight: bold">元</text>
+          </view>
+          <view
+            class="info-first-detail"
+            @click="payHistory(noticeId)"
+          >
+            <u-icon
+              name="arrow-right"
+              width="12"
+              height="22"
+              color="#666666"
+            ></u-icon>
+            <text>付款明细</text>
+          </view>
+          <view
+            v-if="payAuditNum"
+            class="info-first-audit"
+            @click="payAuditing(noticeId)"
+          >
+            <u-icon
+              name="arrow-right"
+              size="28"
+              color="#666666"
+            ></u-icon>
+            <text class="text">您有
+              <text style="color: #ff0000; padding: 0 5rpx">{{
               payAuditNum
             }}</text>
-                笔付款正在审核中
-              </text>
-            </view>
-            <view
-              class="info-first-btn"
-              v-if="configPay == 'On'"
-            >
-              <u-button
-                v-if="
+              笔付款正在审核中
+            </text>
+          </view>
+          <view
+            class="info-first-btn"
+            v-if="configPay == 'On'"
+          >
+            <u-button
+              v-if="
               Number(info.discountInformationResponseVo.paid) !==
               Number(info.discountInformationResponseVo.paymentAmount)
             "
-                type="primary"
-                size="medium"
-                shape="circle"
-                @click="gotoPay(info.discountInformationResponseVo)"
-              >去付款</u-button>
-            </view>
-            <view
-              class="info-first-btn"
-              v-if="configPay == 'Off'"
-            >
-              <u-button
-                v-if="
+              type="primary"
+              size="medium"
+              shape="circle"
+              @click="gotoPay(info.discountInformationResponseVo)"
+            >去付款</u-button>
+          </view>
+          <view
+            class="info-first-btn"
+            v-if="configPay == 'Off'"
+          >
+            <u-button
+              v-if="
               Number(info.discountInformationResponseVo.paid) !==
               Number(info.discountInformationResponseVo.paymentAmount)
             "
-                type="primary"
-                size="medium"
-                shape="circle"
-                @click="gotoPay(info.discountInformationResponseVo)"
-              >查看当前付款</u-button>
-            </view>
-          </template>
+              type="primary"
+              size="medium"
+              shape="circle"
+              @click="gotoPay(info.discountInformationResponseVo)"
+            >查看当前付款</u-button>
+          </view>
         </template>
         <!-- 客户已支付 -->
         <template v-else-if="info.notificationStatus === 'Paid'">
@@ -312,7 +311,6 @@ import {
 } from "../../api/customer";
 import { getAllByTypeApi } from "../../api/index";
 import uImage from "../../uview-ui/components/u-image/u-image.vue";
-import { currentEnvConfig } from "../../env-config.js";
 export default {
   components: { uImage },
   data() {
@@ -465,9 +463,8 @@ export default {
     async viewNotice(val) {
       if (val.templateType !== "ElectronicTemplate") {
         if (val.noticeAttachmentList.length) {
-          let preList = val.noticeAttachmentList.map(
-            (i) =>
-              `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${i.fileNo}`
+          let preList = val.noticeAttachmentList.map((i) =>
+            this.$tool.getFileUrl(i.fileNo)
           );
           uni.previewImage({
             urls: preList,
@@ -491,7 +488,7 @@ export default {
             break;
           case "BecomeEffective":
           case "Invalidation":
-            let url = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${val.templateId}`;
+            let url = this.$tool.getFileUrl(val.templateId);
             uni.downloadFile({
               url: url,
               success: function (res) {

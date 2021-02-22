@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 15:28:17
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-29 19:30:58
+ * @LastEditTime: 2021-02-22 11:50:22
 -->
 <template>
   <u-popup
@@ -65,7 +65,7 @@
             class="upload"
             width="160"
             height="160"
-            :action="action"
+            :action="$tool.getUploadUrl()"
             @on-success="successChange"
             @on-remove="removeChange"
             :show-upload-list="showUploadList"
@@ -93,7 +93,6 @@ import {
   postAddServiceApi,
   postPaymentupdateApi,
 } from "../../api/customer";
-import { currentEnvConfig } from "../../env-config.js";
 import storageTool from "../../common/storageTool.js";
 export default {
   props: {
@@ -106,11 +105,6 @@ export default {
       info: {},
       cycleId: "",
       payNum: 0,
-      action:
-        currentEnvConfig["protocol"] +
-        "://" +
-        currentEnvConfig["apiDomain"] +
-        "/sales-api/sales-document-cover/file/upload",
       lists: [],
       showUploadList: true,
       header: {

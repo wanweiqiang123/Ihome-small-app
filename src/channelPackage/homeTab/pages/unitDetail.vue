@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-23 17:30:18
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-08 14:51:00
+ * @LastEditTime: 2021-02-22 11:44:44
 -->
 <template>
   <view class="project-detail-wrapper">
@@ -125,7 +125,6 @@
 <script>
 import { getAllByTypeApi } from "../../../api/index";
 import { getYDhouseDetail } from "../../../api/channel";
-import { currentEnvConfig } from "../../../env-config.js";
 export default {
   data() {
     return {
@@ -168,10 +167,10 @@ export default {
       const res = await getYDhouseDetail(this.houseId);
       this.info = {
         ...res,
-        picAddr: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${res.picAddr}`,
+        picAddr: this.$tool.getFileUrl(res.picAddr),
         houseTypeYDOtherDetailVos: res.houseTypeYDOtherDetailVos.map((j) => ({
           ...j,
-          picAddr: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${j.picAddr}`,
+          picAddr: this.$tool.getFileUrl(j.picAddr),
         })),
       };
     },

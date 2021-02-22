@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-30 14:22:01
- * @LastEditors: zyc
- * @LastEditTime: 2021-01-29 14:52:08
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-22 14:06:16
 -->
 <template>
   <view style="padding-top: 100px">
@@ -41,7 +41,6 @@
 import storageTool from "../common/storageTool";
 import { getUserInfoApi, getAreaApi, getDictGetAllApi } from "../api/index";
 import { getOpenidApi } from "../api/customer";
-import { currentEnvConfig } from "../env-config";
 export default {
   data() {
     return {
@@ -50,7 +49,6 @@ export default {
   },
   onLoad() {
     let that = this;
-    
   },
   onShow() {
     this.wxLogin();

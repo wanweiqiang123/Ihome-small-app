@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-27 08:14:50
- * @LastEditors: zyc
- * @LastEditTime: 2021-02-18 11:20:45
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-22 11:45:00
 -->
 <template>
   <view class="deal-details-wrapper">
@@ -63,7 +63,10 @@
         </u-form-item>
       </u-form>
     </view>
-    <view class="info-item" v-if="detailsType === 'commission'">
+    <view
+      class="info-item"
+      v-if="detailsType === 'commission'"
+    >
       <view class="form-title u-border-bottom">结佣信息</view>
       <u-form :label-width="190">
         <u-form-item label="可结佣金">
@@ -104,12 +107,17 @@
         </u-form-item>
       </u-form>
     </view>
-    <view class="info-item" v-if="detailsType === 'commission'">
+    <view
+      class="info-item"
+      v-if="detailsType === 'commission'"
+    >
       <view class="form-title u-border-bottom">结佣记录</view>
       <view class="form u-padding-0">
         <view
           class="record-list"
-          v-for="(item, index) in paymentForm.commissionRecordResponseList" :key="index">
+          v-for="(item, index) in paymentForm.commissionRecordResponseList"
+          :key="index"
+        >
           <view class="record-code">
             <view class="code">{{item.applyCode}}</view>
             <view class="price">结佣金额：{{item.applyAmount}}</view>
@@ -118,28 +126,47 @@
         </view>
       </view>
     </view>
-    <view class="info-item" v-if="detailsType === 'report'">
+    <view
+      class="info-item"
+      v-if="detailsType === 'report'"
+    >
       <view class="form-title u-border-bottom">结佣信息</view>
       <view class="u-margin-20">
         <u-table>
           <u-tr>
-            <u-th v-for="thItem in tableData.thList" :key="thItem.id">{{
+            <u-th
+              v-for="thItem in tableData.thList"
+              :key="thItem.id"
+            >{{
               thItem.name
             }}</u-th>
           </u-tr>
-          <u-tr v-for="trItem in tableData.trList" :key="trItem.id">
-            <u-td v-for="tdItem in trItem.value" :key="tdItem.id">{{
+          <u-tr
+            v-for="trItem in tableData.trList"
+            :key="trItem.id"
+          >
+            <u-td
+              v-for="tdItem in trItem.value"
+              :key="tdItem.id"
+            >{{
               tdItem
             }}</u-td>
           </u-tr>
         </u-table>
       </view>
     </view>
-    <view class="info-item" v-if="detailsType === 'report'">
+    <view
+      class="info-item"
+      v-if="detailsType === 'report'"
+    >
       <view class="form-title u-border-bottom">附件信息</view>
       <view class="form-img">
         <view class="image-item">
-          <view class="images" v-for="(item, index) in dictList" :key="index">
+          <view
+            class="images"
+            v-for="(item, index) in dictList"
+            :key="index"
+          >
             <template v-if="item.srcList.length">
               <view>
                 <text class="img-type">{{ item.name }}</text>
@@ -163,12 +190,8 @@
 </template>
 
 <script>
-import {
-  postdealReportRecordApi,
-  geiPayDealDetail
-} from "@/api/channel";
+import { postdealReportRecordApi, geiPayDealDetail } from "@/api/channel";
 import { getAllByTypeApi } from "@/api/index";
-import { currentEnvConfig } from "../../../env-config.js";
 export default {
   data() {
     return {
@@ -179,7 +202,7 @@ export default {
         totalSettledCommFees: "",
         totalUnsetCommFees: "",
         totalInCommFees: "",
-        commissionRecordResponseList: []
+        commissionRecordResponseList: [],
       },
       tableData: {
         thList: [
@@ -206,8 +229,8 @@ export default {
         house: {},
       },
       customer: {
-        customerName: '',
-        customerPhone: ''
+        customerName: "",
+        customerPhone: "",
       },
       PropertyType: [],
       dictList: [],
@@ -249,7 +272,7 @@ export default {
       uni.setNavigationBarTitle({
         title: "成交详情",
       });
-      await this.initPageByCommission()
+      await this.initPageByCommission();
     }
   },
   methods: {
@@ -318,9 +341,7 @@ export default {
       res.documentShowList.forEach((v) => {
         this.dictList.forEach((j) => {
           if (v.fileType === j.code) {
-            j.srcList.push(
-              `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${v.fileId}`
-            );
+            j.srcList.push(this.$tool.getFileUrl(v.fileId));
           }
         });
       });
@@ -328,18 +349,20 @@ export default {
     // 结佣-成交详情初始化页面
     async initPageByCommission() {
       if (!this.detailsCode) return;
-      let info = await geiPayDealDetail({dealCode: this.detailsCode});
+      let info = await geiPayDealDetail({ dealCode: this.detailsCode });
       console.log(info);
       this.customer.customerName = info?.customerName;
       this.customer.customerPhone = info?.customerPhone;
       this.info.projectCycle = info?.proName;
-      this.info.house.propertyType = info?.propertyType ? this.getDictName(info?.propertyType, this.PropertyType) : '';
+      this.info.house.propertyType = info?.propertyType
+        ? this.getDictName(info?.propertyType, this.PropertyType)
+        : "";
       this.info.house.buildingName = info?.buildingNo;
       this.info.house.roomNo = info?.roomNo;
       this.paymentForm = {
         ...this.paymentForm,
-        ...this.info
-      }
+        ...this.info,
+      };
     },
     // 获取字典
     async getDictAll(type) {

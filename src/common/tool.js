@@ -3,11 +3,19 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-10 15:29:08
- * @LastEditors: lsj
- * @LastEditTime: 2021-02-20 17:22:38
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-22 14:03:48
  */
 import { baseUrl } from '../env-config'
 const tool = {
+    /**生成二维码
+     * @param {*} title
+     * @return {*}
+     */
+    getQrcodeUrl() {
+        let url = baseUrl + `/sales-api/sales-document-cover/file/qrcode`
+        return url;
+    },
     /**渠道商注册-下载模版-委托书
      * @param {*} title
      * @return {*}

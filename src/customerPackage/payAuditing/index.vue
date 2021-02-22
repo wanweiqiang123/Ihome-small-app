@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-25 11:42:30
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 15:16:51
+ * @LastEditTime: 2021-02-22 11:47:51
 -->
 <template>
   <view class="box">
@@ -81,7 +81,6 @@
 <script>
 import { getNotCheckListApi, paymentdeleteApi } from "../../api/customer";
 import { getAllByTypeApi } from "../../api/index";
-import { currentEnvConfig } from "../../env-config.js";
 export default {
   components: {},
   data() {
@@ -122,7 +121,7 @@ export default {
       this.info = res.map((v) => ({
         ...v,
         fileIds: v.fileIds.map((j) => ({
-          url: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${j}`,
+          url: this.$tool.getFileUrl(j),
         })),
       }));
     },

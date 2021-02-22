@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-17 15:26:33
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-03 15:40:03
+ * @LastEditTime: 2021-02-22 11:43:42
 -->
 <template>
   <view class="project-list-wrapper">
@@ -231,7 +231,6 @@
 <script>
 import { getGradeCitiesByChannelIdApi, getAreaList } from "@/api/channel";
 import { getAllByTypeApi, getYDProjectListApi } from "@/api/index";
-import { currentEnvConfig } from "../../../env-config.js";
 import pagination from "../../../mixins/pagination";
 export default {
   mixins: [pagination],
@@ -415,7 +414,7 @@ export default {
         ...res,
         list: res.list.map((v) => ({
           ...v,
-          attachAddr: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${v.attachAddr}`,
+          attachAddr: this.$tool.getFileUrl(v.attachAddr),
         })),
       };
       this.setPageDataMixin(item);

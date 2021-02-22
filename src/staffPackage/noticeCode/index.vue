@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-11-24 17:10:39
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-19 17:36:07
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-22 14:09:36
 -->
 <template>
   <LoginPage>
@@ -90,7 +90,6 @@
 
 <script>
 import { getMannerListByTermId } from "../../api/staff";
-import { currentEnvConfig } from "../../env-config.js";
 
 export default {
   name: "notice-code",
@@ -103,7 +102,6 @@ export default {
       src: "",
       fileId: null,
       loading: false,
-      codeUrl: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/download/`,
     };
   },
   methods: {
@@ -114,7 +112,7 @@ export default {
       });
     },
     handleCode(item) {
-      this.src = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${item.preferentialAddr}`;
+      this.src = this.$tool.getFileUrl(item.preferentialAddr);
       this.fileId = item.preferentialAddr;
       this.isShow = true;
     },
@@ -154,10 +152,9 @@ export default {
     downloadCode() {
       this.loading = true;
       uni.downloadFile({
-        url: `${this.codeUrl}${this.fileId}.jpg`,
+        url: this.$tool.getFileDownloadUrl(this.fileId) + ".jpg",
         // url: `http://img02.tooopen.com/images/20150928/tooopen_sy_143912755726.jpg`,
         success: (res) => {
-          console.log(`${this.codeUrl}${this.fileId}.jpg`);
           let filePath = res.tempFilePath;
           console.log(filePath);
           uni.saveImageToPhotosAlbum({

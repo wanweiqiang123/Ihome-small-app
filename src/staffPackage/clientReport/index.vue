@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-17 18:10:07
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-08 16:00:08
+ * @LastEditTime: 2021-02-22 14:07:03
 -->
 <template>
   <view class="client-container safe-area-inset-bottom">
@@ -196,7 +196,6 @@
 import { phoneValidator } from "../../common/validate";
 import { getProDetailBBApi } from "@/api/index";
 import { postReportApi } from "@/api/channel";
-import { currentEnvConfig } from "../../env-config.js";
 import uInput from "../../uview-ui/components/u-input/u-input.vue";
 export default {
   name: "clientReport",
@@ -294,7 +293,7 @@ export default {
       this.info.proAddr = res.proAddr;
       this.info.city = res.city;
       this.info.exMarket = res.exMarket;
-      this.info.projectPic = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${res.projectPic}`;
+      this.info.projectPic = this.$tool.getFileUrl(res.projectPic);
       getApp().globalData.searchBackData = {};
     } else if (item && item.type === "channel") {
       this.channelForm.channelName = item.data.name;

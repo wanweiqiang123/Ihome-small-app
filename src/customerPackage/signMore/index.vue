@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2021-01-28 15:50:48
- * @LastEditors: ywl
- * @LastEditTime: 2021-01-29 17:06:24
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-22 14:05:58
 -->
 <template>
   <view class="signmore">
@@ -38,7 +38,6 @@
 </template>
 <script>
 import { getAllByTypeApi, getPdf2PicApi } from "../../api/index";
-import { currentEnvConfig } from "../../env-config.js";
 import { postSigningApi } from "../../api/customer";
 export default {
   data() {
@@ -81,7 +80,7 @@ export default {
       const res = await getPdf2PicApi(data.templateId);
       this.$set(this.list, index, {
         ...data,
-        src: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${res.fileId}`,
+        src: this.$tool.getFileUrl(res.fileId),
       });
     },
     async gotosign() {

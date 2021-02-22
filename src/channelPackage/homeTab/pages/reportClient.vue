@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-24 09:58:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-20 15:12:43
+ * @LastEditTime: 2021-02-22 11:44:20
 -->
 <template>
   <view class="report-client-wrapper">
@@ -251,7 +251,6 @@ import { getAllByTypeApi, getProDetailBBApi } from "@/api/index";
 import { getAreaList, postReportApi, postAddDealtApi } from "@/api/channel";
 import { phoneValidator } from "../../../common/validate";
 import { postBuildByProId, postRoomByProId } from "../../../api/staff";
-import { currentEnvConfig } from "../../../env-config.js";
 export default {
   data() {
     return {
@@ -352,7 +351,7 @@ export default {
       this.custormInfo.mobile = msg.mobile;
       this.info.proId = msg.proId;
       this.info.proName = msg.proName;
-      this.homeImg = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${msg.projectPic}`;
+      this.homeImg = this.$tool.getFileUrl(msg.projectPic);
       this.buildingBlockList = await postBuildByProId({
         proId: this.info.proId,
       });
@@ -369,7 +368,7 @@ export default {
       this.keyword = res.proName;
       this.info.exMarket = res.exMarket;
       this.district = res.districtName;
-      this.homeImg = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${res.proAddr}`;
+      this.homeImg = this.$tool.getFileUrl(res.proAddr);
       getApp().globalData.searchBackData = {};
       if (this.pageType) {
         this.buildingBlockList = await postBuildByProId({
