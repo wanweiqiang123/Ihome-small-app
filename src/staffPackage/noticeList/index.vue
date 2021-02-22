@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-16 09:45:20
+ * @LastEditTime: 2021-02-22 09:57:11
 -->
 
 <template>
@@ -295,7 +295,7 @@ export default {
               url: `/staffPackage/noticeInfo/index?id=${item.id}`,
             });
           } else {
-            let url = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${item.templateId}`;
+            let url = this.$tool.getFileUrl(item.templateId);
             // getApp().globalData.webViewSrc = url;
             // uni.navigateTo({
             //   url: `/customerPackage/webView/index`,

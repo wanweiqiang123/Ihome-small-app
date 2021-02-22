@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-19 15:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-16 09:54:45
+ * @LastEditTime: 2021-02-22 10:16:37
 -->
 <template>
   <view class="receipt info">
@@ -350,7 +350,7 @@ export default {
     // 查看预览
     preview(val) {
       if (val.templateType === "ElectronicTemplate") {
-        let url = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${val.templateId}.pdf`;
+        let url = this.$tool.getFileUrl(val.templateId);
         uni.downloadFile({
           url: url,
           success: function (res) {
@@ -367,9 +367,8 @@ export default {
         });
       } else {
         if (val.noticeAttachmentList.length) {
-          let preList = val.noticeAttachmentList.map(
-            (i) =>
-              `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${i.fileNo}`
+          let preList = val.noticeAttachmentList.map((i) =>
+            this.$tool.getFileUrl(i.fileNo)
           );
           uni.previewImage({
             urls: preList,
