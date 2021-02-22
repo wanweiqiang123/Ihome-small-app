@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-26 14:24:10
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 11:41:55
+ * @LastEditTime: 2021-02-22 20:48:09
 -->
 <template>
   <view class="initiate-commission-wrapper">
@@ -641,6 +641,7 @@ export default {
     selectAccount(item, index) {
       this.currentAccountIndex = index;
       this.info.payApplyVO.receiveAccount = item.accountNo;
+      this.info.payApplyVO.agencyAccountBank = item.branchName;
       this.showAccount = false;
     },
     // 选择发票类型
