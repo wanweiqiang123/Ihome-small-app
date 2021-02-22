@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-28 19:01:58
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-28 19:04:11
+ * @LastEditTime: 2021-02-22 10:13:18
 -->
 <template>
   <view class="box">
@@ -123,7 +123,7 @@ export default {
       this.info = res.map((v) => ({
         ...v,
         fileIds: v.fileIds.map((j) => ({
-          url: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${j}`,
+          url: this.$tool.getFileUrl(j),
         })),
       }));
     },

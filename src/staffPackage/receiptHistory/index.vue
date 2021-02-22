@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-28 18:48:00
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-28 18:50:54
+ * @LastEditTime: 2021-02-22 10:18:48
 -->
 <template>
   <view class="box">
@@ -58,7 +58,6 @@ export default {
       payId: "",
       info: [],
       PayType: [],
-      codeUrl: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/download/`,
     };
   },
   onLoad(options) {
@@ -91,8 +90,9 @@ export default {
     async downLoad(item) {
       item.loading = true;
       const file = await getPdf2PicApi(item.fileIds[0]);
+      let downUrl = this.$tool.getFileDownloadUrl(file.fileId);
       uni.downloadFile({
-        url: `${this.codeUrl}${file.fileId}`,
+        url: downUrl,
         success: (res) => {
           console.log(res, "succrss");
           let filePath = res.tempFilePath;

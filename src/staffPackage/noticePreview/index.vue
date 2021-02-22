@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-04 11:20:06
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-18 11:02:14
+ * @LastEditTime: 2021-02-22 10:07:29
 -->
 <template>
   <LoginPage>
@@ -116,7 +116,7 @@ export default {
     },
     async pdf2Pic(tId) {
       const { fileId } = await getPdf2PicApi(tId);
-      this.fileUrl = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${fileId}`;
+      this.fileUrl = this.$tool.getFileUrl(fileId);
     },
     async getDict(type) {
       const list = await getAllByTypeApi({ type: "NotificationType" });

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 17:32:25
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-15 19:48:46
+ * @LastEditTime: 2021-02-22 09:44:24
 -->
 <template>
   <LoginPage>
@@ -184,7 +184,7 @@ export default {
         this.fileList = res.noticeAttachmentList
           .filter((i) => i.type === "NoticeAttachment")
           .map((val) => ({
-            url: `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${val.fileNo}`,
+            url: this.$tool.getFileUrl(val.fileNo),
           }));
       }
     },
@@ -203,7 +203,7 @@ export default {
             });
           }
         } else {
-          let url = `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${val.templateId}.pdf`;
+          let url = this.$tool.getFileUrl(val.templateId);
           uni.downloadFile({
             url: url,
             success: function (res) {
@@ -221,9 +221,8 @@ export default {
         }
       } else {
         if (val.noticeAttachmentList.length) {
-          let preList = val.noticeAttachmentList.map(
-            (i) =>
-              `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${i.fileNo}`
+          let preList = val.noticeAttachmentList.map((i) =>
+            this.$tool.getFileUrl(i.fileNo)
           );
           uni.previewImage({
             urls: preList,
@@ -236,9 +235,8 @@ export default {
     },
     subscriptionPreview() {
       if (this.form.subscriptionAnnex.length) {
-        let preList = this.form.subscriptionAnnex.map(
-          (i) =>
-            `${currentEnvConfig["protocol"]}://${currentEnvConfig["apiDomain"]}/sales-api/sales-document-cover/file/browse/${i.fileNo}`
+        let preList = this.form.subscriptionAnnex.map((i) =>
+          this.$tool.getFileUrl(i.fileNo)
         );
         uni.previewImage({
           urls: preList,

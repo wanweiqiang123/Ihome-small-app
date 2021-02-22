@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 17:10:39
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 14:09:36
+ * @LastEditTime: 2021-02-22 14:11:35
 -->
 <template>
   <LoginPage>
@@ -90,6 +90,7 @@
 
 <script>
 import { getMannerListByTermId } from "../../api/staff";
+import tool from "../../common/tool";
 
 export default {
   name: "notice-code",
@@ -112,7 +113,7 @@ export default {
       });
     },
     handleCode(item) {
-      this.src = this.$tool.getFileUrl(item.preferentialAddr);
+      this.src = tool.getFileUrl(item.preferentialAddr);
       this.fileId = item.preferentialAddr;
       this.isShow = true;
     },
@@ -151,8 +152,9 @@ export default {
     },
     downloadCode() {
       this.loading = true;
+      const downUrl = tool.getFileDownloadUrl(this.fileId);
       uni.downloadFile({
-        url: this.$tool.getFileDownloadUrl(this.fileId) + ".jpg",
+        url: downUrl,
         // url: `http://img02.tooopen.com/images/20150928/tooopen_sy_143912755726.jpg`,
         success: (res) => {
           let filePath = res.tempFilePath;
@@ -183,6 +185,7 @@ export default {
         type: "term",
         other: {
           auditEnums: ["ConstractAdopt"],
+          excludeChargeEnum: "Agent",
         },
       };
       uni.navigateTo({
