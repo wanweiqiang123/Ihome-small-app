@@ -714,7 +714,6 @@ export default {
         selectableChannelIds: [], // 可选的渠道商ids
       }, // 通过项目周期id获取到的初始化成交基础信息
       baseInfoInDeal: {
-        parentId: null,
         hasRecord: false,
         contType: '',
         notice: [], // 优惠告知书
@@ -740,7 +739,9 @@ export default {
       uploadHeader: {}, // 请求header
       uploadName: 'files', // 供后端取值用
       // 编辑功能相关字段
-      editBaseInfo: null, // 编辑初始化页面数据
+      editBaseInfo: {
+        parentId: null,
+      }, // 编辑初始化页面数据
     };
   },
   computed: {
@@ -1549,7 +1550,7 @@ export default {
     async initPageById(cycleId, roomId, propertyType = '') {
       if (!cycleId || !roomId || !propertyType) return;
       let params = {
-        parentId: this.id ? this.baseInfoInDeal.parentId : null,
+        parentId: this.id ? this.editBaseInfo.parentId : null,
         cycleId: cycleId,
         roomId: roomId,
         isMainDeal: true, // 是否主成交
