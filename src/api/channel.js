@@ -3,17 +3,10 @@
  * @version:
  * @Author: lsj
  * @Date: 2020-12-15 10:10:10
- * @LastEditors: zyc
- * @LastEditTime: 2021-02-19 11:28:36
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-02-20 18:10:32
  */
 import { getApi, postApi } from '@/common/http';
-import { currentEnvConfig } from '@/env-config';
-
-// 图片地址
-export function getImgUrl(id = '') {
-  if (!id) return ''
-  return `${currentEnvConfig['protocol']}://${currentEnvConfig['apiDomain']}/sales-api/sales-document-cover/file/browse/${id}`;
-}
 
 // 渠道公司注册 --- 获取临时token
 export async function getTempToken(code = '', data = {}, option = {}) {

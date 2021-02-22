@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-27 15:36:22
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-09 13:50:20
+ * @LastEditTime: 2021-02-20 17:52:10
 -->
 <template>
   <view class="edit-company-wrapper">
@@ -69,7 +69,7 @@
                 class="icon" name="close-circle-fill" color="#FA3534" size="50"></u-icon>
               <u-image
                 @click="viewImg(list)"
-                width="100%" height="100%" :src="list.fileUrls ? list.fileUrls : imgUrl + list.fileId"></u-image>
+                width="100%" height="100%" :src="list.fileUrls ? list.fileUrls : getUrl(list.fileId)"></u-image>
             </view>
           </template>
           <view class="upload-icon" @click="uploadByType(item)">
@@ -170,13 +170,11 @@ import {
   getBankBranchList,
   getChannelInfo,
   getDictByType,
-  getImgUrl,
   editChannelInfo
 } from "@/api/channel";
 import {getAllByTypeApi} from "@/api";
 import tool from "@/common/tool";
 import {validIdentityCard} from "@/common/validate";
-import {currentEnvConfig} from "@/env-config";
 
 // 防抖
 const debounce = (function () {
@@ -278,8 +276,6 @@ export default {
       showRegion: false,
       showBank: false,
       annexList: [],
-      imgUrl:`${currentEnvConfig['protocol']}://${currentEnvConfig['apiDomain']}/sales-api/sales-document-cover/file/browse/`,
-      uploadAction: `${currentEnvConfig['protocol']}://${currentEnvConfig['apiDomain']}/sales-api/sales-document-cover/file/upload`,
       uploadHeader: {}, // 请求header
       uploadName: 'files', // 供后端取值用
       action: 'http://www.example.com/upload',
@@ -369,7 +365,7 @@ export default {
               // 上传
               res.tempFilePaths.forEach((path) => {
                 uni.uploadFile({
-                  url: self.uploadAction, //仅为示例，非真实的接口地址
+                  url: tool.getUploadUrl(),
                   filePath: path,
                   name: self.uploadName,
                   header: self.uploadHeader,
@@ -412,7 +408,7 @@ export default {
               // 上传
               res.tempFiles.forEach((list) => {
                 uni.uploadFile({
-                  url: self.uploadAction, //仅为示例，非真实的接口地址
+                  url: tool.getUploadUrl(),
                   filePath: list.path,
                   name: self.uploadName,
                   header: self.uploadHeader,
@@ -461,7 +457,7 @@ export default {
       if (file.fileUrls) {
         url = file.fileUrls;
       } else {
-        url = getImgUrl(file.fileId);
+        url = tool.getFileUrl(file.fileId);
       }
       uni.previewImage({
         urls: [url]
@@ -538,7 +534,7 @@ export default {
               list.fileList.push(
                 {
                   ...item,
-                  fileSrc: getImgUrl(item.fileId)
+                  fileSrc: tool.getFileUrl(item.fileId)
                 }
               );
             }
@@ -702,6 +698,12 @@ export default {
         this.companyTypeList = [];
       }
     },
+    // 获取图片完整的url
+    getUrl(id) {
+      if (!id) return "";
+      let url = tool.getFileUrl(id);
+      return url;
+    }
   },
 };
 </script>

@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-12 10:16:57
- * @LastEditors: zyc
- * @LastEditTime: 2021-02-14 14:25:24
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-02-20 18:06:25
 -->
 <template>
   <ChannelTabBar>
@@ -139,7 +139,9 @@
 
 <script>
 import pagination from "@/mixins/pagination";
-import { getImgUrl, getRecommendItemList } from "@/api/channel";
+import { getRecommendItemList } from "@/api/channel";
+import tool from "@/common/tool";
+
 export default {
   mixins: [pagination],
   data() {
@@ -195,7 +197,7 @@ export default {
       if (data.length > 0) {
         data.forEach((item) => {
           if (item.attachAddr && item.attachAddr.fileId) {
-            item.imgScr = getImgUrl(item.attachAddr.fileId);
+            item.imgScr = tool.getFileUrl(item.attachAddr.fileId);
           } else {
             item.imgScr = this.houseImg;
           }

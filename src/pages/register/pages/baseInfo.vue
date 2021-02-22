@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-12 10:50:30
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-12 15:04:30
+ * @LastEditTime: 2021-02-20 17:34:20
 -->
 <template>
   <view class="base-info-wrapper">
@@ -70,8 +70,8 @@
 
 <script>
 import { phoneValidator, validIdentityCard, emailOrNullValidato } from '@/common/validate';
-import { currentEnvConfig } from '@/env-config';
 import storageTool from "@/common/storageTool";
+import tool from "@/common/tool";
 
 export default {
   props: {
@@ -114,8 +114,7 @@ export default {
         email: [
           { validator: emailOrNullValidato, trigger: ['blur'] }
         ]
-      },
-      fileUrl: `${currentEnvConfig['protocol']}://${currentEnvConfig['apiDomain']}/sales-api/sales-document-cover/static/channel/模版-委托书.docx`
+      }
     };
   },
   onReady() {
@@ -142,9 +141,8 @@ export default {
     },
     // 下载授权确认函模板
     downTemplate() {
-      let self = this;
       uni.downloadFile({
-        url: self.fileUrl,
+        url: tool.getTemplateDocUrl(),
         success: (res) => {
           if (res.statusCode === 200) {
             console.log('下载成功');
