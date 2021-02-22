@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 14:14:31
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-02-22 19:49:40
 -->
 <template>
   <LoginPage>
@@ -724,6 +724,7 @@ export default {
       this.roomSelectList = await postRoomByProId({
         proId: this.proId,
         buildingId: this.form.buyUnit,
+        exDeal: 0,
       });
     },
     beforeUpload() {
