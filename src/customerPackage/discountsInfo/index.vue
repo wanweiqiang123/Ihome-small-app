@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-23 18:09:39
+ * @LastEditTime: 2021-02-23 18:13:05
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -431,9 +431,10 @@ export default {
     },
 
     handleToRefund() {
-      const arr = this.info.noticeList.map(
+      const arr = this.info.noticeList.filter(
         (v) => v.notificationType === "RefundApplication"
       );
+      console.log(arr);
       uni.navigateTo({
         url: `/customerPackage/createRefund/index?id=${arr[0].id}`,
       });
