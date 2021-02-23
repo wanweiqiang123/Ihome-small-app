@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 11:47:20
+ * @LastEditTime: 2021-02-23 17:07:55
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -34,16 +34,7 @@
         </view>
         <!-- 客户待签署 -->
         <template v-if="info.notificationStatus === 'WaitBeSigned'">
-          <template v-if="isRefund">
-            <view
-              style="color: #F56C6C"
-              class="receipt-text"
-              @click="handleToRefund()"
-            >您有一份退款申请待签署，点击前往处理</view>
-            <!-- gotoSign('RefundApplication') -->
-          </template>
           <view
-            v-else
             class="receipt-text"
             style="color: #F56C6C"
             @click="gotoSign('Notification')"
@@ -55,69 +46,79 @@
         </template>
         <!-- 客户待支付 -->
         <template v-else-if="info.notificationStatus === 'WaitPay'">
-          <view class="info-first-paid">未付金额</view>
-          <view class="info-first-money">{{ info.discountInformationResponseVo.unpaid }}
-            <text style="margin-left: 20rpx; font-size: 24rpx; font-weight: bold">元</text>
-          </view>
-          <view
-            class="info-first-detail"
-            @click="payHistory(noticeId)"
-          >
-            <u-icon
-              name="arrow-right"
-              width="12"
-              height="22"
-              color="#666666"
-            ></u-icon>
-            <text>付款明细</text>
-          </view>
-          <view
-            v-if="payAuditNum"
-            class="info-first-audit"
-            @click="payAuditing(noticeId)"
-          >
-            <u-icon
-              name="arrow-right"
-              size="28"
-              color="#666666"
-            ></u-icon>
-            <text class="text">您有
-              <text style="color: #ff0000; padding: 0 5rpx">{{
+          <template v-if="isRefund && isWaitBeSigned">
+            <view
+              style="color: #F56C6C"
+              class="receipt-text"
+              @click="handleToRefund()"
+            >您有一份退款申请待签署，点击前往处理</view>
+            <!-- gotoSign('RefundApplication') -->
+          </template>
+          <template v-else>
+            <view class="info-first-paid">未付金额</view>
+            <view class="info-first-money">{{ info.discountInformationResponseVo.unpaid }}
+              <text style="margin-left: 20rpx; font-size: 24rpx; font-weight: bold">元</text>
+            </view>
+            <view
+              class="info-first-detail"
+              @click="payHistory(noticeId)"
+            >
+              <u-icon
+                name="arrow-right"
+                width="12"
+                height="22"
+                color="#666666"
+              ></u-icon>
+              <text>付款明细</text>
+            </view>
+            <view
+              v-if="payAuditNum"
+              class="info-first-audit"
+              @click="payAuditing(noticeId)"
+            >
+              <u-icon
+                name="arrow-right"
+                size="28"
+                color="#666666"
+              ></u-icon>
+              <text class="text">您有
+                <text style="color: #ff0000; padding: 0 5rpx">{{
               payAuditNum
             }}</text>
-              笔付款正在审核中
-            </text>
-          </view>
-          <view
-            class="info-first-btn"
-            v-if="configPay == 'On'"
-          >
-            <u-button
-              v-if="
+                笔付款正在审核中
+              </text>
+            </view>
+            <view
+              class="info-first-btn"
+              v-if="configPay == 'On'"
+            >
+              <u-button
+                v-if="
               Number(info.discountInformationResponseVo.paid) !==
               Number(info.discountInformationResponseVo.paymentAmount)
             "
-              type="primary"
-              size="medium"
-              shape="circle"
-              @click="gotoPay(info.discountInformationResponseVo)"
-            >去付款</u-button>
-          </view>
-          <view
-            class="info-first-btn"
-            v-if="configPay == 'Off'"
-          >
-            <u-button
-              v-if="
+                type="primary"
+                size="medium"
+                shape="circle"
+                @click="gotoPay(info.discountInformationResponseVo)"
+              >去付款</u-button>
+            </view>
+            <view
+              class="info-first-btn"
+              v-if="configPay == 'Off'"
+            >
+              <u-button
+                v-if="
               Number(info.discountInformationResponseVo.paid) !==
               Number(info.discountInformationResponseVo.paymentAmount)
             "
-              type="primary"
-              size="medium"
-              shape="circle"
-              @click="gotoPay(info.discountInformationResponseVo)"
-            >查看当前付款</u-button>
-          </view>
+                type="primary"
+                size="medium"
+                shape="circle"
+                @click="gotoPay(info.discountInformationResponseVo)"
+              >查看当前付款</u-button>
+            </view>
+          </template>
         </template>
         <!-- 客户已支付 -->
         <template v-else-if="info.notificationStatus === 'Paid'">
@@ -453,10 +454,14 @@ export default {
 
     // 签署
     signNotice(val, type) {
-      getApp().noticeInfo = { ...val, type: type };
-      uni.navigateTo({
-        url: `/customerPackage/notification/index`,
-      });
+      if (val.notificationType === "RefundApplication") {
+        this.handleToRefund();
+      } else {
+        getApp().noticeInfo = { ...val, type: type };
+        uni.navigateTo({
+          url: `/customerPackage/notification/index`,
+        });
+      }
     },
 
     // 预览

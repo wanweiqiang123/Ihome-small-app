@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-24 16:24:02
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 17:30:12
+ * @LastEditTime: 2021-02-23 15:10:47
 -->
 <template>
   <view class="report-detail-wrapper">
@@ -89,7 +89,7 @@
         <view class="info-item-wrapper">
           <view class="item-wrapper">
             <view class="item-title">报备人</view>
-            <view class="item-value">{{info.reportUser ? info.reportUser : '--'}}</view>
+            <view class="item-value">{{info.reportUserName ? info.reportUserName : '--'}}</view>
           </view>
           <view class="item-wrapper">
             <view class="item-title">联系电话</view>
@@ -176,11 +176,11 @@
         <view class="info-item-wrapper">
           <view class="item-wrapper">
             <view class="item-title">审核结果</view>
-            <view class="item-value">{{info.visitDate ? info.visitDate : '--'}}</view>
+            <view class="item-value">{{info.visitComment ? info.visitComment : '--'}}</view>
           </view>
           <view class="item-wrapper">
-            <view class="item-title">到访时间</view>
-            <view class="item-value">{{info.visitDate ? info.visitDate : '--'}}</view>
+            <view class="item-title">审核时间</view>
+            <view class="item-value">{{info.visitReviewDate ? info.visitReviewDate : '--'}}</view>
           </view>
         </view>
       </view>
