@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 10:09:50
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-19 10:00:47
+ * @LastEditTime: 2021-02-23 19:43:59
  */
 
 import { getApi, postApi } from '../common/http.js';
@@ -129,10 +129,6 @@ export async function postSessionUserGetBackPasswordApi(data = {}, option = {}) 
     return await postApi('/sales-api/system/sessionUser/getBackPassword', data, option);
 }
 
-
-
-
-
 /**测试接口睡眠时间*/
 export async function getTestApi(time = 2000) {
     return new Promise((resolve, reject) => {
@@ -212,4 +208,9 @@ export async function postNoticeDealList(data, option = {}) {
 // 通过项目ID获取已经审核周期列表【移动端】
 export async function postTermListByProIdApi(data = {}, option = {}) {
     return await postApi(`/sales-api/project/term/getTermListByProId`, data, option);
+}
+
+// 根据渠道商ID查询渠道经纪人列表
+export async function getAgentByChannelIdApi(data, option = {}) {
+    return await postApi(`/sales-api/channel/channelAgent/getAgentByChannelId`, data, option);
 }

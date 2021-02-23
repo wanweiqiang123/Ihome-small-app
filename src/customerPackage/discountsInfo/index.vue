@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-23 18:13:05
+ * @LastEditTime: 2021-02-23 19:20:42
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -161,7 +161,7 @@
         <view class="info-second-top">{{
           info.purchaseInformation.projectName
         }}</view>
-        <view>{{info.purchaseInformation.propertyType ? `${getDictName(info.purchaseInformation.propertyType, Property)}-${info.purchaseInformation.buyUnitName}-${info.purchaseInformation.roomNumberName}` : `${info.purchaseInformation.buyUnitName}-${info.purchaseInformation.roomNumberName}`}}</view>
+        <view>{{getDictName(info.purchaseInformation.propertyType, Property) | msgFilter}} {{info.purchaseInformation.buyUnitName | msgFilter}} {{info.purchaseInformation.roomNumberName | msgFilter}}</view>
       </view>
       <view class="info-second-wrap">
         <swiper

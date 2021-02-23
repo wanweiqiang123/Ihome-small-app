@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
- * @LastEditors: zyc
- * @LastEditTime: 2021-02-17 11:28:18
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-23 19:00:06
  */
 import Vue from 'vue'
 import App from './App'
@@ -47,6 +47,11 @@ Vue.component('CustomerTabBar', CustomerTabBar);
 Vue.component('ChannelTabBar', ChannelTabBar);
 Vue.component('StaffTabBar', StaffTabBar);
 //是否有资源权限的方法
+
+// 过滤器
+Vue.filter('msgFilter', (msg) => {
+  return msg ? msg : ''
+});
 
 Vue.prototype.$has = function (key) {
   let userinfo = storageTool.getUserInfo();

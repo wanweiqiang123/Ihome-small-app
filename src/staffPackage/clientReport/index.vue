@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-17 18:10:07
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 14:07:03
+ * @LastEditTime: 2021-02-23 20:28:07
 -->
 <template>
   <view class="client-container safe-area-inset-bottom">
@@ -35,7 +35,7 @@
         ></u-image>
       </view>
       <view>
-        <view class="item">{{info.proAddr}}</view>
+        <view class="item">{{info.proName}}</view>
         <view>
           <u-tag
             :text="info.districtName"
@@ -72,15 +72,25 @@
             label="经纪人姓名"
             required
             prop="reportName"
+            right-icon="arrow-right"
+            class="hide-icon"
           >
-            <u-input v-model="channelForm.reportName" />
+            <u-input
+              type="select"
+              placeholder="请选择经纪人姓名"
+              v-model="channelForm.reportName"
+              @click="manSearch"
+            />
           </u-form-item>
           <u-form-item
             label="经纪人号码"
             required
             prop="reportMobile"
           >
-            <u-input v-model="channelForm.reportMobile" />
+            <u-input
+              v-model="channelForm.reportMobile"
+              disabled
+            />
           </u-form-item>
         </u-form>
       </view>
@@ -285,9 +295,15 @@ export default {
   async onShow() {
     let item = getApp().globalData.searchBackData;
     if (item && item.type === "project") {
+      this.channelForm = {
+        channelName: "",
+        channelId: "",
+        reportName: "",
+        reportMobile: "",
+      };
+      this.info.proName = item.data.proName;
       this.info.proId = item.data.proId;
       const res = await getProDetailBBApi(this.info.proId);
-      this.info.proName = res.proName;
       this.keyword = res.proName;
       this.info.districtName = res.districtName;
       this.info.proAddr = res.proAddr;
@@ -296,8 +312,16 @@ export default {
       this.info.projectPic = this.$tool.getFileUrl(res.projectPic);
       getApp().globalData.searchBackData = {};
     } else if (item && item.type === "channel") {
+      Object.assign(this.channelForm, {
+        reportName: "",
+        reportMobile: "",
+      });
       this.channelForm.channelName = item.data.name;
       this.channelForm.channelId = item.data.id;
+      getApp().globalData.searchBackData = {};
+    } else if (item && item.type === "man") {
+      this.channelForm.reportName = item.data.name;
+      this.channelForm.reportMobile = item.data.mobile;
       getApp().globalData.searchBackData = {};
     }
   },
@@ -332,6 +356,25 @@ export default {
         });
       } else {
         this.$tool.toast("请选择报备楼盘");
+      }
+    },
+    // 经纪人搜索
+    manSearch() {
+      if (this.channelForm.channelId) {
+        getApp().globalData.searchParams = {
+          api: "getAgentByChannelIdApi",
+          key: "nameOrTel",
+          id: "id",
+          type: "man",
+          other: {
+            channelId: this.channelForm.channelId,
+          },
+        };
+        uni.navigateTo({
+          url: "/pages/search/index/index",
+        });
+      } else {
+        this.$tool.toast("请选择渠道公司");
       }
     },
     // 确定选择时间
