@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-17 10:54:41
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-17 18:32:17
+ * @LastEditTime: 2021-02-23 16:32:35
 -->
 <template>
   <view class="container safe-area-inset-bottom">
@@ -73,6 +73,7 @@
             <view v-if="current !== 0">操作人：{{i.auditUserName}}</view>
             <view>是否有到访附件：{{i.isPhotoVisit}} <text
                 class="link"
+                @click.stop="preview(i.visitAttachments)"
                 v-if="i.visitAttachments.length"
               >查看附件</text></view>
             <view v-if="current === 2">无效原因：{{i.comment || '-'}}</view>
@@ -102,7 +103,7 @@
               :custom-style="{ padding: '0 40rpx' }"
               size="mini"
               type="success"
-              @click="showValid = true;reportId = i.id;"
+              @click="timeShow = true;reportId = i.id;"
             >有效</u-button>
           </template>
         </view>
@@ -181,13 +182,13 @@
       :show-title="false"
       @confirm="submitReport(reportId, 'Invalid')"
     ></u-modal>
-    <u-modal
-      v-model="showValid"
-      content="是否确认有效?"
-      show-cancel-button
-      :show-title="false"
-      @confirm="submitReport(reportId, 'Valid')"
-    ></u-modal>
+    <!-- 时间选择器 -->
+    <u-picker
+      mode="time"
+      v-model="timeShow"
+      :params="params"
+      @confirm="timeConfirm"
+    ></u-picker>
   </view>
 </template>
 
@@ -231,6 +232,15 @@ export default {
       showInvalid: false,
       showValid: false,
       reportId: null,
+      timeShow: false,
+      params: {
+        year: true,
+        month: true,
+        day: true,
+        hour: false,
+        minute: false,
+        second: false,
+      },
     };
   },
   methods: {
@@ -238,6 +248,30 @@ export default {
       this.current = index;
       this.reportStatus = this.tabList[index].value;
       this.confirm();
+    },
+    preview(srcList) {
+      let urls = srcList.map((i) => {
+        let url = this.$tool.getFileUrl(i.fileId);
+        return url;
+      });
+      uni.previewImage({
+        urls,
+        current: 1,
+      });
+    },
+    async timeConfirm(time) {
+      let visitDealTime = `${time.year}-${time.month}-${time.day}`;
+      try {
+        await postReportValid({
+          reportId: this.reportId,
+          validOrInvalid: "Valid",
+          visitDealTime,
+        });
+        this.$tool.toast("有效成功");
+        this.confirm();
+      } catch (error) {
+        console.log(error);
+      }
     },
     async submitReport(rId, type) {
       try {
