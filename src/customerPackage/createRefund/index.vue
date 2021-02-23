@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-17 09:23:15
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-19 09:39:00
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-23 17:53:51
 -->
 <template>
   <view>
@@ -239,6 +239,7 @@ export default {
       this.$refs.uForm.validate(async (valid) => {
         if (valid) {
           this.form.noticeId = Number(this.noticeId);
+          console.log(this.form);
           const res = await postUpdateRefundApi(this.form);
           uni.showToast({
             title: "保存成功",

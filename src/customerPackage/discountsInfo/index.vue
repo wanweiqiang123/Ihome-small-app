@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-23 17:07:55
+ * @LastEditTime: 2021-02-23 17:50:04
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -430,9 +430,9 @@ export default {
       }
     },
 
-    handleToRefund() {
+    handleToRefund(id) {
       uni.navigateTo({
-        url: "/customerPackage/createRefund/index?id=" + this.noticeId,
+        url: `/customerPackage/createRefund/index?id=${id}`,
       });
     },
 
@@ -455,7 +455,7 @@ export default {
     // 签署
     signNotice(val, type) {
       if (val.notificationType === "RefundApplication") {
-        this.handleToRefund();
+        this.handleToRefund(val.id);
       } else {
         getApp().noticeInfo = { ...val, type: type };
         uni.navigateTo({
