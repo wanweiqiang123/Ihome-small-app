@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-17 09:23:15
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-23 17:53:51
+ * @LastEditTime: 2021-02-23 18:08:21
 -->
 <template>
   <view>
@@ -246,7 +246,8 @@ export default {
             icon: "none",
           });
           getApp().noticeInfo = {
-            ...res,
+            id: res.noticeId,
+            templateId: res.templateId,
             notificationType: "RefundApplication",
             type: "sign",
           };
