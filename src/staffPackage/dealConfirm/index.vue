@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-13 15:13:13
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-17 18:36:55
+ * @LastEditTime: 2021-02-23 16:39:47
 -->
 <template>
   <view class="container safe-area-inset-bottom">
@@ -71,12 +71,14 @@
             <text
               class="link"
               v-if="i.visitAttachments.length"
+              @click.stop="preview(i.visitAttachments)"
             >查看附件</text>
           </view>
           <view>是否有成交附件：{{i.isPhotoDeal}}
             <text
               class="link"
               v-if="i.dealAttachments.length"
+              @click.stop="preview(i.dealAttachments)"
             >查看附件</text>
           </view>
           <view>认购楼盘：{{i.proName}}</view>
@@ -100,14 +102,14 @@
             type="primary"
             @click="handleGoto(i)"
           >上传附件</u-button>
-<!--          <u-button-->
-<!--            v-if="current === 1 && !i.dealCode"-->
-<!--            shape="circle"-->
-<!--            :custom-style="{ padding: '0 40rpx' }"-->
-<!--            size="mini"-->
-<!--            @click="handleAddDeal(i)"-->
-<!--            type="success"-->
-<!--          >生成成交报告</u-button>-->
+          <!--          <u-button-->
+          <!--            v-if="current === 1 && !i.dealCode"-->
+          <!--            shape="circle"-->
+          <!--            :custom-style="{ padding: '0 40rpx' }"-->
+          <!--            size="mini"-->
+          <!--            @click="handleAddDeal(i)"-->
+          <!--            type="success"-->
+          <!--          >生成成交报告</u-button>-->
           <template v-if="current === 0">
             <u-button
               size="mini"
@@ -120,7 +122,7 @@
               :custom-style="{ padding: '0 40rpx' }"
               size="mini"
               type="success"
-              @click="showValid = true;reportId = i.id;"
+              @click="timeShow = true;reportId = i.id;"
             >成交确认</u-button>
           </template>
         </view>
@@ -207,6 +209,13 @@
       :show-title="false"
       @confirm="submitReport(reportId, 'Valid')"
     ></u-modal>
+    <!-- 时间选择器 -->
+    <u-picker
+      mode="time"
+      v-model="timeShow"
+      :params="params"
+      @confirm="timeConfirm"
+    ></u-picker>
   </view>
 </template>
 
@@ -253,6 +262,15 @@ export default {
       showInvalid: false,
       showValid: false,
       reportId: null,
+      timeShow: false,
+      params: {
+        year: true,
+        month: true,
+        day: true,
+        hour: false,
+        minute: false,
+        second: false,
+      },
     };
   },
   methods: {
@@ -260,6 +278,31 @@ export default {
       this.current = index;
       this.reportStatus = this.tabList[index].value;
       this.confirm();
+    },
+    // 预览
+    preview(srcList) {
+      let urls = srcList.map((i) => {
+        let url = this.$tool.getFileUrl(i.fileId);
+        return url;
+      });
+      uni.previewImage({
+        urls,
+        current: 1,
+      });
+    },
+    async timeConfirm(time) {
+      let visitDealTime = `${time.year}-${time.month}-${time.day}`;
+      try {
+        await postReportDeal({
+          reportId: this.reportId,
+          validOrInvalid: "Valid",
+          visitDealTime,
+        });
+        this.$tool.toast("成交确认成功");
+        this.confirm();
+      } catch (error) {
+        console.log(error);
+      }
     },
     async submitReport(rId, type) {
       try {
