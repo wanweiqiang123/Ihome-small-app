@@ -67,6 +67,9 @@
           </view>
         </view>
       </view>
+      <view class="empty-wrapper" v-if="!tablePage.length">
+        <u-empty text="暂无数据" mode="list"></u-empty>
+      </view>
     </view>
     <PopupSearch
       width="80%"
@@ -120,6 +123,7 @@
 import { postDealListApi } from "@/api/channel";
 import pagination from "../../../mixins/pagination";
 import PopupSearch from "../../../components/PopupSearch/index.vue";
+import storageTool from "@/common/storageTool";
 export default {
   mixins: [pagination],
   components: {
@@ -148,9 +152,14 @@ export default {
           label: "签约",
         },
       ],
+      userInfo: {
+        channelId: ''
+      },
     };
   },
   onLoad() {
+    this.userInfo = storageTool.getUserInfo();
+    console.log('userInfo', this.userInfo);
     this.getListMixin();
   },
   onShow() {
@@ -172,6 +181,7 @@ export default {
       } else {
         this.queryPageParameters.phoneOrCusName = "";
       }
+      this.queryPageParameters.agencyId = this.userInfo?.channelId;
       this.setPageDataMixin(await postDealListApi(this.queryPageParameters));
     },
     handleToSearch() {
@@ -327,6 +337,11 @@ export default {
         }
       }
     }
+  }
+
+  .empty-wrapper {
+    width: 100%;
+    height: calc(100vh - 95rpx);
   }
 }
 
