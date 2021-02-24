@@ -315,6 +315,7 @@ export default {
     this.$refs.paymentForm.setRules(this.rules);
   },
   async onLoad() {
+    await this.getToken();
     await this.getArea();
     await this.getChannelAttachmentList();
     await this.getCompanyTypeList();
@@ -325,6 +326,13 @@ export default {
     }
   },
   methods: {
+    // 获取token
+    getToken() {
+      this.uploadHeader = {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `bearer ${storageTool.getToken()}`
+      };
+    },
     // 确定选择日期
     confirmDate(value) {
       // console.log(value);
@@ -354,7 +362,7 @@ export default {
         uni.chooseImage({
           count: 1, // 默认9
           success: (res) => {
-            // console.log(res);
+            console.log('chooseImage', res);
             if (res && res.tempFiles && res.tempFiles.length > 0) {
               let flag = false;
               flag = self.validFileSizeAndType(res.tempFiles, 'img');
@@ -463,6 +471,43 @@ export default {
         urls: [url]
       })
     },
+    // 校验上传的图片的大小和类型是否符合要求
+    validFileSizeAndType(fileList = [], type = '') {
+      if (fileList.length > 0) {
+        const FILE_SIZE = 10 * 1024 * 1024; // 文件大小
+        const RegStr = /.doc$|.docx$|.xls$|.xlsx$|.pdf$/i; // 上传文件的类型 --- 图片不校验类型
+        let sizeList = [];
+        let typeList = [];
+        if (type === 'img') {
+          // 校验图片
+          sizeList = fileList.filter((list) => {
+            return list.size > FILE_SIZE;
+          });
+          if (sizeList.length > 0) {
+            return false;
+          } else {
+            return true;
+          }
+        } else {
+          // 校验文件
+          fileList.forEach((list) => {
+            if (list.size > FILE_SIZE) {
+              sizeList.push(list);
+            }
+            if (!RegStr.test(list.name)) {
+              typeList.push(list);
+            }
+          })
+          if (sizeList.length > 0 || typeList.length > 0) {
+            return false;
+          } else {
+            return true;
+          }
+        }
+      } else {
+        return false;
+      }
+    },
     // 确定选择公司类型
     confirmCompanyType(value) {
       // console.log(value);
@@ -562,6 +607,7 @@ export default {
       let self = this;
       let flag = false;
       // 校验附件是否有值
+      console.log('self.annexList', self.annexList);
       flag = self.validAnnex(self.annexList);
       if (!flag) {
         tool.toast('请上传具体附件');
@@ -593,13 +639,13 @@ export default {
               branchNo: self.paymentForm.branchNo, // 开户银行
             }
           ];
-          if (self.annexInfo && self.annexInfo.length > 0) {
-            self.annexInfo.forEach((item) => {
+          if (self.annexList && self.annexList.length > 0) {
+            self.annexList.forEach((item) => {
               if (item.fileList.length) {
                 item.fileList.forEach((list) => {
                   let obj = {
                     fileId: list.fileId,
-                    fileName: list.fileId,
+                    fileName: `${list?.generateFileName}.${list?.generateFileType}`,
                     type: item.code,
                   };
                   postData.channelAttachments.push(obj);

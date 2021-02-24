@@ -336,7 +336,7 @@ export default {
         uni.chooseImage({
           count: 1, // 默认9
           success: (res) => {
-            // console.log(res);
+            console.log('chooseImage', res);
             if (res && res.tempFiles && res.tempFiles.length > 0) {
               let flag = false;
               flag = self.validFileSizeAndType(res.tempFiles, 'img');
@@ -540,7 +540,7 @@ export default {
                 item.fileList.forEach((list) => {
                   let obj = {
                     fileId: list.fileId,
-                    fileName: list.fileId,
+                    fileName: `${list?.generateFileName}.${list?.generateFileType}`,
                     type: item.code,
                   };
                   postData.channelAttachments.push(obj);
