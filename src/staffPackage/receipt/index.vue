@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 14:10:55
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-28 19:19:27
+ * @LastEditTime: 2021-02-24 11:35:51
 -->
 <template>
   <view class="receipt safe-area-inset-bottom">
@@ -46,12 +46,40 @@
           class="ih-card-foot"
         >
           <view class="font-text">
-            <text v-show="i.notificationStatus === 'WaitBeSigned'">客户尚未完成签署</text>
-            <text v-show="i.notificationStatus === 'WaitPay'">客户尚未完成付款</text>
             <text
-              v-show="i.notificationStatus === 'BecomeEffective'"
-              class="success"
-            >已生效</text>
+              v-if="i.notificationStatus === 'WaitBeSigned'"
+              class="font-error"
+            >待客户签署协议</text>
+            <text
+              v-else-if="i.notificationStatus === 'WaitDetermine'"
+              class="font-primary"
+            >告知书信息未确认</text>
+            <text
+              v-else-if="i.notificationStatus === 'WaitPay'"
+              class="font-error"
+            >客户尚未完成付款</text>
+            <text
+              v-else-if="i.notificationStatus === 'Paid'"
+              class="font-error"
+            >收款完成，待分公司业管审核</text>
+            <text
+              v-else-if="i.notificationStatus === 'Invalidation'"
+              class="font-error"
+            >协议已终止</text>
+            <text
+              v-else-if="i.notificationStatus === 'ReviewStatus'"
+              class="font-error"
+            >优惠告知书无效</text>
+            <template v-else-if="i.notificationStatus === 'BecomeEffective'">
+              <text
+                v-if="isHasNotification(i.supplementNoticeList)"
+                class="font-error"
+              >待客户签署协议</text>
+              <text
+                v-else
+                class="font-success"
+              >收款完成，告知书已生效</text>
+            </template>
           </view>
           <u-button
             size="mini"
@@ -225,6 +253,11 @@ export default {
         url: "/pages/search/index/index",
       });
     },
+    isHasNotification(val) {
+      let isHasSign = val.some((v) => v.notificationStatus === "WaitBeSigned");
+      if (isHasSign) return true;
+      else return false;
+    },
     handleGoto(id) {
       uni.navigateTo({
         url: `/staffPackage/receiptInfo/index?id=${id}`,
@@ -346,11 +379,14 @@ export default {
     align-items: center;
     padding-top: 20rpx;
   }
-  .font-text {
+  .font-error {
     color: $u-type-error;
-    .success {
-      color: $u-type-success;
-    }
+  }
+  .font-success {
+    color: $u-type-success;
+  }
+  .font-primary {
+    color: $u-type-primary;
   }
 }
 </style>

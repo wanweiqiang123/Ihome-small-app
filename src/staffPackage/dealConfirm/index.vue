@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-13 15:13:13
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-24 09:55:36
+ * @LastEditTime: 2021-02-24 11:23:25
 -->
 <template>
   <view class="container safe-area-inset-bottom">
@@ -62,7 +62,7 @@
           <view>报备项目：{{i.proName | msgFilter}}</view>
           <view>项目周期：{{i.proCycle | msgFilter}}</view>
           <view>所属渠道：{{i.channelName | msgFilter}}</view>
-          <view>报备人：{{i.reportUserName | msgFilter}}</view>
+          <view>报备人：{{i.reportName | msgFilter}}</view>
           <view>报备人电话：{{i.reportMobile | msgFilter}}</view>
           <!-- <view>公司门店：广州居家房地产有限公司(居家置业店)</view> -->
           <view>报备时间：{{i.reportDate | msgFilter}}</view>

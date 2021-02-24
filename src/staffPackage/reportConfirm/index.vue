@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-13 15:13:13
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-24 09:54:36
+ * @LastEditTime: 2021-02-24 11:23:11
 -->
 <template>
   <view class="container safe-area-inset-bottom">
@@ -62,7 +62,7 @@
             <view>报备项目：{{i.proName | msgFilter}}</view>
             <view>项目周期：{{i.proCycle | msgFilter}}</view>
             <view>所属渠道：{{i.channelName | msgFilter}}</view>
-            <view>报备人：{{i.reportUserName | msgFilter}}</view>
+            <view>报备人：{{i.reportName | msgFilter}}</view>
             <view>报备人电话：{{i.reportMobile | msgFilter}}</view>
             <view>报备时间：{{i.reportDate | msgFilter}}</view>
             <view v-if="current === 1">报备确认时间：{{i.auditTime | msgFilter}}</view>
