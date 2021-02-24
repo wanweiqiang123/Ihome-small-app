@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-17 10:54:41
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-24 16:32:19
+ * @LastEditTime: 2021-02-24 16:33:44
 -->
 <template>
   <view class="container safe-area-inset-bottom">
@@ -101,7 +101,7 @@
             >无效</u-button>
             <u-button
               shape="circle"
-              :custom-style="{ padding: '0 40rpx' }"
+              :custom-style="{ padding: '0 40rpx', marginRight: '20rpx' }"
               size="mini"
               type="success"
               @click="handleClick(i, 'timeShow')"
@@ -109,6 +109,7 @@
             <!-- </template>
             <template v-else> -->
             <u-button
+              v-if="!i.exMarket"
               size="mini"
               shape="circle"
               type="warning"
