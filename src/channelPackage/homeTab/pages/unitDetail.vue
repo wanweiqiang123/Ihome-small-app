@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-23 17:30:18
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 14:31:33
+ * @LastEditTime: 2021-02-24 15:42:30
 -->
 <template>
   <view class="project-detail-wrapper">
@@ -44,13 +44,13 @@
               <u-col span="5">
                 <view class="home-col-wrapper">
                   <view class="home-label">售价</view>
-                  <view class="home-value">{{info.salePrice ? info.salePrice : 0}}</view>
+                  <view class="home-value">{{info.salePrice ? info.salePrice : 0}}万起</view>
                 </view>
               </u-col>
               <u-col span="7">
                 <view class="home-col-wrapper">
                   <view class="home-label">户型面积</view>
-                  <view class="home-value">{{info.space ? info.space : 0}}</view>
+                  <view class="home-value">{{info.space ? info.space : 0 }}m²</view>
                 </view>
               </u-col>
               <u-col span="5">
@@ -68,13 +68,13 @@
               <u-col span="5">
                 <view class="home-col-wrapper">
                   <view class="home-label">物业费</view>
-                  <view class="home-value">{{info.propertyCost ? info.propertyCost : 0}}</view>
+                  <view class="home-value">{{info.propertyCost ? info.propertyCost : 0 }}元/m²</view>
                 </view>
               </u-col>
               <u-col span="7">
                 <view class="home-col-wrapper">
                   <view class="home-label">产权年限</view>
-                  <view class="home-value">{{getDictName(info.propertyAge, PropertyAge) | emptyFilter}}</view>
+                  <view class="home-value">{{getDictName(info.propertyAge, PropertyAge) | emptyFilter}}年</view>
                 </view>
               </u-col>
               <u-col span="5">
@@ -269,6 +269,7 @@ export default {
         .home-col-wrapper {
           width: 100%;
           display: flex;
+          align-items: center;
           flex-direction: row;
           box-sizing: border-box;
           margin: 10rpx 0rpx;
