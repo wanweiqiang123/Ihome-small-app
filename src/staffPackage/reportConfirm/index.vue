@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-13 15:13:13
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-24 16:11:09
+ * @LastEditTime: 2021-02-24 16:23:16
 -->
 <template>
   <view class="container safe-area-inset-bottom">
@@ -202,7 +202,11 @@
 import PopupSearch from "../../components/PopupSearch/index.vue";
 import IhRadio from "../../components/IhRadio/index";
 import pagination from "../../mixins/pagination";
-import { postReportList, reportValidOrInvalid } from "../../api/staff";
+import {
+  postReportList,
+  reportValidOrInvalid,
+  postYueJiaReport,
+} from "../../api/staff";
 
 export default {
   name: "report",
