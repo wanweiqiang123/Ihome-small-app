@@ -4,13 +4,13 @@
  * @Author: lsj
  * @Date: 2020-11-26 09:02:05
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-09 10:15:56
+ * @LastEditTime: 2021-02-24 14:25:37
 -->
 <template>
   <view class="follow-up-wrapper">
     <view class="client-info">
-      <view class="name u-padding-bottom-20">{{info.name}}</view>
-      <view>{{info.mobile}}</view>
+      <view class="name u-padding-bottom-20">{{info.name | emptyFilter}}</view>
+      <view>{{info.mobile | emptyFilter}}</view>
     </view>
     <view class="client-info u-margin-top-30 u-padding-bottom-20">
       <view class="name u-padding-bottom-20">跟进方式</view>

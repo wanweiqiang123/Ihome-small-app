@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-19 16:53:03
+ * @LastEditTime: 2021-02-24 14:42:14
 -->
 <template>
   <LoginPage>
@@ -33,15 +33,15 @@
         >
           <view class="body-msg">
             <view>项目名称</view>
-            <view class="color">{{form.proName}}</view>
+            <view class="color">{{form.proName | emptyFilter}}</view>
           </view>
           <view class="body-msg">
             <view>优惠方式</view>
-            <view class="color">{{form.explain}}</view>
+            <view class="color">{{form.explain | emptyFilter}}</view>
           </view>
           <view class="body-msg">
             <view>服务费金额</view>
-            <view class="color">¥{{form.paymentAmount?form.paymentAmount:0}}</view>
+            <view class="color">¥{{form.paymentAmount | emptyFilter}}</view>
           </view>
         </view>
       </u-card>

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-23 19:00:06
+ * @LastEditTime: 2021-02-24 11:58:54
  */
 import Vue from 'vue'
 import App from './App'
@@ -48,9 +48,9 @@ Vue.component('ChannelTabBar', ChannelTabBar);
 Vue.component('StaffTabBar', StaffTabBar);
 //是否有资源权限的方法
 
-// 过滤器
-Vue.filter('msgFilter', (msg) => {
-  return msg ? msg : ''
+// 过滤器-后端返回undefiedn或null时转成''
+Vue.filter('emptyFilter', (msg) => {
+  return msg || msg === 0 ? msg : ''
 });
 
 Vue.prototype.$has = function (key) {

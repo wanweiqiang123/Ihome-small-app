@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-17 10:54:41
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-24 15:13:22
+ * @LastEditTime: 2021-02-24 15:15:06
 -->
 <template>
   <view class="container safe-area-inset-bottom">
@@ -57,21 +57,21 @@
         >
           <view>
             <view>客户姓名：{{`${i.name}(${i.sex === 'Mr' ? '先生' : '女士'})`}}</view>
-            <view>客户电话：{{i.mobile | msgFilter}}</view>
-            <view>预计到访时间：{{i.expectedTime | msgFilter}}</view>
-            <view>预计到访人数：{{i.expectedNumber | msgFilter}}</view>
-            <view>报备项目：{{i.proName | msgFilter}}</view>
-            <view>项目周期：{{i.proCycle | msgFilter}}</view>
-            <view>所属渠道：{{i.channelName | msgFilter}}</view>
-            <view>报备人：{{i.reportName | msgFilter}}</view>
-            <view>报备人电话：{{i.reportMobile | msgFilter}}</view>
+            <view>客户电话：{{i.mobile | emptyFilter}}</view>
+            <view>预计到访时间：{{i.expectedTime | emptyFilter}}</view>
+            <view>预计到访人数：{{i.expectedNumber | emptyFilter}}</view>
+            <view>报备项目：{{i.proName | emptyFilter}}</view>
+            <view>项目周期：{{i.proCycle | emptyFilter}}</view>
+            <view>所属渠道：{{i.channelName | emptyFilter}}</view>
+            <view>报备人：{{i.reportUserName | emptyFilter}}</view>
+            <view>报备人电话：{{i.reportMobile | emptyFilter}}</view>
             <!-- <view>公司门店：广州居家房地产有限公司(居家置业店)</view> -->
-            <view>报备时间：{{i.reportDate | msgFilter}}</view>
-            <view>报备确认时间：{{i.reportConfirmTime | msgFilter}}</view>
-            <view v-if="current === 1">到访确认时间：{{i.auditTime | msgFilter}}</view>
-            <view v-if="current === 2">无效时间：{{i.auditTime | msgFilter}}</view>
-            <view v-if="current !== 0">操作人：{{i.auditUserName | msgFilter}}</view>
-            <view>是否有到访附件：{{i.isPhotoVisit | msgFilter}} <text
+            <view>报备时间：{{i.reportDate | emptyFilter}}</view>
+            <view>报备确认时间：{{i.reportConfirmTime | emptyFilter}}</view>
+            <view v-if="current === 1">到访确认时间：{{i.auditTime | emptyFilter}}</view>
+            <view v-if="current === 2">无效时间：{{i.auditTime | emptyFilter}}</view>
+            <view v-if="current !== 0">操作人：{{i.auditUserName | emptyFilter}}</view>
+            <view>是否有到访附件：{{i.isPhotoVisit | emptyFilter}} <text
                 class="link"
                 @click.stop="preview(i.visitAttachments)"
                 v-if="i.visitAttachments.length"

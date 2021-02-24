@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-24 09:58:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 09:42:39
+ * @LastEditTime: 2021-02-24 14:30:28
 -->
 <template>
   <view class="report-client-wrapper">
@@ -32,7 +32,7 @@
           ></u-image>
         </view>
         <view class="project-info">
-          <view>{{info.proName}}</view>
+          <view>{{info.proName | emptyFilter}}</view>
           <view>
             <u-tag
               :text="district"

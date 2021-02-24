@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-27 13:05:22
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-09 16:46:31
+ * @LastEditTime: 2021-02-24 14:36:58
 -->
 <template>
   <view class="deal-list-wrapper">
@@ -41,7 +41,7 @@
         @click="viewDealDetail(item.dealCode)"
       >
         <view class="item-code u-padding-bottom-20">
-          <view class="code">{{item.dealCode}}</view>
+          <view class="code">{{item.dealCode | emptyFilter}}</view>
           <view class="detail">详情</view>
           <u-icon
             name="arrow-right"
@@ -51,9 +51,9 @@
         </view>
         <view class="item-content">
           <view class="content-left">
-            <view>项目名称：{{item.projectName}}</view>
-            <view>客户姓名：{{item.customerName}}</view>
-            <view>客户号码：{{item.customerPhone}}</view>
+            <view>项目名称：{{item.projectName | emptyFilter}}</view>
+            <view>客户姓名：{{item.customerName | emptyFilter}}</view>
+            <view>客户号码：{{item.customerPhone | emptyFilter}}</view>
           </view>
           <view class="content-right">
             <view class="right-top">

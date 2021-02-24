@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-26 10:15:18
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-19 11:58:23
+ * @LastEditTime: 2021-02-24 14:35:26
 -->
 <template>
   <view class="commission-wrapper">
@@ -38,7 +38,7 @@
         @click="viewCommissionDetails"
       >
         <view class="item-code u-padding-bottom-20">
-          <view class="code">结佣申请单号：{{item.applyCode}}</view>
+          <view class="code">结佣申请单号：{{item.applyCode | emptyFilter}}</view>
           <view
             class="status bg-red"
             v-if="item.rejectionMark === 'Yes'"
@@ -60,10 +60,10 @@
             v-else-if="item.status === 'PaymentSuccessful'"
           >支付成功</view>
         </view>
-        <view class="price u-padding-bottom-10">申请佣金：{{item.applyAmount}}</view>
-        <view class="price u-padding-bottom-10">扣除金额：{{item.deductAmount}}</view>
-        <view class="price u-padding-bottom-10">实结佣金：{{item.actualAmount}}</view>
-        <view class="price u-padding-bottom-10">申请时间：{{item.makerTime}}</view>
+        <view class="price u-padding-bottom-10">申请佣金：{{item.applyAmount | emptyFilter}}</view>
+        <view class="price u-padding-bottom-10">扣除金额：{{item.deductAmount | emptyFilter}}</view>
+        <view class="price u-padding-bottom-10">实结佣金：{{item.actualAmount | emptyFilter}}</view>
+        <view class="price u-padding-bottom-10">申请时间：{{item.makerTime | emptyFilter}}</view>
         <view class="detail u-padding-bottom-10">
           <text>详情</text>
           <u-icon

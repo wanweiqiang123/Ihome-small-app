@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 15:28:17
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 11:50:22
+ * @LastEditTime: 2021-02-24 14:46:37
 -->
 <template>
   <u-popup
@@ -29,11 +29,11 @@
         </view>
         <view class="pay-item">
           <view class="pay-list">收款公司
-            <text class="pay-list-money">{{info.payeeName}}</text>
+            <text class="pay-list-money">{{info.payeeName | emptyFilter}}</text>
           </view>
           <view class="pay-list">收款帐号
             <view class='pay-payeeAccount'>
-              <text class="pay-payeeAccount-title">{{info.payeeAccount}}</text>
+              <text class="pay-payeeAccount-title">{{info.payeeAccount | emptyFilter}}</text>
               <u-icon
                 name="file-text-fill"
                 color="#2979ff"

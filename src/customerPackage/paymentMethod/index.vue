@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 10:45:06
+ * @LastEditTime: 2021-02-24 14:46:46
 -->
 <template>
   <LoginPage>
@@ -63,7 +63,7 @@
                 width="60rpx"
                 :src="require(`../common/img/${item.code}.png`)"
               ></u-image>
-              <text class="pay-type-name">{{ item.name }}</text>
+              <text class="pay-type-name">{{ item.name | emptyFilter }}</text>
             </view>
             <u-radio
               active-color="#18B566"

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-13 15:13:13
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-24 15:12:08
+ * @LastEditTime: 2021-02-24 15:15:20
 -->
 <template>
   <view class="container safe-area-inset-bottom">
@@ -56,39 +56,39 @@
           class="ih-card-content"
         >
           <view>客户姓名：{{`${i.name}(${i.sex === 'Mr' ? '先生' : '女士'})`}}</view>
-          <view>客户电话：{{i.mobile | msgFilter}}</view>
-          <view>预计到访时间：{{i.expectedTime | msgFilter}}</view>
-          <view>预计到访人数：{{i.expectedNumber | msgFilter}}</view>
-          <view>报备项目：{{i.proName | msgFilter}}</view>
-          <view>项目周期：{{i.proCycle | msgFilter}}</view>
-          <view>所属渠道：{{i.channelName | msgFilter}}</view>
-          <view>报备人：{{i.reportName | msgFilter}}</view>
-          <view>报备人电话：{{i.reportMobile | msgFilter}}</view>
+          <view>客户电话：{{i.mobile | emptyFilter}}</view>
+          <view>预计到访时间：{{i.expectedTime | emptyFilter}}</view>
+          <view>预计到访人数：{{i.expectedNumber | emptyFilter}}</view>
+          <view>报备项目：{{i.proName | emptyFilter}}</view>
+          <view>项目周期：{{i.proCycle | emptyFilter}}</view>
+          <view>所属渠道：{{i.channelName | emptyFilter}}</view>
+          <view>报备人：{{i.reportUserName | emptyFilter}}</view>
+          <view>报备人电话：{{i.reportMobile | emptyFilter}}</view>
           <!-- <view>公司门店：广州居家房地产有限公司(居家置业店)</view> -->
-          <view>报备时间：{{i.reportDate | msgFilter}}</view>
-          <view>报备确认时间：{{i.reportConfirmTime  | msgFilter}}</view>
-          <view>是否有到访附件：{{i.isPhotoVisit | msgFilter}}
+          <view>报备时间：{{i.reportDate | emptyFilter}}</view>
+          <view>报备确认时间：{{i.reportConfirmTime  | emptyFilter}}</view>
+          <view>是否有到访附件：{{i.isPhotoVisit | emptyFilter}}
             <text
               class="link"
               v-if="i.visitAttachments.length"
               @click.stop="preview(i.visitAttachments)"
             >查看附件</text>
           </view>
-          <view>是否有成交附件：{{i.isPhotoDeal | msgFilter}}
+          <view>是否有成交附件：{{i.isPhotoDeal | emptyFilter}}
             <text
               class="link"
               v-if="i.dealAttachments.length"
               @click.stop="preview(i.dealAttachments)"
             >查看附件</text>
           </view>
-          <view>认购楼盘：{{i.proName | msgFilter}}</view>
-          <view>认购栋座：{{i.subBuildingName | msgFilter}}</view>
-          <view>认购房号：{{i.roomName | msgFilter}}</view>
-          <view v-if="current === 1">成交确认时间：{{i.auditTime | msgFilter}}</view>
-          <view v-if="current === 1 && i.dealCode">关联成交报告编号：{{i.dealCode | msgFilter}}</view>
-          <view v-if="current === 2">无效时间：{{i.auditTime | msgFilter}}</view>
-          <view v-if="current !== 0">操作人：{{i.auditUserName | msgFilter}}</view>
-          <view v-if="current === 2">无效原因：{{i.comment | msgFilter}}</view>
+          <view>认购楼盘：{{i.proName | emptyFilter}}</view>
+          <view>认购栋座：{{i.subBuildingName | emptyFilter}}</view>
+          <view>认购房号：{{i.roomName | emptyFilter}}</view>
+          <view v-if="current === 1">成交确认时间：{{i.auditTime | emptyFilter}}</view>
+          <view v-if="current === 1 && i.dealCode">关联成交报告编号：{{i.dealCode | emptyFilter}}</view>
+          <view v-if="current === 2">无效时间：{{i.auditTime | emptyFilter}}</view>
+          <view v-if="current !== 0">操作人：{{i.auditUserName | emptyFilter}}</view>
+          <view v-if="current === 2">无效原因：{{i.comment | emptyFilter}}</view>
           <view :class="['ih-card-tag', {'bg-warning': !i.exMarket}]">{{i.exMarket ? '市场化' : '非市场化'}}</view>
         </view>
         <view

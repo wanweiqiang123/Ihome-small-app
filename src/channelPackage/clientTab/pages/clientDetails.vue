@@ -4,15 +4,15 @@
  * @Author: lsj
  * @Date: 2020-11-25 16:13:38
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-09 10:35:18
+ * @LastEditTime: 2021-02-24 15:01:21
 -->
 <template>
   <view class="client-details-wrapper">
     <view class="client-info">
       <view class="name-wrapper">
         <view class="name-left">
-          <span class="name">{{detailForm.name}}</span>
-          <span>({{getDictName(detailForm.sex, sexList)}})</span>
+          <span class="name">{{detailForm.name | emptyFilter}}</span>
+          <span>({{getDictName(detailForm.sex, sexList) | emptyFilter}})</span>
         </view>
         <view>
           <u-icon
@@ -23,7 +23,7 @@
         </view>
       </view>
       <view class="phone-wrapper">
-        <span>{{detailForm.mobile}}</span>
+        <span>{{detailForm.mobile | emptyFilter}}</span>
         <u-icon
           class="icon-wrapper"
           name="phone"
@@ -31,7 +31,7 @@
           size="40"
         ></u-icon>
       </view>
-      <view class="time">录入时间：{{detailForm.inputTime}}</view>
+      <view class="time">录入时间：{{detailForm.inputTime | emptyFilter}}</view>
       <view class="time">报备楼盘：{{detailForm.reportDetails.length}}</view>
     </view>
     <view class="tabs-wrapper">
@@ -49,7 +49,7 @@
       <view class="item">
         <view>意向区域：</view>
         <view class="item-right">
-          {{getDictName(detailForm.intentionProvince, areaRegion)}}{{getDictName(detailForm.intentionCity, areaRegion)}}{{getDictName(detailForm.intentionCounty, areaRegion)}}
+          {{getDictName(detailForm.intentionProvince, areaRegion) | emptyFilter}}{{getDictName(detailForm.intentionCity, areaRegion) | emptyFilter}}{{getDictName(detailForm.intentionCounty, areaRegion) | emptyFilter}}
         </view>
       </view>
       <view class="item">
@@ -58,7 +58,7 @@
           <text
             v-for="(item, index) in detailForm.purposeOfPurchases"
             :key="index"
-          >{{getDictName(item, targetList)}}</text>
+          >{{getDictName(item, targetList) | emptyFilter}}</text>
         </view>
       </view>
       <view class="item">
@@ -67,16 +67,16 @@
           <text
             v-for="(item, index) in detailForm.intentAreas"
             :key="index"
-          >{{getDictName(item, areaList)}}</text>
+          >{{getDictName(item, areaList) | emptyFilter}}</text>
         </view>
       </view>
       <view class="item">
         <view>意向户型：</view>
         <view class="item-right">
           <text
-            v-for="(item, index) in detailForm.intentAreas"
+            v-for="(item, index) in detailForm.intentHouseTypes"
             :key="index"
-          >{{getDictName(item, unitTypeList)}}</text>
+          >{{getDictName(item, unitTypeList) | emptyFilter}}</text>
         </view>
       </view>
       <view class="item">
@@ -85,7 +85,7 @@
           <text
             v-for="(item, index) in detailForm.houseDecorations"
             :key="index"
-          >{{getDictName(item, decorationList)}}</text>
+          >{{getDictName(item, decorationList) | emptyFilter}}</text>
         </view>
       </view>
       <view class="item">
@@ -94,7 +94,7 @@
           <text
             v-for="(item, index) in detailForm.factorsOfConcerns"
             :key="index"
-          >{{getDictName(item, factorList)}}</text>
+          >{{getDictName(item, factorList) | emptyFilter}}</text>
         </view>
       </view>
     </view>
@@ -104,18 +104,18 @@
     >
       <view class="item">
         <view>年龄段：</view>
-        <view class="item-right">{{getDictName(detailForm.ageGroup, ageList)}}</view>
+        <view class="item-right">{{getDictName(detailForm.ageGroup, ageList) | emptyFilter}}</view>
       </view>
       <view class="item">
         <view>现住区域：</view>
         <view class="item-right">
-          {{getDictName(detailForm.nowliveProvince, areaRegion)}}{{getDictName(detailForm.nowliveCity, areaRegion)}}{{getDictName(detailForm.nowliveCounty, areaRegion)}}
+          {{getDictName(detailForm.nowliveProvince, areaRegion) | emptyFilter}}{{getDictName(detailForm.nowliveCity, areaRegion) | emptyFilter}}{{getDictName(detailForm.nowliveCounty, areaRegion) | emptyFilter}}
         </view>
       </view>
       <view class="item">
         <view>工作区域：</view>
         <view class="item-right">
-          {{getDictName(detailForm.workProvince, areaRegion)}}{{getDictName(detailForm.workCity, areaRegion)}}{{getDictName(detailForm.workCounty, areaRegion)}}
+          {{getDictName(detailForm.workProvince, areaRegion) | emptyFilter}}{{getDictName(detailForm.workCity, areaRegion) | emptyFilter}}{{getDictName(detailForm.workCounty, areaRegion) | emptyFilter}}
         </view>
       </view>
     </view>
@@ -131,9 +131,9 @@
           >
             <template v-slot:content>
               <view>
-                <view class="lien-title">{{getDictName(item.type, followTypeList)}}跟进</view>
-                <view class="lien-time">{{item.followTime}}</view>
-                <view class="lien-des">跟进情况：{{item.describe}}</view>
+                <view class="lien-title">{{getDictName(item.type, followTypeList) | emptyFilter}}跟进</view>
+                <view class="lien-time">{{item.followTime | emptyFilter}}</view>
+                <view class="lien-des">跟进情况：{{item.describe | emptyFilter}}</view>
               </view>
             </template>
           </u-time-line-item>
@@ -157,16 +157,16 @@
         :key="i"
       >
         <view class="report-title">
-          <view class="left">{{item.proName}}</view>
+          <view class="left">{{item.proName | emptyFilter}}</view>
           <view class="right">
             <u-button
               type="primary"
               size="mini"
-            >{{getDictName(item.reportStatus, ReportStatus)}}</u-button>
+            >{{getDictName(item.reportStatus, ReportStatus) | emptyFilter}}</u-button>
           </view>
         </view>
-        <view class="location">{{item.district}}</view>
-        <view class="location">{{item.reportDate}}</view>
+        <view class="location">{{item.district | emptyFilter}}</view>
+        <view class="location">{{item.reportDate | emptyFilter}}</view>
         <view class="btn-wrapper">
           <u-button
             type="warning"

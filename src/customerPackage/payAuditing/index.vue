@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-25 11:42:30
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 11:47:51
+ * @LastEditTime: 2021-02-24 14:46:06
 -->
 <template>
   <view class="box">
@@ -14,9 +14,9 @@
       :key="i"
     >
       <view class="box-item-title">
-        <view style="font-weight: bold;">付款金额：{{item.amount}}</view>
+        <view style="font-weight: bold;">付款金额：{{item.amount | emptyFilter}}</view>
         <view style="color:#F59A23;font-size:26rpx">
-          {{getDictName(item.status, PaymentStatus)}}
+          {{getDictName(item.status, PaymentStatus) | emptyFilter}}
           <u-icon
             name="info-circle"
             size="28"
@@ -26,13 +26,13 @@
       <view class="box-item-msg">
         <view class="box-item-msg-item">
           <view class="box-item-msg-title">付款单号
-            <text class="box-item-msg-detail">{{item.payNo}}</text>
+            <text class="box-item-msg-detail">{{item.payNo | emptyFilter}}</text>
           </view>
           <view class="box-item-msg-title">付款方式
-            <text class="box-item-msg-detail">{{getDictName(item.payType, PayType)}}</text>
+            <text class="box-item-msg-detail">{{getDictName(item.payType, PayType) | emptyFilter}}</text>
           </view>
           <view class="box-item-msg-title">付款时间
-            <text class="box-item-msg-detail">{{item.payDate}}</text>
+            <text class="box-item-msg-detail">{{item.payDate | emptyFilter}}</text>
           </view>
           <view class="pingzheng">
             <view class="pingzhengtitle">转账凭证</view>
