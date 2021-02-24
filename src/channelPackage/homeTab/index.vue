@@ -42,22 +42,21 @@
         <u-grid
           :col="4"
           :border="false"
-          @click="goToItem"
-        >
-          <u-grid-item
-            v-for="(item, index) in gridList"
-            :key="index"
-            :index="item.path"
-          >
-            <template v-if="item.isShow">
+          @click="goToItem">
+          <template
+            v-for="(item, index) in gridList">
+            <u-grid-item
+              :key="index"
+              v-if="item.isShow"
+              :index="item.path">
               <u-image
                 width="98rpx"
                 height="98rpx"
                 :src="item.icon"
               ></u-image>
-            </template>
-            <view class="grid-text">{{item.name}}</view>
-          </u-grid-item>
+              <view class="grid-text">{{item.name}}</view>
+            </u-grid-item>
+          </template>
         </u-grid>
       </view>
       <u-gap
