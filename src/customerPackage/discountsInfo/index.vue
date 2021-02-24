@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-23 19:20:42
+ * @LastEditTime: 2021-02-24 10:48:03
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -132,26 +132,28 @@
           >待客户签署协议</view>
           <view
             style="color: #F56C6C"
-            v-if="isSupplementaryAgreementOne"
+            v-else-if="isSupplementaryAgreementOne"
             @click="gotoSign('SupplementaryAgreement')"
             class="receipt-text"
           >您有一份协议待签署，点击前往处理</view>
           <view
             style="color: #F56C6C"
-            v-if="isSupplementaryAgreementMore"
+            v-else-if="isSupplementaryAgreementMore"
             @click="gotoSignMore()"
             class="receipt-text"
           >您有多份协议待签署，点击前往处理</view>
-          <view
-            style="color: #F56C6C"
-            v-else-if="isSignedRefund"
-            class="receipt-text"
-          >协议已终止，此优惠无效</view>
           <view
             v-else
             style="color: #19BE6B"
             class="receipt-text"
           >付款完成，优惠已生效</view>
+        </template>
+        <!-- 失效 -->
+        <template v-else-if="info.notificationStatus === 'Invalidation'">
+          <view
+            style="color: #F56C6C"
+            class="receipt-text"
+          >协议已终止，此优惠无效</view>
         </template>
       </view>
     </view>
@@ -391,16 +393,6 @@ export default {
       return this.info.noticeList
         .map((i) => i.notificationStatus)
         .includes("WaitBeSigned");
-    },
-    isSignedRefund() {
-      let item = this.info.noticeList.find(
-        (i) => i.notificationType === "TerminationAgreement"
-      );
-      if (item) {
-        return item.notificationStatus === "BecomeEffective";
-      } else {
-        return false;
-      }
     },
     isSupplementaryAgreementOne() {
       let arr = [];

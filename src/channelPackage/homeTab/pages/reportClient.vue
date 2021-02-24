@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-24 09:58:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 17:11:48
+ * @LastEditTime: 2021-02-24 09:42:39
 -->
 <template>
   <view class="report-client-wrapper">
@@ -343,6 +343,7 @@ export default {
     const msg = getApp().myReport;
     this.info.proId = msg?.proId;
     this.info.proName = msg?.proName;
+    this.info.exMarket = msg.exMarket;
     this.homeImg = this.$tool.getFileUrl(msg?.projectPic);
     this.district = msg.district;
     this.buildingBlockList = await postBuildByProId({

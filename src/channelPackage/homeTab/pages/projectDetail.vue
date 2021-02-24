@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-23 11:15:50
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 16:54:04
+ * @LastEditTime: 2021-02-24 09:40:40
 -->
 <template>
   <view class="project-detail-wrapper">
@@ -273,6 +273,7 @@ export default {
         proName: this.detailInfo.proName,
         projectPic: this.detailInfo.projectPic,
         district: this.detailInfo.districtName,
+        exMarket: this.detailInfo.exMarket,
       };
       uni.navigateTo({
         url: `/channelPackage/homeTab/pages/reportClient`,

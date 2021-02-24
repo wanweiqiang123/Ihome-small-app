@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-23 19:09:44
+ * @LastEditTime: 2021-02-24 10:57:29
 -->
 <template>
   <view>
@@ -37,8 +37,41 @@
             class="ih-card-foot"
             slot="foot"
           >
-            <view class="font-text">
-              <text v-show="item.notificationStatus === 'WaitBeSigned'">您有一份协议待签署，请尽快处理</text>
+            <view>
+              <text
+                v-if="item.notificationStatus === 'WaitBeSigned'"
+                class="color-error"
+              >您有协议待签署，请处理</text>
+              <text
+                v-else-if="item.notificationStatus === 'WaitDetermine'"
+                class="color-primary"
+              >信息待确认</text>
+              <text
+                v-else-if="item.notificationStatus === 'WaitPay'"
+                class="color-error"
+              >您还未完成付款</text>
+              <text
+                v-else-if="item.notificationStatus === 'Paid'"
+                class="color-success"
+              >付款完成，优惠确认中</text>
+              <text
+                v-else-if="item.notificationStatus === 'Invalidation'"
+                class="color-error"
+              >协议已终止，此优惠无效</text>
+              <text
+                v-else-if="item.notificationStatus === 'ReviewStatus'"
+                class="color-error"
+              >优惠告知书无效</text>
+              <template v-else-if="item.notificationStatus === 'BecomeEffective'">
+                <text
+                  v-if="isHasNotification(item.supplementNoticeList)"
+                  class="color-error"
+                >您有协议待签署，请处理</text>
+                <text
+                  v-else
+                  class="color-success"
+                >付款完成，优惠已生效</text>
+              </template>
             </view>
             <u-button
               class="home-button"
@@ -94,9 +127,11 @@ export default {
       uni.navigateTo({
         url: `/customerPackage/discountsInfo/index?id=${id}`,
       });
-      // uni.navigateTo({
-      //   url: `/customerPackage/paySuccess/index?id=${id}`,
-      // });
+    },
+    isHasNotification(val) {
+      let isHasSign = val.some((v) => v.notificationStatus === "WaitBeSigned");
+      if (isHasSign) return true;
+      else return false;
     },
     // 字典翻译
     async getDictAll(type) {
@@ -135,8 +170,14 @@ export default {
     justify-content: space-between;
     align-items: center;
   }
-  .font-text {
+  .color-success {
+    color: $u-type-success;
+  }
+  .color-error {
     color: $u-type-error;
+  }
+  .color-primary {
+    color: $u-type-primary;
   }
 }
 .home-button {
