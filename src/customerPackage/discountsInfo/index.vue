@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 14:45:19
+ * @LastEditTime: 2021-02-24 17:55:52
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -353,19 +353,19 @@ export default {
       isShowPayButton: false,
     };
   },
-  onLoad(options) {
+  async onLoad(options) {
     this.noticeId = options.id;
-    if (this.noticeId) {
-      this.getInfo();
-    }
-  },
-  async onShow() {
     this.NotificationType = await this.getDictAll("NotificationType");
     this.NotificationStatus = await this.getDictAll("NotificationStatus");
     this.Property = await this.getDictAll("Property");
     this.OwnerType = await this.getDictAll("ownerType");
     this.PayOpenFlag = await this.getDictAll("PayOpenFlag");
     this.configPay = this.PayOpenFlag.find((v) => v.code === "OpenFlag").tag;
+  },
+  onShow() {
+    if (this.noticeId) {
+      this.getInfo();
+    }
   },
   computed: {
     percent() {
