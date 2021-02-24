@@ -962,9 +962,7 @@ export default {
       }
       // 附件
       this.postData.documentVO = [];
-      if (info.documentList && info.documentList.length) {
-        this.postData.documentVO = this.initDocumentList(info.charge, info.contType, info.documentList);
-      }
+      this.postData.documentVO = this.initDocumentList(info.charge, info.contType, info.documentList);
       // 通过项目周期id获取基础信息
       await this.editBaseDealInfo(info.cycleId, info?.house?.buildingId, info?.house?.propertyType);
       await this.editPageById(info.cycleId, info?.house?.roomId, info?.house?.propertyType);
@@ -2023,6 +2021,7 @@ export default {
         id: "id",
         type: "notice",
         other: {
+          dealId: this.id ? this.id : null,
           cycleId: this.baseInfoByTerm.termId,
           projectId: this.baseInfoByTerm.proId,
           buyUnit: this.postData.buildingId, // 栋座
@@ -2271,7 +2270,8 @@ export default {
           "isMarketProject": "",
           "isMat": "",
           "modelCode": "",
-          "noticeIds": [],
+          // "noticeIds": [],
+          "notices": [],
           "oneAgentTeamId": "",
           "recordState": "",
           "refineModel": "",
@@ -2358,11 +2358,33 @@ export default {
         });
         if (firstNoticeList.length) {
           firstId = firstNoticeList[0].noticeId;
-          obj.dealVO.noticeIds.push(firstId);
+          obj.dealVO.notices.push(
+            {
+              dealId: firstNoticeList[0].dealId,
+              noticeId: firstNoticeList[0].noticeId,
+              noticeNo: firstNoticeList[0].noticeNo,
+              notificationStatus: firstNoticeList[0].notificationStatus,
+              notificationType: firstNoticeList[0].notificationType,
+              paymentAmount: firstNoticeList[0].paymentAmount,
+              templateId: firstNoticeList[0].templateId,
+              templateType: firstNoticeList[0].templateType
+            }
+          );
         }
         this.postData.offerNoticeVO.forEach((vo) => {
           if (vo.noticeId !== firstId) {
-            obj.dealVO.noticeIds.push(vo.noticeId);
+            obj.dealVO.notices.push(
+              {
+                dealId: vo.dealId,
+                noticeId: vo.noticeId,
+                noticeNo: vo.noticeNo,
+                notificationStatus: vo.notificationStatus,
+                notificationType: vo.notificationType,
+                paymentAmount: vo.paymentAmount,
+                templateId: vo.templateId,
+                templateType: vo.templateType
+              }
+            );
           }
         });
       }

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-17 10:54:41
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-24 16:10:22
+ * @LastEditTime: 2021-02-24 16:33:44
 -->
 <template>
   <view class="container safe-area-inset-bottom">
@@ -92,30 +92,31 @@
             @click="handleGoto(i)"
           >上传附件</u-button>
           <template v-if="current === 0">
-            <template v-if="i.exMarket">
-              <u-button
-                size="mini"
-                shape="circle"
-                :custom-style="{ padding: '0 40rpx', marginRight: '20rpx' }"
-                @click="handleClick(i, 'showInvalid')"
-              >无效</u-button>
-              <u-button
-                shape="circle"
-                :custom-style="{ padding: '0 40rpx' }"
-                size="mini"
-                type="success"
-                @click="handleClick(i, 'timeShow')"
-              >有效</u-button>
-            </template>
-            <template v-else>
-              <u-button
-                size="mini"
-                shape="circle"
-                type="success"
-                :custom-style="{ padding: '0 40rpx' }"
-                @click.stop="handleSync(i.id)"
-              >同步状态</u-button>
-            </template>
+            <!-- <template v-if="i.exMarket"> -->
+            <u-button
+              size="mini"
+              shape="circle"
+              :custom-style="{ padding: '0 40rpx', marginRight: '20rpx' }"
+              @click="handleClick(i, 'showInvalid')"
+            >无效</u-button>
+            <u-button
+              shape="circle"
+              :custom-style="{ padding: '0 40rpx', marginRight: '20rpx' }"
+              size="mini"
+              type="success"
+              @click="handleClick(i, 'timeShow')"
+            >有效</u-button>
+            <!-- </template>
+            <template v-else> -->
+            <u-button
+              v-if="!i.exMarket"
+              size="mini"
+              shape="circle"
+              type="warning"
+              :custom-style="{ padding: '0 40rpx' }"
+              @click.stop="handleSync(i.id)"
+            >同步状态</u-button>
+            <!-- </template> -->
           </template>
         </view>
       </u-card>
