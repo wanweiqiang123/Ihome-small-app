@@ -32,20 +32,19 @@
             :border="false"
             @click="goToGrid"
           >
-            <u-grid-item
-              v-for="item in gridList"
-              :key="item.id"
-              :index="item.url"
-            >
-              <template v-if="item.isShow">
+            <template v-for="item in gridList">
+              <u-grid-item
+                v-if="item.isShow"
+                :key="item.id"
+                :index="item.url">
                 <u-image
                   width="64rpx"
                   height="64rpx"
                   :src="item.icon"
                 ></u-image>
                 <view class="grid-text">{{ item.name }}</view>
-              </template>
-            </u-grid-item>
+              </u-grid-item>
+            </template>
           </u-grid>
         </view>
         <u-gap
@@ -58,13 +57,12 @@
           class="my-item-wrapper"
         >
           <view class="my-manage">渠道管理</view>
-          <view
-            class="my-item"
-            v-for="item in manageList"
-            :key="item.id"
-            @click="goToItem(item)"
-          >
-            <template v-if="item.isShow">
+          <template v-for="item in manageList">
+            <view
+              class="my-item"
+              :key="item.id"
+              v-if="item.isShow"
+              @click="goToItem(item)">
               <view class="item-icon">
                 <u-image
                   width="40rpx"
@@ -80,8 +78,8 @@
                   size="40"
                 ></u-icon>
               </view>
-            </template>
-          </view>
+            </view>
+          </template>
         </view>
         <u-gap
           v-show="isShowManageList"

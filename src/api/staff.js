@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-10 15:30:58
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-09 10:10:50
+ * @LastEditTime: 2021-02-24 16:04:27
  */
 import { getApi, postApi } from '../common/http.js';
 
@@ -259,6 +259,15 @@ export async function getMyReportList(data = {}, option = {}) {
  */
 export async function postReportValid(data = {}, option = {}) {
   return await postApi('/sales-api/customer/report/visitValidOrInvalid', data, option)
+}
+/**
+ * @description: 同步悦家报备数据
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function postYueJiaReport(data = {}, option = {}) {
+  return await postApi('/sales-api/customer/report/getYueJiaReport', data, option)
 }
 /**
  * @description: 成交有效无效操作
