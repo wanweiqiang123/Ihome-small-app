@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-16 15:34:28
- * @LastEditors: zyc
- * @LastEditTime: 2021-02-17 09:19:02
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-02-24 14:29:38
 -->
 <template>
   <ChannelTabBar>
@@ -23,27 +23,27 @@
           <view class="name">{{ userInfo.name }}</view>
           <view class="phone">{{ userInfo.mobilePhone }}</view>
         </view>
-        <view class="my-item-wrapper u-padding-right-14">
+        <view v-if="isShowGridList" class="my-item-wrapper u-padding-right-14">
           <u-grid :col="3" :border="false" @click="goToGrid">
             <u-grid-item
               v-for="item in gridList"
               :key="item.id"
               :index="item.url"
-            >
+              v-if="item.isShow">
               <u-image width="64rpx" height="64rpx" :src="item.icon"></u-image>
               <view class="grid-text">{{ item.name }}</view>
             </u-grid-item>
           </u-grid>
         </view>
-        <u-gap height="20" bg-color="#F1F1F1"></u-gap>
-        <view class="my-item-wrapper">
+        <u-gap v-if="isShowGridList" height="20" bg-color="#F1F1F1"></u-gap>
+        <view v-if="isShowManageList" class="my-item-wrapper">
           <view class="my-manage">渠道管理</view>
           <view
             class="my-item"
             v-for="item in manageList"
             :key="item.id"
-            @click="goToItem(item)"
-          >
+            v-if="item.isShow"
+            @click="goToItem(item)">
             <view class="item-icon">
               <u-image width="40rpx" height="40rpx" :src="item.icon"></u-image>
             </view>
@@ -53,14 +53,13 @@
             </view>
           </view>
         </view>
-        <u-gap height="20" bg-color="#F1F1F1"></u-gap>
+        <u-gap v-show="isShowManageList" height="20" bg-color="#F1F1F1"></u-gap>
         <view class="my-item-wrapper">
           <view
             class="my-item"
             v-for="item in myBuyList"
             :key="item.id"
-            @click="userSwitchClick"
-          >
+            @click="userSwitchClick">
             <view class="item-icon">
               <u-image width="40rpx" height="40rpx" :src="item.icon"></u-image>
             </view>
@@ -130,18 +129,21 @@ export default {
           icon: require("@/channelPackage/common/icon/money.png"),
           name: "结佣列表",
           url: "/channelPackage/myTab/pages/commissionList",
+          isShow: this.$has("B.WXAPP.CHANNEL.CENTER.COMMISSIONLIST")
         },
         {
           id: 3,
           icon: require("@/channelPackage/common/icon/star.png"),
           name: "我的收藏",
           url: "/channelPackage/myTab/pages/favoritesList",
+          isShow: this.$has("B.WXAPP.CHANNEL.CENTER.MYCOLLECTION")
         },
         {
           id: 4,
           icon: require("@/channelPackage/common/icon/record.png"),
           name: "报备成交记录",
           url: "/channelPackage/myTab/pages/dealList",
+          isShow: this.$has("B.WXAPP.CHANNEL.CENTER.TRANSACTIONLIST")
         },
       ],
       manageList: [
@@ -150,30 +152,35 @@ export default {
           icon: require("@/channelPackage/common/icon/company.png"),
           name: "公司信息",
           url: "/channelPackage/myTab/channelPage/companyInfo",
+          isShow: this.$has("B.WXAPP.CHANNEL.CENTER.COMPANYINFO")
         },
         {
           id: 2,
           icon: require("@/channelPackage/common/icon/count.png"),
           name: "结佣账号管理",
           url: "/channelPackage/myTab/channelPage/commissionAccount",
+          isShow: this.$has("B.WXAPP.CHANNEL.CENTER.COMMISSION")
         },
         {
           id: 3,
           icon: require("@/channelPackage/common/icon/broker.png"),
           name: "经纪人管理",
           url: "/channelPackage/myTab/channelPage/brokerList",
+          isShow: this.$has("B.WXAPP.CHANNEL.CENTER.BROKERMANAGE")
         },
-        {
-          id: 4,
-          icon: require("@/channelPackage/common/icon/project.png"),
-          name: "项目结佣情况",
-          url: "/channelPackage/myTab/pages/projectCommDetails",
-        },
+        // {
+        //   id: 4,
+        //   icon: require("@/channelPackage/common/icon/project.png"),
+        //   name: "项目结佣情况",
+        //   url: "/channelPackage/myTab/pages/projectCommDetails"
+        //   isShow: false
+        // },
         {
           id: 5,
           icon: require("@/channelPackage/common/icon/distribution.png"),
           name: "分销协议列表",
           url: "/channelPackage/myTab/channelPage/protocolList",
+          isShow: this.$has("B.WXAPP.CHANNEL.CENTER.DISTRIBUTIONLIST")
         },
       ],
       myBuyList: [
@@ -193,6 +200,26 @@ export default {
       showPopup: false,
       userInfo: null,
     };
+  },
+  computed: {
+    isShowGridList() {
+      let flag = false;
+      if (this.gridList && this.gridList.length) {
+        flag = this.gridList.some((list) => {
+          return list.isShow;
+        });
+      }
+      return flag;
+    },
+    isShowManageList() {
+      let flag = false;
+      if (this.manageList && this.manageList.length) {
+        flag = this.manageList.some((list) => {
+          return list.isShow;
+        });
+      }
+      return flag;
+    }
   },
   onLoad() {
     this.userInfo = storageTool.getUserInfo();

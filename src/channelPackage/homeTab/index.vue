@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-12 10:16:57
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 17:12:31
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-02-24 11:47:20
 -->
 <template>
   <ChannelTabBar>
@@ -38,47 +38,27 @@
           height="286rpx"
         ></u-swiper>
       </view>
-      <view>
+      <view v-if="isShowList">
         <u-grid
           :col="4"
           :border="false"
-          @click="goToItem"
-        >
-          <u-grid-item index="homeTab/pages/projectList">
+          @click="goToItem">
+          <u-grid-item
+            v-for="(item, index) in gridList"
+            :key="index"
+            :index="item.path"
+            v-if="item.isShow">
             <u-image
               width="98rpx"
               height="98rpx"
-              :src="icon_1"
+              :src="item.icon"
             ></u-image>
-            <view class="grid-text">新房楼盘</view>
-          </u-grid-item>
-          <u-grid-item index="myTab/pages/myReport">
-            <u-image
-              width="98rpx"
-              height="98rpx"
-              :src="icon_2"
-            ></u-image>
-            <view class="grid-text">我的报备</view>
-          </u-grid-item>
-          <u-grid-item index="homeTab/pages/reportClient">
-            <u-image
-              width="98rpx"
-              height="98rpx"
-              :src="icon_3"
-            ></u-image>
-            <view class="grid-text">报备客户</view>
-          </u-grid-item>
-          <u-grid-item index="myTab/pages/dealList">
-            <u-image
-              width="98rpx"
-              height="98rpx"
-              :src="icon_4"
-            ></u-image>
-            <view class="grid-text">成交记录</view>
+            <view class="grid-text">{{item.name}}</view>
           </u-grid-item>
         </u-grid>
       </view>
       <u-gap
+        v-if="isShowList"
         height="20"
         bg-color="#F1F1F1"
       ></u-gap>
@@ -171,12 +151,45 @@ export default {
         },
       ],
       houseImg: require("@/channelPackage/common/img/house.jpg"),
-      icon_1: require("@/channelPackage/common/icon/list.png"),
-      icon_2: require("@/channelPackage/common/icon/myClient.png"),
-      icon_3: require("@/channelPackage/common/icon/reportClient.png"),
-      icon_4: require("@/channelPackage/common/icon/myReport.png"),
+      gridList: [
+        {
+          icon: require("@/channelPackage/common/icon/list.png"),
+          path: "/channelPackage/homeTab/pages/projectList",
+          name: "新房楼盘",
+          isShow: this.$has("B.WXAPP.CHANNEL.HOMEPAGE.NEWPROPERTIES")
+        },
+        {
+          icon: require("@/channelPackage/common/icon/myClient.png"),
+          path: "/channelPackage/myTab/pages/myReport",
+          name: "我的报备",
+          isShow: this.$has("B.WXAPP.CHANNEL.HOMEPAGE.MYREPORT")
+        },
+        {
+          icon: require("@/channelPackage/common/icon/reportClient.png"),
+          path: "/channelPackage/homeTab/pages/reportClient",
+          name: "报备客户",
+          isShow: this.$has("B.WXAPP.CHANNEL.HOMEPAGE.REPORTTOCUSMERS")
+        },
+        {
+          icon: require("@/channelPackage/common/icon/myReport.png"),
+          path: "/channelPackage/myTab/pages/dealList",
+          name: "成交记录",
+          isShow: this.$has("B.WXAPP.CHANNEL.HOMEPAGE.DEALRECORD")
+        },
+      ],
       icon_5: require("@/channelPackage/common/icon/recommend.png"),
     };
+  },
+  computed: {
+    isShowList() {
+      let flag = false;
+      if (this.gridList && this.gridList.length) {
+        flag = this.gridList.some((list) => {
+          return list.isShow;
+        });
+      }
+      return flag;
+    }
   },
   onLoad() {
     // uni.getLocation({
@@ -211,10 +224,10 @@ export default {
       this.queryPageParameters.location = this.locationList[index].text;
     },
     // 跳转Tabs页
-    goToItem(index) {
+    goToItem(url) {
       getApp().myReport = {};
       uni.navigateTo({
-        url: `/channelPackage/${index}`,
+        url: url,
       });
     },
     // 查看项目详情
