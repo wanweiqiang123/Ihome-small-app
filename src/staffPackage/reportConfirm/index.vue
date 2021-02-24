@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-13 15:13:13
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-24 15:15:29
+ * @LastEditTime: 2021-02-24 16:11:09
 -->
 <template>
   <view class="container safe-area-inset-bottom">
@@ -85,19 +85,30 @@
             @click="handleCopy(i)"
           >一键复制</u-button>
           <template v-if="current === 0">
-            <u-button
-              size="mini"
-              shape="circle"
-              :custom-style="{ padding: '0 40rpx', marginRight: '20rpx' }"
-              @click="handleClick(i, 'showInvalid')"
-            >无效</u-button>
-            <u-button
-              shape="circle"
-              :custom-style="{ padding: '0 40rpx' }"
-              size="mini"
-              type="success"
-              @click="handleClick(i, 'showValid')"
-            >有效</u-button>
+            <template v-if="i.exMarket">
+              <u-button
+                size="mini"
+                shape="circle"
+                :custom-style="{ padding: '0 40rpx', marginRight: '20rpx' }"
+                @click="handleClick(i, 'showInvalid')"
+              >无效</u-button>
+              <u-button
+                shape="circle"
+                :custom-style="{ padding: '0 40rpx' }"
+                size="mini"
+                type="success"
+                @click="handleClick(i, 'showValid')"
+              >有效</u-button>
+            </template>
+            <template v-else>
+              <u-button
+                size="mini"
+                shape="circle"
+                type="success"
+                :custom-style="{ padding: '0 40rpx' }"
+                @click.stop="handleSync(i.id)"
+              >同步状态</u-button>
+            </template>
           </template>
         </view>
       </u-card>
@@ -233,6 +244,15 @@ export default {
     };
   },
   methods: {
+    async handleSync(reportId) {
+      try {
+        await postYueJiaReport({ reportId });
+        this.$tool.toast("同步成功");
+        this.confirm();
+      } catch (error) {
+        console.log(error);
+      }
+    },
     handleClick(item, type) {
       this.reportId = item.id;
       if (type === "showValid") {
