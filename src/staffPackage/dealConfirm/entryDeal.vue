@@ -962,9 +962,7 @@ export default {
       }
       // 附件
       this.postData.documentVO = [];
-      if (info.documentList && info.documentList.length) {
-        this.postData.documentVO = this.initDocumentList(info.charge, info.contType, info.documentList);
-      }
+      this.postData.documentVO = this.initDocumentList(info.charge, info.contType, info.documentList);
       // 通过项目周期id获取基础信息
       await this.editBaseDealInfo(info.cycleId, info?.house?.buildingId, info?.house?.propertyType);
       await this.editPageById(info.cycleId, info?.house?.roomId, info?.house?.propertyType);

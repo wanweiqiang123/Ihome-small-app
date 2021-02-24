@@ -541,9 +541,6 @@ export default {
           });
         });
       }
-      this.annexList = this.annexList.filter((list) => {
-        return list.fileList.length > 0;
-      });
       // 地区
       this.paymentForm.region = `${info.provinceName}${info.cityName}${info.countyName}`;
       // 账户信息
