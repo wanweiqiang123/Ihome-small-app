@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-13 15:13:13
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-24 16:30:09
+ * @LastEditTime: 2021-02-24 16:32:12
 -->
 <template>
   <view class="container safe-area-inset-bottom">
@@ -130,7 +130,7 @@
             <u-button
               size="mini"
               shape="circle"
-              type="success"
+              type="warning"
               :custom-style="{ padding: '0 40rpx' }"
               @click.stop="handleSync(i.id)"
             >同步状态</u-button>

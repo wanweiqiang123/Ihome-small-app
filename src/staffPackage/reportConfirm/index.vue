@@ -104,7 +104,7 @@
             <u-button
               size="mini"
               shape="circle"
-              type="success"
+              type="warning"
               :custom-style="{ padding: '0 40rpx' }"
               @click.stop="handleSync(i.id)"
             >同步状态</u-button>
