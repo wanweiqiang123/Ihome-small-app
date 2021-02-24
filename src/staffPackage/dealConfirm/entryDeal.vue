@@ -872,10 +872,18 @@ export default {
     }
   },
   methods: {
-    // 初始化也没
+    // 初始化页面
     async initPage(id) {
       let info  = await getReportById({id: id});
       console.log(info);
+      if (info && info.proCycleId) {
+        await this.getBaseDealInfo(info.proCycleId);
+      }
+      if (info && info.proCycleId && info.roomId) {
+        await this.initPageById(this.baseInfoByTerm.termId, info.roomId, this.postData.propertyType);
+      }
+      this.postData.cycleName = info?.proCycle;
+      this.postData.cycleId = info?.proCycleId;
     },
     // 编辑 - 初始化页面
     async initEditPage(id) {

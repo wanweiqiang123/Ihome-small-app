@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-11-13 15:13:13
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-24 09:55:36
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-24 15:10:40
 -->
 <template>
   <view class="container safe-area-inset-bottom">
