@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-09 14:38:31
- * @LastEditors: zyc
- * @LastEditTime: 2021-02-03 11:03:05
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-24 14:37:21
 -->
 <template>
   <LoginPage>
@@ -19,7 +19,10 @@
           confirm-type="search"
           @confirm="search"
         />
-        <view class="text-switch" @click="currentClick = !currentClick">{{
+        <view
+          class="text-switch"
+          @click="currentClick = !currentClick"
+        >{{
           currentClick ? "完成" : "管理"
         }}</view>
       </view>
@@ -38,11 +41,14 @@
             ></u-image>
           </view>
           <view class="wrap-item-right">
-            <view class="wrap-item-right-name"> {{ item.proName }} </view>
+            <view class="wrap-item-right-name"> {{ item.proName | emptyFilter }} </view>
             <view class="wrap-item-right-phone wrap-item-right-block">
               {{ item.district  }}
             </view>
-            <view class="wrap-item-right-time" style="color: #fd4918">
+            <view
+              class="wrap-item-right-time"
+              style="color: #fd4918"
+            >
               均价{{ itemaveragePrice || "--" }}元/m²
             </view>
             <view class="wrap-item-right-time">
@@ -50,7 +56,10 @@
               {{ item.commissionRules || "" }}
             </view>
           </view>
-          <view class="item-checked" v-show="currentClick">
+          <view
+            class="item-checked"
+            v-show="currentClick"
+          >
             <u-checkbox
               size="40rpx"
               v-model="item.checked"
@@ -61,8 +70,14 @@
         <!-- <EmptyLoading :total="tableTotal"></EmptyLoading> -->
         <u-loadmore :status="loadingStatus" />
       </view>
-      <view class="bottom-btn" v-show="currentClick">
-        <u-button type="error" @click="deleteCheck()">删除</u-button>
+      <view
+        class="bottom-btn"
+        v-show="currentClick"
+      >
+        <u-button
+          type="error"
+          @click="deleteCheck()"
+        >删除</u-button>
       </view>
 
       <u-modal
@@ -132,7 +147,7 @@ export default {
     checkboxChange(item) {
       console.log("checkboxChange", item);
       this.$forceUpdate();
-      
+
       console.log(this.tablePage);
     },
     async handleSubmit() {

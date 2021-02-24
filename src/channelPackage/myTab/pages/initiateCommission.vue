@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-26 14:24:10
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 20:48:09
+ * @LastEditTime: 2021-02-24 14:38:01
 -->
 <template>
   <view class="initiate-commission-wrapper">
@@ -40,11 +40,11 @@
     >
       <view class="top">
         <view class="top-container u-border-bottom">
-          <view class="top-title">{{item.cycleName}}</view>
+          <view class="top-title">{{item.cycleName | emptyFilter}}</view>
         </view>
         <view class="top-money">
           <text>结佣总额：</text>
-          <text class="money-rad">{{item.payNum}}</text>
+          <text class="money-rad">{{item.payNum | emptyFilter}}</text>
           <text class="money-unit">元</text>
         </view>
       </view>
@@ -54,8 +54,8 @@
         :key="k"
       >
         <view @click="viewDealDetail(key.dealCode)">
-          <view class="code">成交报告编号：{{key.dealCode}}</view>
-          <view>本单佣金：{{key.actualAmount}}</view>
+          <view class="code">成交报告编号：{{key.dealCode | emptyFilter}}</view>
+          <view>本单佣金：{{key.actualAmount | emptyFilter}}</view>
         </view>
         <u-icon
           name="close-circle-fill"
@@ -158,7 +158,7 @@
         v-for="(item, i) in dictList"
         :key="i"
       >
-        <view class="annex-type">{{item.name}}</view>
+        <view class="annex-type">{{item.name | emptyFilter}}</view>
         <u-upload
           max-count="10"
           class="upload"
@@ -246,8 +246,8 @@
               <view>{{item.dealCode}}</view>
               <view class="u-text-right">可结佣金：{{$tool.add(item.ageCanCommFees, item.serCanCommFees)}}</view>
             </view>
-            <view class="u-padding-bottom-15">{{item.cycleName}}</view>
-            <view class="u-padding-bottom-15">成交日期：{{item.signDate}}</view>
+            <view class="u-padding-bottom-15">{{item.cycleName | emptyFilter}}</view>
+            <view class="u-padding-bottom-15">成交日期：{{item.signDate | emptyFilter}}</view>
           </view>
         </view>
         <view class="add-btn-wrapper safe-area-inset-bottom">

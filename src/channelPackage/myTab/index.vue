@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-16 15:34:28
- * @LastEditors: zyc
- * @LastEditTime: 2021-02-17 09:19:02
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-24 14:32:32
 -->
 <template>
   <ChannelTabBar>
@@ -20,22 +20,33 @@
               :src="myAvatar"
             ></u-image>
           </view>
-          <view class="name">{{ userInfo.name }}</view>
-          <view class="phone">{{ userInfo.mobilePhone }}</view>
+          <view class="name">{{ userInfo.name | emptyFilter }}</view>
+          <view class="phone">{{ userInfo.mobilePhone | emptyFilter }}</view>
         </view>
         <view class="my-item-wrapper u-padding-right-14">
-          <u-grid :col="3" :border="false" @click="goToGrid">
+          <u-grid
+            :col="3"
+            :border="false"
+            @click="goToGrid"
+          >
             <u-grid-item
               v-for="item in gridList"
               :key="item.id"
               :index="item.url"
             >
-              <u-image width="64rpx" height="64rpx" :src="item.icon"></u-image>
-              <view class="grid-text">{{ item.name }}</view>
+              <u-image
+                width="64rpx"
+                height="64rpx"
+                :src="item.icon"
+              ></u-image>
+              <view class="grid-text">{{ item.name | emptyFilter }}</view>
             </u-grid-item>
           </u-grid>
         </view>
-        <u-gap height="20" bg-color="#F1F1F1"></u-gap>
+        <u-gap
+          height="20"
+          bg-color="#F1F1F1"
+        ></u-gap>
         <view class="my-item-wrapper">
           <view class="my-manage">渠道管理</view>
           <view
@@ -45,15 +56,26 @@
             @click="goToItem(item)"
           >
             <view class="item-icon">
-              <u-image width="40rpx" height="40rpx" :src="item.icon"></u-image>
+              <u-image
+                width="40rpx"
+                height="40rpx"
+                :src="item.icon"
+              ></u-image>
             </view>
-            <view class="item-name">{{ item.name }}</view>
+            <view class="item-name">{{ item.name | emptyFilter }}</view>
             <view class="item-arrow">
-              <u-icon name="arrow-right" color="#888888" size="40"></u-icon>
+              <u-icon
+                name="arrow-right"
+                color="#888888"
+                size="40"
+              ></u-icon>
             </view>
           </view>
         </view>
-        <u-gap height="20" bg-color="#F1F1F1"></u-gap>
+        <u-gap
+          height="20"
+          bg-color="#F1F1F1"
+        ></u-gap>
         <view class="my-item-wrapper">
           <view
             class="my-item"
@@ -62,11 +84,19 @@
             @click="userSwitchClick"
           >
             <view class="item-icon">
-              <u-image width="40rpx" height="40rpx" :src="item.icon"></u-image>
+              <u-image
+                width="40rpx"
+                height="40rpx"
+                :src="item.icon"
+              ></u-image>
             </view>
             <view class="item-name">{{ item.name }}</view>
             <view class="item-arrow">
-              <u-icon name="arrow-right" color="#888888" size="40"></u-icon>
+              <u-icon
+                name="arrow-right"
+                color="#888888"
+                size="40"
+              ></u-icon>
             </view>
           </view>
         </view>
@@ -84,7 +114,10 @@
         </view>
 
         <view class="my-btn">
-          <u-button shape="circle" @click="handleLoginOut">退出登录</u-button>
+          <u-button
+            shape="circle"
+            @click="handleLoginOut"
+          >退出登录</u-button>
         </view>
       </view>
     </view>

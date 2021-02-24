@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-17 10:08:05
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-08 16:59:13
+ * @LastEditTime: 2021-02-24 14:56:23
 -->
 <template>
   <ChannelTabBar>
@@ -21,7 +21,7 @@
           :show-action="false"
           @search="getListMixin()"
           placeholder="请输入客户姓名/电话"
-          v-model="queryPageParameters.name"
+          v-model="queryPageParameters.nameOrTel"
         ></u-search>
         <view
           class="icon"
@@ -43,9 +43,9 @@
         >
           <view class="client-avatar">{{item.name.substr(0, 1)}}</view>
           <view class="client-info">
-            <view class="client-name">{{ item.name }}</view>
-            <view class="client-phone">{{ item.mobile }}</view>
-            <view class="client-time">录入时间：{{ item.inputTime }}</view>
+            <view class="client-name">{{ item.name | emptyFilter }}</view>
+            <view class="client-phone">{{ item.mobile | emptyFilter }}</view>
+            <view class="client-time">录入时间：{{ item.inputTime | emptyFilter }}</view>
           </view>
         </view>
         <view
@@ -90,6 +90,7 @@ export default {
   data() {
     return {
       queryPageParameters: {
+        nameOrTel: "",
         name: "",
         mobile: "",
       },

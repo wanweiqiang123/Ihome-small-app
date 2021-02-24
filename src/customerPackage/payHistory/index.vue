@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-25 11:40:27
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 11:49:46
+ * @LastEditTime: 2021-02-24 14:46:19
 -->
 <template>
   <view class="box">
@@ -14,7 +14,7 @@
       :key="i"
     >
       <view class="box-item-title">
-        <view style="font-weight: bold;">付款金额：{{item.amount}}</view>
+        <view style="font-weight: bold;">付款金额：{{item.amount | emptyFilter}}</view>
         <template v-if="item.fileIds.length">
           <u-button
             class="downButton"
@@ -28,13 +28,13 @@
       <view class="box-item-msg">
         <view class="box-item-msg-item">
           <view class="box-item-msg-title">付款单号
-            <text class="box-item-msg-detail">{{item.payNo}}</text>
+            <text class="box-item-msg-detail">{{item.payNo | emptyFilter}}</text>
           </view>
           <view class="box-item-msg-title">付款方式
-            <text class="box-item-msg-detail">{{getDictName(item.payType, PayType)}}</text>
+            <text class="box-item-msg-detail">{{getDictName(item.payType, PayType) | emptyFilter}}</text>
           </view>
           <view class="box-item-msg-title">支付时间
-            <text class="box-item-msg-detail">{{item.payTime}}</text>
+            <text class="box-item-msg-detail">{{item.payTime | emptyFilter}}</text>
           </view>
         </view>
       </view>

@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-23 11:15:50
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 09:40:40
+ * @LastEditTime: 2021-02-24 14:52:30
 -->
 <template>
   <view class="project-detail-wrapper">
@@ -34,9 +34,9 @@
             border-radius="4"
             :src="banner"
           ></u-image>
-          <view class="title">{{detailInfo.proName}}</view>
+          <view class="title">{{detailInfo.proName | emptyFilter}}</view>
           <view class="price-wrapper">
-            <span class="price">均价{{detailInfo.averagePrice}}</span>
+            <span class="price">均价{{detailInfo.averagePrice | emptyFilter}}</span>
             <span class="unit">元/m²</span>
           </view>
           <view class="address-wrapper">
@@ -45,7 +45,7 @@
               size="40rpx"
               class="icon"
             ></u-icon>
-            <view class="text">{{detailInfo.provinceName + detailInfo.cityName + detailInfo.districtName}}</view>
+            <view class="text">{{detailInfo.provinceName | emptyFilter}}{{detailInfo.cityName | emptyFilter}}{{detailInfo.districtName | emptyFilter}}</view>
           </view>
           <!-- <view class="rule-color">
             <view>佣金规则：</view>
@@ -68,8 +68,8 @@
                   :src="item.picAddr"
                 ></u-image>
               </view>
-              <view class="title-tip">{{item.houseName}}</view>
-              <view class="price-color">{{item.averagePrice}}万起</view>
+              <view class="title-tip">{{item.houseName | emptyFilter}}</view>
+              <view class="price-color">{{item.averagePrice | emptyFilter}}万起</view>
             </view>
           </view>
         </view>
@@ -82,7 +82,7 @@
                 :key="index"
                 @click="showPoints(item, index)"
               >
-                <text :class="sellingPointCurrent === index ? 'tabs-item' : ''">{{item.name}}</text>
+                <text :class="sellingPointCurrent === index ? 'tabs-item' : ''">{{item.name | emptyFilter}}</text>
               </view>
             </view>
             <view class="u-margin-top-36">
@@ -99,7 +99,7 @@
           <view class="u-margin-bottom-50">
             <view class="home-info-title">报备规则</view>
             <view class="content-time">报备保护期: {{detailInfo.customerReportRule.developerProtectionPeriod ? detailInfo.customerReportRule.developerProtectionPeriod: 0}}天</view>
-            <view class="content-time">报备类型: {{detailInfo.customerReportRule.reportTypeEnum ? getDictName(detailInfo.customerReportRule.reportTypeEnum, ReportType) : ''}}</view>
+            <view class="content-time">报备类型: {{getDictName(detailInfo.customerReportRule.reportTypeEnum, ReportType) | emptyFilter}}</view>
           </view>
           <view class="u-margin-bottom-50">
             <view class="home-info-title">到访规则</view>
@@ -108,7 +108,7 @@
           </view>
           <view>
             <view class="home-info-title">开发商界定规则</view>
-            <view class="content-time">{{detailInfo.customerReportRule.developersRules ? detailInfo.customerReportRule.developersRules : ''}}</view>
+            <view class="content-time">{{detailInfo.customerReportRule.developersRules | emptyFilter}}</view>
           </view>
         </view>
       </view>
@@ -119,11 +119,11 @@
         <view class="u-padding-30">
           <view class="u-margin-bottom-50">
             <view class="home-info-title">客户年龄</view>
-            <view class="content-time">{{detailInfo.promotionVO.customerAge ? detailInfo.promotionVO.customerAge : '18岁'}}</view>
+            <view class="content-time">{{detailInfo.promotionVO.customerAge | emptyFilter}}</view>
           </view>
           <view class="u-margin-bottom-50">
             <view class="home-info-title">购房目的</view>
-            <view class="content-time">{{detailInfo.promotionVO.housePurchasing ? detailInfo.promotionVO.housePurchasing : '自住、投资'}}</view>
+            <view class="content-time">{{detailInfo.promotionVO.housePurchasing | emptyFilter}}</view>
           </view>
         </view>
       </view>
@@ -163,6 +163,7 @@ export default {
       detailInfo: {
         houseTypeDetailVos: [], // 户型信息
         customerReportRule: {}, // 导客规则信息
+        promotionVO: {},
         promotion: [], // 楼盘卖点
         proId: "",
         proName: "",

@@ -56,19 +56,19 @@
         >
           <view>
             <view>客户姓名：{{`${i.name}(${i.sex === 'Mr' ? '先生' : '女士'})`}}</view>
-            <view>客户电话：{{i.mobile | msgFilter}}</view>
-            <view>预计到访时间：{{i.expectedTime | msgFilter}}</view>
-            <view>预计到访人数：{{i.expectedNumber | msgFilter}}</view>
-            <view>报备项目：{{i.proName | msgFilter}}</view>
-            <view>项目周期：{{i.proCycle | msgFilter}}</view>
-            <view>所属渠道：{{i.channelName | msgFilter}}</view>
-            <view>报备人：{{i.reportUserName | msgFilter}}</view>
-            <view>报备人电话：{{i.reportMobile | msgFilter}}</view>
-            <view>报备时间：{{i.reportDate | msgFilter}}</view>
-            <view v-if="current === 1">报备确认时间：{{i.auditTime | msgFilter}}</view>
-            <view v-if="current === 2">无效时间：{{i.auditTime | msgFilter}}</view>
-            <view v-if="current !== 0">操作人：{{i.auditUserName | msgFilter}}</view>
-            <view v-if="current === 2">无效原因：{{i.comment | msgFilter}}</view>
+            <view>客户电话：{{i.mobile | emptyFilter}}</view>
+            <view>预计到访时间：{{i.expectedTime | emptyFilter}}</view>
+            <view>预计到访人数：{{i.expectedNumber | emptyFilter}}</view>
+            <view>报备项目：{{i.proName | emptyFilter}}</view>
+            <view>项目周期：{{i.proCycle | emptyFilter}}</view>
+            <view>所属渠道：{{i.channelName | emptyFilter}}</view>
+            <view>报备人：{{i.reportUserName | emptyFilter}}</view>
+            <view>报备人电话：{{i.reportMobile | emptyFilter}}</view>
+            <view>报备时间：{{i.reportDate | emptyFilter}}</view>
+            <view v-if="current === 1">报备确认时间：{{i.auditTime | emptyFilter}}</view>
+            <view v-if="current === 2">无效时间：{{i.auditTime | emptyFilter}}</view>
+            <view v-if="current !== 0">操作人：{{i.auditUserName | emptyFilter}}</view>
+            <view v-if="current === 2">无效原因：{{i.comment | emptyFilter}}</view>
           </view>
           <!-- 公司门店：广州居家房地产有限公司(居家置业店) -->
           <view :class="['ih-card-tag', {'bg-warning': !i.exMarket}]">{{i.exMarket ? '市场化' : '非市场化'}}</view>

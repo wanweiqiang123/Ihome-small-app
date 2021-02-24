@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 10:48:03
+ * @LastEditTime: 2021-02-24 14:45:19
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -12,9 +12,7 @@
       <view class="info-first-title">
         <view>
           <view class="info-first-way">优惠方式</view>
-          <view class="info-first-discount">{{
-            info.discountInformationResponseVo.explain
-          }}</view>
+          <view class="info-first-discount">{{info.discountInformationResponseVo.explain | emptyFilter}}</view>
         </view>
         <view class="background"></view>
       </view>
@@ -29,8 +27,8 @@
           ></u-line-progress>
         </view>
         <view class="info-first-msg">
-          <view>已付{{ info.discountInformationResponseVo.paid }}</view>
-          <view>应付{{ info.discountInformationResponseVo.paymentAmount }}</view>
+          <view>已付{{ info.discountInformationResponseVo.paid | emptyFilter }}</view>
+          <view>应付{{ info.discountInformationResponseVo.paymentAmount | emptyFilter }}</view>
         </view>
         <!-- 客户待签署 -->
         <template v-if="info.notificationStatus === 'WaitBeSigned'">
@@ -56,7 +54,7 @@
           </template>
           <template v-else>
             <view class="info-first-paid">未付金额</view>
-            <view class="info-first-money">{{ info.discountInformationResponseVo.unpaid }}
+            <view class="info-first-money">{{ info.discountInformationResponseVo.unpaid | emptyFilter }}
               <text style="margin-left: 20rpx; font-size: 24rpx; font-weight: bold">元</text>
             </view>
             <view
@@ -82,9 +80,7 @@
                 color="#666666"
               ></u-icon>
               <text class="text">您有
-                <text style="color: #ff0000; padding: 0 5rpx">{{
-              payAuditNum
-            }}</text>
+                <text style="color: #ff0000; padding: 0 5rpx">{{payAuditNum}}</text>
                 笔付款正在审核中
               </text>
             </view>
@@ -160,10 +156,8 @@
     <view class="info-second">
       <view class="info-second-title">购房信息</view>
       <view class="info-second-msg">
-        <view class="info-second-top">{{
-          info.purchaseInformation.projectName
-        }}</view>
-        <view>{{getDictName(info.purchaseInformation.propertyType, Property) | msgFilter}} {{info.purchaseInformation.buyUnitName | msgFilter}} {{info.purchaseInformation.roomNumberName | msgFilter}}</view>
+        <view class="info-second-top">{{info.purchaseInformation.projectName | emptyFilter}}</view>
+        <view>{{getDictName(info.purchaseInformation.propertyType, Property) | emptyFilter}} {{info.purchaseInformation.buyUnitName | emptyFilter}} {{info.purchaseInformation.roomNumberName | emptyFilter}}</view>
       </view>
       <view class="info-second-wrap">
         <swiper
@@ -181,21 +175,19 @@
             <view class="swiper-item-title">{{  `${getDictName(info.ownerType, OwnerType)}${i + 1}` }}</view>
             <view class="swiper-item-msg">
               <view class="swiper-item-detail">{{info.ownerType === 'Personal' ? '业主姓名' : '公司名称'}}
-                <text class="swiper-item-name">{{ item.ownerName }}</text>
+                <text class="swiper-item-name">{{ item.ownerName | emptyFilter }}</text>
               </view>
               <view
                 class="swiper-item-detail"
                 style="padding-top: 20rpx"
               >{{info.ownerType === 'Personal' ? '身份证号' : '经办人号码'}}
-                <text class="swiper-item-identity">{{
-                  item.ownerCertificateNo
-                }}</text>
+                <text class="swiper-item-identity">{{item.ownerCertificateNo | emptyFilter}}</text>
               </view>
               <view
                 class="swiper-item-detail"
                 style="padding-top: 20rpx"
               >{{info.ownerType === 'Personal' ? '手机号' : '营业执照编号'}}
-                <text class="swiper-item-phone">{{ item.ownerMobile }}</text>
+                <text class="swiper-item-phone">{{ item.ownerMobile | emptyFilter }}</text>
               </view>
             </view>
           </swiper-item>
@@ -235,8 +227,8 @@
             <view class="swiper-item-msg">
               <view class="swiper-item-layout">
                 <view class="swiper-item-detail">
-                  <view class="swiper-item-type">{{`${getDictName(item.notificationType, NotificationType)}`}}</view>
-                  <view class="swiper-item-status">{{`${getDictName(item.notificationStatus, NotificationStatus)}`}}</view>
+                  <view class="swiper-item-type">{{getDictName(item.notificationType, NotificationType) | emptyFilter}}</view>
+                  <view class="swiper-item-status">{{getDictName(item.notificationStatus, NotificationStatus) | emptyFilter}}</view>
                 </view>
                 <view class="swiper-item-num">编号（{{ item.noticeNo }}）</view>
               </view>

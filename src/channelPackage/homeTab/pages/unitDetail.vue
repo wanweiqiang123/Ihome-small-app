@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-23 17:30:18
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 11:44:44
+ * @LastEditTime: 2021-02-24 14:31:33
 -->
 <template>
   <view class="project-detail-wrapper">
@@ -56,13 +56,13 @@
               <u-col span="5">
                 <view class="home-col-wrapper">
                   <view class="home-label">朝向</view>
-                  <view class="home-value">{{getDictName(info.positionEnum, PositionEnum)}}</view>
+                  <view class="home-value">{{getDictName(info.positionEnum, PositionEnum) | emptyFilter}}</view>
                 </view>
               </u-col>
               <u-col span="7">
                 <view class="home-col-wrapper">
                   <view class="home-label">物业类型</view>
-                  <view class="home-value">{{getDictName(info.propertyEnum, Property)}}</view>
+                  <view class="home-value">{{getDictName(info.propertyEnum, Property) | emptyFilter}}</view>
                 </view>
               </u-col>
               <u-col span="5">
@@ -74,13 +74,13 @@
               <u-col span="7">
                 <view class="home-col-wrapper">
                   <view class="home-label">产权年限</view>
-                  <view class="home-value">{{info.propertyAge ? getDictName(info.propertyAge, PropertyAge) : 0}}</view>
+                  <view class="home-value">{{getDictName(info.propertyAge, PropertyAge) | emptyFilter}}</view>
                 </view>
               </u-col>
               <u-col span="5">
                 <view class="home-col-wrapper">
                   <view class="home-label">装修级别</view>
-                  <view class="home-value">{{getDictName(info.renovatLevelEnum, RenovatLevelEnum)}}</view>
+                  <view class="home-value">{{getDictName(info.renovatLevelEnum, RenovatLevelEnum) | emptyFilter}}</view>
                 </view>
               </u-col>
             </u-row>
@@ -109,11 +109,11 @@
             </view>
             <view class="home-info-right">
               <view class="info-title">
-                <view>{{item.houseName}}</view>
-                <veiw class="price-color">{{item.salePrice}}</veiw>
+                <view>{{item.houseName | emptyFilter}}</view>
+                <veiw class="price-color">{{item.salePrice | emptyFilter}}</veiw>
               </view>
-              <view class="info-size">{{item.space}}</view>
-              <view class="info-location">{{getDictName(item.positionEnum, PositionEnum)}}</view>
+              <view class="info-size">{{item.space | emptyFilter}}</view>
+              <view class="info-location">{{getDictName(item.positionEnum, PositionEnum) | emptyFilter}}</view>
             </view>
           </view>
         </view>

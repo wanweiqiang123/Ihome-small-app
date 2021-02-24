@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-17 15:26:33
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 11:43:42
+ * @LastEditTime: 2021-02-24 14:30:12
 -->
 <template>
   <view class="project-list-wrapper">
@@ -17,7 +17,7 @@
           name="map-fill"
           size="50rpx"
         ></u-icon>
-        <view>{{getDictName(city, areaRegion)}}</view>
+        <view>{{getDictName(city, areaRegion) | emptyFilter}}</view>
       </view>
       <u-search
         class="search"
@@ -47,7 +47,7 @@
                 v-for="item in dropDownList[0].options"
                 :key="item.value"
               >
-                <view class="type">{{item.label}}</view>
+                <view class="type">{{item.label | emptyFilter}}</view>
                 <view class="icon">
                   <u-icon
                     v-show="dropDownList[0].value === item.value"
@@ -68,7 +68,7 @@
                 v-for="item in dropDownList[1].options"
                 :key="item.value"
               >
-                <view class="type">{{item.label}}</view>
+                <view class="type">{{item.label | emptyFilter}}</view>
                 <view class="icon">
                   <u-icon
                     v-show="dropDownList[1].value === item.value"
@@ -116,7 +116,7 @@
                 v-for="item in dropDownList[2].options"
                 :key="item.value"
               >
-                <view class="type">{{item.label}}</view>
+                <view class="type">{{item.label | emptyFilter}}</view>
                 <view
                   class="icon"
                   v-show="dropDownList[2].value.includes(item.value)"

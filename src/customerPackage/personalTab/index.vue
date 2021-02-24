@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-12 10:17:34
- * @LastEditors: zyc
- * @LastEditTime: 2021-02-16 10:47:05
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-24 14:47:21
 -->
 <template>
   <CustomerTabBar>
@@ -18,8 +18,8 @@
             :src="photo"
           ></u-image>
         </view>
-        <view>{{ userInfo.name }}</view>
-        <view>{{ userInfo.mobilePhone }}</view>
+        <view>{{ userInfo.name | emptyFilter }}</view>
+        <view>{{ userInfo.mobilePhone | emptyFilter }}</view>
       </view>
       <view class="person-item-wrapper">
         <u-cell-group>
@@ -29,7 +29,8 @@
             title="切换用户"
             :arrow="true"
           ></u-cell-item>
-           <u-cell-item v-if="qrcodeShow"
+          <u-cell-item
+            v-if="qrcodeShow"
             @click="qrcodeGoto()"
             icon="share"
             title="模拟二维码跳转"

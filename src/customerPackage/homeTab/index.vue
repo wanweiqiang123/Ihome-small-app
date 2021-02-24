@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 10:57:29
+ * @LastEditTime: 2021-02-24 14:45:38
 -->
 <template>
   <view>
@@ -27,10 +27,10 @@
           <view slot="body">
             <view class="ih-card-content">
               <view>
-                <view class="receipt-title">{{item.projectName}}</view>
-                <view>{{getDictName(item.propertyType, Property) | msgFilter}} {{item.buyUnitName | msgFilter}} {{item.roomNumberName | msgFilter}}</view>
+                <view class="receipt-title">{{item.projectName | emptyFilter}}</view>
+                <view>{{getDictName(item.propertyType, Property) | emptyFilter}} {{item.buyUnitName | emptyFilter}} {{item.roomNumberName | emptyFilter}}</view>
               </view>
-              <view>{{item.explain}}</view>
+              <view>{{item.explain | emptyFilter}}</view>
             </view>
           </view>
           <view

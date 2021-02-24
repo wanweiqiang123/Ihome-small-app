@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-24 15:22:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-19 14:57:22
+ * @LastEditTime: 2021-02-24 14:38:17
 -->
 <template>
   <view class="my-report-wrapper">
@@ -31,7 +31,7 @@
         :key="i"
         @click="changeTabs(item, i)"
       >
-        <text :class="currentTabs === i ? 'name activating' : 'name'">{{item.name}}</text>
+        <text :class="currentTabs === i ? 'name activating' : 'name'">{{item.name | emptyFilter}}</text>
       </view>
     </view>
     <view class="my-report-list">
@@ -43,11 +43,11 @@
         <view class="item-info">
           <view class="name-wrapper">
             <view class="name">{{item.name}}</view>
-            <view class="status">{{getDictName(item.reportStatus, ReportStatus)}}</view>
+            <view class="status">{{getDictName(item.reportStatus, ReportStatus) | emptyFilter}}</view>
           </view>
-          <view class="phone">{{item.mobile}}</view>
-          <view class="location">{{item.proName}}</view>
-          <view class="time">{{item.reportDate}}</view>
+          <view class="phone">{{item.mobile | emptyFilter}}</view>
+          <view class="location">{{item.proName | emptyFilter}}</view>
+          <view class="time">{{item.reportDate | emptyFilter}}</view>
         </view>
         <view class="item-btn u-padding-right-20">
           <u-button

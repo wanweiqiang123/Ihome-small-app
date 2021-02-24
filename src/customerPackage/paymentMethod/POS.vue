@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 15:27:32
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 14:04:26
+ * @LastEditTime: 2021-02-24 14:47:10
 -->
 <template>
   <u-popup
@@ -28,9 +28,9 @@
           <u-loading slot="loading"></u-loading>
         </u-image>
       </view>
-      <view style="margin-top: 20rpx">￥{{payMsg.transAmount}}</view>
-      <view>订单号：{{payMsg.billNo}}</view>
-      <view>状态：{{getDictName(payMsg.status, PaymentStatus)}}</view>
+      <view style="margin-top: 20rpx">￥{{payMsg.transAmount | emptyFilter}}</view>
+      <view>订单号：{{payMsg.billNo | emptyFilter}}</view>
+      <view>状态：{{getDictName(payMsg.status, PaymentStatus) | emptyFilter}}</view>
     </view>
   </u-popup>
 </template>

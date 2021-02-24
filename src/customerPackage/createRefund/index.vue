@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-17 09:23:15
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-23 18:14:12
+ * @LastEditTime: 2021-02-24 14:42:57
 -->
 <template>
   <view>
@@ -32,19 +32,19 @@
       >
         <view class="body-msg">
           <view class="">项目名称</view>
-          <view class="color">{{info.projectName}}</view>
+          <view class="color">{{info.projectName | emptyFilter}}</view>
         </view>
         <view class="body-msg">
           <view class="">优惠方式</view>
-          <view class="color">{{info.explain}}</view>
+          <view class="color">{{info.explain | emptyFilter}}</view>
         </view>
         <view class="body-msg">
           <view class="">服务费金额</view>
-          <view class="color">¥{{info.paymentAmount?info.paymentAmount: 0}}</view>
+          <view class="color">¥{{info.paymentAmount | emptyFilter}}</view>
         </view>
         <view class="body-msg">
           <view class="">购买单位</view>
-          <view class="color">{{info.buyUnitName + info.roomNumberName}}</view>
+          <view class="color">{{info.buyUnitName | emptyFilter}}{{info.roomNumberName | emptyFilter}}</view>
         </view>
         <view style="border-top: 1px solid #f1f1f1">
           <swiper
@@ -62,19 +62,19 @@
               <view class="swiper-item-title">{{`业主${i+1}`}}</view>
               <view class="swiper-item-msg">
                 <view class="swiper-item-detail">姓名
-                  <text class="swiper-item-name">{{item.ownerName}}</text>
+                  <text class="swiper-item-name">{{item.ownerName | emptyFilter}}</text>
                 </view>
                 <view
                   class="swiper-item-detail"
                   style="padding-top: 20rpx"
                 >身份证号
-                  <text class="swiper-item-identity">{{item.ownerCertificateNo}}</text>
+                  <text class="swiper-item-identity">{{item.ownerCertificateNo | emptyFilter}}</text>
                 </view>
                 <view
                   class="swiper-item-detail"
                   style="padding-top: 20rpx"
                 >手机号码
-                  <text class="swiper-item-phone">{{item.ownerMobile}}</text>
+                  <text class="swiper-item-phone">{{item.ownerMobile | emptyFilter}}</text>
                 </view>
               </view>
             </swiper-item>

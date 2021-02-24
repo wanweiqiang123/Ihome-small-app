@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-27 08:14:50
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 11:45:00
+ * @LastEditTime: 2021-02-24 14:36:30
 -->
 <template>
   <view class="deal-details-wrapper">
@@ -119,10 +119,10 @@
           :key="index"
         >
           <view class="record-code">
-            <view class="code">{{item.applyCode}}</view>
-            <view class="price">结佣金额：{{item.applyAmount}}</view>
+            <view class="code">{{item.applyCode | emptyFilter}}</view>
+            <view class="price">结佣金额：{{item.applyAmount | emptyFilter}}</view>
           </view>
-          <view class="record-time">{{item.createTime}}</view>
+          <view class="record-time">{{item.createTime | emptyFilter}}</view>
         </view>
       </view>
     </view>
@@ -137,9 +137,7 @@
             <u-th
               v-for="thItem in tableData.thList"
               :key="thItem.id"
-            >{{
-              thItem.name
-            }}</u-th>
+            >{{thItem.name | emptyFilter}}</u-th>
           </u-tr>
           <u-tr
             v-for="trItem in tableData.trList"
@@ -148,9 +146,7 @@
             <u-td
               v-for="tdItem in trItem.value"
               :key="tdItem.id"
-            >{{
-              tdItem
-            }}</u-td>
+            >{{tdItem | emptyFilter}}</u-td>
           </u-tr>
         </u-table>
       </view>

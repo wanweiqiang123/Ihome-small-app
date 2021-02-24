@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 17:12:31
+ * @LastEditTime: 2021-02-24 14:07:44
 -->
 <template>
   <ChannelTabBar>
@@ -110,10 +110,10 @@
               <span class="price">均价{{item.averagePrice}}</span>
               <span class="unit">元/m²</span>
             </view>
-            <view class="rule">
+            <!-- <view class="rule">
               <span class="rule-tap">佣</span>
               <span class="rule-text">{{item.commissionRules}}</span>
-            </view>
+            </view> -->
           </view>
         </view>
         <view
