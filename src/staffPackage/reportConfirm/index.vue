@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-11-13 15:13:13
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 15:10:53
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-02-24 15:15:29
 -->
 <template>
   <view class="container safe-area-inset-bottom">
@@ -89,14 +89,14 @@
               size="mini"
               shape="circle"
               :custom-style="{ padding: '0 40rpx', marginRight: '20rpx' }"
-              @click="showInvalid = true;reportId = i.id;"
+              @click="handleClick(i, 'showInvalid')"
             >无效</u-button>
             <u-button
               shape="circle"
               :custom-style="{ padding: '0 40rpx' }"
               size="mini"
               type="success"
-              @click="showValid = true;reportId = i.id;"
+              @click="handleClick(i, 'showValid')"
             >有效</u-button>
           </template>
         </view>
@@ -233,6 +233,14 @@ export default {
     };
   },
   methods: {
+    handleClick(item, type) {
+      this.reportId = item.id;
+      if (type === "showValid") {
+        this.showValid = true;
+      } else {
+        this.showInvalid = true;
+      }
+    },
     tabChange(index) {
       this.current = index;
       this.reportStatus = this.tabList[index].value;
