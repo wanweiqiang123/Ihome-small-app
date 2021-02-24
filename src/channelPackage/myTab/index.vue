@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-16 15:34:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 15:10:14
+ * @LastEditTime: 2021-02-24 15:27:44
 -->
 <template>
   <ChannelTabBar>
@@ -244,7 +244,10 @@ export default {
         },
       ],
       showPopup: false,
-      userInfo: null,
+      userInfo: {
+        name: "",
+        mobilePhone: "",
+      },
     };
   },
   computed: {
