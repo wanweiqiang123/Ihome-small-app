@@ -81,6 +81,33 @@ Vue.prototype.$has = function (key) {
   }
   return result;
 }
+Vue.prototype.$RoleTool = function (code) {
+  let userinfo = storageTool.getUserInfo();
+  let list = []; // 角色权限列表（从用户信息中读取）
+  userinfo.roleList.forEach((item => {
+    list.push(item.code);
+  }));
+  let result = false; // 是否有权限
+  if (code instanceof Array) {
+    // 数组类型
+    let set1 = new Set(code);
+    let set2 = new Set(list);
+    // 交集
+    let intersect = [...new Set([...set1].filter(x => set2.has(x)))];
+    if (intersect.length == 0) {
+      result = false;
+    } else {
+      result = true;
+    }
+  } else if (typeof code == 'string') {
+    // 字符串类型
+    result = list.includes(code);
+  } else {
+    result = false;
+    console.error('只支持数组或字符串:' + typeof code)
+  }
+  return result;
+}
 const app = new Vue({
   ...App,
   store,

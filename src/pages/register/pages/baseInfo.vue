@@ -141,19 +141,35 @@ export default {
     },
     // 下载授权确认函模板
     downTemplate() {
+      let filePath = wx.env.USER_DATA_PATH + "/" + "广州居恒销售系统授权确认函.docx"
       uni.downloadFile({
         url: tool.getTemplateDocUrl(),
+        filePath: filePath,
         success: (res) => {
           if (res.statusCode === 200) {
             console.log('下载成功');
             uni.openDocument({
-              filePath: res.tempFilePath,
+              filePath: filePath,
               showMenu: true,
               success: (res) => {
                 console.log('打开文档成功');
+              },
+              fail: (res) => {
+                console.log('打开文档出错', res);
+                uni.showToast({
+                  title: '无法打开该文档',
+                  duration: 3000
+                });
               }
             });
           }
+        },
+        fail: (res) => {
+          console.log('下载出错', res);
+          uni.showToast({
+            title: '下载出错',
+            duration: 3000
+          });
         }
       });
     }
