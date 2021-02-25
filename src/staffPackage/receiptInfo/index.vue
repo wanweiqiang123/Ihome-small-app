@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2021-01-19 15:46:14
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 14:17:11
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-02-25 19:29:34
 -->
 <template>
   <view class="receipt info">
@@ -91,14 +91,38 @@
         </template>
         <!-- 客户已支付 -->
         <template v-else-if="info.notificationStatus === 'Paid'">
+          <view
+            class="info-first-detail"
+            @click="payHistory(noticeId)"
+          >
+            <u-icon
+              name="arrow-right"
+              width="12"
+              height="22"
+              color="#666666"
+            ></u-icon>
+            <text>收款明细</text>
+          </view>
           <view class="receipt-text">收款完成，待分公司业管审核</view>
         </template>
         <!-- 已生效 -->
         <template v-else-if="info.notificationStatus === 'BecomeEffective'">
-          <view
-            v-if="isWaitBeSigned"
-            class="receipt-text"
-          >待客户签署协议</view>
+          <template v-if="isWaitBeSigned">
+            <view
+              class="info-first-detail"
+              style="padding-top: 30rpx;"
+              @click="payHistory(noticeId)"
+            >
+              <u-icon
+                name="arrow-right"
+                width="12"
+                height="22"
+                color="#666666"
+              ></u-icon>
+              <text>收款明细</text>
+            </view>
+            <view class="receipt-text">待客户签署协议</view>
+          </template>
           <view
             v-else-if="isSignedRefund"
             class="receipt-text error"
@@ -309,7 +333,10 @@ export default {
   },
   computed: {
     percent() {
-      if (this.info?.discountInformationResponseVo?.paid) {
+      if (
+        this.info?.discountInformationResponseVo?.paid ||
+        this.info?.discountInformationResponseVo?.paid === 0
+      ) {
         const paid = Number(this.info.discountInformationResponseVo.paid);
         const amount =
           paid / Number(this.info.discountInformationResponseVo.paymentAmount);
