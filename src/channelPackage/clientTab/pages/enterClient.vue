@@ -256,7 +256,7 @@ import {
   getCustomerById,
   editCustomer,
 } from "@/api/channel";
-import { getAllByTypeApi } from "@/api/index";
+import {getAllDictByType} from "@/api/index";
 import { phoneValidator } from "@/common/validate";
 export default {
   data() {
@@ -310,6 +310,19 @@ export default {
       areaDictList: [],
       addOrEdit: "",
       detailId: "",
+      dictObj: {
+        types: [
+          "SexType",
+          "CustomerSourceType",
+          "HousePurchaseType",
+          "IntentionSpaceType",
+          "RoomType",
+          "RenovatLevel",
+          "FocusElementType",
+          "AgeType"
+        ]
+      }, // 需要用到的字典类型参数
+      dictList: []
     };
   },
   onReady() {
@@ -317,15 +330,16 @@ export default {
     this.$refs.info.setRules(this.infoFormRules);
   },
   async onLoad(option) {
-    this.sexList = await this.getDictByType("SexType");
     await this.getArea();
-    this.sourceList = await this.getDictByType("CustomerSourceType");
-    this.targetList = await this.getDictByType("HousePurchaseType");
-    this.areaList = await this.getDictByType("IntentionSpaceType");
-    this.unitTypeList = await this.getDictByType("RoomType");
-    this.decorationList = await this.getDictByType("RenovatLevel");
-    this.factorList = await this.getDictByType("FocusElementType");
-    this.ageList = await this.getDictByType("AgeType");
+    this.dictList = await this.getAllDictByTypeList(this.dictObj);
+    this.sexList = await this.getSignDict("SexType");
+    this.sourceList = await this.getSignDict("CustomerSourceType");
+    this.targetList = await this.getSignDict("HousePurchaseType");
+    this.areaList = await this.getSignDict("IntentionSpaceType");
+    this.unitTypeList = await this.getSignDict("RoomType");
+    this.decorationList = await this.getSignDict("RenovatLevel");
+    this.factorList = await this.getSignDict("FocusElementType");
+    this.ageList = await this.getSignDict("AgeType");
     if (option.id) {
       this.detailId = option.id;
       uni.setNavigationBarTitle({
@@ -519,23 +533,31 @@ export default {
       }
       return tempArr;
     },
-    // 获取对应类型的字典
-    async getDictByType(type) {
-      let tempArr = [];
-      const dictList = await getAllByTypeApi({ type });
-      if (dictList && dictList.length) {
-        dictList.forEach((item) => {
-          let obj = {
-            value: item.code,
-            label: item.name,
-            checked: false,
-          };
-          tempArr.push(obj);
+    // 获取对应类型的字典集合
+    async getAllDictByTypeList(obj) {
+      const dictList = await getAllDictByType(obj);
+      return dictList;
+    },
+    // 获取单个类型字典
+    async getSignDict(type = '') {
+      let list = [];
+      if (this.dictList) {
+        Object.keys(this.dictList).forEach((key) => {
+          if (key === type) {
+            list = this.dictList[key];
+          }
         });
-      } else {
-        tempArr = [];
       }
-      return tempArr;
+      // 初始化字典
+      if (list.length) {
+        list.forEach((item) => {
+          item.value = item.code;
+          item.label = item.name;
+          item.checked = false;
+        });
+      }
+      // console.log('getSignDict:', list);
+      return list;
     },
     // 获取省市区
     async getArea() {
