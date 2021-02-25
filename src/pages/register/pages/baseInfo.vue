@@ -154,8 +154,8 @@ export default {
               success: (res) => {
                 console.log('打开文档成功');
               },
-              fail: (res) => {
-                console.log('打开文档出错', res);
+              fail: (err) => {
+                console.log('打开文档出错', err);
                 uni.showToast({
                   title: '无法打开该文档',
                   duration: 3000
@@ -164,8 +164,8 @@ export default {
             });
           }
         },
-        fail: (res) => {
-          console.log('下载出错', res);
+        fail: (err) => {
+          console.log('下载出错', err);
           uni.showToast({
             title: '下载出错',
             duration: 3000
