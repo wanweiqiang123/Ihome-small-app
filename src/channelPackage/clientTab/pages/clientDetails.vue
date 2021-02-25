@@ -188,7 +188,7 @@
 
 <script>
 import { getAreaList, getCustomerById } from "@/api/channel";
-import { getAllByTypeApi } from "@/api/index";
+import { getAllDictByType } from "@/api/index";
 export default {
   data() {
     return {
@@ -219,20 +219,36 @@ export default {
       ageList: [],
       followTypeList: [],
       ReportStatus: [],
+      dictObj: {
+        types: [
+          "SexType",
+          "CustomerSourceType",
+          "HousePurchaseType",
+          "IntentionSpaceType",
+          "RoomType",
+          "RenovatLevel",
+          "FocusElementType",
+          "AgeType",
+          "FollowUpType",
+          "ReportStatusType",
+        ]
+      }, // 需要用到的字典类型参数
+      dictList: []
     };
   },
   async onLoad(option) {
-    this.sexList = await this.getDictByType("SexType"); // 性别
     this.areaRegion = await this.getArea(); // 省市区
-    this.sourceList = await this.getDictByType("CustomerSourceType"); // 客户来源
-    this.targetList = await this.getDictByType("HousePurchaseType"); // 购房目的
-    this.areaList = await this.getDictByType("IntentionSpaceType"); // 意向面积
-    this.unitTypeList = await this.getDictByType("RoomType"); // 意向户型
-    this.decorationList = await this.getDictByType("RenovatLevel"); // 房屋装修
-    this.factorList = await this.getDictByType("FocusElementType"); // 关注因素
-    this.ageList = await this.getDictByType("AgeType"); // 年龄
-    this.followTypeList = await this.getDictByType("FollowUpType"); // 跟进
-    this.ReportStatus = await this.getDictByType("ReportStatusType"); // 报备状态
+    this.dictList = await this.getAllDictByTypeList(this.dictObj);
+    this.sexList = await this.getSignDict("SexType"); // 性别
+    this.sourceList = await this.getSignDict("CustomerSourceType"); // 客户来源
+    this.targetList = await this.getSignDict("HousePurchaseType"); // 购房目的
+    this.areaList = await this.getSignDict("IntentionSpaceType"); // 意向面积
+    this.unitTypeList = await this.getSignDict("RoomType"); // 意向户型
+    this.decorationList = await this.getSignDict("RenovatLevel"); // 房屋装修
+    this.factorList = await this.getSignDict("FocusElementType"); // 关注因素
+    this.ageList = await this.getSignDict("AgeType"); // 年龄
+    this.followTypeList = await this.getSignDict("FollowUpType"); // 跟进
+    this.ReportStatus = await this.getSignDict("ReportStatusType"); // 报备状态
     if (option && option.id) {
       await this.initPage(option.id);
     }
@@ -271,10 +287,23 @@ export default {
       const info = await getCustomerById(id);
       this.detailForm = info;
     },
-    // 获取字典
-    async getDictByType(type) {
-      const dictList = await getAllByTypeApi({ type });
+    // 获取对应类型的字典集合
+    async getAllDictByTypeList(obj) {
+      const dictList = await getAllDictByType(obj);
       return dictList;
+    },
+    // 获取单个类型字典
+    async getSignDict(type = '') {
+      let list = [];
+      if (this.dictList) {
+        Object.keys(this.dictList).forEach((key) => {
+          if (key === type) {
+            list = this.dictList[key];
+          }
+        });
+      }
+      // console.log('getSignDict:', list);
+      return list;
     },
     // 获取对应字典name
     getDictName(code, list) {
