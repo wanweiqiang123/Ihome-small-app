@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-23 11:15:50
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 14:52:30
+ * @LastEditTime: 2021-02-25 17:21:03
 -->
 <template>
   <view class="project-detail-wrapper">
@@ -135,9 +135,9 @@
       >
         <view>
           <u-icon
-            :name="keepFlag ? 'star-fill' : 'star'"
+            :name="detailInfo.exCollect ? 'star-fill' : 'star'"
             size="50rpx"
-            :class="keepFlag ? 'keep-color' : ''"
+            :class="detailInfo.exCollect ? 'keep-color' : ''"
           ></u-icon>
         </view>
         <view class="keep">收藏</view>
@@ -167,6 +167,7 @@ export default {
         promotion: [], // 楼盘卖点
         proId: "",
         proName: "",
+        exCollect: false,
       }, // 详情信息
       banner: require("@/channelPackage/common/img/house.jpg"),
       homeImg: require("@/channelPackage/common/img/house.jpg"),
@@ -199,7 +200,6 @@ export default {
       ],
       sellingPointCurrent: 0,
       content: "18888元/m²起",
-      keepFlag: false,
       ReportType: [],
     };
   },
@@ -253,13 +253,17 @@ export default {
         proId: this.detailInfo.proId,
         proName: this.detailInfo.proName,
       };
-      if (this.keepFlag) {
+      if (this.detailInfo.exCollect) {
         obj.status = "Invalid";
       } else {
         obj.status = "Valid";
       }
-      await addOrUpdateApi(obj);
-      this.keepFlag = !this.keepFlag;
+      try {
+        await addOrUpdateApi(obj);
+        this.detailInfo.exCollect = !this.detailInfo.exCollect;
+      } catch (err) {
+        console.log(err);
+      }
     },
     // 查看户型详情
     viewHomeDetail(item) {
