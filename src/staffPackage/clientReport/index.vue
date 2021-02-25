@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-17 18:10:07
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-23 20:28:07
+ * @LastEditTime: 2021-02-25 10:59:29
 -->
 <template>
   <view class="client-container safe-area-inset-bottom">
@@ -125,15 +125,47 @@
           </u-form-item>
           <u-form-item
             label="手机号"
-            prop="mobile"
             required
           >
             <u-input
+              v-if="pageType"
               v-model="custormInfo.mobile"
               placeholder="手机号"
-              :clearable="false"
               input-align="left"
             />
+            <view
+              v-else
+              class="mobileType"
+            >
+              <view
+                v-if="checked"
+                class="qianhou"
+              >
+                <u-input
+                  v-model="qian"
+                  input-align="center"
+                  placeholder="前三位"
+                  maxlength="3"
+                  :clearable="false"
+                />
+                <text>****</text>
+                <u-input
+                  v-model="hou"
+                  input-align="center"
+                  placeholder="后四位"
+                  maxlength="4"
+                  :clearable="false"
+                />
+              </view>
+              <view v-else>
+                <u-input
+                  v-model="custormInfo.mobile"
+                  placeholder="手机号"
+                  input-align="left"
+                />
+              </view>
+              <u-switch v-model="checked"></u-switch>
+            </view>
           </u-form-item>
         </u-form>
       </view>
@@ -255,7 +287,11 @@ export default {
         sex: [{ required: true, message: "请选择性别", trigger: "change" }],
         mobile: [
           { required: true, message: "请输入手机号", trigger: "change" },
-          { validator: phoneValidator, trigger: "change" },
+          {
+            pattern: /^[1][3-9]\d{9}$|([6|9])\d{7}$|6\d{7}$|[0][9]\d{8}$|[1][3-9]\d{1}[*]{4}\d{4}$/,
+            message: "请输入有效手机号",
+            trigger: "change",
+          },
         ],
       },
       reportRules: {
@@ -283,6 +319,9 @@ export default {
         second: false,
       },
       keyword: "搜索楼盘",
+      checked: false,
+      qian: "",
+      hou: "",
     };
   },
   onReady() {
@@ -407,10 +446,15 @@ export default {
       Promise.all(formDataRules).then(async () => {
         let obj = {};
         obj = { ...this.reportForm, ...this.custormInfo, ...this.channelForm };
+        if (this.checked) {
+          obj.mobile = this.qian + "****" + this.hou;
+          obj.reportType = "FirstThreeAfterFour";
+        } else {
+          obj.reportType = "FullNumber";
+        }
         obj.exMarket = this.info.exMarket;
         obj.helpRecord = 1;
         obj.proId = this.info.proId;
-        obj.reportType = "FullNumber";
         console.log(obj);
         await postReportApi(obj);
         this.$tool.toast("报备成功");
@@ -507,5 +551,15 @@ export default {
   padding-left: 30rpx;
   padding-right: 30rpx;
   background: #fff;
+}
+
+.mobileType {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  .qianhou {
+    display: flex;
+    justify-content: space-around;
+  }
 }
 </style>

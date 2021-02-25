@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-24 09:58:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 16:05:30
+ * @LastEditTime: 2021-02-25 09:30:36
 -->
 <template>
   <view class="report-client-wrapper">
@@ -87,15 +87,47 @@
             </u-form-item>
             <u-form-item
               label="手机号"
-              prop="mobile"
               required
             >
               <u-input
+                v-if="pageType"
                 v-model="custormInfo.mobile"
                 placeholder="手机号"
-                :clearable="false"
                 input-align="left"
               />
+              <view
+                v-else
+                class="mobileType"
+              >
+                <view
+                  v-if="checked"
+                  class="qianhou"
+                >
+                  <u-input
+                    v-model="qian"
+                    input-align="center"
+                    placeholder="前三位"
+                    maxlength="3"
+                    :clearable="false"
+                  />
+                  <text>****</text>
+                  <u-input
+                    v-model="hou"
+                    input-align="center"
+                    placeholder="后四位"
+                    maxlength="4"
+                    :clearable="false"
+                  />
+                </view>
+                <view v-else>
+                  <u-input
+                    v-model="custormInfo.mobile"
+                    placeholder="手机号"
+                    input-align="left"
+                  />
+                </view>
+                <u-switch v-model="checked"></u-switch>
+              </view>
             </u-form-item>
           </u-form>
         </view>
@@ -294,7 +326,11 @@ export default {
         sex: [{ required: true, message: "请选择性别", trigger: "change" }],
         mobile: [
           { required: true, message: "请输入手机号", trigger: "change" },
-          { validator: phoneValidator, trigger: "change" },
+          {
+            pattern: /^[1][3-9]\d{9}$|([6|9])\d{7}$|6\d{7}$|[0][9]\d{8}$|[1][3-9]\d{1}[*]{4}\d{4}$/,
+            message: "请输入有效手机号",
+            trigger: "change",
+          },
         ],
       },
       buildRules: {
@@ -331,6 +367,9 @@ export default {
       buildingBlockList: [],
       roomNoList: [],
       reportId: "",
+      checked: false,
+      qian: "",
+      hou: "",
     };
   },
   onReady() {
@@ -379,6 +418,7 @@ export default {
         });
       }
     } else if (item && item.type === "customer") {
+      this.checked = false;
       this.custormInfo.name = item.data.name;
       this.custormInfo.sex = item.data.sex;
       this.custormInfo.mobile = item.data.mobile;
@@ -482,10 +522,16 @@ export default {
           });
         } else {
           obj = { ...this.info, ...this.custormInfo };
+          if (this.checked) {
+            obj.mobile = this.qian + "****" + this.hou;
+            obj.reportType = "FirstThreeAfterFour";
+          } else {
+            obj.reportType = "FullNumber";
+          }
           obj.channelId = userInfo.channelId;
           obj.reportMobile = userInfo.mobilePhone;
           obj.reportName = userInfo.name;
-          obj.reportType = "FullNumber";
+          console.log(obj);
           await postReportApi(obj);
           getApp().myReport = {};
           this.$tool.toast("报备成功");
@@ -677,6 +723,16 @@ export default {
     .client-phone {
       text-align: right;
     }
+  }
+}
+
+.mobileType {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  .qianhou {
+    display: flex;
+    justify-content: space-around;
   }
 }
 </style>

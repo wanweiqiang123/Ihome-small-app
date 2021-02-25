@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 16:14:39
+ * @LastEditTime: 2021-02-25 11:01:24
 -->
 <template>
   <ChannelTabBar>
@@ -38,6 +38,7 @@
           height="286rpx"
         ></u-swiper>
       </view>
+      <!-- isShowList -->
       <view v-if="isShowList">
         <u-grid
           :col="4"
@@ -49,6 +50,7 @@
             :key="index"
             :index="item.path"
           >
+            <!-- item.isShow -->
             <template v-if="item.isShow">
               <u-image
                 width="98rpx"

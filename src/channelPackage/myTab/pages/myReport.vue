@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-24 15:22:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 14:38:17
+ * @LastEditTime: 2021-02-25 10:00:35
 -->
 <template>
   <view class="my-report-wrapper">
@@ -103,12 +103,13 @@ export default {
       ReportStatus: [],
     };
   },
-  onLoad() {
+  async onLoad() {
     this.getListMixin();
-  },
-  async onShow() {
     this.ReportStatus = await this.getDictAll("ReportStatusType");
   },
+  // onShow() {
+  //   this.getListMixin();
+  // },
   methods: {
     async getListMixin() {
       this.queryPageParameters.type = this.tabsList[this.currentTabs].code;
