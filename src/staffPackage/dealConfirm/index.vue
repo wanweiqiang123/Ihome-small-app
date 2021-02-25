@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-13 15:13:13
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-24 16:34:12
+ * @LastEditTime: 2021-02-25 09:05:18
 -->
 <template>
   <view class="container safe-area-inset-bottom">
@@ -97,7 +97,7 @@
         >
           <u-button
             shape="circle"
-            :custom-style="{ padding: '0 40rpx', marginRight: '20rpx' }"
+            :custom-style="{ padding: '0 30rpx', marginRight: '15rpx' }"
             size="mini"
             type="primary"
             @click="handleGoto(i)"
@@ -115,12 +115,12 @@
             <u-button
               size="mini"
               shape="circle"
-              :custom-style="{ padding: '0 40rpx', marginRight: '20rpx' }"
+              :custom-style="{ padding: '0 30rpx', marginRight: '15rpx' }"
               @click="handleClick(i, 'showInvalid')"
             >无效</u-button>
             <u-button
               shape="circle"
-              :custom-style="{ padding: '0 40rpx', marginRight: '20rpx' }"
+              :custom-style="{ padding: '0 30rpx', marginRight: '15rpx' }"
               size="mini"
               type="success"
               @click="handleClick(i, 'timeShow')"
@@ -132,7 +132,7 @@
               size="mini"
               shape="circle"
               type="warning"
-              :custom-style="{ padding: '0 40rpx' }"
+              :custom-style="{ padding: '0 30rpx' }"
               @click.stop="handleSync(i.id)"
             >同步状态</u-button>
             <!-- </template> -->
