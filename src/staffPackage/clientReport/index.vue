@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-17 18:10:07
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-25 10:59:29
+ * @LastEditTime: 2021-02-25 20:11:54
 -->
 <template>
   <view class="client-container safe-area-inset-bottom">
@@ -368,7 +368,7 @@ export default {
     // 项目跳转搜索页
     projectSearch() {
       getApp().globalData.searchParams = {
-        api: "getFuzzySearchByCityApi",
+        api: "getFuzzySearchByCityForAnChangApi",
         key: "proName",
         id: "proId",
         type: "project",
