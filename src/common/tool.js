@@ -29,7 +29,7 @@ const tool = {
      * @return {*}
      */
     getTemplateDocUrl() {
-        let url = baseUrl + `/sales-api/sales-document-cover/static/channel/模版-委托书.docx`
+        let url = baseUrl + `/sales-api/sales-document-cover/static/channel/广州居恒销售系统授权确认函.docx`
         return url;
     },
     /**获取文件上传路径

@@ -16,7 +16,7 @@
           bg-color="#fff"
           @search="confirm"
           @blur="confirm"
-          placeholder="输入成交报告编号或客户姓名"
+          placeholder="输入成交编号或客户姓名"
           v-model="queryPageParameters.dealCodeOrCusName"
           :clearabled="true"
         ></u-search>
@@ -35,7 +35,7 @@
           :key="index">
           <view slot="head">
             <view class="item-title">
-              <text class="title-text">成交报告编号：{{item.dealCode}}</text>
+              <text class="title-text">成交编号：{{item.dealCode}}</text>
               <u-tag mode="dark" :text="getStatusName(item.status)" :type="getTagType(item.status)" />
             </view>
           </view>
@@ -79,7 +79,7 @@
         <u-empty text="列表为空" mode="list"></u-empty>
       </view>
       <view
-        v-if="currentJobId === 4"
+        v-if="$RoleTool('RProjectSite')"
         class="performance-btn safe-area-inset-bottom">
         <u-button shape="circle" type="primary" @click="handleGo()">业绩申报</u-button>
       </view>
@@ -517,7 +517,7 @@ export default {
       flex: 1;
       white-space: nowrap;
       font-weight: bold;
-      font-size: 30rpx;
+      font-size: 28rpx;
       font-weight: 600;
       line-height: 48rpx;
     }

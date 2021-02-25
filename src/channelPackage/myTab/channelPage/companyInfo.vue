@@ -35,7 +35,7 @@
             <view>{{companyInfo.capital}}</view>
           </u-form-item>
           <u-form-item label="营业期限">
-            <view>{{companyInfo.businessTime}}</view>
+            <view>{{companyInfo.businessTime ? companyInfo.businessTime : ''}}</view>
           </u-form-item>
           <u-form-item label="成立时间">
             <view>{{companyInfo.setupTime}}</view>
