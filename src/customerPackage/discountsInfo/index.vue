@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 17:55:52
+ * @LastEditTime: 2021-02-25 18:35:31
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -391,15 +391,19 @@ export default {
       arr = this.info.noticeList.filter((v) => {
         return v.notificationType === "SupplementaryAgreement";
       });
-      if (arr.length === 1) return true;
-      else return false;
+      if (arr.length === 1 && arr[0].notificationStatus === "WaitBeSigned") {
+        return true;
+      } else {
+        return false;
+      }
     },
     isSupplementaryAgreementMore() {
       let arr = [];
       arr = this.info.noticeList.filter((v) => {
         return v.notificationType === "SupplementaryAgreement";
       });
-      if (arr.length > 1) return true;
+      let some = arr.some((v) => v.notificationStatus === "WaitBeSigned");
+      if (arr.length > 1 && some) return true;
       else return false;
     },
   },
