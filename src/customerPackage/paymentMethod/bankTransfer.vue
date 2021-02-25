@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 15:28:17
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 14:46:37
+ * @LastEditTime: 2021-02-25 14:47:19
 -->
 <template>
   <u-popup
@@ -239,7 +239,6 @@ export default {
 }
 .pay {
   padding-top: 15rpx;
-  width: 100%;
   min-height: 100vh;
   background-color: #f1f1f1;
   display: flex;
@@ -278,14 +277,17 @@ export default {
     flex-flow: column nowrap;
   }
   &-list {
-    height: 80rpx;
-    line-height: 80rpx;
+    min-height: 80rpx;
     border-bottom: 1px solid #f2f2f2;
     position: relative;
+    display: flex;
+    align-items: center;
 
     &-money {
       position: absolute;
       right: 0;
+      max-width: 60%;
+      text-align: right;
     }
   }
 
