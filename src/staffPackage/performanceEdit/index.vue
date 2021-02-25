@@ -647,7 +647,6 @@ export default {
         agencyId: '', // 渠道公司Id
         agencyName: '', // 渠道公司
         channelLevel: '', // 渠道等级Id
-        channelLevelName: '', // 渠道等级
         brokerId: '', // 渠道经纪人Id
         brokerName: '', // 渠道经纪人
         recordState:'',
@@ -1354,7 +1353,7 @@ export default {
       // this.postData.documentVO = []; // 上传附件
       let list = ['contType', 'contTypeName', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall',
         'toilet', 'propertyNo', 'signType', 'returnRatio', 'subscribePrice', 'subscribeDate',
-        'signPrice', 'signDate', 'agencyId', 'agencyName', 'channelLevel', 'channelLevelName']
+        'signPrice', 'signDate', 'agencyId', 'agencyName', 'channelLevel']
       this.resetObject('postData', list);
     },
     // 通过项目周期id获取基础信息
@@ -1713,23 +1712,15 @@ export default {
       if (flag) {
         // 分销成交模式
         if(data.length > 0) {
-          let channelList = await this.getSignDict('ChannelLevel');
           this.postData.agencyId = data[0].agencyId; // 渠道公司Id
           this.postData.agencyName = data[0].agencyName; // 渠道公司
           this.postData.channelLevel = data[0].channelLevel; // 渠道等级Id
-          if (channelList && channelList.length > 0 && data[0].channelLevel) {
-            channelList.forEach((list) => {
-              if (list.code === data[0].channelLevel) {
-                this.postData.channelLevelName= list.name; // 渠道等级
-              }
-            });
-          }
           this.postData.brokerId= data[0].brokerId; // 渠道经纪人Id
           this.postData.brokerName= data[0].brokerName || data[0].broker; // 渠道经纪人
         }
       } else {
         // 非分销成交模式 --- 没有渠道相关信息
-        let list = ['agencyId', 'agencyName', 'channelLevel', 'channelLevelName', 'brokerId', 'brokerName'];
+        let list = ['agencyId', 'agencyName', 'channelLevel', 'brokerId', 'brokerName'];
         this.resetObject('postData', list); // 重置值
       }
     },
