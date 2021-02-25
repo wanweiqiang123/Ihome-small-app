@@ -545,6 +545,9 @@ export default {
       }
     }
     return {
+      pdfImg: require('@/channelPackage/common/img/pdf.jpg'),
+      excelImg: require('@/channelPackage/common/img/excel.png'),
+      wordImg: require('@/channelPackage/common/img/word.jpg'),
       id: null, // 成交id-编辑用
       showPackage: false, // 选择收派套餐弹窗标识
       showSubmitWin: false, // 签约阶段提示弹窗标识
@@ -723,6 +726,7 @@ export default {
           dealVO: {},
           dataSign: ''
         }, // 明源数据
+        docs: [], // 返回的所有的附件值
         noticePDF: [], // 优惠告知书PDF
         customerIds: [], // 业主身份证
         visitConfirmForms: [], // 来访确认书
@@ -1671,65 +1675,38 @@ export default {
     },
     // 修改合同类型后构建附件表格数据
     getDocumentList(type) {
-      // 回显房号带出来的值
-      let baseInfo = JSON.parse(JSON.stringify(this.baseInfoInDeal));
+      // 先显示对应的附件类型
       if (type === "DistriDeal") {
-        this.postData.documentVO.push(...this.tempList);
-        if (this.postData.documentVO.length) {
-          this.postData.documentVO.forEach((list) => {
-            switch(list.code) {
-              case "VisitConfirForm":
-                // 来访确认单
-                if (baseInfo.visitConfirmForms && baseInfo.visitConfirmForms.length) {
-                  this.baseInfoInDeal.visitConfirmForms.forEach((item) => {
-                    item.name = item.fileName;
-                    item.canDelete = true; // 是否可以删除
-                  });
-                }
-                list.fileList = this.postData.roomId && baseInfo.visitConfirmForms && baseInfo.visitConfirmForms.length ? baseInfo.visitConfirmForms : [];
-                break;
-              case "DealConfirForm":
-                // 成交确认书
-                if (baseInfo.dealConfirmForms && baseInfo.dealConfirmForms.length) {
-                  baseInfo.dealConfirmForms.forEach((item) => {
-                    item.name = item.fileName;
-                    item.canDelete = true; // 是否可以删除
-                  });
-                }
-                list.fileList = this.postData.roomId && baseInfo.dealConfirmForms && baseInfo.dealConfirmForms.length ? baseInfo.dealConfirmForms : [];
-                break;
-            }
-          });
-        }
+        // 分销成交
+        this.postData.documentVO.push(...this.tempDocumentList);
       } else {
+        // 非分销成交
         this.postData.documentVO = this.postData.documentVO.filter((item) => {
           return !["VisitConfirForm", "DealConfirForm"].includes(item.code);
         });
       }
-      this.postData.documentVO.forEach((list) => {
-        switch(list.code) {
-          case "Notice":
-            // 优惠告知书PDF
-            if (baseInfo.noticePDF && baseInfo.noticePDF.length) {
-              baseInfo.noticePDF.forEach((item) => {
-                item.name = item.fileName;
-                item.canDelete = true; // 是否可以删除
-              });
+      // 回显房号带出来的附件
+      let docs = [];
+      if (this.postData.roomId && this.baseInfoInDeal && this.baseInfoInDeal.docs && this.baseInfoInDeal.docs.length) {
+        docs = this.baseInfoInDeal.docs;
+      }
+      // 放入对应的文件
+      if (this.postData.documentVO.length) {
+        this.postData.documentVO.forEach((list) => {
+          list.fileList = [];
+          docs.forEach((item) => {
+            if (list.code === item.fileType) {
+              list.fileList.push(
+                {
+                  ...item,
+                  name: item.fileName,
+                  canDelete: true, // 是否可以删除
+                }
+              )
             }
-            list.fileList = this.postData.roomId && baseInfo.noticePDF && baseInfo.noticePDF.length  ? baseInfo.noticePDF : [];
-            break;
-          case "OwnerID":
-            // 业主身份证
-            if (baseInfo.customerIds && baseInfo.customerIds.length) {
-              baseInfo.customerIds.forEach((item) => {
-                item.name = item.fileName;
-                item.canDelete = true; // 是否可以删除
-              });
-            }
-            list.fileList = this.postData.roomId && baseInfo.customerIds && baseInfo.customerIds.length ? baseInfo.customerIds : [];
-            break;
-        }
-      });
+          });
+        });
+      }
     },
     // 初始化渠道商(渠道公司) --- 分销成交模式才有渠道商
     async initAgency(data = [], flag = false) {
@@ -1887,7 +1864,8 @@ export default {
                         item.fileList.push(
                           {
                             ...data.data[0],
-                            fileUrls: ''
+                            fileUrls: '',
+                            name: `${data?.data[0]?.generateFileName}.${data?.data[0]?.generateFileType}`,
                           }
                         )
                       }
@@ -1930,7 +1908,8 @@ export default {
                         item.fileList.push(
                           {
                             ...data.data[0],
-                            fileUrls: self.getFileImg(data.data[0])
+                            fileUrls: self.getFileImg(data.data[0]),
+                            name: `${data?.data[0]?.generateFileName}.${data?.data[0]?.generateFileType}`,
                           }
                         )
                       }
