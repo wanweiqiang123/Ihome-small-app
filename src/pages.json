@@ -252,6 +252,12 @@
 					}
 				},
 				{
+					"path": "homeTab/pages/dealRegister",
+					"style": {
+						"navigationBarTitleText": "成交登记"
+					}
+				},
+				{
 					"path": "myTab/pages/uploadAttachment",
 					"style": {
 						"navigationBarTitleText": "上传附件"

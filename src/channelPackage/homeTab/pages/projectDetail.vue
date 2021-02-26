@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-23 11:15:50
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-25 17:21:03
+ * @LastEditTime: 2021-02-26 14:06:42
 -->
 <template>
   <view class="project-detail-wrapper">
@@ -216,7 +216,14 @@ export default {
     // 初始化页面
     async init() {
       if (!this.currentProId) return;
-      this.detailInfo = await getProDetail(this.currentProId);
+      const res = await getProDetail(this.currentProId);
+      this.detailInfo = {
+        ...res,
+        houseTypeDetailVos: res.houseTypeDetailVos.map((v) => ({
+          ...v,
+          picAddr: this.$tool.getFileUrl(v.picAddr),
+        })),
+      };
       // console.log('detailInfo', this.detailInfo);
       if (
         this.detailInfo.promotion &&
