@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-17 10:54:41
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-26 09:14:38
+ * @LastEditTime: 2021-02-26 11:56:53
 -->
 <template>
   <view class="container safe-area-inset-bottom">
@@ -189,11 +189,24 @@
     <!-- 模态框 -->
     <u-modal
       v-model="showInvalid"
-      content="是否确认无效?"
+      title="无效确认"
       show-cancel-button
-      :show-title="false"
+      ref="uModal"
+      :async-close="true"
+      :content-style="{
+        padding: '48rpx 20rpx'
+      }"
       @confirm="submitReport(reportId, 'Invalid')"
-    ></u-modal>
+    >
+      <view class="slot-content">
+        <u-input
+          v-model="comment"
+          type="textarea"
+          :height="100"
+          :border="true"
+        />
+      </view>
+    </u-modal>
     <!-- 时间选择器 -->
     <u-picker
       mode="time"
@@ -249,6 +262,7 @@ export default {
       showValid: false,
       reportId: null,
       timeShow: false,
+      comment: "",
       params: {
         year: true,
         month: true,
@@ -307,14 +321,22 @@ export default {
       }
     },
     async submitReport(rId, type) {
+      if (!this.comment) {
+        this.$tool.toast("无效原因不能为空");
+        this.$refs.uModal.clearLoading();
+        return;
+      }
       try {
         await postReportValid({
           reportId: rId,
           validOrInvalid: type,
+          comment: this.comment,
         });
-        this.$tool.toast(`${type === "Valid" ? "有效成功" : "无效成功"}`);
+        this.$tool.toast("无效成功");
+        this.showInvalid = false;
         this.confirm();
       } catch (error) {
+        this.showInvalid = false;
         console.log(error);
       }
     },
