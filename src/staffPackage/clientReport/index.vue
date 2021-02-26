@@ -129,9 +129,11 @@
           >
             <u-input
               v-if="pageType"
+			  type="number"
               v-model="custormInfo.mobile"
               placeholder="手机号"
               input-align="left"
+			  maxlength="11"
             />
             <view
               v-else
@@ -159,9 +161,11 @@
               </view>
               <view v-else>
                 <u-input
+				  type="number"
                   v-model="custormInfo.mobile"
                   placeholder="手机号"
                   input-align="left"
+				  maxlength="11"
                 />
               </view>
               <u-switch v-model="checked"></u-switch>
@@ -182,6 +186,7 @@
             required
           >
             <u-input
+			  type="number"
               v-model="reportForm.expectedNumber"
               placeholder="预计到访人数"
               :clearable="true"
