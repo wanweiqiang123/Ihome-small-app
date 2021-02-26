@@ -119,8 +119,8 @@
             required
           >
             <u-radio-group v-model="custormInfo.sex">
-              <u-radio name="Ms">女</u-radio>
-              <u-radio name="Mr">男</u-radio>
+			  <u-radio name="Mr">先生</u-radio>
+              <u-radio name="Ms">女士</u-radio>
             </u-radio-group>
           </u-form-item>
           <u-form-item
