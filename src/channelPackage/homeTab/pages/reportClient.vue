@@ -81,8 +81,8 @@
               required
             >
               <u-radio-group v-model="custormInfo.sex">
-                <u-radio name="Ms">女</u-radio>
-                <u-radio name="Mr">男</u-radio>
+				<u-radio name="Mr">先生</u-radio>
+                <u-radio name="Ms">女士</u-radio>
               </u-radio-group>
             </u-form-item>
             <u-form-item
@@ -111,9 +111,11 @@
                 </view>
                 <view v-else>
                   <u-input
+				    type="number"
                     v-model="custormInfo.mobile"
                     placeholder="手机号"
                     input-align="left"
+					maxlength="11"
                   />
                 </view>
                 <u-switch v-model="checked"></u-switch>
@@ -138,6 +140,7 @@
               required
             >
               <u-input
+			    type="number"
                 v-model="info.expectedNumber"
                 placeholder="预计到访人数"
                 :clearable="true"
@@ -379,7 +382,7 @@ export default {
         getApp().myReport = {};
         this.$tool.toast("报备成功");
         uni.redirectTo({
-          url: `/channelPackage/homeTab/index`,
+          url: `/channelPackage/myTab/pages/myReport`,//跳转我的报备页
         });
       });
     },
