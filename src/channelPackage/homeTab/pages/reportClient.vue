@@ -382,7 +382,7 @@ export default {
         getApp().myReport = {};
         this.$tool.toast("报备成功");
         uni.redirectTo({
-          url: `/channelPackage/homeTab/index`,
+          url: `/channelPackage/myTab/pages/myReport`,//跳转我的报备页
         });
       });
     },
