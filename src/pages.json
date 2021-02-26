@@ -515,7 +515,7 @@
 				{
 					"path": "receiptHistory/index",
 					"style": {
-						"navigationBarTitleText": "收款待审核"
+						"navigationBarTitleText": "收款记录"
 					}
 				},
 				{

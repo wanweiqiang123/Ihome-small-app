@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-28 18:48:00
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-22 10:18:48
+ * @LastEditTime: 2021-02-26 10:58:56
 -->
 <template>
   <view class="box">
@@ -16,13 +16,24 @@
       <view class="box-item-title">
         <view style="font-weight: bold;">收款金额：{{item.amount}}</view>
         <template v-if="item.fileIds.length">
-          <u-button
-            class="downButton"
-            type="primary"
-            size="mini"
-            :loading="item.loading"
-            @click="downLoad(item)"
-          >下载电子回单</u-button>
+          <view style="font-size: 20rpx;">
+            电子回单：
+            <u-button
+              class="downButton"
+              type="primary"
+              size="mini"
+              :loading="item.loading"
+              :custom-style="{marginRight: '10rpx'}"
+              @click="downLoad(item)"
+            >下载</u-button>
+            <u-button
+              class="downButton"
+              type="success"
+              size="mini"
+              :loading="item.loading"
+              @click="perview(item)"
+            >预览</u-button>
+          </view>
         </template>
       </view>
       <view class="box-item-msg">
@@ -45,6 +56,16 @@
       v-if="!info.length"
       style="height: 80vh"
     ></u-empty>
+    <u-modal
+      v-model="isShow"
+      :show-title="false"
+      confirm-text="一键复制"
+      :content="downUrl"
+      :content-style="{
+        wordBreak: 'break-word'
+      }"
+      @confirm="modalConfirm"
+    ></u-modal>
   </view>
 </template>
 <script>
@@ -57,6 +78,8 @@ export default {
       payId: "",
       info: [],
       PayType: [],
+      isShow: false,
+      downUrl: "",
     };
   },
   onLoad(options) {
@@ -86,31 +109,36 @@ export default {
         loading: false,
       }));
     },
-    async downLoad(item) {
-      item.loading = true;
-      const file = await getPdf2PicApi(item.fileIds[0]);
-      let downUrl = this.$tool.getFileDownloadUrl(file.fileId);
+    modalConfirm() {
+      uni.setClipboardData({
+        data: this.downUrl,
+        success: () => {
+          this.$tool.toast("复制成功, 请前往浏览器打开");
+        },
+      });
+    },
+    perview(item) {
+      let url = this.$tool.getFileUrl(item.fileIds[0]);
       uni.downloadFile({
-        url: downUrl,
-        success: (res) => {
-          console.log(res, "succrss");
-          let filePath = res.tempFilePath;
-          uni.saveImageToPhotosAlbum({
+        url: url,
+        success: function (res) {
+          var filePath = res.tempFilePath;
+          uni.openDocument({
             filePath: filePath,
-            success: () => {
-              this.$tool.toast("电子回单已保存到相册");
-              item.loading = false;
-            },
-            fail: (err) => {
-              this.$tool.toast("保存失败");
-              item.loading = false;
+            fileType: "pdf",
+            showMenu: true,
+            success: function (res) {
+              console.log("打开文档成功");
             },
           });
         },
-        complete: () => {
-          item.loading = false;
-        },
       });
+    },
+    async downLoad(item) {
+      // item.loading = true;
+      // const file = await getPdf2PicApi(item.fileIds[0]);
+      this.downUrl = this.$tool.getFileDownloadUrl(item.fileIds[0]);
+      this.isShow = true;
     },
   },
 };

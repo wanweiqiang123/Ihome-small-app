@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-25 19:21:46
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-02-26 11:14:39
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -433,7 +433,6 @@ export default {
   },
   computed: {
     percent() {
-      debugger;
       if (
         this.info?.discountInformationResponseVo?.paid ||
         this.info?.discountInformationResponseVo?.paid === 0
