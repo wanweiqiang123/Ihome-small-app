@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-24 09:58:09
  * @LastEditors: lsj
- * @LastEditTime: 2021-02-26 11:32:33
+ * @LastEditTime: 2021-02-26 11:22:33
 -->
 <template>
   <view class="report-client-wrapper">
@@ -61,8 +61,7 @@
           <u-form
             :model="custormInfo"
             ref="custormInfo"
-            :label-width="130"
-          >
+            :label-width="130">
             <u-form-item
               label="姓名"
               prop="name"
@@ -88,83 +87,62 @@
             <u-form-item
               label="手机号"
               required>
-              <view class="mobileType">
-                <view
-                  v-if="checked"
-                  class="qianhou"
-                >
-                  <u-input
-                    v-model="qian"
-                    input-align="center"
-                    placeholder="前三位"
-                    maxlength="3"
-                    :clearable="false"
-                  />
-                  <text>****</text>
-                  <u-input
-                    v-model="hou"
-                    input-align="center"
-                    placeholder="后四位"
-                    maxlength="4"
-                    :clearable="false"
-                  />
-                </view>
-                <view v-else>
-                  <u-input
-                    v-model="custormInfo.mobile"
-                    placeholder="手机号"
-                    input-align="left"
-                  />
-                </view>
-                <u-switch v-model="checked"></u-switch>
-              </view>
+              <u-input
+                v-model="custormInfo.mobile"
+                placeholder="手机号"
+                input-align="left"/>
             </u-form-item>
           </u-form>
         </view>
       </view>
       <view class="card margin-top-20">
         <view class="client-info">
-          <view class="title">报备信息</view>
+          <view class="title">房产信息</view>
         </view>
         <view class="form-wrapper">
           <u-form
-            :model="info"
-            ref="info"
+            :model="buildForm"
+            ref="buildForm"
             :label-width="190"
           >
-            <u-form-item
-              label="预计到访人数"
-              prop="expectedNumber"
-              required
-            >
+            <u-form-item label="楼盘名称">
               <u-input
-                v-model="info.expectedNumber"
-                placeholder="预计到访人数"
-                :clearable="true"
+                v-model="info.proName"
+                placeholder="楼盘名称"
+                disabled
+                :clearable="false"
                 input-align="left"
               />
             </u-form-item>
             <u-form-item
-              label="预计到访时间"
-              prop="expectedTime"
-              class="hide-icon"
+              label="认购栋座"
+              prop="subBuildingName"
               right-icon="arrow-right"
+              class="hide-icon"
               required
             >
               <u-input
-                v-model="info.expectedTime"
+                @click="buildingBlockShow = true"
+                v-model="buildForm.subBuildingName"
                 type="select"
-                @click="showTime = true"
-                placeholder="预计到访时间"
-                :clearable="true"
+                placeholder="认购栋座"
+                :clearable="false"
                 input-align="left"
               />
             </u-form-item>
-            <u-form-item label="备注">
+            <u-form-item
+              label="认购房号"
+              prop="roomNo"
+              right-icon="arrow-right"
+              class="hide-icon"
+              required
+            >
               <u-input
-                v-model="info.remark"
-                placeholder="备注"
-                :clearable="true"
+                @click="roomNoShow = true"
+                v-model="buildForm.roomNo"
+                type="select"
+                placeholder="认购房号"
+                :clearable="false"
                 input-align="left"
               />
             </u-form-item>
@@ -177,22 +155,34 @@
         type="primary"
         shape="circle"
         @click="handleReport">
-        报备
+        登记
       </u-button>
     </view>
-    <u-picker
-      v-model="showTime"
-      mode="time"
-      :params="timeParams"
-      @confirm="handleConfirm"
-    ></u-picker>
+    <u-select
+      title="选择栋座"
+      confirm-color="#dd524d"
+      v-model="buildingBlockShow"
+      :list="buildingBlockList"
+      @confirm="buildingBlockClick"
+      value-name="buildingId"
+      label-name="buildingName"
+    ></u-select>
+    <u-select
+      title="选择房号"
+      confirm-color="#dd524d"
+      v-model="roomNoShow"
+      :list="roomNoList"
+      @confirm="roomNoClick"
+      value-name="roomId"
+      label-name="roomNo"
+    ></u-select>
   </view>
 </template>
 
 <script>
 import { getProDetailBBApi } from "@/api/index";
-import { postReportApi } from "@/api/channel";
-// import { postBuildByProId, postRoomByProId } from "@/api/staff";
+import { postAddDealtApi } from "@/api/channel";
+import { postBuildByProId, postRoomByProId } from "@/api/staff";
 export default {
   data() {
     return {
@@ -208,23 +198,13 @@ export default {
         sex: "Ms",
         mobile: "",
       },
-      district: "海珠区",
-      infoRules: {
-        expectedNumber: [
-          {
-            required: true,
-            message: "请输入预计到访人数",
-            trigger: "change",
-          },
-        ],
-        expectedTime: [
-          {
-            required: true,
-            message: "请输入预计到访时间",
-            trigger: "change",
-          },
-        ],
+      buildForm: {
+        subBuildingName: "",
+        subBuildingId: "",
+        roomNo: "",
+        roomId: "",
       },
+      district: "海珠区",
       custormRules: {
         name: [{ required: true, message: "请输入姓名", trigger: "change" }],
         sex: [{ required: true, message: "请选择性别", trigger: "change" }],
@@ -237,24 +217,31 @@ export default {
           },
         ],
       },
-      homeImg: "",
-      // pageType: "",
-      showTime: false,
-      currentSelectType: "",
-      timeParams: {
-        year: true,
-        month: true,
-        day: true,
-        hour: true,
-        minute: true,
-        second: false,
+      buildRules: {
+        subBuildingName: [
+          {
+            required: true,
+            message: "请选择栋座",
+            trigger: "change",
+          },
+        ],
+        roomNo: [
+          {
+            required: true,
+            message: "请选择房号",
+            trigger: "change",
+          },
+        ],
       },
+      homeImg: "",
+      buildingBlockShow: false,
+      currentSelectType: "",
+      roomNoShow: false,
       keyword: "",
-      // buildingBlockList: [],
+      buildingBlockList: [],
+      roomNoList: [],
       reportId: "",
       checked: false,
-      qian: "",
-      hou: "",
     };
   },
   onReady() {
@@ -271,20 +258,12 @@ export default {
     this.info.exMarket = msg?.exMarket;
     this.homeImg = this.$tool.getFileUrl(msg?.projectPic);
     this.district = msg?.district;
-    // this.buildingBlockList = await postBuildByProId({
-    //   proId: this.info.proId,
-    // });
-    // if (option.type && option.type === "dealReg") {
-    //   uni.setNavigationBarTitle({
-    //     title: "成交登记",
-    //   });
-    //   this.pageType = "dealReg";
-    //   this.custormInfo.name = msg?.name;
-    //   this.custormInfo.sex = msg?.sex;
-    //   this.custormInfo.mobile = msg?.mobile;
-    // } else {
-    //   this.pageType = "";
-    // }
+    this.buildingBlockList = await postBuildByProId({
+      proId: this.info.proId,
+    });
+    this.custormInfo.name = msg?.name;
+    this.custormInfo.sex = msg?.sex;
+    this.custormInfo.mobile = msg?.mobile;
   },
   async onShow() {
     let item = getApp().globalData.searchBackData;
@@ -297,11 +276,9 @@ export default {
       this.district = res.districtName;
       this.homeImg = this.$tool.getFileUrl(res.proAddr);
       getApp().globalData.searchBackData = {};
-      // if (this.pageType) {
-      //   this.buildingBlockList = await postBuildByProId({
-      //     proId: this.info.proId,
-      //   });
-      // }
+      this.buildingBlockList = await postBuildByProId({
+        proId: this.info.proId,
+      });
     } else if (item && item.type === "customer") {
       this.checked = false;
       this.custormInfo.name = item.data.name;
@@ -336,9 +313,23 @@ export default {
         url: "/pages/search/index/index",
       });
     },
-    // 确定选择时间
-    handleConfirm(value) {
-      this.info.expectedTime = `${value.year}-${value.month}-${value.day} ${value.hour}:${value.minute}`;
+    buildingBlockClick(v) {
+      this.buildForm.subBuildingName = v[0].label;
+      this.buildForm.subBuildingId = v[0].value;
+      this.buildForm.roomNo = "";
+      this.buildForm.roomId = "";
+      this.getRoomList(this.buildForm.subBuildingId);
+    },
+    // 获取房号
+    async getRoomList(buildNo) {
+      this.roomNoList = await postRoomByProId({
+        proId: this.info.proId,
+        buildingId: buildNo,
+      });
+    },
+    roomNoClick(v) {
+      this.buildForm.roomNo = v[0].label;
+      this.buildForm.roomId = v[0].value;
     },
     // 表单验证
     formDataRules() {
@@ -350,36 +341,29 @@ export default {
       });
       let item;
       item = new Promise((resolve, reject) => {
-        this.$refs.info.validate((val) => {
+        this.$refs.buildForm.validate((val) => {
           val ? resolve() : reject(err);
         });
       });
       arr.push(info, item);
       return arr;
     },
-    // 报备客户
+    // 成交登记
     handleReport() {
-      this.$refs.info.setRules(this.infoRules);
+      this.$refs.buildForm.setRules(this.buildRules);
       let formDataRules = this.formDataRules();
       Promise.all(formDataRules).then(async () => {
         const userInfo = this.$storageTool.getUserInfo();
         let obj = {};
-        obj = { ...this.info, ...this.custormInfo };
-        if (this.checked) {
-          obj.mobile = this.qian + "****" + this.hou;
-          obj.reportType = "FirstThreeAfterFour";
-        } else {
-          obj.reportType = "FullNumber";
-        }
-        obj.channelId = userInfo.channelId;
-        obj.reportMobile = userInfo.mobilePhone;
-        obj.reportName = userInfo.name;
-        console.log(obj);
-        await postReportApi(obj);
+        obj = { ...this.custormInfo };
+        obj.reportId = this.reportId;
+        obj.roomId = this.buildForm.roomId;
+        obj.subBuildingId = this.buildForm.subBuildingId;
+        await postAddDealtApi(obj);
         getApp().myReport = {};
-        this.$tool.toast("报备成功");
+        this.$tool.toast("登记成功");
         uni.redirectTo({
-          url: `/channelPackage/homeTab/index`,
+          url: `/channelPackage/myTab/pages/myReport`,
         });
       });
     },
@@ -532,6 +516,39 @@ export default {
     position: fixed;
     left: 0rpx;
     bottom: 0rpx;
+  }
+
+  .client-search-wrapper {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 15rpx 20rpx;
+    background-color: #f1f1f1;
+
+    .search {
+      height: 72rpx;
+    }
+  }
+
+  .client-list {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 20rpx 30rpx;
+    border: 2rpx solid #f1f1f1;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    .client-name,
+    .client-phone {
+      height: 50rpx;
+      line-height: 50rpx;
+      flex: 1;
+    }
+
+    .client-phone {
+      text-align: right;
+    }
   }
 }
 
