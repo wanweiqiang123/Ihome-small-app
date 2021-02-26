@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-17 09:23:15
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 14:42:57
+ * @LastEditTime: 2021-02-26 09:39:27
 -->
 <template>
   <view>
@@ -211,7 +211,7 @@ export default {
     if (item) {
       switch (item.type) {
         case "branch":
-          this.form.bankName = item.data.branchName;
+          this.form.bankName = item.data.bankName;
           this.form.branchName = item.data.branchName;
           this.form.provinceName = item.data.provinceName;
           this.form.cityName = item.data.cityName;

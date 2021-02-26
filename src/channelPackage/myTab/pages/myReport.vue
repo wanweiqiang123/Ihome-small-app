@@ -147,7 +147,7 @@ export default {
     handleDealRegister(item) {
       getApp().myReport = { ...item };
       uni.navigateTo({
-        url: `/channelPackage/homeTab/pages/reportClient?type=dealReg&&id=${item.id}`,
+        url: `/channelPackage/homeTab/pages/dealRegister?type=dealReg&&id=${item.id}`,
       });
     },
     // 上传附件

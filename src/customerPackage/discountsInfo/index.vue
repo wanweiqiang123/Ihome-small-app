@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-26 11:14:39
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-26 11:54:26
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -487,7 +487,9 @@ export default {
 
     handleToRefund() {
       const arr = this.info.noticeList.filter(
-        (v) => v.notificationType === "RefundApplication"
+        (v) =>
+          v.notificationType === "RefundApplication" &&
+          v.notificationStatus === "WaitBeSigned"
       );
       console.log(arr);
       uni.navigateTo({
