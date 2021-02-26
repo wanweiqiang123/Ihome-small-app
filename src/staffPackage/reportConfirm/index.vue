@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-13 15:13:13
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-24 16:34:05
+ * @LastEditTime: 2021-02-26 09:15:57
 -->
 <template>
   <view class="container safe-area-inset-bottom">
@@ -62,7 +62,7 @@
             <view>报备项目：{{i.proName | emptyFilter}}</view>
             <view>项目周期：{{i.proCycle | emptyFilter}}</view>
             <view>所属渠道：{{i.channelName | emptyFilter}}</view>
-            <view>报备人：{{i.reportUserName | emptyFilter}}</view>
+            <view>报备人：{{i.reportName | emptyFilter}}</view>
             <view>报备人电话：{{i.reportMobile | emptyFilter}}</view>
             <view>报备时间：{{i.reportDate | emptyFilter}}</view>
             <view v-if="current === 1">报备确认时间：{{i.auditTime | emptyFilter}}</view>
@@ -204,7 +204,7 @@ import PopupSearch from "../../components/PopupSearch/index.vue";
 import IhRadio from "../../components/IhRadio/index";
 import pagination from "../../mixins/pagination";
 import {
-  postReportList,
+  getMyReportList,
   reportValidOrInvalid,
   postYueJiaReport,
 } from "../../api/staff";
@@ -358,7 +358,7 @@ export default {
     },
     async getListMixin() {
       this.setPageDataMixin(
-        await postReportList({
+        await getMyReportList({
           ...this.queryPageParameters,
           nameOrTel: this.keyword,
           reportStatus: this.reportStatus,
