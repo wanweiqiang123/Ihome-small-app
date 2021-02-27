@@ -215,6 +215,11 @@ export async function getAgentByChannelIdApi(data, option = {}) {
     return await postApi(`/sales-api/channel/channelAgent/getAgentByChannelId`, data, option);
 }
 
+// 根据渠道商ID查询渠道经纪人/渠道负责人列表
+export async function getAgentAndChannelPersonByChannelIdApi(data, option = {}) {
+    return await postApi(`/sales-api/channel/channelAgent/getAgentAndChannelPersonByChannelId`, data, option);
+}
+
 // 案场帮录专用项目搜索
 export async function getFuzzySearchByCityForAnChangApi(data, option = {}) {
     return await postApi(`/sales-api/project/project/getFuzzySearchByCityForAnChang`, data, option);

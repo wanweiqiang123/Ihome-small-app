@@ -406,7 +406,7 @@ export default {
     manSearch() {
       if (this.channelForm.channelId) {
         getApp().globalData.searchParams = {
-          api: "getAgentByChannelIdApi",
+          api: "getAgentAndChannelPersonByChannelIdApi",
           key: "nameOrTel",
           id: "id",
           type: "man",
