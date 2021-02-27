@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-09 14:38:31
- * @LastEditors: zyc
- * @LastEditTime: 2021-02-16 15:37:14
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-02-27 16:22:22
 -->
 <template>
   <LoginPage>
@@ -25,8 +25,7 @@
           class="wrap-item"
           v-for="(item, index) in tablePage"
           :key="index"
-          @click="goto(item)"
-        >
+          @click="goto(item)">
           <view class="wrap-item-left">
             {{ item.title }}
           </view>
@@ -107,6 +106,12 @@ export default {
       );
     },
     goto(item) {
+      // 分销协议附件通过列表返回的附件带过详情页，原因在于详情接口没返回未盖章版
+      if (item && item.annexList && item.annexList.length) {
+        getApp().globalData.protocolAnnexList = item.annexList;
+      } else {
+        getApp().globalData.protocolAnnexList = [];
+      }
       uni.navigateTo({
         url: `/channelPackage/myTab/channelPage/protocolDetails?id=` + item.id,
       });

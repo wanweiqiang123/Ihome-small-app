@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-19 14:56:19
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-02-27 15:10:25
 -->
 <script>
 export default {
@@ -44,6 +44,7 @@ export default {
         text: "客户",
       },
     ],
+    protocolAnnexList: [], // 中介渠道岗-分销协议-附件列表
   },
   onLaunch: function () {
     console.log("App Launch");
