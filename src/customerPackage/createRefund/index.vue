@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-17 09:23:15
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-26 09:39:27
+ * @LastEditTime: 2021-02-27 15:08:24
 -->
 <template>
   <view>
@@ -104,12 +104,12 @@
         <u-form-item
           label="开户银行"
           required
-          prop="bankName"
+          prop="branchName"
           right-icon="arrow-right"
           class="hide-icon"
         >
           <u-input
-            v-model="form.bankName"
+            v-model="form.branchName"
             type="select"
             placeholder="请选择开户银行"
             @click="gotoSearch"
@@ -164,7 +164,7 @@ export default {
       form: {
         accountHolderName: "",
         account: "",
-        bankName: "",
+        branchName: "",
         branchName: "",
         cityName: "",
         provinceName: "",
@@ -186,7 +186,7 @@ export default {
             trigger: "change",
           },
         ],
-        bankName: [
+        branchName: [
           {
             required: true,
             message: "请输入银行名称",
