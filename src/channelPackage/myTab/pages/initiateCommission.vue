@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-26 14:24:10
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 14:38:01
+ * @LastEditTime: 2021-03-01 16:24:34
 -->
 <template>
   <view class="initiate-commission-wrapper">
@@ -724,6 +724,13 @@ export default {
           this.showDealList.forEach((v) => {
             arr = arr.concat(v.dealList);
           });
+          arr = arr.map((v) => ({
+            ...v,
+            ageThisCommFeesList: v.canCommFeesList.map((j) => ({
+              ...j,
+              agencyFeesType: "ThisCommFees",
+            })),
+          }));
           obj.payApplyDetailList = arr;
           this.dictList.forEach((v) => {
             obj.documentList = obj.documentList.concat(v.fileList);
