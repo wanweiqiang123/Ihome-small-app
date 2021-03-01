@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-18 09:45:10
+ * @LastEditTime: 2021-03-01 10:25:49
 -->
 <template>
   <LoginPage>
@@ -31,10 +31,10 @@
                   @click="handleGoto()"
                   v-show="item.isShow"
                 >
-                  <!-- <u-badge
-                  count="0"
-                  :offset="[15, 45]"
-                ></u-badge> -->
+                  <u-badge
+                    :count="item.count"
+                    :offset="[15, 45]"
+                  ></u-badge>
                   <u-icon
                     :name="item.icon"
                     :size="82"
@@ -88,50 +88,61 @@
 </template>
 
 <script>
+import { getReportStatistics, postNoticeCount } from "../../api/staff";
+
 export default {
   data() {
     return {
       current: 0,
       gridList: [],
+      countInfo: {},
     };
   },
-  created() {
+  async onShow() {
+    await this.getReportCount();
+    await this.getNoticeCount();
     let gridList = [
       {
         icon: require("../common/icon/report.png"),
         path: "/staffPackage/reportConfirm/index",
         item: "报备确认",
         isShow: this.$has("B.WXAPP.STAFF.STAFFHOME.REPORT"),
+        count: this.countInfo.report || 0,
       },
       {
         icon: require("../common/icon/visit.png"),
         path: "/staffPackage/visitConfirm/index",
         item: "到访确认",
         isShow: this.$has("B.WXAPP.STAFF.STAFFHOME.ARRIVE"),
+        count: this.countInfo.visit || 0,
       },
       {
         icon: require("../common/icon/deal.png"),
         path: "/staffPackage/dealConfirm/index",
         item: "成交确认",
         isShow: this.$has("B.WXAPP.STAFF.STAFFHOME.DEAL"),
+        count: this.countInfo.deal || 0,
       },
       {
         icon: require("../common/icon/notice.png"),
         path: "/staffPackage/noticeList/index",
         item: "优惠告知书",
         isShow: this.$has("B.WXAPP.STAFF.STAFFHOME.DISCOUNT"),
+        count: 0,
       },
       {
         icon: require("../common/icon/client.png"),
         path: "/staffPackage/clientReport/index",
         item: "帮录报备",
         isShow: this.$has("B.WXAPP.STAFF.STAFFHOME.GANGLU"),
+        count: 0,
       },
       {
         icon: require("../common/icon/performance.png"),
         path: "/staffPackage/performance/index",
         item: "业绩申报",
         isShow: this.$has("B.WXAPP.STAFF.STAFFHOME.DECLARE"),
+        count: 0,
       },
       // {
       //   icon: require("../common/icon/payment.png"),
@@ -143,12 +154,14 @@ export default {
         path: "/staffPackage/receipt/index",
         item: "收款管理",
         isShow: this.$has("B.WXAPP.STAFF.STAFFHOME.COLLECTION"),
+        count: 0,
       },
       {
         icon: require("../common/icon/code.png"),
         path: "/staffPackage/noticeCode/index",
         item: "查询优惠码",
         isShow: this.$has("B.WXAPP.STAFF.STAFFHOME.SELECTDISCOUNT"),
+        count: 0,
       },
       // {
       //   icon: require("../common/icon/channel.png"),
@@ -160,12 +173,11 @@ export default {
         path: "/staffPackage/noticeSpecial/index",
         item: "审核优惠告知书",
         isShow: this.$has("B.WXAPP.STAFF.STAFFHOME.NOTIFICATION"),
+        count: this.countInfo.notice || 0,
       },
     ];
     this.gridList = gridList.filter((i) => i.isShow);
-    console.log(this.gridList);
   },
-  onLoad() {},
   methods: {
     handleFilterList(num, list) {
       let newList = [];
@@ -182,6 +194,25 @@ export default {
       uni.navigateTo({
         url: url,
       });
+    },
+    async getReportCount() {
+      try {
+        let res = await getReportStatistics();
+        res.forEach((i) => {
+          this.countInfo[i.type] = i.total;
+        });
+        console.log(this.countInfo);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async getNoticeCount() {
+      try {
+        let res = await postNoticeCount();
+        this.countInfo["notice"] = res;
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
 };
