@@ -188,6 +188,10 @@ export async function getProDetailBBApi(data, option = {}) {
 export async function postChannelByNameApi(data, option = {}) {
     return await postApi('/sales-api/channel/channel/getListByName', data, option)
 }
+/**根据渠道商名称等级城市事业部模糊查渠道商id、名字分页列表[不需要审批通过]*/
+export async function postListByCityAndDeptWithoutNoPassApi(data, option = {}) {
+    return await postApi('/sales-api/channel/channel/getListByCityAndDeptWithoutNoPass', data, option)
+}
 /**
  * @description: 查询指定类型的所有字典项
  * @param {*} data
