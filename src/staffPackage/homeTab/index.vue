@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-01 10:25:49
+ * @LastEditTime: 2021-03-01 15:58:38
 -->
 <template>
   <LoginPage>
@@ -128,7 +128,7 @@ export default {
         path: "/staffPackage/noticeList/index",
         item: "优惠告知书",
         isShow: this.$has("B.WXAPP.STAFF.STAFFHOME.DISCOUNT"),
-        count: 0,
+        count: this.countInfo.confirmCount || 0,
       },
       {
         icon: require("../common/icon/client.png"),
@@ -173,7 +173,7 @@ export default {
         path: "/staffPackage/noticeSpecial/index",
         item: "审核优惠告知书",
         isShow: this.$has("B.WXAPP.STAFF.STAFFHOME.NOTIFICATION"),
-        count: this.countInfo.notice || 0,
+        count: this.countInfo.reviewCount || 0,
       },
     ];
     this.gridList = gridList.filter((i) => i.isShow);
@@ -209,7 +209,7 @@ export default {
     async getNoticeCount() {
       try {
         let res = await postNoticeCount();
-        this.countInfo["notice"] = res;
+        Object.assign(this.countInfo, res);
       } catch (error) {
         console.log(error);
       }
