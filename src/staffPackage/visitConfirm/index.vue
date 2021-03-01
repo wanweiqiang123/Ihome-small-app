@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-17 10:54:41
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-26 11:56:53
+ * @LastEditTime: 2021-03-01 18:36:15
 -->
 <template>
   <view class="container safe-area-inset-bottom">
@@ -307,7 +307,7 @@ export default {
       });
     },
     async timeConfirm(time) {
-      let visitDealTime = `${time.year}-${time.month}-${time.day}`;
+      let visitDealTime = `${time.year}-${time.month}-${time.day} ${time.hour}:${time.minute}`;
       try {
         await postReportValid({
           reportId: this.reportId,
