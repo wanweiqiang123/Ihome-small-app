@@ -290,8 +290,8 @@ export default {
         year: true,
         month: true,
         day: true,
-        hour: false,
-        minute: false,
+        hour: true,
+        minute: true,
         second: false,
       },
     };
