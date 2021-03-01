@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-10 15:30:58
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-24 16:04:27
+ * @LastEditTime: 2021-03-01 10:03:11
  */
 import { getApi, postApi } from '../common/http.js';
 
@@ -277,6 +277,26 @@ export async function postYueJiaReport(data = {}, option = {}) {
  */
 export async function postReportDeal(data = {}, option = {}) {
   return await postApi('/sales-api/customer/report/dealValidOrInvalid', data, option)
+}
+
+/**
+ * @description: 分别统计市场化项目的报备未确认、到访未确认、成交未确认的总数
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function getReportStatistics(data = {}, option = {}) {
+  return await getApi('/sales-api/customer/report/small/reportStatistics', null, option)
+}
+
+/**
+ * @description: 获取当前事业部下待业管审核总数
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function postNoticeCount(data = {}, option = {}) {
+  return await postApi('/sales-api/contract/notice/review/count', null, option)
 }
 
 /**

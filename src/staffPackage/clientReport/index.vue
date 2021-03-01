@@ -386,7 +386,7 @@ export default {
     channelSearch() {
       if (this.info.proId) {
         getApp().globalData.searchParams = {
-          api: "postChannelByNameApi",
+          api: "postListByCityAndDeptWithoutNoPassApi",
           key: "name",
           id: "id",
           type: "channel",
@@ -406,7 +406,7 @@ export default {
     manSearch() {
       if (this.channelForm.channelId) {
         getApp().globalData.searchParams = {
-          api: "getAgentByChannelIdApi",
+          api: "getAgentAndChannelPersonByChannelIdApi",
           key: "nameOrTel",
           id: "id",
           type: "man",

@@ -188,6 +188,10 @@ export async function getProDetailBBApi(data, option = {}) {
 export async function postChannelByNameApi(data, option = {}) {
     return await postApi('/sales-api/channel/channel/getListByName', data, option)
 }
+/**根据渠道商名称等级城市事业部模糊查渠道商id、名字分页列表[不需要审批通过]*/
+export async function postListByCityAndDeptWithoutNoPassApi(data, option = {}) {
+    return await postApi('/sales-api/channel/channel/getListByCityAndDeptWithoutNoPass', data, option)
+}
 /**
  * @description: 查询指定类型的所有字典项
  * @param {*} data
@@ -213,6 +217,11 @@ export async function postTermListByProIdApi(data = {}, option = {}) {
 // 根据渠道商ID查询渠道经纪人列表
 export async function getAgentByChannelIdApi(data, option = {}) {
     return await postApi(`/sales-api/channel/channelAgent/getAgentByChannelId`, data, option);
+}
+
+// 根据渠道商ID查询渠道经纪人/渠道负责人列表
+export async function getAgentAndChannelPersonByChannelIdApi(data, option = {}) {
+    return await postApi(`/sales-api/channel/channelAgent/getAgentAndChannelPersonByChannelId`, data, option);
 }
 
 // 案场帮录专用项目搜索
