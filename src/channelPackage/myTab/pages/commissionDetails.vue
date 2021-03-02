@@ -173,15 +173,15 @@
         v-for="(item, itemIndex) in paymentForm.documentList"
         :key="itemIndex"
       >
-        <view class="annex-type">{{getDictName(item.fileType, fileTypeList)  | emptyFilter}}</view>
+        <view class="annex-type">{{item.fileTypeName  | emptyFilter}}</view>
         <view class="annex-image">
           <u-image
             v-for="(srcItem, srcIndex) in item.fileList"
             :key="srcIndex"
-            @click="previewImg(getImgUrl(srcItem.fileId))"
+            @click="previewImg(srcItem)"
             width="200rpx"
             height="200rpx"
-            :src="getImgUrl(srcItem.fileId)"
+            :src="srcItem.fileUrl"
           ></u-image>
         </view>
       </view>
@@ -310,8 +310,9 @@ export default {
         { checked: false },
         { checked: false },
       ],
-      pdfImg: require("@/channelPackage/common/img/pdf.jpg"),
-      excelImg: require("@/channelPackage/common/img/excel.png"),
+      pdfImg: require('@/channelPackage/common/img/pdf.jpg'),
+      excelImg: require('@/channelPackage/common/img/excel.png'),
+      wordImg: require('@/channelPackage/common/img/word.jpg'),
     };
   },
   async onLoad(option) {
@@ -387,10 +388,49 @@ export default {
     },
     // 查看附件
     previewImg(item) {
-      // console.log(item);
-      if (!item) return;
-      uni.previewImage({
-        urls: [item],
+      console.log(item);
+      if (item.downLoadUrl) {
+        // 说明是文件
+        this.openFile(item);
+      } else {
+        // 图片
+        uni.previewImage({
+          urls: [item.fileUrl],
+          current: 1,
+        });
+      }
+    },
+    // 在线打开文件
+    openFile(item) {
+      uni.downloadFile({
+        url: item.downLoadUrl,
+        success: (res) => {
+          if (res.statusCode === 200) {
+            console.log('下载成功', res.tempFilePath);
+            uni.openDocument({
+              filePath: res.tempFilePath,
+              fileType: item.fileType,
+              showMenu: true,
+              success: (res) => {
+                console.log('打开文档成功');
+              },
+              fail: (err) => {
+                console.log('打开文档出错', err);
+                uni.showToast({
+                  title: '无法打开该文档',
+                  duration: 3000
+                });
+              }
+            });
+          }
+        },
+        fail: (err) => {
+          console.log('下载出错', err);
+          uni.showToast({
+            title: '下载出错',
+            duration: 3000
+          });
+        }
       });
     },
     // 返回
@@ -429,17 +469,58 @@ export default {
           list.fileList = [];
           documentList.forEach((item) => {
             if (list.code === item.fileType) {
+              list.fileTypeName = list.name;
               list.fileList.push(item);
             }
           });
         });
       }
-      if (tempList && tempList.length > 0) {
+      if (fileTypeList && fileTypeList.length > 0) {
         tempList = fileTypeList.filter((item) => {
           return item.fileList.length > 0;
         });
       }
-      console.log("fileTypeList:", fileTypeList);
+      // console.log("fileTypeList:", fileTypeList);
+      if (tempList && tempList.length) {
+        tempList.forEach((list) => {
+          if (list.fileList && list.fileList.length) {
+            list.fileList.forEach((item) => {
+              if (item.fileName.endsWith("pdf")) {
+                // pdf
+                item.fileUrl = this.pdfImg;
+                item.fileType = "pdf";
+                item.downLoadUrl = tool.getFileDownloadUrl(item.fileId);
+              } else if (item.fileName.endsWith("doc")) {
+                // word
+                item.fileUrl = this.wordImg;
+                item.fileType = "doc";
+                item.downLoadUrl = tool.getFileDownloadUrl(item.fileId);
+              } else if (item.fileName.endsWith("docx")) {
+                // word
+                item.fileUrl = this.wordImg;
+                item.fileType = "docx";
+                item.downLoadUrl = tool.getFileDownloadUrl(item.fileId);
+              } else if (item.fileName.endsWith("xls")) {
+                // excel
+                item.fileUrl = this.excelImg;
+                item.fileType = "xls";
+                item.downLoadUrl = tool.getFileDownloadUrl(item.fileId);
+              } else if (item.fileName.endsWith("xlsx")) {
+                // excel
+                item.fileUrl = this.excelImg;
+                item.fileType = "xlsx";
+                item.downLoadUrl = tool.getFileDownloadUrl(item.fileId);
+              } else {
+                // 默认是图片
+                item.fileUrl = tool.getFileUrl(item.fileId);
+                item.fileType = "";
+                item.downLoadUrl = "";
+              }
+            });
+          }
+        });
+      }
+      console.log('tempList', tempList);
       return tempList;
     },
     // 获取对应的状态
@@ -508,6 +589,7 @@ export default {
           }
         });
       }
+      console.log(name);
       return name;
     },
     // 根据id获取图片地址

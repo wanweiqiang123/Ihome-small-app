@@ -72,7 +72,7 @@
         <u-form-item label="可结佣金">
           <u-input
             v-model="paymentForm.totalCanCommFees"
-            placeholder="可结佣金"
+            placeholder=" "
             disabled
             :clearable="false"
             input-align="left"
@@ -81,7 +81,7 @@
         <u-form-item label="已结佣金">
           <u-input
             v-model="paymentForm.totalSettledCommFees"
-            placeholder="已结佣金"
+            placeholder=" "
             disabled
             :clearable="false"
             input-align="left"
@@ -90,7 +90,7 @@
         <u-form-item label="未结佣金">
           <u-input
             v-model="paymentForm.totalUnsetCommFees"
-            placeholder="未结佣金"
+            placeholder=" "
             disabled
             :clearable="false"
             input-align="left"
@@ -99,7 +99,7 @@
         <u-form-item label="在结佣金">
           <u-input
             v-model="paymentForm.totalInCommFees"
-            placeholder="在结佣金"
+            placeholder=" "
             disabled
             :clearable="false"
             input-align="left"
@@ -355,10 +355,11 @@ export default {
         : "";
       this.info.house.buildingName = info?.buildingNo;
       this.info.house.roomNo = info?.roomNo;
-      this.paymentForm = {
-        ...this.paymentForm,
-        ...this.info,
-      };
+      this.paymentForm.commissionRecordResponseList = info.commissionRecordResponseList;
+      this.paymentForm.totalCanCommFees = info.totalCanCommFees ? info.totalCanCommFees : '0';
+      this.paymentForm.totalInCommFees = info.totalInCommFees ? info.totalInCommFees : '0';
+      this.paymentForm.totalSettledCommFees = info.totalSettledCommFees ? info.totalSettledCommFees : '0';
+      this.paymentForm.totalUnsetCommFees = info.totalUnsetCommFees ? info.totalUnsetCommFees : '0';
     },
     // 获取字典
     async getDictAll(type) {
@@ -410,7 +411,7 @@ export default {
       border: 1rpx solid #e4e4e4;
       box-sizing: border-box;
       padding: 0rpx 30rpx;
-      margin: 20rpx 0rpx;
+      margin: 0rpx 0rpx 20rpx 0rpx;
 
       .record-list {
         display: flex;

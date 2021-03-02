@@ -35,7 +35,7 @@
         class="list-item"
         v-for="(item, index) in tablePage"
         :key="index"
-        @click="viewCommissionDetails"
+        @click="viewCommissionDetails(item)"
       >
         <view class="item-code u-padding-bottom-20">
           <view class="code">结佣申请单号：{{item.applyCode | emptyFilter}}</view>
@@ -143,9 +143,9 @@ export default {
       });
     },
     // 结佣详情
-    viewCommissionDetails() {
+    viewCommissionDetails(item) {
       uni.navigateTo({
-        url: `/channelPackage/myTab/pages/commissionDetails`,
+        url: `/channelPackage/myTab/pages/commissionDetails?id=${item.id}`,
       });
     },
     checkText() {},
