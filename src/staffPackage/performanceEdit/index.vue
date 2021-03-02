@@ -1632,8 +1632,8 @@ export default {
         this.postData.signType = baseInfo?.myReturnVO?.dealVO?.signType;
       }
       // 成交阶段
-      if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealStage) {
-        this.postData.stage = baseInfo.myReturnVO.dealStage;
+      if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.dealStage) {
+        this.postData.stage = baseInfo.myReturnVO.dealVO.dealStage;
       }
       // 明源房款回笼比例(%)
       this.postData.returnRatio = baseInfo.myReturnVO.dealVO?.returnRatio;
