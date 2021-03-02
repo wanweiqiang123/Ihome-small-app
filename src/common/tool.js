@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-10 15:29:08
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 14:27:45
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-03-02 16:12:53
  */
 import { baseUrl, h5Url } from '../env-config'
 const tool = {
@@ -61,17 +61,35 @@ const tool = {
      * @return {*}
      */
     toast(titleOrObj) {
+        function showModal(content) {
+            wx.showModal({
+                title: '提示',
+                content: content,
+                showCancel: false, //是否显示取消按钮-----false去掉取消按钮
+                cancelText: "", //默认是“取消”
+                cancelColor: '', //取消文字的颜色
+                confirmText: "确定", //默认是“确定”
+                confirmColor: '', //确定文字的颜色
+                success: function (res) {
+                }
+            })
+        }
         if (typeof titleOrObj == 'string') {
-            uni.showToast({
-                title: titleOrObj,
-                icon: "none",
-                duration: 3000
-            });
+            if (titleOrObj && titleOrObj.length > 20) {
+                showModal(titleOrObj);
+            } else {
+                uni.showToast({
+                    title: titleOrObj,
+                    icon: "none",
+                    duration: 5000
+                });
+            }
         } else {
-            titleOrObj.duration = 3000;
+            console.error("类型有误");
+            console.error(titleOrObj);
+            titleOrObj.duration = 5000;
             uni.showToast(titleOrObj);
         }
-
     },
     /**页面返回事件，刷新列表
      * @param {*} options
