@@ -43,7 +43,7 @@
             <u-input
               v-model="postData.stageName"
               :select-open="showStage"
-              @click="showStage = true"
+              @click="handleShowStage"
               type="select"
               placeholder="请选择成交阶段"/>
           </u-form-item>
@@ -1111,6 +1111,14 @@ export default {
         this.initReceive();
       }
     },
+    // 选择成交阶段
+    handleShowStage() {
+      let flag = false;
+      flag = this.isDisabled('dealStage', 'dealVO'); // 判断明源是否有该字段
+      if (!flag) {
+        this.showStage = true;
+      }
+    },
     // 确定选择成交阶段
     confirmStage(item) {
       if (item && item.length) {
@@ -1180,6 +1188,24 @@ export default {
       }
       this.showRoom = true;
     },
+    /*
+    * 判断字段是否可以修改
+    * 条件(both)：1.关联明源数据（全部、部分）； 2.数据是明源带出来的（有值）。
+    * params: key: string --- 需要判断的字段
+    * params: type: string --- 该字段在明源Vo中的类型：houseVO、customerVOS、dealVO
+    * */
+    isDisabled(key = '', type = '') {
+      const data = this.baseInfoInDeal.myReturnVO;
+      if (!key || !type || !data[type]?.[key]) return false;
+      let flag = false;
+      // 2.对应明源字段是否有值
+      if (data[type][key] && this.postData.roomId) {
+        flag = true;
+      } else {
+        flag = false;
+      }
+      return flag;
+    },
     // 确定选择房号
     async confirmRoom(item) {
       if (item && item.length) {
@@ -1212,7 +1238,7 @@ export default {
         // 构建附件表格数据
         await this.getDocumentList(item[0].value);
         // 判断是否可以手动添加优惠告知书
-        await this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.baseInfoByTerm.termStageEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus, null);
+        // await this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.baseInfoByTerm.termStageEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus, null);
       }
     },
     // 确定选择分销协议
@@ -1220,7 +1246,7 @@ export default {
       console.log(option);
       this.postData.isMat = '';
       this.packageIdsList = [];
-      let isVoidFlag = false;
+      // let isVoidFlag = false;
       if (option && option.length) {
         this.postData.contNo = option[0].value;
         if (this.contNoList && this.contNoList.length) {
@@ -1230,7 +1256,7 @@ export default {
               this.postData.isMat = item.advancementSituation;
               // 分销模式下获取分销协议返回的收派套餐id
               this.packageIdsList = item.packageMxIds && item.packageMxIds.length ? item.packageMxIds : [];
-              isVoidFlag = item.voidService;
+              // isVoidFlag = item.voidService;
             }
           });
         }
@@ -1238,12 +1264,16 @@ export default {
       // 初始化收派套餐
       this.initReceive();
       // 判断是否可以手动添加优惠告知书
-      this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.baseInfoByTerm.termStageEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus, isVoidFlag);
+      // this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.baseInfoByTerm.termStageEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus, isVoidFlag);
     },
     // 选择时间
     handleSelectDate(type) {
-      this.currentDateType = type;
-      this.showDate = true;
+      let flag = false;
+      flag = this.isDisabled(type, 'dealVO');
+      if (!flag) {
+        this.currentDateType = type;
+        this.showDate = true;
+      }
     },
     // 确定选择时间
     confirmDate(item) {
@@ -1254,8 +1284,12 @@ export default {
     },
     // 输入价格
     handleInputPrice(type) {
-      this.currentPriceType = type;
-      this.keyBoardShow = true;
+      let flag = false;
+      flag = this.isDisabled(type, 'dealVO');
+      if (!flag) {
+        this.currentPriceType = type;
+        this.keyBoardShow = true;
+      }
     },
     // 合同类型、分销协议编号、细分业务模式、认购价格、签约价格改变之后要初始化收派金额
     initReceive() {
@@ -2241,6 +2275,7 @@ export default {
           "modelCode": "",
           // "noticeIds": [],
           "notices": [],
+          "receiveServiceFee": "",
           "oneAgentTeamId": "",
           "recordState": "",
           "refineModel": "",
@@ -2308,6 +2343,11 @@ export default {
         obj.customerVO = this.postData.customerVO;
       }
       // 3.基础信息
+      if (this.postData.serviceReceiveVO && this.postData.serviceReceiveVO.length) {
+        obj.dealVO.receiveServiceFee = this.postData.serviceReceiveVO[0].receiveAmount;
+      } else {
+        obj.dealVO.receiveServiceFee = null;
+      }
       obj.dealVO.businessType = this.baseInfoByTerm.busTypeEnum;
       obj.dealVO.charge = this.baseInfoByTerm.chargeEnum;
       obj.dealVO.contType = this.postData.contType;
