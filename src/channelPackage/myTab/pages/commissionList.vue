@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-26 10:15:18
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 14:35:26
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-03-02 17:04:33
 -->
 <template>
   <view class="commission-wrapper">
@@ -38,7 +38,7 @@
         @click="viewCommissionDetails(item)"
       >
         <view class="item-code u-padding-bottom-20">
-          <view class="code">结佣申请单号：{{item.applyCode | emptyFilter}}</view>
+          <view class="code">结佣单号：{{item.applyCode | emptyFilter}}</view>
           <view
             class="status bg-red"
             v-if="item.rejectionMark === 'Yes'"
@@ -224,6 +224,7 @@ export default {
         flex-direction: row;
         justify-content: center;
         align-items: center;
+        font-size: 28rpx;
 
         .code {
           flex: 1;
@@ -234,20 +235,19 @@ export default {
         }
 
         .status {
-          width: 91rpx;
-          background: #eb7734;
+          width: 120rpx;
+          color: #eb7734;
           border-radius: 4rpx;
           font-family: PingFang SC;
           font-size: 24rpx;
           font-weight: 600;
-          color: #ffffff;
           line-height: 46rpx;
           text-align: center;
           &.bg-red {
-            background: $u-type-error;
+            color: $u-type-error;
           }
           &.bg-success {
-            background: $u-type-success;
+            color: $u-type-success;
           }
         }
       }
@@ -259,7 +259,6 @@ export default {
         margin-right: 20rpx;
         font-size: 26rpx;
         font-family: Source Han Sans CN;
-        font-weight: bold;
         color: #888888;
         line-height: 42rpx;
         display: flex;
@@ -273,7 +272,6 @@ export default {
       .price {
         font-size: 26rpx;
         font-family: Source Han Sans CN;
-        font-weight: bold;
         color: #606266;
         line-height: 42rpx;
       }
