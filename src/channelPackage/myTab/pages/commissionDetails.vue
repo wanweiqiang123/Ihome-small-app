@@ -10,7 +10,8 @@
   <view class="commission-details-wrapper safe-area-inset-bottom">
     <view class="code-wrapper">
       <view class="code-title">
-        <view class="code u-margin-right-15">结佣单号：{{paymentForm.applyCode | emptyFilter}}</view>
+        <view class="code u-margin-right-15">结佣单号：</view>
+        <view class="code u-margin-right-15">{{paymentForm.applyCode | emptyFilter}}</view>
         <view
           class="status"
           v-show="paymentForm.status"
@@ -621,7 +622,7 @@ export default {
       flex: 1;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      //align-items: center;
       justify-content: center;
 
       .code {
@@ -641,7 +642,7 @@ export default {
         font-weight: 600;
         color: #ffffff;
         line-height: 46rpx;
-        text-align: center;
+        //text-align: center;
       }
     }
 
