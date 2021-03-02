@@ -49,12 +49,12 @@
               class="wrap-item-right-time"
               style="color: #fd4918"
             >
-              均价{{ itemaveragePrice || "--" }}元/m²
+              均价{{ item.averagePrice || "--" }}元/m²
             </view>
-            <view class="wrap-item-right-time">
+            <!-- <view class="wrap-item-right-time">
               <view class="wwrap-item-right-yong"> 佣 </view>
               {{ item.commissionRules || "" }}
-            </view>
+            </view> -->
           </view>
           <view
             class="item-checked"
@@ -68,7 +68,7 @@
           </view>
         </view>
         <!-- <EmptyLoading :total="tableTotal"></EmptyLoading> -->
-        <u-loadmore :status="loadingStatus" />
+        <!-- <u-loadmore :status="loadingStatus" /> -->
       </view>
       <view
         class="bottom-btn"
@@ -133,6 +133,11 @@ export default {
     async getListMixin() {
       this.setPageDataMixin(await postCollectGetList(this.queryPageParameters));
       this.tablePage.map((item) => {
+		if (item.attachAddr) {
+		  item.imgScr = tool.getFileUrl(item.attachAddr);
+		} else {
+		  item.imgScr = this.houseImg;
+		}  
         item.checked = item.checked || false;
         return item;
       });
@@ -185,7 +190,7 @@ export default {
     viewProjectDetail(item) {
       if (!this.currentClick) {
         uni.navigateTo({
-          url: `/channelPackage/homeTab/pages/projectDetail?id=` + item.id,
+          url: `/channelPackage/homeTab/pages/projectDetail?id=` + item.proId,
         });
       }
     },
