@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-09 14:38:31
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 14:37:21
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-03-02 14:33:58
 -->
 <template>
   <LoginPage>
@@ -19,65 +19,60 @@
           confirm-type="search"
           @confirm="search"
         />
-        <view
-          class="text-switch"
-          @click="currentClick = !currentClick"
-        >{{
+        <view class="text-switch" @click="currentClick = !currentClick">{{
           currentClick ? "完成" : "管理"
         }}</view>
       </view>
       <view class="wrap">
-        <view
-          class="wrap-item"
-          v-for="(item, index) in tablePage"
-          :key="index"
-          @click="viewProjectDetail(item)"
-        >
-          <view class="wrap-item-left">
-            <u-image
-              width="160rpx"
-              height="160rpx"
-              :src="item.attachAddr"
-            ></u-image>
-          </view>
-          <view class="wrap-item-right">
-            <view class="wrap-item-right-name"> {{ item.proName | emptyFilter }} </view>
-            <view class="wrap-item-right-phone wrap-item-right-block">
-              {{ item.district  }}
+        <checkbox-group @change="changeCheck">
+          <view
+            class="wrap-item"
+            v-for="(item, index) in tablePage"
+            :key="index"
+            @click="viewProjectDetail(item)"
+          >
+            <view class="wrap-item-left">
+              <u-image
+                width="160rpx"
+                height="160rpx"
+                :src="item.attachAddr"
+              ></u-image>
             </view>
-            <view
-              class="wrap-item-right-time"
-              style="color: #fd4918"
-            >
-              均价{{ item.averagePrice || "--" }}元/m²
-            </view>
-            <!-- <view class="wrap-item-right-time">
+            <view class="wrap-item-right">
+              <view class="wrap-item-right-name">
+                {{ item.proName | emptyFilter }}
+              </view>
+              <view class="wrap-item-right-phone wrap-item-right-block">
+                {{ item.district }}
+              </view>
+              <view class="wrap-item-right-time" style="color: #fd4918">
+                均价{{ item.averagePrice || "--" }}元/m²
+              </view>
+              <!-- <view class="wrap-item-right-time">
               <view class="wwrap-item-right-yong"> 佣 </view>
               {{ item.commissionRules || "" }}
             </view> -->
-          </view>
-          <view
-            class="item-checked"
-            v-show="currentClick"
-          >
-            <u-checkbox
+            </view>
+            <view class="item-checked" v-show="currentClick">
+              <checkbox
+                v-show="currentClick"
+                :value="item.id"
+                :checked="item.checked"
+                style="transform: scale(0.8)"
+              />
+              <!-- <u-checkbox
               size="40rpx"
               v-model="item.checked"
               @change="checkboxChange"
-            ></u-checkbox>
+            ></u-checkbox> -->
+            </view>
           </view>
-        </view>
+        </checkbox-group>
         <!-- <EmptyLoading :total="tableTotal"></EmptyLoading> -->
         <!-- <u-loadmore :status="loadingStatus" /> -->
       </view>
-      <view
-        class="bottom-btn"
-        v-show="currentClick"
-      >
-        <u-button
-          type="error"
-          @click="deleteCheck()"
-        >删除</u-button>
+      <view class="bottom-btn" v-show="currentClick">
+        <u-button type="error" @click="deleteCheck()">删除</u-button>
       </view>
 
       <u-modal
@@ -106,6 +101,7 @@ export default {
   mixins: [pagination],
   data() {
     return {
+      selectRemoveList: [],
       showPopup: false,
       checked: false,
       homeImg: require("@/channelPackage/common/img/house.jpg"),
@@ -133,11 +129,11 @@ export default {
     async getListMixin() {
       this.setPageDataMixin(await postCollectGetList(this.queryPageParameters));
       this.tablePage.map((item) => {
-		if (item.attachAddr) {
-		  item.imgScr = tool.getFileUrl(item.attachAddr);
-		} else {
-		  item.imgScr = this.houseImg;
-		}  
+        if (item.attachAddr) {
+          item.imgScr = tool.getFileUrl(item.attachAddr);
+        } else {
+          item.imgScr = this.houseImg;
+        }
         item.checked = item.checked || false;
         return item;
       });
@@ -156,14 +152,10 @@ export default {
       console.log(this.tablePage);
     },
     async handleSubmit() {
-      let list = this.tablePage.filter((item) => {
-        return item.checked;
-      });
-      console.log(list);
-      if (list.length > 0) {
+      if (this.selectRemoveList.length > 0) {
         let postData = {
-          ids: list.map((item) => item.id),
           status: "Invalid",
+          ids: this.selectRemoveList,
         };
         console.log(postData);
         const res = await postCollectBatchUpdateApi(postData);
@@ -173,10 +165,16 @@ export default {
           this.remove(item);
         });
         console.log(this.tablePage);
+      } else {
+        tool.toast("请选勾选需要删除的数据");
       }
     },
     async deleteCheck() {
-      this.showPopup = true;
+      if (this.selectRemoveList.length > 0) {
+        this.showPopup = true;
+      } else {
+        tool.toast("请选勾选需要删除的数据");
+      }
     },
     remove(id) {
       for (let index = 0; index < this.tablePage.length; index++) {
@@ -193,6 +191,10 @@ export default {
           url: `/channelPackage/homeTab/pages/projectDetail?id=` + item.proId,
         });
       }
+    },
+    changeCheck(e) {
+      this.selectRemoveList = e.detail.value;
+      console.log(this.selectRemoveList);
     },
   },
 };
