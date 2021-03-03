@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2021-01-18 11:38:42
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 14:15:00
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-03-03 17:52:55
 -->
 <template>
   <LoginPage>
@@ -40,10 +40,10 @@
             label-width="220"
           >
             <u-form-item label="栋座">
-              <view class="text-right">{{isRecognize ? '以最终甲方推送的房号确认书为准' : form.buyUnitName}}</view>
+              <view class="text-right">{{isRecognize ? (form.buyUnitName || '以最终甲方推送的房号确认书为准') : form.buyUnitName}}</view>
             </u-form-item>
             <u-form-item label="房号">
-              <view class="text-right">{{isRecognize ? '以最终甲方推送的房号确认书为准' : form.roomNumberName}}</view>
+              <view class="text-right">{{isRecognize ? (form.roomNumberName || '以最终甲方推送的房号确认书为准') : form.roomNumberName}}</view>
             </u-form-item>
             <template v-for="(i, n) in form.ownerList">
               <u-gap
