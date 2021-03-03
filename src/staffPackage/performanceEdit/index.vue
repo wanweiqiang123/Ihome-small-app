@@ -2045,9 +2045,10 @@ export default {
     },
     // 确定添加优惠告知书
     async finishAddNotice(data) {
-      if (data.length === 0) return;
+      console.log(data);
+      if (!data.id) return;
       let postData = {
-        noticeId: data[0].id
+        noticeId: data.id
       }
       let noticeInfo = await post_notice_deal_details__noticeId(postData);
       if (noticeInfo.dealNotices && noticeInfo.dealNotices.length) {
@@ -2091,7 +2092,7 @@ export default {
     },
     // 确定添加客户
     finishAddCustomer(data) {
-      if (data.length === 0) return;
+      if (!data.id) return;
       let customData = {
         addId: data.id, // 手动添加的时候保存id --- 为了回显收派金额
         cardNo: data.certificateNumber,
