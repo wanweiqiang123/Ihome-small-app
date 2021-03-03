@@ -144,8 +144,6 @@
         :list="statusList"
         safe-area-inset-bottom
         title="请选择成交状态"
-        value-name="code"
-        label-name="name"
         @confirm="confirmStatus"
       ></u-select>
       <!-- 删除提示 -->
@@ -200,7 +198,8 @@ export default {
         stage: null,
         stageName: null,
         status: null,
-        statusName: null
+        statusName: null,
+        isConfirmed: null // 是否已确认
       },
       isShow: false,
       showContentType: false,
@@ -363,14 +362,18 @@ export default {
         projectCycle: this.queryPageParameters.projectCycle,
         contType: this.queryPageParameters.contType,
         stage: this.queryPageParameters.stage,
-        status: ['All', 'HasConfirm'].includes(this.queryPageParameters.status) ? null : this.queryPageParameters.status,
-        isConfirmed: this.queryPageParameters.status === "HasConfirm", // 是否已确认
+        status: ['Draft'].includes(this.queryPageParameters.status) ? this.queryPageParameters.status : null,
+        isConfirmed: null, // 是否已确认
         isMobileTermination: true,
         pageNum: this.queryPageParameters.pageNum,
         pageSize: this.queryPageParameters.pageSize,
       }
-      if (['All', 'HasConfirm'].includes(this.queryPageParameters.status)) {
-
+      if (this.queryPageParameters.status === 'AchieveDeclareUnconfirm') {
+        postData.isConfirmed = false;
+      } else if (this.queryPageParameters.status === 'HasConfirm') {
+        postData.isConfirmed = true;
+      } else {
+        postData.isConfirmed = null;
       }
       return postData;
     },
