@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-22 19:49:40
+ * @LastEditTime: 2021-03-03 20:18:56
 -->
 <template>
   <LoginPage>
@@ -627,7 +627,13 @@ export default {
         id: "termId",
         type: "term",
         other: {
-          auditEnums: ["ConstractAdopt"],
+          auditEnums: [
+            "TermAdopt",
+            "ConstractWait",
+            "ConstractConduct",
+            "ConstractAdopt",
+            "ConstractReject",
+          ],
           excludeChargeEnum: "Agent",
         },
       };
