@@ -130,9 +130,9 @@ export default {
       this.setPageDataMixin(await postCollectGetList(this.queryPageParameters));
       this.tablePage.map((item) => {
         if (item.attachAddr) {
-          item.imgScr = tool.getFileUrl(item.attachAddr);
+          item.attachAddr = tool.getFileUrl(item.attachAddr);
         } else {
-          item.imgScr = this.houseImg;
+          item.attachAddr = this.houseImg;
         }
         item.checked = item.checked || false;
         return item;
@@ -188,7 +188,7 @@ export default {
     viewProjectDetail(item) {
       if (!this.currentClick) {
         uni.navigateTo({
-          url: `/channelPackage/homeTab/pages/projectDetail?id=` + item.proId,
+          url: `/channelPackage/homeTab/pages/projectDetail?proId=` + item.proId,
         });
       }
     },

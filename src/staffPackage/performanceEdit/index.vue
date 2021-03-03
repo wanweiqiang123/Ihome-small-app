@@ -43,7 +43,7 @@
             <u-input
               v-model="postData.stageName"
               :select-open="showStage"
-              @click="showStage = true"
+              @click="handleShowStage"
               type="select"
               placeholder="请选择成交阶段"/>
           </u-form-item>
@@ -184,7 +184,7 @@
         <view class="form-title u-border-bottom">
           <text>优惠告知书信息</text>
           <view
-            v-if="baseInfoByTerm.termId && hasAddNoticeFlag"
+            v-if="canAddNoticeFlag"
             @click="handleSelectNotice">
             <u-icon name="plus" />添加
           </view>
@@ -195,7 +195,7 @@
             v-for="(item, index) in postData.offerNoticeVO" :key="index">
             <view>{{item.noticeNo}}</view>
             <u-icon
-              v-if="index === 0"
+              v-if="index === 0 && canAddNoticeFlag"
               @click.native="deleteNotice(index)"
               slot="right"
               name="close-circle-fill"
@@ -435,7 +435,6 @@ import PopupIndex from "./popup/index.vue";
 import {
   post_buModelContType_subList,
   post_buModelContType_getList,
-  post_pageData_dealCheckNotice,
   post_notice_deal_details__noticeId,
   post_pageData_calculateReceiveAmount,
   post_pageData_initBasic,
@@ -660,6 +659,7 @@ export default {
         dataSign: '',
         oneAgentTeam: '',
         oneAgentTeamId: '',
+        sceneSales: '',
         offerNoticeVO: [], // 优惠告知书
         customerVO: [], // 客户信息
         agencyVO: [], // 渠道信息
@@ -734,7 +734,7 @@ export default {
         selectableChannelIds: [], // 可选的渠道商ids
         dealNoticeStatus: '', // 同房号是否存在多份优惠告知书(NoneNotice-没有优惠告知书、OneNotice-一份优惠告知书、MultipleNotice-多份优惠告知书)
       }, // 通过initPage接口获取到的成交信息(项目周期 + 房号)
-      hasAddNoticeFlag: true, // 是否有添加(删除)优惠告知书的标识：true-可以；false-不可以
+      canAddNoticeFlag: true, // 是否有添加(删除)优惠告知书的标识：true-可以；false-不可以
       tempList: [], // 临时的收派金额信息
       tempDocumentList: [], // 记录来访确认单和成交确认单
       currentPackageType: '', // 当前收派金额类型
@@ -998,6 +998,12 @@ export default {
           }
         }
       }
+      // 处理优惠告知书是否可以添加
+      if (baseInfo.chargeEnum === 'Agent') {
+        this.canAddNoticeFlag = false; // 纯代理费没有优惠告知书
+      } else {
+        this.canAddNoticeFlag = true; // 其他情况有优惠告知书
+      }
       // 物业类型
       this.propertyTypeList = await this.initPropertyType(baseInfo.propertyEnums);
       this.buildSelectList = await postBuildByProId({
@@ -1039,6 +1045,21 @@ export default {
         this.contNoList = baseInfo.contracts;
       } else {
         this.contNoList = [];
+      }
+      // 判断是否可以添加优惠告知书逻辑
+      switch (baseInfo.dealNoticeStatus) {
+        case "NoneNotice":
+          // 没有优惠告知书
+          this.canAddNoticeFlag = true;
+          break;
+        case "OneNotice":
+          // 有一份优惠告知书
+          this.canAddNoticeFlag = false;
+          break;
+        case "MultipleNotice":
+          // 有多份优惠告知书
+          this.canAddNoticeFlag = true;
+          break;
       }
     },
     // 编辑 - 获取优惠告知书列表
@@ -1111,6 +1132,14 @@ export default {
         this.initReceive();
       }
     },
+    // 选择成交阶段
+    handleShowStage() {
+      let flag = false;
+      flag = this.isDisabled('dealStage', 'dealVO'); // 判断明源是否有该字段
+      if (!flag) {
+        this.showStage = true;
+      }
+    },
     // 确定选择成交阶段
     confirmStage(item) {
       if (item && item.length) {
@@ -1180,6 +1209,24 @@ export default {
       }
       this.showRoom = true;
     },
+    /*
+    * 判断字段是否可以修改
+    * 条件(both)：1.关联明源数据（全部、部分）； 2.数据是明源带出来的（有值）。
+    * params: key: string --- 需要判断的字段
+    * params: type: string --- 该字段在明源Vo中的类型：houseVO、customerVOS、dealVO
+    * */
+    isDisabled(key = '', type = '') {
+      const data = this.baseInfoInDeal.myReturnVO;
+      if (!key || !type || !data[type]?.[key]) return false;
+      let flag = false;
+      // 2.对应明源字段是否有值
+      if (data[type][key] && this.postData.roomId) {
+        flag = true;
+      } else {
+        flag = false;
+      }
+      return flag;
+    },
     // 确定选择房号
     async confirmRoom(item) {
       if (item && item.length) {
@@ -1211,8 +1258,6 @@ export default {
         await this.initReceive();
         // 构建附件表格数据
         await this.getDocumentList(item[0].value);
-        // 判断是否可以手动添加优惠告知书
-        await this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.baseInfoByTerm.termStageEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus, null);
       }
     },
     // 确定选择分销协议
@@ -1220,7 +1265,7 @@ export default {
       console.log(option);
       this.postData.isMat = '';
       this.packageIdsList = [];
-      let isVoidFlag = false;
+      // let isVoidFlag = false;
       if (option && option.length) {
         this.postData.contNo = option[0].value;
         if (this.contNoList && this.contNoList.length) {
@@ -1230,20 +1275,22 @@ export default {
               this.postData.isMat = item.advancementSituation;
               // 分销模式下获取分销协议返回的收派套餐id
               this.packageIdsList = item.packageMxIds && item.packageMxIds.length ? item.packageMxIds : [];
-              isVoidFlag = item.voidService;
+              // isVoidFlag = item.voidService;
             }
           });
         }
       }
       // 初始化收派套餐
       this.initReceive();
-      // 判断是否可以手动添加优惠告知书
-      this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.baseInfoByTerm.termStageEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus, isVoidFlag);
     },
     // 选择时间
     handleSelectDate(type) {
-      this.currentDateType = type;
-      this.showDate = true;
+      let flag = false;
+      flag = this.isDisabled(type, 'dealVO');
+      if (!flag) {
+        this.currentDateType = type;
+        this.showDate = true;
+      }
     },
     // 确定选择时间
     confirmDate(item) {
@@ -1254,8 +1301,12 @@ export default {
     },
     // 输入价格
     handleInputPrice(type) {
-      this.currentPriceType = type;
-      this.keyBoardShow = true;
+      let flag = false;
+      flag = this.isDisabled(type, 'dealVO');
+      if (!flag) {
+        this.currentPriceType = type;
+        this.keyBoardShow = true;
+      }
     },
     // 合同类型、分销协议编号、细分业务模式、认购价格、签约价格改变之后要初始化收派金额
     initReceive() {
@@ -1265,23 +1316,6 @@ export default {
       if (this.postData.serviceReceiveVO.length) {
         this.postData.serviceReceiveVO = this.resetReceiveVOS(this.postData.serviceReceiveVO);
       }
-    },
-    // 判断是否可以手动添加优惠告知书
-    canAddNoticeItem(charge = '', termStageEnum = '', contType = '', Status = '', isVoidService = null) {
-      let postData = {
-        charge: charge, // 启动模式(Service-服务费、Agent-代理费、ServiAndAgen-服务费+代理费)
-        termStageEnum: termStageEnum, // 项目周期阶段
-        contType: contType, // 合同类型(DistriDeal-分销成交、NaturalVisitDeal-自然来访成交、SelfChannelDeal-自渠成交)
-        dealNoticeStatus: Status, // 优惠告知书情况(NoneNotice-没有优惠告知书、OneNotice-一份优惠告知书、MultipleNotice-多份优惠告知书)
-        isVoidService: isVoidService, // 是否免受服务费
-      }
-      post_pageData_dealCheckNotice(postData).then((res) => {
-        console.log(res);
-        this.hasAddNoticeFlag = res;
-      }).catch((err) => {
-        console.log(err);
-        this.hasAddNoticeFlag = false;
-      });
     },
     // 重置收派金额信息：去掉id、收派套餐、价格
     resetReceiveVOS(list = []) {
@@ -1421,6 +1455,13 @@ export default {
           this.$nextTick(() => {
             this.postData.serviceReceiveVO.push(...list);
           });
+        }
+        // 处理优惠告知书的nav
+        this.postData.offerNoticeVO = []; //
+        if (baseInfo.chargeEnum === 'Agent') {
+          this.canAddNoticeFlag = false; // 纯代理费没有优惠告知书
+        } else {
+          this.canAddNoticeFlag = true; // 其他情况有优惠告知书
         }
         // 归属组织
         this.postData.dealOrgId = baseInfo.groupId;
@@ -1569,13 +1610,23 @@ export default {
       // console.log(this.postData.offerNoticeVO);
       this.postData.contNo = ''; // 重置选择的编号
       this.postData.contNoName = ''; // 重置选择的编号
-      if (baseInfo.dealNoticeStatus === 'MultipleNotice') {
-        this.$tool.toast("同房号存在多份已生效的优惠告知书");
-      } else {
-        // 优惠告知书
-        if (!this.postData.offerNoticeVO.length) {
+      // 同房号是否存在多份优惠告知书
+      this.postData.offerNoticeVO = [];
+      switch (baseInfo.dealNoticeStatus) {
+        case "NoneNotice":
+          // 没有优惠告知书
+          this.canAddNoticeFlag = true;
+          break;
+        case "OneNotice":
+          // 有一份优惠告知书
+          this.canAddNoticeFlag = false;
           this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
-        }
+          break;
+        case "MultipleNotice":
+          // 有多份优惠告知书
+          this.canAddNoticeFlag = true;
+          this.$tool.toast("同房号存在多份已生效的优惠告知书");
+          break;
       }
       // 分销协议编号
       if (baseInfo.contracts && baseInfo.contracts.length > 0) {
@@ -1632,8 +1683,13 @@ export default {
         this.postData.signType = baseInfo?.myReturnVO?.dealVO?.signType;
       }
       // 成交阶段
-      if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealStage) {
-        this.postData.stage = baseInfo.myReturnVO.dealStage;
+      if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.dealStage) {
+        this.postData.stage = baseInfo.myReturnVO.dealVO.dealStage;
+        this.postData.stageName = this.getDictName(this.postData.stage, this.stageList);
+      }
+      // 现场销售
+      if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.sceneSales) {
+        this.postData.sceneSales = baseInfo.myReturnVO.dealVO.sceneSales;
       }
       // 明源房款回笼比例(%)
       this.postData.returnRatio = baseInfo.myReturnVO.dealVO?.returnRatio;
@@ -1994,7 +2050,7 @@ export default {
           cycleId: this.baseInfoByTerm.termId,
           projectId: this.baseInfoByTerm.proId,
           buyUnit: this.postData.buildingId, // 栋座
-          roomId: this.postData.roomId, // 多分优惠告知书下需要通过房号去限制
+          roomNumberId: this.postData.roomId, // 多分优惠告知书下需要通过房号去限制
           notificationTypes: ['Notification'], // 只查优惠告知书
           notificationStatuses: ['BecomeEffective'] // 主成交下优惠告知书要是已生效状态
         }
@@ -2005,9 +2061,10 @@ export default {
     },
     // 确定添加优惠告知书
     async finishAddNotice(data) {
-      if (data.length === 0) return;
+      console.log(data);
+      if (!data.id) return;
       let postData = {
-        noticeId: data[0].id
+        noticeId: data.id
       }
       let noticeInfo = await post_notice_deal_details__noticeId(postData);
       if (noticeInfo.dealNotices && noticeInfo.dealNotices.length) {
@@ -2051,7 +2108,7 @@ export default {
     },
     // 确定添加客户
     finishAddCustomer(data) {
-      if (data.length === 0) return;
+      if (!data.id) return;
       let customData = {
         addId: data.id, // 手动添加的时候保存id --- 为了回显收派金额
         cardNo: data.certificateNumber,
@@ -2241,6 +2298,7 @@ export default {
           "modelCode": "",
           // "noticeIds": [],
           "notices": [],
+          "receiveServiceFee": "",
           "oneAgentTeamId": "",
           "recordState": "",
           "refineModel": "",
@@ -2308,6 +2366,11 @@ export default {
         obj.customerVO = this.postData.customerVO;
       }
       // 3.基础信息
+      if (this.postData.serviceReceiveVO && this.postData.serviceReceiveVO.length) {
+        obj.dealVO.receiveServiceFee = this.postData.serviceReceiveVO[0].receiveAmount;
+      } else {
+        obj.dealVO.receiveServiceFee = null;
+      }
       obj.dealVO.businessType = this.baseInfoByTerm.busTypeEnum;
       obj.dealVO.charge = this.baseInfoByTerm.chargeEnum;
       obj.dealVO.contType = this.postData.contType;
