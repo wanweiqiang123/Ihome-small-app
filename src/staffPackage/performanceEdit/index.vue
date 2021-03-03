@@ -922,6 +922,7 @@ export default {
       this.postData.buildingId = info?.house?.buildingId ? info?.house?.buildingId : '';
       this.postData.roomId = info?.house?.roomId ? info?.house?.roomId : '';
       this.postData.roomNo = info?.house?.roomNo ? info?.house?.roomNo : '';
+      this.postData.area = info?.house?.area ? info?.house?.area : '';
       this.postData.contType = info?.contType ? info?.contType : '';
       this.postData.contTypeName = info?.contType ? this.getDictName(info?.contType, this.ContTypeList) : '';
       this.postData.contNo = info?.contNo ? info?.contNo : '';
@@ -967,6 +968,7 @@ export default {
       // 附件
       this.postData.documentVO = [];
       this.postData.documentVO = this.initDocumentList(info.charge, info.contType, info.documentList);
+      console.log(this.postData.documentVO);
       // 通过项目周期id获取基础信息
       await this.editBaseDealInfo(info.cycleId, info?.house?.buildingId, info?.house?.propertyType);
       await this.editPageById(info.cycleId, info?.house?.roomId, info?.house?.propertyType, info?.parentId);
@@ -1095,20 +1097,22 @@ export default {
         });
       }
       // 附件类型增加key
-      if (fileList.length > 0 && list.length > 0) {
+      if (fileList.length > 0) {
         fileList.forEach((vo) => {
           vo.fileList = []; // 存放新上传的数据
-          list.forEach((item) => {
-            if (vo.code === item.fileType) {
-              vo.fileList.push(
-                {
-                  ...item,
-                  name: item.fileName,
-                  canDelete: true
-                }
-              );
-            }
-          });
+          if (list && list.length) {
+            list.forEach((item) => {
+              if (vo.code === item.fileType) {
+                vo.fileList.push(
+                  {
+                    ...item,
+                    name: item.fileName,
+                    canDelete: true
+                  }
+                );
+              }
+            });
+          }
         });
       }
       return fileList;
