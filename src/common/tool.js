@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 15:29:08
  * @LastEditors: zyc
- * @LastEditTime: 2021-03-02 16:12:53
+ * @LastEditTime: 2021-03-04 11:44:22
  */
 import { baseUrl, h5Url } from '../env-config'
 const tool = {
@@ -245,10 +245,13 @@ const tool = {
         } catch (e) {
             baseNum2 = 0;
         }
+
         baseNum = Math.pow(10, Math.max(baseNum1, baseNum2));
         precision = (baseNum1 >= baseNum2) ? baseNum1 : baseNum2;
-        let t = ((num1 * baseNum - num2 * baseNum) / baseNum).toFixed(precision);
+        let a = this.multi(num1, baseNum) - this.multi(num2, baseNum);
+        let t = (this.div(a, baseNum)).toFixed(precision);
         return Number(t);
+        
     },
     /**加法
     * @param {*}
@@ -279,7 +282,10 @@ const tool = {
             baseNum2 = 0;
         }
         baseNum = Math.pow(10, Math.max(baseNum1, baseNum2));
-        return (num1 * baseNum + num2 * baseNum) / baseNum;
+        let b = (this.multi(num1, baseNum) + this.multi(num2, baseNum));
+        let r = this.div(b, baseNum);
+        return r;
+    
     },
 
     /**四舍五入

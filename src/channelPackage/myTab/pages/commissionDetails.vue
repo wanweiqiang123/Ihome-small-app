@@ -44,9 +44,18 @@
       <view class="item-project-name u-padding-15">
         <view>{{staffItem.cycleName}}</view>
         <view class="price-list">
-          <view>结佣总额：{{staffItem.cycleTotalAmount | emptyFilter}}</view>
-          <view>扣除总额：{{staffItem.cycleTotalDeductionAmount | emptyFilter}}</view>
-          <view>实结总额：{{staffItem.cycleTotalActualAmount | emptyFilter}}</view>
+          <view>
+            <view>结佣总额：</view>
+            <view>{{staffItem.cycleTotalAmount ? staffItem.cycleTotalAmount : 0}}</view>
+          </view>
+          <view>
+            <view>扣除总额：</view>
+            <view>{{staffItem.cycleTotalDeductionAmount ? staffItem.cycleTotalDeductionAmount : 0}}</view>
+          </view>
+          <view>
+            <view>实结总额：</view>
+            <view>{{staffItem.cycleTotalActualAmount ? staffItem.cycleTotalActualAmount : 0}}</view>
+          </view>
         </view>
       </view>
       <view
@@ -58,9 +67,18 @@
         <view class="list-left">
           <view>成交报告编号：{{detailItem.dealCode | emptyFilter}}</view>
           <view class="price">
-            <view>本单佣金：{{detailItem.totalAmount | emptyFilter}}</view>
-            <view>本单应扣：{{detailItem.thisDeduct | emptyFilter}}</view>
-            <view>本单实结：{{detailItem.totalActualAmount | emptyFilter}}</view>
+            <view>
+              <view>本单佣金：</view>
+              <view>{{detailItem.totalAmount ? detailItem.totalAmount : 0}}</view>
+            </view>
+            <view>
+              <view>本单应扣：</view>
+              <view>{{detailItem.thisDeduct ? detailItem.thisDeduct : 0}}</view>
+            </view>
+            <view>
+              <view>本单实结：</view>
+              <view>{{detailItem.totalActualAmount ? detailItem.totalActualAmount : 0}}</view>
+            </view>
           </view>
           <view class="reason">扣款原因：{{detailItem.deductType | emptyFilter}}</view>
         </view>
@@ -377,13 +395,20 @@ export default {
             console.log("下载成功");
             uni.openDocument({
               filePath: res.tempFilePath,
+              fileType: type === 'billForm' ? 'xlsx' : 'pdf',
               showMenu: true,
               success: (res) => {
-                console.log("打开文档成功");
+                console.log("打开文档成功", res);
               },
+              fail: (err) => {
+                console.log("打开文档失败", err);
+              }
             });
           }
         },
+        fail: (err) => {
+          console.log("下载出错", err);
+        }
       });
       this.showDownLoadList = false;
     },
@@ -450,6 +475,12 @@ export default {
         ...this.paymentForm,
         ...info,
       };
+      this.paymentForm.taxRate = info?.taxRate ? `${info?.taxRate}%` : '0%';
+      this.paymentForm.applyAmount = info?.applyAmount ? info?.applyAmount : '0';
+      this.paymentForm.deductAmount = info?.deductAmount ? info?.deductAmount : '0';
+      this.paymentForm.actualAmount = info?.actualAmount ? info?.actualAmount : '0';
+      this.paymentForm.noTaxAmount = info?.noTaxAmount ? info?.noTaxAmount : '0';
+      this.paymentForm.tax = info?.tax ? info?.tax : 0;
       this.paymentForm.documentList = this.initDocumentList(
         this.paymentForm.documentList
       );

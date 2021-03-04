@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 11:58:54
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-03-04 11:01:29
  */
 import Vue from 'vue'
 import App from './App'
@@ -17,20 +17,30 @@ import store from './store'
 import tool from './common/tool'
 import storageTool from './common/storageTool'
 import './common/css/public.scss'
-import { getDictGetAllApi, getAreaApi } from './api/index'
+// import { getDictGetAllApi, getAreaApi } from './api/index'
 //把vuex定义成全局组件
 Vue.prototype.$store = store;
 Vue.prototype.$tool = tool;
 Vue.prototype.$storageTool = storageTool;
 App.mpType = 'app'
+import jsLog from './jslog';
 
+// import { currentEnvConfig } from './env-config';
+// if (currentEnvConfig.env != "develop") {
 
-//异常配置捕获  errorHandler,warnHandler,renderError,errorCaptured
-// Vue.config.errorHandler = function (err, vm, info) {
-//   console.log(`main.ts=> Vue.config.errorHandler------ Error: ${err.toString()};`);
-//   console.log(err.message, err.stack);
-//   console.log(err, vm, info);
 // }
+//异常配置捕获  errorHandler,warnHandler,renderError,errorCaptured
+Vue.config.errorHandler = function (err) {
+  console.log(`main.ts=> uniapp-Vue.config.errorHandler`);
+  console.log(err.message, err.stack);
+  jsLog(err, 'main.ts=> uniapp-Vue.config.errorHandler');
+};
+Vue.config.warnHandler = function (msg) {
+  console.log(`main.ts=> uniapp-Vue.config.warnHandler`);
+  console.log(msg);
+  jsLog({ message: msg, stack: null }, 'main.ts=> uniapp-Vue.config.warnHandler');
+};
+
 import TabBarPage from './components/TabBar/TabBarPage.vue'
 import CustomerTabBar from './components/TabBar/CustomerTabBar.vue'
 import ChannelTabBar from './components/TabBar/ChannelTabBar.vue'

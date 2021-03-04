@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-03 20:18:56
+ * @LastEditTime: 2021-03-04 09:51:53
 -->
 <template>
   <LoginPage>
@@ -402,7 +402,7 @@
       ></u-modal>
       <u-modal
         v-model="isRemoveShow"
-        content="优惠告知书创建3天仍未签署的才可以删除, 确认删除此优惠告知书吗?"
+        content="您确认要删除此优惠告知书吗?"
         show-cancel-button
         confirm-color="#fa3534"
         :async-close="true"
