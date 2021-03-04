@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 17:32:25
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-03 17:53:40
+ * @LastEditTime: 2021-03-04 16:50:30
 -->
 <template>
   <LoginPage>
@@ -124,7 +124,7 @@
           type="error"
           class="ih-btn"
           @click="submit('No')"
-        >拒 接</u-button>
+        >拒 绝</u-button>
         <u-button
           size="default"
           type="primary"

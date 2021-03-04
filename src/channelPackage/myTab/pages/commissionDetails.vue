@@ -197,7 +197,7 @@
           <u-image
             v-for="(srcItem, srcIndex) in item.fileList"
             :key="srcIndex"
-            @click="previewImg(srcItem)"
+            @click="previewImg(srcItem, item)"
             width="200rpx"
             height="200rpx"
             :src="srcItem.fileUrl"
@@ -413,16 +413,32 @@ export default {
       this.showDownLoadList = false;
     },
     // 查看附件
-    previewImg(item) {
+    previewImg(currentItem, item) {
       console.log(item);
-      if (item.downLoadUrl) {
+      if (currentItem.downLoadUrl) {
         // 说明是文件
-        this.openFile(item);
+        this.openFile(currentItem);
       } else {
         // 图片
+        let urls = [];
+        let current = 0;
+        if (item.fileList && item.fileList.length) {
+          item.fileList.forEach((list) => {
+            if (!list.downLoadUrl) {
+              urls.push(list.fileUrl);
+            }
+          });
+        }
+        if (urls && urls.length) {
+          urls.forEach((item, index) => {
+            if (item === currentItem.fileUrl) {
+              current = index;
+            }
+          });
+        }
         uni.previewImage({
-          urls: [item.fileUrl],
-          current: 1,
+          urls: urls,
+          current: current,
         });
       }
     },
@@ -491,20 +507,17 @@ export default {
       let fileTypeList = [];
       fileTypeList = JSON.parse(JSON.stringify(this.fileTypeList));
       let tempList = [];
-      if (
-        documentList &&
-        documentList.length &&
-        fileTypeList &&
-        fileTypeList.length
-      ) {
+      if (fileTypeList && fileTypeList.length) {
         fileTypeList.forEach((list) => {
           list.fileList = [];
-          documentList.forEach((item) => {
-            if (list.code === item.fileType) {
-              list.fileTypeName = list.name;
-              list.fileList.push(item);
-            }
-          });
+          if (documentList && documentList.length) {
+            documentList.forEach((item) => {
+              if (list.code === item.fileType) {
+                list.fileTypeName = list.name;
+                list.fileList.push(item);
+              }
+            });
+          }
         });
       }
       if (fileTypeList && fileTypeList.length > 0) {
