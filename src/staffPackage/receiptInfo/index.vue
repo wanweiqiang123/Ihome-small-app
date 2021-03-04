@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2021-01-19 15:46:14
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-25 19:29:34
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-03-04 18:26:29
 -->
 <template>
   <view class="receipt info">
@@ -269,34 +269,53 @@
         </view>
       </view>
     </view>
-
-    <view
-      class="info-four"
-      v-if="false"
-    >
+    <view class="info-four">
       <view class="info-four-title">退款信息</view>
-      <view class="info-four-money">退款金额: 3000.00</view>
-      <view class="info-four-msg">
-        <view class="pay-list">收款账号
-          <text class="pay-list-money">{{62100099999828828}}</text>
-        </view>
+      <view v-if="refund.length">
         <view
-          class="pay-list"
-          style="padding-top: 10rpx"
-        >收款人
-          <text class="pay-list-money">皮小强</text>
+          v-for="(item, i) in refund"
+          :key="i"
+        >
+          <view class="info-four-msg u-border-bottom">
+            <view
+              class="pay-list"
+              style="font-weight: 600"
+            >退款金额: {{item.amount ? item.amount : 0}}
+              <text class="pay-list-money">{{ getDictName(item.status, FinRefundStatus) | emptyFilter }}</text>
+            </view>
+            <view
+              class="pay-list"
+              style="padding-top: 10rpx;"
+            >收款账号
+              <text class="pay-list-money">{{ item.refundAccount | emptyFilter }}</text>
+            </view>
+            <view
+              class="pay-list"
+              style="padding-top: 10rpx"
+            >收款人
+              <text class="pay-list-money">{{ item.refundName | emptyFilter }}</text>
+            </view>
+            <view
+              class="pay-list"
+              style="padding-top: 10rpx"
+            >退款时间
+              <text class="pay-list-money">{{ item.refundedDate | emptyFilter }}</text>
+            </view>
+          </view>
         </view>
-        <view
-          class="pay-list"
-          style="padding-top: 10rpx"
-        >退款时间
-          <text class="pay-list-money">2020-12-20 23:59:59</text>
-        </view>
+      </view>
+      <view v-else>
+        <u-empty
+          class="empty"
+          text="暂无数据"
+          mode="list"
+          font-size="20"
+          icon-size="60"
+        ></u-empty>
       </view>
     </view>
   </view>
 </template>
-
 <script>
 import { getAllByTypeApi } from "../../api/index";
 import {
@@ -305,6 +324,7 @@ import {
   getRecognizeById,
   getPreviewApi,
 } from "../../api/staff";
+import { getRefundInfoApi } from "../../api/customer";
 
 export default {
   data() {
@@ -329,6 +349,8 @@ export default {
       NotificationStatus: [],
       OwnerType: [],
       isRecognize: false,
+      FinRefundStatus: [],
+      refund: [],
     };
   },
   computed: {
@@ -372,6 +394,11 @@ export default {
       this.isRecognize = await getRecognizeById(
         res.discountInformationResponseVo.cycleId
       );
+    },
+    // 获取退款信息
+    async getRefund() {
+      const res = await getRefundInfoApi(this.noticeId);
+      this.refund = res;
     },
     // 查看预览
     preview(val) {
@@ -470,6 +497,7 @@ export default {
   async onLoad(options) {
     this.noticeId = options.id;
     this.NotificationType = await this.getDictAll("NotificationType");
+    this.FinRefundStatus = await this.getDictAll("FinRefundStatus");
     this.NotificationStatus = await this.getDictAll("NotificationStatus");
     this.Property = await this.getDictAll("Property");
     this.OwnerType = await this.getDictAll("OwnerType");
@@ -477,6 +505,7 @@ export default {
   async onShow() {
     if (this.noticeId) {
       this.getInfo(this.noticeId);
+      this.getRefund();
     }
   },
 };
@@ -814,6 +843,12 @@ export default {
   }
   &.success {
     color: $u-type-success;
+  }
+}
+
+.empty {
+  /deep/ .u-empty {
+    margin-top: 20rpx !important;
   }
 }
 </style>

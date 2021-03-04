@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-04 11:45:56
+ * @LastEditTime: 2021-03-04 18:17:33
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -334,28 +334,49 @@
       </view>
     </view>
 
-    <view
-      class="info-four"
-      v-if="false"
-    >
+    <view class="info-four">
       <view class="info-four-title">退款信息</view>
-      <view class="info-four-money">退款金额: 3000.00</view>
-      <view class="info-four-msg">
-        <view class="pay-list">收款账号
-          <text class="pay-list-money">{{ 62100099999828828 }}</text>
-        </view>
+      <view v-if="refund.length">
         <view
-          class="pay-list"
-          style="padding-top: 10rpx"
-        >收款人
-          <text class="pay-list-money">杨伟立</text>
+          v-for="(item, i) in refund"
+          :key="i"
+        >
+          <view class="info-four-msg u-border-bottom">
+            <view
+              class="pay-list"
+              style="font-weight: 600"
+            >退款金额: {{item.amount ? item.amount : 0}}
+              <text class="pay-list-money">{{ getDictName(item.status, FinRefundStatus) | emptyFilter }}</text>
+            </view>
+            <view
+              class="pay-list"
+              style="padding-top: 10rpx;"
+            >收款账号
+              <text class="pay-list-money">{{ item.refundAccount | emptyFilter }}</text>
+            </view>
+            <view
+              class="pay-list"
+              style="padding-top: 10rpx"
+            >收款人
+              <text class="pay-list-money">{{ item.refundName | emptyFilter }}</text>
+            </view>
+            <view
+              class="pay-list"
+              style="padding-top: 10rpx"
+            >退款时间
+              <text class="pay-list-money">{{ item.refundedDate | emptyFilter }}</text>
+            </view>
+          </view>
         </view>
-        <view
-          class="pay-list"
-          style="padding-top: 10rpx"
-        >退款时间
-          <text class="pay-list-money">2020-12-20 23:59:59</text>
-        </view>
+      </view>
+      <view v-else>
+        <u-empty
+          class="empty"
+          text="暂无数据"
+          mode="list"
+          font-size="20"
+          icon-size="60"
+        ></u-empty>
       </view>
     </view>
   </view>
@@ -367,6 +388,7 @@ import {
   postDeleteByBusinessIdApi,
   getNotCheckNumApi,
   getPreviewApi,
+  getRefundInfoApi,
 } from "../../api/customer";
 import { getAllByTypeApi } from "../../api/index";
 import uImage from "../../uview-ui/components/u-image/u-image.vue";
@@ -378,33 +400,34 @@ export default {
       info: {
         discountInformationResponseVo: {
           paid: 0,
-          noticeId: null,
-          noticeNo: null,
-          agentId: null,
-          buyUnit: null,
-          buyUnitName: null,
-          cycleId: null,
-          explain: null,
-          groupId: null,
-          partyAId: null,
-          paymentAmount: null,
-          projectId: null,
-          roomNumberId: null,
-          roomNumberName: null,
-          unpaid: null,
+          noticeId: "",
+          noticeNo: "",
+          agentId: "",
+          buyUnit: "",
+          buyUnitName: "",
+          cycleId: "",
+          explain: "",
+          groupId: "",
+          partyAId: "",
+          paymentAmount: "",
+          projectId: "",
+          roomNumberId: "",
+          roomNumberName: "",
+          unpaid: "",
         },
         noticeList: [],
         purchaseInformation: {
-          buyUnit: null,
-          buyUnitName: null,
+          buyUnit: "",
+          buyUnitName: "",
           ownerWeChatList: [],
-          projectName: null,
-          propertyType: null,
-          roomNumberId: null,
-          roomNumberName: null,
+          projectName: "",
+          propertyType: "",
+          roomNumberId: "",
+          roomNumberName: "",
         },
         refundInfoResponse: {},
       },
+      refund: [],
       current: 0,
       currents: 0,
       noticeId: "",
@@ -415,20 +438,23 @@ export default {
       PayOpenFlag: [],
       OwnerType: [],
       isShowPayButton: false,
+      FinRefundStatus: [],
     };
   },
   async onLoad(options) {
     this.noticeId = options.id;
-    this.NotificationType = await this.getDictAll("NotificationType");
+    this.FinRefundStatus = await this.getDictAll("FinRefundStatus");
     this.NotificationStatus = await this.getDictAll("NotificationStatus");
     this.Property = await this.getDictAll("Property");
     this.OwnerType = await this.getDictAll("ownerType");
     this.PayOpenFlag = await this.getDictAll("PayOpenFlag");
+    this.NotificationType = await this.getDictAll("NotificationType");
     this.configPay = this.PayOpenFlag.find((v) => v.code === "OpenFlag").tag;
   },
   onShow() {
     if (this.noticeId) {
       this.getInfo();
+      this.getRefund();
     }
   },
   computed: {
@@ -482,6 +508,12 @@ export default {
         this.info = { ...res };
         this.payAuditNum = await getNotCheckNumApi(this.noticeId);
       }
+    },
+
+    // 获取退款信息
+    async getRefund() {
+      const res = await getRefundInfoApi(this.noticeId);
+      this.refund = res;
     },
 
     handleToRefund() {
@@ -957,5 +989,11 @@ export default {
   text-align: center;
   color: #f56c6c;
   padding-bottom: 20rpx;
+}
+
+.empty {
+  /deep/ .u-empty {
+    margin-top: 20rpx !important;
+  }
 }
 </style>
