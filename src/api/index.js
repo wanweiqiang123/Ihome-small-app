@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 10:09:50
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-25 20:11:43
+ * @LastEditTime: 2021-03-04 16:00:35
  */
 
 import { getApi, postApi } from '../common/http.js';
@@ -227,4 +227,9 @@ export async function getAgentAndChannelPersonByChannelIdApi(data, option = {}) 
 // 案场帮录专用项目搜索
 export async function getFuzzySearchByCityForAnChangApi(data, option = {}) {
     return await postApi(`/sales-api/project/project/getFuzzySearchByCityForAnChang`, data, option);
+}
+
+// 案场帮录专用项目周期搜索
+export async function getTermListByProIdApi(data, option = {}) {
+    return await postApi(`/sales-api/project/term/getTermListByProId`, data, option);
 }

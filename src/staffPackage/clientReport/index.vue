@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-17 18:10:07
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-25 20:11:54
+ * @LastEditTime: 2021-03-04 16:26:10
 -->
 <template>
   <view class="client-container safe-area-inset-bottom">
@@ -48,6 +48,29 @@
     </view>
     <view class="form-content">
       <view class="bg-color">
+        <view class="form-title u-border-bottom">报备周期</view>
+        <u-form
+          :model="info"
+          ref="infoForm"
+          label-width="170"
+        >
+          <u-form-item
+            label="项目周期"
+            class="hide-icon"
+            right-icon="arrow-right"
+            required
+            prop="proCycleName"
+          >
+            <u-input
+              v-model="info.proCycleName"
+              type="select"
+              placeholder="请选择项目周期"
+              @click="teamSearch"
+            />
+          </u-form-item>
+        </u-form>
+      </view>
+      <view class="bg-color">
         <view class="form-title u-border-bottom">中介信息</view>
         <u-form
           :model="channelForm"
@@ -90,6 +113,7 @@
             <u-input
               v-model="channelForm.reportMobile"
               disabled
+              placeholder="请选择经纪人号码"
             />
           </u-form-item>
         </u-form>
@@ -119,7 +143,7 @@
             required
           >
             <u-radio-group v-model="custormInfo.sex">
-			  <u-radio name="Mr">先生</u-radio>
+              <u-radio name="Mr">先生</u-radio>
               <u-radio name="Ms">女士</u-radio>
             </u-radio-group>
           </u-form-item>
@@ -127,23 +151,13 @@
             label="手机号"
             required
           >
-            <u-input
-              v-if="pageType"
-			  type="number"
-              v-model="custormInfo.mobile"
-              placeholder="手机号"
-              input-align="left"
-			  maxlength="11"
-            />
-            <view
-              v-else
-              class="mobileType"
-            >
+            <view class="mobileType">
               <view
                 v-if="checked"
                 class="qianhou"
               >
                 <u-input
+                  type="number"
                   v-model="qian"
                   input-align="center"
                   placeholder="前三位"
@@ -153,6 +167,7 @@
                 <text>****</text>
                 <u-input
                   v-model="hou"
+                  type="number"
                   input-align="center"
                   placeholder="后四位"
                   maxlength="4"
@@ -161,11 +176,11 @@
               </view>
               <view v-else>
                 <u-input
-				  type="number"
+                  type="number"
                   v-model="custormInfo.mobile"
                   placeholder="手机号"
                   input-align="left"
-				  maxlength="11"
+                  maxlength="11"
                 />
               </view>
               <u-switch v-model="checked"></u-switch>
@@ -186,7 +201,7 @@
             required
           >
             <u-input
-			  type="number"
+              type="number"
               v-model="reportForm.expectedNumber"
               placeholder="预计到访人数"
               :clearable="true"
@@ -258,6 +273,8 @@ export default {
         projectPic: "",
         exMarket: 0,
         startDivisionId: "",
+        proCycleId: "",
+        proCycleName: "",
       },
       channelForm: {
         channelName: "",
@@ -274,6 +291,11 @@ export default {
         expectedNumber: "",
         expectedTime: "",
         remark: "",
+      },
+      infoRules: {
+        proCycleName: [
+          { required: true, message: "请选择项目周期", trigger: "change" },
+        ],
       },
       channelRules: {
         channelName: [
@@ -327,10 +349,12 @@ export default {
       checked: false,
       qian: "",
       hou: "",
+      homeImg: require("@/channelPackage/common/img/house.jpg"),
     };
   },
   onReady() {
     this.$nextTick(() => {
+      this.$refs.infoForm.setRules(this.infoRules);
       this.$refs.channelForm.setRules(this.channelRules);
       this.$refs.custormInfo.setRules(this.custormRules);
       this.$refs.reportForm.setRules(this.reportRules);
@@ -339,6 +363,8 @@ export default {
   async onShow() {
     let item = getApp().globalData.searchBackData;
     if (item && item.type === "project") {
+      this.info.proCycleId = "";
+      this.info.proCycleName = "";
       this.channelForm = {
         channelName: "",
         channelId: "",
@@ -353,7 +379,13 @@ export default {
       this.info.proAddr = res.proAddr;
       this.info.city = res.city;
       this.info.exMarket = res.exMarket;
-      this.info.projectPic = this.$tool.getFileUrl(res.projectPic);
+      this.info.projectPic = res.projectPic
+        ? this.$tool.getFileUrl(res.projectPic)
+        : this.homeImg;
+      getApp().globalData.searchBackData = {};
+    } else if (item && item.type === "term") {
+      this.info.proCycleName = item.data.termName;
+      this.info.proCycleId = item.data.termId;
       getApp().globalData.searchBackData = {};
     } else if (item && item.type === "channel") {
       Object.assign(this.channelForm, {
@@ -370,6 +402,25 @@ export default {
     }
   },
   methods: {
+    // 周期跳转搜索页
+    teamSearch() {
+      if (this.info.proId) {
+        getApp().globalData.searchParams = {
+          api: "getTermListByProIdApi",
+          key: "termName",
+          id: "termId",
+          type: "term",
+          other: {
+            proId: this.info.proId,
+          },
+        };
+        uni.navigateTo({
+          url: "/pages/search/index/index",
+        });
+      } else {
+        this.$tool.toast("请选择报备楼盘");
+      }
+    },
     // 项目跳转搜索页
     projectSearch() {
       getApp().globalData.searchParams = {
@@ -428,6 +479,11 @@ export default {
     // 表单验证
     formDataRules() {
       let arr = [];
+      const infoForm = new Promise((resolve, reject) => {
+        this.$refs.infoForm.validate((val) => {
+          val ? resolve() : reject(err);
+        });
+      });
       const channelForm = new Promise((resolve, reject) => {
         this.$refs.channelForm.validate((val) => {
           val ? resolve() : reject(err);
@@ -460,6 +516,7 @@ export default {
         obj.exMarket = this.info.exMarket;
         obj.helpRecord = 1;
         obj.proId = this.info.proId;
+        obj.proCycleId = this.info.proCycleId;
         console.log(obj);
         await postReportApi(obj);
         this.$tool.toast("报备成功");
