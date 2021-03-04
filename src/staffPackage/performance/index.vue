@@ -317,6 +317,9 @@ export default {
         key: "termName",
         id: "termId",
         type: "term",
+        other: {
+          auditEnum: 'ConstractAdopt'
+        }
       };
       uni.navigateTo({
         url: "/pages/search/index/index",
