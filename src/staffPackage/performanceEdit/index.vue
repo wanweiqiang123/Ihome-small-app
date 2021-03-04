@@ -1243,7 +1243,8 @@ export default {
     },
     // 选择合同类型
     handleShowContType() {
-      if (this.baseInfoInDeal.contType === 'DistriDeal' && this.baseInfoInDeal.hasRecord) {
+      // 选择的房号查询是否存在已成交报备信息，如果存在则将合同类型设置为分销成交，不可修改
+      if (this.baseInfoInDeal.contType === 'DistriDeal' && this.baseInfoInDeal.hasRecord && this.postData.roomId) {
         return ;
       }
       this.showContType = true;
