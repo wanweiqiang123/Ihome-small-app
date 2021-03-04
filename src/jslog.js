@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-03-04 10:39:51
  * @LastEditors: zyc
- * @LastEditTime: 2021-03-04 11:28:29
+ * @LastEditTime: 2021-03-04 11:29:37
  */
 
 import { currentEnvConfig } from './env-config'
@@ -42,7 +42,7 @@ function jsLog(err, type) {
                     cookies: storageTool.getToken(),
                     localStorage: '',
                     sessionStorage: "userInfo：id=" + userInfo.id + ",name=" + userInfo.name + ",account=" + userInfo.account,
-                    userAgent: navigator.userAgent
+                    userAgent: ""
                 }
                 uni.request({
                     url: 'https://jslog.zhangdada666.com/api/log/vue',
