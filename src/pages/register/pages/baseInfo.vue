@@ -150,6 +150,7 @@ export default {
             console.log('下载成功');
             uni.openDocument({
               filePath: filePath,
+              fileType: 'docx',
               showMenu: true,
               success: (res) => {
                 console.log('打开文档成功');
