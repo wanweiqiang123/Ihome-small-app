@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-09 14:38:31
- * @LastEditors: zyc
- * @LastEditTime: 2021-03-02 14:33:58
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-03-03 16:46:27
 -->
 <template>
   <LoginPage>
@@ -19,7 +19,10 @@
           confirm-type="search"
           @confirm="search"
         />
-        <view class="text-switch" @click="currentClick = !currentClick">{{
+        <view
+          class="text-switch"
+          @click="currentClick = !currentClick"
+        >{{
           currentClick ? "完成" : "管理"
         }}</view>
       </view>
@@ -45,7 +48,10 @@
               <view class="wrap-item-right-phone wrap-item-right-block">
                 {{ item.district }}
               </view>
-              <view class="wrap-item-right-time" style="color: #fd4918">
+              <view
+                class="wrap-item-right-time"
+                style="color: #fd4918"
+              >
                 均价{{ item.averagePrice || "--" }}元/m²
               </view>
               <!-- <view class="wrap-item-right-time">
@@ -53,26 +59,30 @@
               {{ item.commissionRules || "" }}
             </view> -->
             </view>
-            <view class="item-checked" v-show="currentClick">
+            <view
+              class="item-checked"
+              v-show="currentClick"
+            >
               <checkbox
                 v-show="currentClick"
                 :value="item.id"
                 :checked="item.checked"
                 style="transform: scale(0.8)"
               />
-              <!-- <u-checkbox
-              size="40rpx"
-              v-model="item.checked"
-              @change="checkboxChange"
-            ></u-checkbox> -->
             </view>
           </view>
         </checkbox-group>
         <!-- <EmptyLoading :total="tableTotal"></EmptyLoading> -->
         <!-- <u-loadmore :status="loadingStatus" /> -->
       </view>
-      <view class="bottom-btn" v-show="currentClick">
-        <u-button type="error" @click="deleteCheck()">删除</u-button>
+      <view
+        class="bottom-btn"
+        v-show="currentClick"
+      >
+        <u-button
+          type="error"
+          @click="deleteCheck()"
+        >删除</u-button>
       </view>
 
       <u-modal
@@ -128,15 +138,13 @@ export default {
   methods: {
     async getListMixin() {
       this.setPageDataMixin(await postCollectGetList(this.queryPageParameters));
-      this.tablePage.map((item) => {
-        if (item.attachAddr) {
-          item.attachAddr = tool.getFileUrl(item.attachAddr);
-        } else {
-          item.attachAddr = this.houseImg;
-        }
-        item.checked = item.checked || false;
-        return item;
-      });
+      this.tablePage = this.tablePage.map((item) => ({
+        ...item,
+        attachAddr: item.attachAddr
+          ? tool.getFileUrl(item.attachAddr)
+          : this.homeImg,
+        checked: item.checked || false,
+      }));
       console.log(this.tablePage);
     },
     async search() {
@@ -188,7 +196,8 @@ export default {
     viewProjectDetail(item) {
       if (!this.currentClick) {
         uni.navigateTo({
-          url: `/channelPackage/homeTab/pages/projectDetail?proId=` + item.proId,
+          url:
+            `/channelPackage/homeTab/pages/projectDetail?proId=` + item.proId,
         });
       }
     },

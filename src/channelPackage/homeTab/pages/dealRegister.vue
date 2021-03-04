@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-24 09:58:09
- * @LastEditors: lsj
- * @LastEditTime: 2021-02-26 11:22:33
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-03-04 09:53:51
 -->
 <template>
   <view class="report-client-wrapper">
@@ -46,7 +46,10 @@
     </view>
     <view class="info-wrapper">
       <view class="card">
-        <view class="client-info">
+        <view
+          class="client-info"
+          v-if="dealRegisterType"
+        >
           <view class="title">客户信息</view>
           <view class="btn">
             <u-button
@@ -61,7 +64,8 @@
           <u-form
             :model="custormInfo"
             ref="custormInfo"
-            :label-width="130">
+            :label-width="130"
+          >
             <u-form-item
               label="姓名"
               prop="name"
@@ -72,6 +76,7 @@
                 placeholder="姓名"
                 :clearable="false"
                 input-align="left"
+                :disabled="!dealRegisterType"
               />
             </u-form-item>
             <u-form-item
@@ -79,18 +84,41 @@
               prop="sex"
               required
             >
-              <u-radio-group v-model="custormInfo.sex">
+              <u-radio-group
+                v-model="custormInfo.sex"
+                :disabled="!dealRegisterType"
+              >
                 <u-radio name="Ms">女</u-radio>
                 <u-radio name="Mr">男</u-radio>
               </u-radio-group>
             </u-form-item>
             <u-form-item
               label="手机号"
-              required>
+              required
+            >
               <u-input
+                v-if="reportType === 'FullNumber'"
                 v-model="custormInfo.mobile"
                 placeholder="手机号"
-                input-align="left"/>
+                input-align="left"
+                :disabled="!dealRegisterType"
+              />
+              <view
+                v-else
+                class="qianhou"
+              >
+                <text>{{qian}}</text>
+                <u-input
+                  width="200"
+                  type="number"
+                  v-model="zhong"
+                  placeholder="请补全四位手机号"
+                  maxlength="4"
+                  input-align="center"
+                  :clearable="false"
+                />
+                <text>{{hou}}</text>
+              </view>
             </u-form-item>
           </u-form>
         </view>
@@ -154,7 +182,8 @@
       <u-button
         type="primary"
         shape="circle"
-        @click="handleReport">
+        @click="handleReport"
+      >
         登记
       </u-button>
     </view>
@@ -208,14 +237,14 @@ export default {
       custormRules: {
         name: [{ required: true, message: "请输入姓名", trigger: "change" }],
         sex: [{ required: true, message: "请选择性别", trigger: "change" }],
-        mobile: [
-          { required: true, message: "请输入手机号", trigger: "change" },
-          {
-            pattern: /^[1][3-9]\d{9}$|([6|9])\d{7}$|6\d{7}$|[0][9]\d{8}$|[1][3-9]\d{1}[*]{4}\d{4}$/,
-            message: "请输入有效手机号",
-            trigger: "change",
-          },
-        ],
+        // mobile: [
+        //   { required: true, message: "请输入手机号", trigger: "change" },
+        //   {
+        //     pattern: /^[1][3-9]\d{9}$|([6|9])\d{7}$|6\d{7}$|[0][9]\d{8}$|[1][3-9]\d{1}[*]{4}\d{4}$/,
+        //     message: "请输入有效手机号",
+        //     trigger: "change",
+        //   },
+        // ],
       },
       buildRules: {
         subBuildingName: [
@@ -242,6 +271,13 @@ export default {
       roomNoList: [],
       reportId: "",
       checked: false,
+      dealRegisterType: "",
+      reportType: "",
+      qian: "",
+      zhong: "",
+      hou: "",
+      homeImg: require("@/channelPackage/common/img/house.jpg"),
+      routerFrom: "",
     };
   },
   onReady() {
@@ -251,19 +287,31 @@ export default {
   },
   async onLoad(option) {
     this.reportId = option.id;
+    this.routerFrom = option.from;
     const msg = getApp().myReport;
+    this.dealRegisterType = msg.type;
+    this.reportType = msg.reportType;
+    console.log(msg);
     this.info.proId = msg?.proId;
     this.info.proName = msg?.proName;
     this.keyword = msg?.proName;
     this.info.exMarket = msg?.exMarket;
-    this.homeImg = this.$tool.getFileUrl(msg?.projectPic);
+    this.homeImg = msg.projectPic
+      ? this.$tool.getFileUrl(msg?.projectPic)
+      : this.homeImg;
     this.district = msg?.district;
     this.buildingBlockList = await postBuildByProId({
       proId: this.info.proId,
     });
     this.custormInfo.name = msg?.name;
     this.custormInfo.sex = msg?.sex;
-    this.custormInfo.mobile = msg?.mobile;
+    // 如果手机号是前三后四
+    if (msg.reportType === "FirstThreeAfterFour") {
+      this.qian = msg.mobile.split("*")[0];
+      this.hou = msg.mobile.split("*")[4];
+    } else {
+      this.custormInfo.mobile = msg?.mobile;
+    }
   },
   async onShow() {
     let item = getApp().globalData.searchBackData;
@@ -291,15 +339,17 @@ export default {
   methods: {
     // 项目跳转搜索页
     projectSearch() {
-      getApp().globalData.searchParams = {
-        api: "getFuzzySearchByCityApi",
-        key: "proName",
-        id: "proId",
-        type: "project",
-      };
-      uni.navigateTo({
-        url: "/pages/search/index/index",
-      });
+      if (this.dealRegisterType) {
+        getApp().globalData.searchParams = {
+          api: "getFuzzySearchByCityApi",
+          key: "proName",
+          id: "proId",
+          type: "project",
+        };
+        uni.navigateTo({
+          url: "/pages/search/index/index",
+        });
+      }
     },
     // 客户池跳转搜索页
     customerSearch() {
@@ -325,6 +375,7 @@ export default {
       this.roomNoList = await postRoomByProId({
         proId: this.info.proId,
         buildingId: buildNo,
+        exDeal: 0,
       });
     },
     roomNoClick(v) {
@@ -359,12 +410,22 @@ export default {
         obj.reportId = this.reportId;
         obj.roomId = this.buildForm.roomId;
         obj.subBuildingId = this.buildForm.subBuildingId;
+        if (this.reportType === "FirstThreeAfterFour") {
+          obj.mobile = this.qian + this.zhong + this.hou;
+        }
+        obj.reportType = "FullNumber";
         await postAddDealtApi(obj);
         getApp().myReport = {};
         this.$tool.toast("登记成功");
-        uni.redirectTo({
-          url: `/channelPackage/myTab/pages/myReport`,
-        });
+        if (this.routerFrom === "visit") {
+          uni.redirectTo({
+            url: `/staffPackage/dealConfirm/index`,
+          });
+        } else if (this.routerFrom === "report") {
+          uni.redirectTo({
+            url: `/channelPackage/myTab/pages/myReport`,
+          });
+        }
       });
     },
   },
@@ -551,14 +612,9 @@ export default {
     }
   }
 }
-
-.mobileType {
+.qianhou {
   display: flex;
   flex-flow: row nowrap;
-  justify-content: space-between;
-  .qianhou {
-    display: flex;
-    justify-content: space-around;
-  }
+  justify-content: space-around;
 }
 </style>

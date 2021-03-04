@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-24 09:58:09
- * @LastEditors: lsj
- * @LastEditTime: 2021-02-26 11:32:33
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-03-04 09:04:40
 -->
 <template>
   <view class="report-client-wrapper">
@@ -81,13 +81,14 @@
               required
             >
               <u-radio-group v-model="custormInfo.sex">
-				<u-radio name="Mr">先生</u-radio>
+                <u-radio name="Mr">先生</u-radio>
                 <u-radio name="Ms">女士</u-radio>
               </u-radio-group>
             </u-form-item>
             <u-form-item
               label="手机号"
-              required>
+              required
+            >
               <view class="mobileType">
                 <view
                   v-if="checked"
@@ -95,6 +96,7 @@
                 >
                   <u-input
                     v-model="qian"
+                    type="number"
                     input-align="center"
                     placeholder="前三位"
                     maxlength="3"
@@ -103,6 +105,7 @@
                   <text>****</text>
                   <u-input
                     v-model="hou"
+                    type="number"
                     input-align="center"
                     placeholder="后四位"
                     maxlength="4"
@@ -111,11 +114,11 @@
                 </view>
                 <view v-else>
                   <u-input
-				    type="number"
+                    type="number"
                     v-model="custormInfo.mobile"
                     placeholder="手机号"
                     input-align="left"
-					maxlength="11"
+                    maxlength="11"
                   />
                 </view>
                 <u-switch v-model="checked"></u-switch>
@@ -140,7 +143,7 @@
               required
             >
               <u-input
-			    type="number"
+                type="number"
                 v-model="info.expectedNumber"
                 placeholder="预计到访人数"
                 :clearable="true"
@@ -179,7 +182,8 @@
       <u-button
         type="primary"
         shape="circle"
-        @click="handleReport">
+        @click="handleReport"
+      >
         报备
       </u-button>
     </view>
@@ -382,7 +386,7 @@ export default {
         getApp().myReport = {};
         this.$tool.toast("报备成功");
         uni.redirectTo({
-          url: `/channelPackage/myTab/pages/myReport`,//跳转我的报备页
+          url: `/channelPackage/myTab/pages/myReport`, //跳转我的报备页
         });
       });
     },

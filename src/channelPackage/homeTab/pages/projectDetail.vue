@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-23 11:15:50
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-26 14:06:42
+ * @LastEditTime: 2021-03-03 16:31:46
 -->
 <template>
   <view class="project-detail-wrapper">
@@ -150,6 +150,10 @@
         >报备</u-button>
       </view>
     </view>
+    <u-modal
+      v-model="show"
+      content="报备请与项目对接人联系"
+    ></u-modal>
   </view>
 </template>
 
@@ -201,6 +205,7 @@ export default {
       sellingPointCurrent: 0,
       content: "18888元/m²起",
       ReportType: [],
+      show: false,
     };
   },
   onLoad(option) {
@@ -221,7 +226,7 @@ export default {
         ...res,
         houseTypeDetailVos: res.houseTypeDetailVos.map((v) => ({
           ...v,
-          picAddr: this.$tool.getFileUrl(v.picAddr),
+          picAddr: v.picAddr ? this.$tool.getFileUrl(v.picAddr) : this.homeImg,
         })),
       };
       // console.log('detailInfo', this.detailInfo);
@@ -280,16 +285,17 @@ export default {
     },
     // 报备
     handleReport() {
-      getApp().myReport = {
-        proId: this.detailInfo.proId,
-        proName: this.detailInfo.proName,
-        projectPic: this.detailInfo.projectPic,
-        district: this.detailInfo.districtName,
-        exMarket: this.detailInfo.exMarket,
-      };
-      uni.navigateTo({
-        url: `/channelPackage/homeTab/pages/reportClient`,
-      });
+      // getApp().myReport = {
+      //   proId: this.detailInfo.proId,
+      //   proName: this.detailInfo.proName,
+      //   projectPic: this.detailInfo.projectPic,
+      //   district: this.detailInfo.districtName,
+      //   exMarket: this.detailInfo.exMarket,
+      // };
+      // uni.navigateTo({
+      //   url: `/channelPackage/homeTab/pages/reportClient`,
+      // });
+      this.show = true;
     },
     // 字典翻译
     async getDictAll(type) {

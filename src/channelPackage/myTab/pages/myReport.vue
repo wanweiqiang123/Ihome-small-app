@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-24 15:22:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-25 10:00:35
+ * @LastEditTime: 2021-03-04 09:50:22
 -->
 <template>
   <view class="my-report-wrapper">
@@ -145,9 +145,9 @@ export default {
     },
     // 成交登记
     handleDealRegister(item) {
-      getApp().myReport = { ...item };
+      getApp().myReport = { ...item, type: "" };
       uni.navigateTo({
-        url: `/channelPackage/homeTab/pages/dealRegister?type=dealReg&&id=${item.id}`,
+        url: `/channelPackage/homeTab/pages/dealRegister?id=${item.id}&&from=report`,
       });
     },
     // 上传附件

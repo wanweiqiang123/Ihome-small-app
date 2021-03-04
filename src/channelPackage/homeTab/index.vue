@@ -4,33 +4,11 @@
  * @Author: lsj
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-25 11:01:24
+ * @LastEditTime: 2021-03-03 16:42:10
 -->
 <template>
   <ChannelTabBar>
     <view class="home-page-wrapper">
-      <!-- <view class="top-wrapper">
-        <view class="top-location">
-          <u-icon
-            name="map-fill"
-            size="50rpx"
-            class="icon"
-          ></u-icon>
-          <view>广州市</view>
-        </view>
-        <u-search
-          class="search"
-          shape="round"
-          height="72"
-          placeholder-color="#BDBDBD"
-          search-icon-color="#BDBDBD"
-          bg-color="#FFFFFF"
-          border-color="#DCDCDC"
-          :show-action="false"
-          placeholder="请输入项目名称"
-          v-model="queryPageParameters.projectName"
-        ></u-search>
-      </view> -->
       <view class="swiper-wrapper">
         <u-swiper
           :list="list"
@@ -85,7 +63,7 @@
             <u-image
               width="242rpx"
               height="186rpx"
-              :src="item.imgScr"
+              :src="item.attachAddr"
             ></u-image>
           </view>
           <view class="content-right">
@@ -119,18 +97,21 @@
         </view>
       </view>
     </view>
+    <u-modal
+      v-model="show"
+      content="报备请与项目对接人联系"
+    ></u-modal>
   </ChannelTabBar>
 </template>
 
 <script>
 import pagination from "@/mixins/pagination";
 import { getRecommendItemList } from "@/api/channel";
-import tool from "@/common/tool";
-
 export default {
   mixins: [pagination],
   data() {
     return {
+      show: false,
       queryPageParameters: {
         location: "",
         projectName: "",
@@ -183,6 +164,7 @@ export default {
         },
       ],
       icon_5: require("@/channelPackage/common/icon/recommend.png"),
+      homeImg: require("@/channelPackage/common/img/house.jpg"),
     };
   },
   computed: {
@@ -211,19 +193,12 @@ export default {
   methods: {
     async getListMixin() {
       let data = await getRecommendItemList(this.queryPageParameters);
-      if (data.length > 0) {
-        data.forEach((item) => {
-          if (item.attachAddr && item.attachAddr.fileId) {
-            item.imgScr = tool.getFileUrl(item.attachAddr.fileId);
-          } else {
-            item.imgScr = this.houseImg;
-          }
-        });
-        this.tablePage = data;
-      } else {
-        this.tablePage = [];
-      }
-      // this.setPageDataMixin(await getRecommendItemList(this.queryPageParameters));
+      this.tablePage = data.map((v) => ({
+        ...v,
+        attachAddr: v.attachAddr
+          ? this.$tool.getFileUrl(v.attachAddr)
+          : this.homeImg,
+      }));
     },
     locationCallback(index) {
       this.queryPageParameters.location = this.locationList[index].text;
@@ -231,9 +206,13 @@ export default {
     // 跳转Tabs页
     goToItem(url) {
       getApp().myReport = {};
-      uni.navigateTo({
-        url: url,
-      });
+      if (url === "/channelPackage/homeTab/pages/reportClient") {
+        this.show = true;
+      } else {
+        uni.navigateTo({
+          url: url,
+        });
+      }
     },
     // 查看项目详情
     viewProjectDetail(item) {

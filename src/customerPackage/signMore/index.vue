@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-28 15:50:48
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 14:05:58
+ * @LastEditTime: 2021-03-04 11:48:06
 -->
 <template>
   <view class="signmore">
@@ -55,6 +55,7 @@ export default {
   async onLoad() {
     this.NotificationType = await this.getDictAll("NotificationType");
     this.list = getApp().signMoreData;
+    console.log(this.list, "签署数据");
   },
   methods: {
     // 字典翻译
@@ -88,6 +89,7 @@ export default {
       const res = await postSigningApi({
         noticeIds: arr,
       });
+      console.log(res, "合并签署");
       if (res.certificationStatus === "notCertified") {
         getApp().globalData.attestationInfo = {
           ownerName: res.certificationResponseVO.ownerName,

@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-26 14:24:10
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-01 16:24:34
+ * @LastEditTime: 2021-03-04 11:56:36
 -->
 <template>
   <view class="initiate-commission-wrapper">
@@ -227,29 +227,31 @@
             ></u-icon>
           </view>
         </view>
-        <view
-          class="add-list-item-wrapper"
-          v-for="(item, i) in dealList"
-          :key="i"
-          @click="checkMore(item.dealCode)"
-        >
-          <view class="item-select">
-            <checkbox
-              style="transform:scale(0.7)"
-              :value="item.dealCode"
-              :checked="item.checked"
-              color="#4881f9"
-            ></checkbox>
-          </view>
-          <view class="item-info">
-            <view class="item-code u-padding-bottom-15">
-              <view>{{item.dealCode}}</view>
-              <view class="u-text-right">可结佣金：{{$tool.add(item.ageCanCommFees, item.serCanCommFees)}}</view>
+        <scroll-view class="scrollView">
+          <view
+            class="add-list-item-wrapper"
+            v-for="(item, i) in dealList"
+            :key="i"
+            @click="checkMore(item.dealCode)"
+          >
+            <view class="item-select">
+              <checkbox
+                style="transform:scale(0.7)"
+                :value="item.dealCode"
+                :checked="item.checked"
+                color="#4881f9"
+              ></checkbox>
             </view>
-            <view class="u-padding-bottom-15">{{item.cycleName | emptyFilter}}</view>
-            <view class="u-padding-bottom-15">成交日期：{{item.signDate | emptyFilter}}</view>
+            <view class="item-info">
+              <view class="item-code u-padding-bottom-15">
+                <view>{{item.dealCode}}</view>
+                <view class="u-text-right">可结佣金：{{$tool.add(item.ageCanCommFees, item.serCanCommFees)}}</view>
+              </view>
+              <view class="u-padding-bottom-15">{{item.cycleName | emptyFilter}}</view>
+              <view class="u-padding-bottom-15">成交日期：{{item.signDate | emptyFilter}}</view>
+            </view>
           </view>
-        </view>
+        </scroll-view>
         <view class="add-btn-wrapper safe-area-inset-bottom">
           <view
             class="left"
@@ -928,15 +930,15 @@ export default {
 
   .title {
     width: 100%;
-    padding: 20rpx 10rpx;
+    padding: 20rpx 40rpx 20rpx 10rpx;
     display: flex;
     flex-direction: row;
     align-items: center;
     border-bottom: 1rpx solid #e4e4e4;
-
-    .selected {
-      flex: 1;
-    }
+    position: fixed;
+    background-color: #fff;
+    z-index: 999;
+    justify-content: space-between;
 
     .filter-wrapper {
       display: flex;
@@ -995,6 +997,11 @@ export default {
       background-color: $u-type-primary;
     }
   }
+}
+
+.scrollView {
+  margin-top: 100rpx;
+  height: 100vh;
 }
 
 .project-case-wrapper {

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-12-17 14:29:26
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 17:31:46
+ * @LastEditTime: 2021-03-04 09:46:34
  */
 
 import storageTool from './common/storageTool'
@@ -68,8 +68,8 @@ const envAll = {
         "protocol": 'https',
         "fileDomain": "devapi.polyihome.com",
         "apiDomain": "devapi.polyihome.com",
-        "h5Domain": "m.polyihome.develop",
-        "pcDomain": "web.polyihome.develop",
+        "h5Domain": "devm.polyihome.com",
+        "pcDomain": "devweb.polyihome.com",
     },
     int: {
         //测试环境（体验版）
@@ -78,8 +78,8 @@ const envAll = {
         "protocol": 'https',
         "fileDomain": "intapi.polyihome.com",
         "apiDomain": "intapi.polyihome.com",
-        "h5Domain": "testm.polyihome.com",
-        "pcDomain": "testweb.polyihome.com",
+        "h5Domain": "intm.polyihome.com",
+        "pcDomain": "intweb.polyihome.com",
     },
     uat: {
         //预生产，用户环境（体验版）

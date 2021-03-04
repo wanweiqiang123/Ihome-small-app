@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-11-17 10:54:41
- * @LastEditors: ywl
- * @LastEditTime: 2021-03-01 18:36:15
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-03-04 09:47:29
 -->
 <template>
   <view class="container safe-area-inset-bottom">
@@ -91,6 +91,14 @@
             type="primary"
             @click="handleGoto(i)"
           >上传附件</u-button>
+          <u-button
+            v-if="current === 1"
+            shape="circle"
+            :custom-style="{ padding: '0 40rpx', marginRight: '20rpx' }"
+            size="mini"
+            type="primary"
+            @click="handleGotoReport(i)"
+          >成交登记</u-button>
           <template v-if="current === 0">
             <!-- <template v-if="i.exMarket"> -->
             <u-button
@@ -365,6 +373,13 @@ export default {
     handleGoto(item) {
       uni.navigateTo({
         url: `/staffPackage/upload/index?id=${item.id}`,
+      });
+    },
+    handleGotoReport(item) {
+      console.log(item);
+      getApp().myReport = { ...item, type: "" };
+      uni.navigateTo({
+        url: `/channelPackage/homeTab/pages/dealRegister?id=${item.id}&&from=visit`,
       });
     },
   },

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-26 11:54:26
+ * @LastEditTime: 2021-03-04 11:45:56
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -35,7 +35,7 @@
           <view
             class="receipt-text"
             style="color: #F56C6C"
-            @click="gotoSign('Notification')"
+            @click="gotoSignNotification()"
           >您还未签署优惠告知书，点击前往处理</view>
         </template>
         <!-- 信息待确认 -->
@@ -156,7 +156,7 @@
           <template v-else-if="isSupplementaryAgreementOne">
             <view
               style="color: #F56C6C"
-              @click="gotoSign('SupplementaryAgreement')"
+              @click="gotoSign()"
               class="receipt-text"
             >您有一份协议待签署，点击前往处理
             </view>
@@ -456,9 +456,9 @@ export default {
     isSupplementaryAgreementOne() {
       let arr = [];
       arr = this.info.noticeList.filter((v) => {
-        return v.notificationType === "SupplementaryAgreement";
+        return v.notificationStatus === "WaitBeSigned";
       });
-      if (arr.length === 1 && arr[0].notificationStatus === "WaitBeSigned") {
+      if (arr.length === 1) {
         return true;
       } else {
         return false;
@@ -467,10 +467,9 @@ export default {
     isSupplementaryAgreementMore() {
       let arr = [];
       arr = this.info.noticeList.filter((v) => {
-        return v.notificationType === "SupplementaryAgreement";
+        return v.notificationStatus === "WaitBeSigned";
       });
-      let some = arr.some((v) => v.notificationStatus === "WaitBeSigned");
-      if (arr.length > 1 && some) return true;
+      if (arr.length > 1) return true;
       else return false;
     },
   },
@@ -497,8 +496,19 @@ export default {
       });
     },
 
-    gotoSign(type) {
-      let item = this.info.noticeList.find((v) => v.notificationType === type);
+    gotoSignNotification() {
+      let item = this.info.noticeList.find(
+        (v) => v.notificationType === "Notification"
+      );
+      if (item) {
+        this.signNotice(item, "sign");
+      }
+    },
+
+    gotoSign() {
+      let item = this.info.noticeList.find(
+        (v) => v.notificationStatus === "WaitBeSigned"
+      );
       if (item) {
         this.signNotice(item, "sign");
       }
@@ -506,7 +516,7 @@ export default {
 
     gotoSignMore() {
       getApp().signMoreData = this.info.noticeList.filter(
-        (v) => v.notificationStatus === "WaitPay"
+        (v) => v.notificationStatus === "WaitBeSigned"
       );
       uni.navigateTo({
         url: `/customerPackage/signMore/index`,
