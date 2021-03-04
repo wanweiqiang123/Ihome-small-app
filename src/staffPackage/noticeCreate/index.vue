@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-04 18:26:15
+ * @LastEditTime: 2021-03-04 19:53:25
 -->
 <template>
   <LoginPage>
@@ -332,7 +332,6 @@
                 :show-progress="false"
                 :before-upload="beforeUpload"
                 :file-list="subFileList"
-                :before-remove="beforeRemove"
                 @on-success="subscriptionSuccess"
                 @on-remove="subscriptionRemove"
               ></u-upload>
@@ -986,7 +985,7 @@ export default {
         .map((val) => ({
           url: this.$tool.getFileUrl(val.fileNo),
         }));
-      // 是不是自定义
+      // 自定义
       if (info.promotionMethod === "Manual") {
         this.isOther = true;
         this.form.manner = "自定义";
@@ -994,6 +993,7 @@ export default {
           ...val,
           url: this.$tool.getFileUrl(val.fileNo),
         }));
+        this.subscriptionFile = info.subscriptionAnnex;
       }
       try {
         this.isRecognize = await getRecognizeById(info.cycleId);
