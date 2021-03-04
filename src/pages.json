@@ -272,7 +272,8 @@
 				{
 					"path": "myTab/pages/commissionList",
 					"style": {
-						"navigationBarTitleText": "结佣列表"
+						"navigationBarTitleText": "结佣列表",
+						"enablePullDownRefresh": true
 					}
 				},
 				{

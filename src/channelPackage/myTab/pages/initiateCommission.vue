@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-26 14:24:10
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-04 11:56:36
+ * @LastEditTime: 2021-03-04 14:47:24
 -->
 <template>
   <view class="initiate-commission-wrapper">
@@ -227,7 +227,10 @@
             ></u-icon>
           </view>
         </view>
-        <scroll-view class="scrollView">
+        <scroll-view
+          class="scrollView"
+          scroll-y="true"
+        >
           <view
             class="add-list-item-wrapper"
             v-for="(item, i) in dealList"
@@ -740,7 +743,7 @@ export default {
           console.log(obj);
           await postCreatepayApplyApi(obj);
           this.$tool.toast("提交成功");
-          uni.reLaunch({
+          uni.navigateBack({
             url: `/channelPackage/myTab/pages/commissionList`,
           });
         }
@@ -1001,7 +1004,7 @@ export default {
 
 .scrollView {
   margin-top: 100rpx;
-  height: 100vh;
+  height: calc(100% - 180rpx);
 }
 
 .project-case-wrapper {
