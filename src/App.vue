@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
- * @LastEditors: lsj
- * @LastEditTime: 2021-02-27 15:10:25
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-03-04 11:04:28
 -->
 <script>
 export default {
@@ -55,6 +55,11 @@ export default {
   },
   onHide: function () {
     console.log("App Hide");
+  },
+  onError(err) {
+    console.error("onError");
+    console.error(err);
+    this.$throw(err);
   },
 };
 </script>
