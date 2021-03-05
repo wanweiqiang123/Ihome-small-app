@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-26 10:15:18
- * @LastEditors: ywl
- * @LastEditTime: 2021-03-02 17:04:33
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-03-05 11:36:08
 -->
 <template>
   <view class="commission-wrapper">
@@ -63,7 +63,7 @@
         <view class="price u-padding-bottom-10">申请佣金：{{item.applyAmount | emptyFilter}}</view>
         <view class="price u-padding-bottom-10">扣除金额：{{item.deductAmount | emptyFilter}}</view>
         <view class="price u-padding-bottom-10">实结佣金：{{item.actualAmount | emptyFilter}}</view>
-        <view class="price u-padding-bottom-10">申请时间：{{item.makerTime | emptyFilter}}</view>
+        <view class="price u-padding-bottom-10">申请日期：{{item.makerTime | emptyFilter}}</view>
         <view class="detail u-padding-bottom-10">
           <text>详情</text>
           <u-icon
