@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-26 14:24:10
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-04 14:47:24
+ * @LastEditTime: 2021-03-05 11:51:24
 -->
 <template>
   <view class="initiate-commission-wrapper">
@@ -151,7 +151,7 @@
         </u-form-item>
       </u-form>
     </view>
-    <view class="form-wrapper">
+    <!-- <view class="form-wrapper">
       <view class="form-title u-border-bottom">附件信息</view>
       <view
         class="annex-list-wrapper"
@@ -174,7 +174,7 @@
           name="files"
         ></u-upload>
       </view>
-    </view>
+    </view> -->
     <view class="form-wrapper">
       <view class="form-title u-border-bottom">说明</view>
       <u-form
@@ -392,11 +392,11 @@ export default {
       channelBanks: [], // 渠道收款信息
       invoiceTypeList: [],
       invoiceTaxRateList: [],
-      dictList: [],
-      header: {
-        Authorization: "bearer " + storageTool.getToken(),
-      },
-      PayoffFileType: [],
+      // dictList: [],
+      // header: {
+      //   Authorization: "bearer " + storageTool.getToken(),
+      // },
+      // PayoffFileType: [],
       showProject: false,
       showProjectCase: false,
       projectCaseForm: {
@@ -435,17 +435,17 @@ export default {
     // this.info.payApplyVO.agencyId = 508;
     // this.info.payApplyVO.agencyName = "渠道1232020";
     this.getChannelInfo(this.info.payApplyVO.agencyId);
-    let res = await this.getDictAll("PayoffFileType");
-    this.PayoffFileType = res.filter((v) =>
-      ["Invoice", "RequestForm", "SetteDetail"].includes(v.code)
-    );
-    this.dictList = this.PayoffFileType.map((v) => ({
-      code: v.code,
-      id: v.id,
-      name: v.name,
-      fileList: [],
-      showList: [],
-    }));
+    // let res = await this.getDictAll("PayoffFileType");
+    // this.PayoffFileType = res.filter((v) =>
+    //   ["Invoice", "RequestForm", "SetteDetail"].includes(v.code)
+    // );
+    // this.dictList = this.PayoffFileType.map((v) => ({
+    //   code: v.code,
+    //   id: v.id,
+    //   name: v.name,
+    //   fileList: [],
+    //   showList: [],
+    // }));
   },
   async onShow() {
     const PayoffInvoiceType = await this.getDictAll("PayoffInvoiceType");
@@ -674,41 +674,41 @@ export default {
       this.showProjectCase = false;
     },
     // 上传移除
-    removeChange(index, code) {
-      this.dictList.forEach((v) => {
-        if (v.code === code) {
-          v.fileList.splice(index, 1);
-        }
-      });
-    },
+    // removeChange(index, code) {
+    //   this.dictList.forEach((v) => {
+    //     if (v.code === code) {
+    //       v.fileList.splice(index, 1);
+    //     }
+    //   });
+    // },
     // 上传成功
-    successChange(data, code) {
-      this.dictList.forEach((v) => {
-        if (v.code === code) {
-          if (v.fileList.length) {
-            v.fileList.push({
-              fileId: data.data[0].fileId,
-              fileName:
-                data.data[0].generateFileName +
-                "." +
-                data.data[0].generateFileType,
-              fileType: code,
-            });
-          } else {
-            v.fileList = [
-              {
-                fileId: data.data[0].fileId,
-                fileName:
-                  data.data[0].generateFileName +
-                  "." +
-                  data.data[0].generateFileType,
-                fileType: code,
-              },
-            ];
-          }
-        }
-      });
-    },
+    // successChange(data, code) {
+    //   this.dictList.forEach((v) => {
+    //     if (v.code === code) {
+    //       if (v.fileList.length) {
+    //         v.fileList.push({
+    //           fileId: data.data[0].fileId,
+    //           fileName:
+    //             data.data[0].generateFileName +
+    //             "." +
+    //             data.data[0].generateFileType,
+    //           fileType: code,
+    //         });
+    //       } else {
+    //         v.fileList = [
+    //           {
+    //             fileId: data.data[0].fileId,
+    //             fileName:
+    //               data.data[0].generateFileName +
+    //               "." +
+    //               data.data[0].generateFileType,
+    //             fileType: code,
+    //           },
+    //         ];
+    //       }
+    //     }
+    //   });
+    // },
     // 查看结佣成交详情
     viewDealDetail(code) {
       uni.navigateTo({
@@ -737,9 +737,9 @@ export default {
             })),
           }));
           obj.payApplyDetailList = arr;
-          this.dictList.forEach((v) => {
-            obj.documentList = obj.documentList.concat(v.fileList);
-          });
+          // this.dictList.forEach((v) => {
+          //   obj.documentList = obj.documentList.concat(v.fileList);
+          // });
           console.log(obj);
           await postCreatepayApplyApi(obj);
           this.$tool.toast("提交成功");
