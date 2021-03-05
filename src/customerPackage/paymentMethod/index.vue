@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-05 14:13:55
+ * @LastEditTime: 2021-03-05 16:19:46
 -->
 <template>
   <LoginPage>
@@ -174,6 +174,7 @@ export default {
   },
   async onLoad() {
     this.payData = { ...getApp().paidData };
+    console.log(this.payData);
   },
   async onShow() {
     this.hidePayStatus = this.$storageTool.hidePay();
@@ -274,6 +275,7 @@ export default {
       // obj.operator = 15;
       // obj.proId = 1;
       // obj.termId = 3;
+      console.log(obj);
 
       // 判断是否存在待支付订单
       const isPay = await getBusinessIdApi(this.payData.businessId);

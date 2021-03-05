@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-05 14:15:19
+ * @LastEditTime: 2021-03-05 16:18:14
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -508,6 +508,7 @@ export default {
           noticeId: this.noticeId,
         });
         this.info = { ...res };
+        console.log(this.info);
         this.payAuditNum = await getNotCheckNumApi(this.noticeId);
       }
     },

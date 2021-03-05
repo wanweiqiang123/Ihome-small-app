@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 15:28:17
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-25 14:47:19
+ * @LastEditTime: 2021-03-05 16:26:39
 -->
 <template>
   <u-popup
@@ -189,6 +189,8 @@ export default {
       obj.attachments = this.uploadArr;
       obj.payeeAccount = this.info.payeeAccount;
       obj.payeeName = this.info.payeeName;
+      obj.dealCode = this.payData.dealCode;
+      obj.dealId = this.payData.dealId;
       if (this.addOrUpdate === "update") {
         obj.id = this.continueId;
       }
