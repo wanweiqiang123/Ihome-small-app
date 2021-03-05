@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2021-01-19 15:46:14
- * @LastEditors: wwq
- * @LastEditTime: 2021-03-04 18:26:29
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-03-05 14:10:11
 -->
 <template>
   <view class="receipt info">
@@ -338,6 +338,8 @@ export default {
         reviewStatus: "",
         notificationStatus: "",
         ownerType: "",
+        dealCode: null,
+        dealId: null,
       },
       current: 0,
       currents: 0,
@@ -460,6 +462,8 @@ export default {
         ...val,
         businessId: this.noticeId,
         businessCode: this.info.noticeNo,
+        dealCode: this.info.dealCode,
+        dealId: this.info.dealId,
       };
       uni.navigateTo({
         url: `/staffPackage/receiptAdd/index`,

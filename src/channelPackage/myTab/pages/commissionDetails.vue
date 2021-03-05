@@ -515,6 +515,10 @@ export default {
     initDocumentList(documentList = []) {
       let fileTypeList = [];
       fileTypeList = JSON.parse(JSON.stringify(this.fileTypeList));
+      // 需求：过滤【其他】类型的附件
+      fileTypeList = fileTypeList.filter((item) => {
+        return item.code !== 'Other';
+      });
       let tempList = [];
       if (fileTypeList && fileTypeList.length) {
         fileTypeList.forEach((list) => {

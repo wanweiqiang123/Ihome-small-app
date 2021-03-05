@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2021-01-19 18:44:57
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 14:16:42
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-03-05 14:13:41
 -->
 <template>
   <view class="receipt">
@@ -336,6 +336,8 @@ export default {
         serviceFeePaid: payData.paid,
         termId: payData.cycleId,
         unpaidServiceFee: payData.unpaid,
+        dealCode: payData.dealCode,
+        dealId: payData.dealId,
         payer: "Customer",
         terminal: "WeChatApp",
       };
