@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 14:46:46
+ * @LastEditTime: 2021-03-05 14:13:55
 -->
 <template>
   <LoginPage>
@@ -267,6 +267,8 @@ export default {
       obj.termId = this.payData.cycleId;
       obj.unpaidServiceFee = this.payData.unpaid;
       obj.terminal = "WeChatApp";
+      obj.dealCode = this.payData.dealCode;
+      obj.dealId = this.payData.dealId;
       // 假数据
       // obj.groupId = 15;
       // obj.operator = 15;
