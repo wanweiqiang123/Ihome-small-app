@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-04 09:51:53
+ * @LastEditTime: 2021-03-04 19:53:25
 -->
 <template>
   <LoginPage>
@@ -332,7 +332,6 @@
                 :show-progress="false"
                 :before-upload="beforeUpload"
                 :file-list="subFileList"
-                :before-remove="beforeRemove"
                 @on-success="subscriptionSuccess"
                 @on-remove="subscriptionRemove"
               ></u-upload>
@@ -857,10 +856,10 @@ export default {
       Promise.all(verifyArr)
         .then(async () => {
           console.log("全部通过", this.form);
-          if (this.isOther && !this.subscriptionFile.length) {
-            this.$tool.toast("认购书附件不能为空");
-            return;
-          }
+          // if (this.isOther && !this.subscriptionFile.length) {
+          //   this.$tool.toast("认购书附件不能为空");
+          //   return;
+          // }
           if (this.isRecognize) {
             // 认筹阶段不需要判断房号
             this.updateMethod();
@@ -904,6 +903,7 @@ export default {
       this.form.ownerEditList = this.form.ownerList;
       let list = this.form.noticeAttachmentList.filter((i) => !!i);
       let subList = this.subscriptionFile.filter((i) => !!i);
+      console.log(subList);
       list = list.concat(subList);
       try {
         const res = await postNoticeUpdate({
@@ -985,7 +985,7 @@ export default {
         .map((val) => ({
           url: this.$tool.getFileUrl(val.fileNo),
         }));
-      // 是不是自定义
+      // 自定义
       if (info.promotionMethod === "Manual") {
         this.isOther = true;
         this.form.manner = "自定义";
@@ -993,6 +993,7 @@ export default {
           ...val,
           url: this.$tool.getFileUrl(val.fileNo),
         }));
+        this.subscriptionFile = info.subscriptionAnnex;
       }
       try {
         this.isRecognize = await getRecognizeById(info.cycleId);
