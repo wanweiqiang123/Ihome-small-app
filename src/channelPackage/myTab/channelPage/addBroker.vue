@@ -97,11 +97,11 @@ export default {
           },
         ],
         email: [
-          {
+          /* {
             required: true,
             message: "请输入邮箱",
             trigger: ["change"],
-          },
+          }, */
           {
             validator: emailValidato,
             trigger: ["blur"],
