@@ -207,7 +207,7 @@
         <view class="form-title u-border-bottom">
           <text>客户信息</text>
           <view
-            v-if="!baseInfoInDeal.customerAddVOS.length && baseInfoInDeal.dealNoticeStatus !== 'MultipleNotice' && postData.roomId"
+            v-if="!baseInfoInDeal.customerAddVOS.length"
             @click="handleSelectCustomer">
             <u-icon name="plus" />添加
           </view>
@@ -218,7 +218,7 @@
             v-for="(item, index) in postData.customerVO" :key="index">
             <view>{{item.customerPhone}}</view>
             <u-icon
-              v-if="!baseInfoInDeal.customerAddVOS.length && baseInfoInDeal.dealNoticeStatus !== 'MultipleNotice' && baseInfoByTerm.chargeEnum === 'Agent'"
+              v-if="!baseInfoInDeal.customerAddVOS.length"
               @click.native="deleteCustom(index)"
               slot="right"
               name="close-circle-fill"
