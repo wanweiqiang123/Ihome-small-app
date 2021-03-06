@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-17 18:10:07
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-04 16:26:10
+ * @LastEditTime: 2021-03-06 16:48:06
 -->
 <template>
   <view class="client-container safe-area-inset-bottom">
@@ -153,7 +153,7 @@
           >
             <view class="mobileType">
               <view
-                v-if="checked"
+                v-if="reportType === 'FirstThreeAfterFour'"
                 class="qianhou"
               >
                 <u-input
@@ -183,7 +183,7 @@
                   maxlength="11"
                 />
               </view>
-              <u-switch v-model="checked"></u-switch>
+              <!-- <u-switch v-model="checked"></u-switch> -->
             </view>
           </u-form-item>
         </u-form>
@@ -350,6 +350,7 @@ export default {
       qian: "",
       hou: "",
       homeImg: require("@/channelPackage/common/img/house.jpg"),
+      reportType: "FullNumber",
     };
   },
   onReady() {
@@ -386,6 +387,9 @@ export default {
     } else if (item && item.type === "term") {
       this.info.proCycleName = item.data.termName;
       this.info.proCycleId = item.data.termId;
+      this.reportType = item.data.reportTypeEnum
+        ? item.data.reportTypeEnum
+        : "FullNumber";
       getApp().globalData.searchBackData = {};
     } else if (item && item.type === "channel") {
       Object.assign(this.channelForm, {
@@ -507,7 +511,7 @@ export default {
       Promise.all(formDataRules).then(async () => {
         let obj = {};
         obj = { ...this.reportForm, ...this.custormInfo, ...this.channelForm };
-        if (this.checked) {
+        if (this.reportType === "FirstThreeAfterFour") {
           obj.mobile = this.qian + "****" + this.hou;
           obj.reportType = "FirstThreeAfterFour";
         } else {
