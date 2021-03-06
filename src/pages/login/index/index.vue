@@ -149,6 +149,7 @@
         </u-button>
 
         <u-button
+          v-if="!isPrd"
           hover-class="none"
           :custom-style="customStyleNone"
           size="mini"
@@ -269,7 +270,11 @@ export default {
     };
   },
   onLoad(options) {
-    this.redirect = options.redirect || null;
+    if (options.redirect) {
+      this.redirect = decodeURIComponent(options.redirect);
+    } else {
+      this.redirect = null;
+    }
     console.log("this.redirect", this.redirect);
   },
   onShow() {
@@ -365,6 +370,7 @@ export default {
       storageTool.setToken(res.access_token, res.expires_in);
       const userInfo = await getUserInfoApi();
       storageTool.setUserInfo(userInfo);
+      console.log(this.redirect)
       storageTool.goHome(this.redirect);
     },
     async loginPhone() {
