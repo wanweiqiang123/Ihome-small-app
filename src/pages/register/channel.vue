@@ -7,7 +7,7 @@
  * @LastEditTime: 2020-12-23 16:32:37
 -->
 <template>
-  <LoginPage>
+  <view>
     <view class="channel-register-wrapper">
       <view class="register-steps-wrapper">
         <view
@@ -38,7 +38,7 @@
         <u-button type="primary" @click="handleView">查看个人中心</u-button>
       </view>
     </view>
-  </LoginPage>
+  </view>
 </template>
 
 <script>
@@ -79,6 +79,13 @@ export default {
       // console.log(scene);
     } else {
       this.qrScene = '';
+    }
+    let url = "/pages/login/index/index?redirect=" + encodeURIComponent("pages/register/channel?scene=" + this.qrScene);
+    console.log('url', url);
+    if (!storageTool.getToken()) {
+      uni.redirectTo({
+        url: url,
+      });
     }
   },
   methods: {
