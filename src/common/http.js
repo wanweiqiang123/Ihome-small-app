@@ -3,12 +3,13 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-10 10:17:55
- * @LastEditors: zyc
- * @LastEditTime: 2021-02-20 14:42:05
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-03-08 16:55:59
  */
 import storageTool from './storageTool'
 import tool from './tool'
 import { baseUrl } from '../env-config'
+// const Raven = require("./raven");
 console.log('当前api地址：' + baseUrl);
 
 /**请求接口
@@ -65,6 +66,9 @@ const api = (url, data = {}, option = {}) => {
                     if (!hideMsg) {
                         tool.toast('[' + res.statusCode + '] 系统处理失败');
                     }
+                    // Raven.captureException(res, {
+                    //     level: "error",
+                    // });
                     reject(res);
                     return;
 
@@ -85,6 +89,9 @@ const api = (url, data = {}, option = {}) => {
                     tool.toast("网络异常：" + err.errMsg);
                 }
                 reject(err.errMsg);
+                // Raven.captureException(err, {
+                //     level: "error",
+                // });
                 return;
             }
         })
