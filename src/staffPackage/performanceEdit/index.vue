@@ -1636,8 +1636,17 @@ export default {
       // 分销协议编号
       if (baseInfo.contracts && baseInfo.contracts.length > 0) {
         this.contNoList = baseInfo.contracts;
+        // 增加需求：当分销协议只有一个的时候，默认选中
+        if (baseInfo && baseInfo.contracts && baseInfo.contracts.length === 1) {
+          this.$nextTick(() => {
+            this.initContNo(baseInfo.contracts[0]);
+          });
+        }
       } else {
         this.contNoList = [];
+        this.postData.contNo = "";
+        this.postData.isMat = "";
+        this.packageIdsList = [];
       }
       // 分销成交和非分销成交不一样
       if (baseInfo.contType === 'DistriDeal') {
@@ -1738,6 +1747,17 @@ export default {
       }
       // 初始化上传附件表格数据
       await this.getDocumentList(this.postData.contType);
+    },
+    // 只有一个分销协议的时候默认选中
+    initContNo(item = '') {
+      if (!item) return;
+      this.postData.isMat = null;
+      this.packageIdsList = [];
+      this.postData.contNo = item.contractNo;
+      // 是否垫佣
+      this.postData.isMat = item.advancementSituation;
+      // 分销模式下获取分销协议返回的收派套餐id
+      this.packageIdsList = item.packageMxIds && item.packageMxIds.length ? item.packageMxIds : [];
     },
     // 修改合同类型后构建附件表格数据
     getDocumentList(type) {
