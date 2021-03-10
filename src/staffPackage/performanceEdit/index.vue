@@ -193,7 +193,7 @@
           <u-form-item
             :label="getDictName(item.notificationType, NotificationTypeList)"
             v-for="(item, index) in postData.offerNoticeVO" :key="index">
-            <view>{{item.noticeNo}}</view>
+            <view class="notice-under-line" @click="handleViewNotice(item)">{{item.noticeNo}}</view>
             <u-icon
               v-if="index === 0 && canAddNoticeFlag"
               @click.native="deleteNotice(index)"
@@ -2117,6 +2117,42 @@ export default {
       this.postData.offerNoticeVO = noticeInfo.dealNotices;
       this.postData.customerVO = noticeInfo.customerConvertResponse;
     },
+    // 预览优惠告知书
+    handleViewNotice(item) {
+      console.log(item);
+      if (item.templateType === "ElectronicTemplate") {
+        // pdf文件
+        let url = this.$tool.getFileUrl(item.templateId);
+        uni.downloadFile({
+          url: url,
+          success: function (res) {
+            let filePath = res.tempFilePath;
+            uni.openDocument({
+              filePath: filePath,
+              fileType: "pdf",
+              showMenu: true,
+              success: function (res) {
+                console.log("打开文档成功");
+              },
+            });
+          },
+        });
+      } else {
+        // 图片
+        let imgList = item.noticeAttachmentList || item.annexList;
+        if (imgList && imgList.length) {
+          let preList = imgList.noticeAttachmentList.map((i) =>
+            this.$tool.getFileUrl(i.fileNo)
+          );
+          uni.previewImage({
+            urls: preList,
+            current: 1,
+          });
+        } else {
+          this.$tool.toast("附件为空");
+        }
+      }
+    },
     // 删除优惠告知书
     deleteNotice() {
       this.postData.offerNoticeVO = [];
@@ -2564,6 +2600,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.notice-under-line {
+  color: $u-type-primary;
+  text-decoration: underline;
+}
 .performance {
   background-color: $u-bg-color;
   min-height: 100vh;
