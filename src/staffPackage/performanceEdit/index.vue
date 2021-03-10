@@ -193,7 +193,7 @@
           <u-form-item
             :label="getDictName(item.notificationType, NotificationTypeList)"
             v-for="(item, index) in postData.offerNoticeVO" :key="index">
-            <view>{{item.noticeNo}}</view>
+            <view class="notice-under-line" @click="handleViewNotice(item)">{{item.noticeNo}}</view>
             <u-icon
               v-if="index === 0 && canAddNoticeFlag"
               @click.native="deleteNotice(index)"
@@ -207,7 +207,7 @@
         <view class="form-title u-border-bottom">
           <text>客户信息</text>
           <view
-            v-if="!baseInfoInDeal.customerAddVOS.length && baseInfoInDeal.dealNoticeStatus !== 'MultipleNotice' && postData.roomId"
+            v-if="!baseInfoInDeal.customerAddVOS.length"
             @click="handleSelectCustomer">
             <u-icon name="plus" />添加
           </view>
@@ -218,7 +218,7 @@
             v-for="(item, index) in postData.customerVO" :key="index">
             <view>{{item.customerPhone}}</view>
             <u-icon
-              v-if="!baseInfoInDeal.customerAddVOS.length && baseInfoInDeal.dealNoticeStatus !== 'MultipleNotice' && baseInfoByTerm.chargeEnum === 'Agent'"
+              v-if="!baseInfoInDeal.customerAddVOS.length"
               @click.native="deleteCustom(index)"
               slot="right"
               name="close-circle-fill"
@@ -1636,8 +1636,17 @@ export default {
       // 分销协议编号
       if (baseInfo.contracts && baseInfo.contracts.length > 0) {
         this.contNoList = baseInfo.contracts;
+        // 增加需求：当分销协议只有一个的时候，默认选中
+        if (baseInfo && baseInfo.contracts && baseInfo.contracts.length === 1) {
+          this.$nextTick(() => {
+            this.initContNo(baseInfo.contracts[0]);
+          });
+        }
       } else {
         this.contNoList = [];
+        this.postData.contNo = "";
+        this.postData.isMat = "";
+        this.packageIdsList = [];
       }
       // 分销成交和非分销成交不一样
       if (baseInfo.contType === 'DistriDeal') {
@@ -1668,19 +1677,23 @@ export default {
         this.postData.recordStr = baseInfo.recordStr;
       }
       // 建筑面积
-      if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.area) {
-        this.postData.area = baseInfo?.myReturnVO?.houseVO?.area;
-      }
+      this.postData.area = baseInfo?.myReturnVO?.houseVO?.area;
+      // if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.area) {
+      //   this.postData.area = baseInfo?.myReturnVO?.houseVO?.area;
+      // }
       // 户型
-      if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.room) {
-        this.postData.room = baseInfo?.myReturnVO?.houseVO?.room;
-      }
-      if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.hall) {
-        this.postData.hall = baseInfo?.myReturnVO?.houseVO?.hall;
-      }
-      if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.toilet) {
-        this.postData.toilet = baseInfo?.myReturnVO?.houseVO?.toilet;
-      }
+      this.postData.room = baseInfo?.myReturnVO?.houseVO?.room;
+      // if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.room) {
+      //   this.postData.room = baseInfo?.myReturnVO?.houseVO?.room;
+      // }
+      this.postData.hall = baseInfo?.myReturnVO?.houseVO?.hall;
+      // if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.hall) {
+      //   this.postData.hall = baseInfo?.myReturnVO?.houseVO?.hall;
+      // }
+      this.postData.toilet = baseInfo?.myReturnVO?.houseVO?.toilet;
+      // if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.toilet) {
+      //   this.postData.toilet = baseInfo?.myReturnVO?.houseVO?.toilet;
+      // }
       // 预售合同编号
       this.postData.propertyNo = baseInfo.myReturnVO.houseVO?.propertyNo;
       // 签约类型
@@ -1699,17 +1712,19 @@ export default {
       // 明源房款回笼比例(%)
       this.postData.returnRatio = baseInfo.myReturnVO.dealVO?.returnRatio;
       // 认购价格
-      if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.subscribePrice) {
-        this.postData.subscribePrice = baseInfo?.myReturnVO?.dealVO?.subscribePrice;
-      }
+      this.postData.subscribePrice = baseInfo?.myReturnVO?.dealVO?.subscribePrice;
+      // if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.subscribePrice) {
+      //   this.postData.subscribePrice = baseInfo?.myReturnVO?.dealVO?.subscribePrice;
+      // }
       // 认购日期
       if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.subscribeDate) {
         this.postData.subscribeDate = baseInfo?.myReturnVO?.dealVO?.subscribeDate;
       }
       // 签约价格
-      if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.signPrice) {
-        this.postData.signPrice = baseInfo?.myReturnVO?.dealVO?.signPrice;
-      }
+      this.postData.signPrice = baseInfo?.myReturnVO?.dealVO?.signPrice;
+      // if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.signPrice) {
+      //   this.postData.signPrice = baseInfo?.myReturnVO?.dealVO?.signPrice;
+      // }
       // 签约日期
       if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.signDate) {
         this.postData.signDate = baseInfo?.myReturnVO?.dealVO?.signDate;
@@ -1732,6 +1747,17 @@ export default {
       }
       // 初始化上传附件表格数据
       await this.getDocumentList(this.postData.contType);
+    },
+    // 只有一个分销协议的时候默认选中
+    initContNo(item = '') {
+      if (!item) return;
+      this.postData.isMat = null;
+      this.packageIdsList = [];
+      this.postData.contNo = item.contractNo;
+      // 是否垫佣
+      this.postData.isMat = item.advancementSituation;
+      // 分销模式下获取分销协议返回的收派套餐id
+      this.packageIdsList = item.packageMxIds && item.packageMxIds.length ? item.packageMxIds : [];
     },
     // 修改合同类型后构建附件表格数据
     getDocumentList(type) {
@@ -2090,6 +2116,42 @@ export default {
       }
       this.postData.offerNoticeVO = noticeInfo.dealNotices;
       this.postData.customerVO = noticeInfo.customerConvertResponse;
+    },
+    // 预览优惠告知书
+    handleViewNotice(item) {
+      console.log(item);
+      if (item.templateType === "ElectronicTemplate") {
+        // pdf文件
+        let url = this.$tool.getFileUrl(item.templateId);
+        uni.downloadFile({
+          url: url,
+          success: function (res) {
+            let filePath = res.tempFilePath;
+            uni.openDocument({
+              filePath: filePath,
+              fileType: "pdf",
+              showMenu: true,
+              success: function (res) {
+                console.log("打开文档成功");
+              },
+            });
+          },
+        });
+      } else {
+        // 图片
+        let imgList = item.noticeAttachmentList || item.annexList;
+        if (imgList && imgList.length) {
+          let preList = imgList.noticeAttachmentList.map((i) =>
+            this.$tool.getFileUrl(i.fileNo)
+          );
+          uni.previewImage({
+            urls: preList,
+            current: 1,
+          });
+        } else {
+          this.$tool.toast("附件为空");
+        }
+      }
     },
     // 删除优惠告知书
     deleteNotice() {
@@ -2538,6 +2600,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.notice-under-line {
+  color: $u-type-primary;
+  text-decoration: underline;
+}
 .performance {
   background-color: $u-bg-color;
   min-height: 100vh;

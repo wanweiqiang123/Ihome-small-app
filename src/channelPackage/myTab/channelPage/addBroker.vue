@@ -3,14 +3,21 @@
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-27 19:34:30
- * @LastEditors: zyc
- * @LastEditTime: 2021-02-17 10:17:43
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-03-08 14:33:54
 -->
 <template>
   <view class="add-broker-wrapper">
     <view class="form">
-      <u-form :model="addForm" ref="addForm" :label-width="160">
-        <u-form-item label="姓名" prop="name">
+      <u-form
+        :model="addForm"
+        ref="addForm"
+        :label-width="160"
+      >
+        <u-form-item
+          label="姓名"
+          prop="name"
+        >
           <u-input
             v-model="addForm.name"
             placeholder="姓名"
@@ -18,7 +25,10 @@
             input-align="left"
           />
         </u-form-item>
-        <u-form-item label="手机号" prop="mobile">
+        <u-form-item
+          label="手机号"
+          prop="mobile"
+        >
           <u-input
             v-model="addForm.mobile"
             placeholder="手机号"
@@ -26,7 +36,10 @@
             input-align="left"
           />
         </u-form-item>
-        <u-form-item label="邮箱" prop="email">
+        <u-form-item
+          label="邮箱"
+          prop="email"
+        >
           <u-input
             v-model="addForm.email"
             placeholder="邮箱"
@@ -34,7 +47,11 @@
             input-align="left"
           />
         </u-form-item>
-        <u-form-item label="账号状态" class="u-text-right" prop="status">
+        <u-form-item
+          label="账号状态"
+          class="u-text-right"
+          prop="status"
+        >
           <u-switch v-model="addForm.statusBtn"></u-switch>
         </u-form-item>
         <u-form-item
@@ -47,7 +64,10 @@
       </u-form>
     </view>
     <view class="btn">
-      <u-button type="primary" @click="handleSave">保存</u-button>
+      <u-button
+        type="primary"
+        @click="handleSave"
+      >保存</u-button>
     </view>
   </view>
 </template>
@@ -58,7 +78,11 @@ import {
   postChannelAgentEditApi,
   getChannelAgentGetidApi,
 } from "../../../api/channel";
-import { phoneValidator, emailValidato } from "@/common/validate";
+import {
+  phoneValidator,
+  emailValidato,
+  emailOrNullValidato,
+} from "@/common/validate";
 import tool from "../../../common/tool";
 import storageTool from "../../../common/storageTool";
 export default {
@@ -103,7 +127,8 @@ export default {
             trigger: ["change"],
           }, */
           {
-            validator: emailValidato,
+            // type: "email",
+            validator: emailOrNullValidato,
             trigger: ["blur"],
             message: "请输入正确格式邮箱",
           },

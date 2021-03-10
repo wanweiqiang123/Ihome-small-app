@@ -3,8 +3,8 @@
  * @version:
  * @Author: wwq
  * @Date: 2020-11-20 15:08:23
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-30 17:43:26
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-03-08 14:36:59
  */
 /**手机号码校验（大陆及港澳台）*/
 export function phoneValidator(rule, value, callback) {
@@ -84,7 +84,7 @@ export function noTrim(rule, value, callback) {
 
 /**邮箱（必填）*/
 export function emailValidato(rule, value, callback) {
-  let reg = /^[A-Za-zd0-9]+([-_.][A-Za-zd]+)*@([A-Za-zd]+[-.])+[A-Za-zd]{2,5}$/;
+  let reg = /^[A-Za-zd0-9]+([-_.][A-Za-zd]+)*@([A-Za-zd0-9]+[-.])+[A-Za-zd]{2,5}$/;
   if (!reg.test(value)) {
     callback(new Error('邮箱格式有误'))
     return;

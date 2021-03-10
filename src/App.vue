@@ -3,10 +3,11 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
- * @LastEditors: zyc
- * @LastEditTime: 2021-03-04 11:04:28
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-03-08 16:56:27
 -->
 <script>
+// const Raven = require("./common/raven");
 export default {
   globalData: {
     initData: {
@@ -48,6 +49,16 @@ export default {
   },
   onLaunch: function () {
     console.log("App Launch");
+    // const options = {
+    //   release: "0.1.25",
+    //   environment: "production",
+    //   allowDuplicates: true, // 允许相同错误重复上报
+    //   sampleRate: 0.5, // 采样率
+    // };
+    // Raven.config(
+    //   "http://16530b58ae4e4c3fb45f822df236e2f9@192.168.200.115:9000/3",
+    //   options
+    // ).install();
     // console.log("envVersion", __wxConfig.envVersion);
   },
   onShow: function () {
@@ -58,6 +69,9 @@ export default {
   },
   onError(err) {
     console.error("onError");
+    // Raven.captureException(err, {
+    //   level: "error",
+    // });
     console.error(err);
     this.$throw(err);
   },

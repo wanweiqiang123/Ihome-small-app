@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-27 13:05:22
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 14:36:58
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-03-08 14:32:18
 -->
 <template>
   <view class="deal-list-wrapper">
@@ -58,7 +58,7 @@
           <view class="content-right">
             <view class="right-top">
               <view class="title">可结佣</view>
-              <view class="border">{{item.unpaidCommAmount ? item.unpaidCommAmount : 0}}</view>
+              <view class="border">{{item.canPaidCommAmount ? item.canPaidCommAmount : 0}}</view>
             </view>
             <view class="right-bottom">
               <view class="title">已结佣</view>

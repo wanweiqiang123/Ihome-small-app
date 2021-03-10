@@ -515,9 +515,9 @@ export default {
     initDocumentList(documentList = []) {
       let fileTypeList = [];
       fileTypeList = JSON.parse(JSON.stringify(this.fileTypeList));
-      // 需求：过滤【其他】类型的附件
+      // 需求：过滤【其他、三重一大、开发商签字确认明细】类型的附件
       fileTypeList = fileTypeList.filter((item) => {
-        return item.code !== 'Other';
+        return !['Other', 'ConfirmDetail', "TripleOne"].includes(item.code);
       });
       let tempList = [];
       if (fileTypeList && fileTypeList.length) {
