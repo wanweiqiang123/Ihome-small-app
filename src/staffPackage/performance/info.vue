@@ -230,7 +230,7 @@
             <template v-if="item.fileList.length > 0">
               <view class="file-list-wrapper" v-for="list in item.fileList" :key="list.fileId">
                 <u-image
-                  @click="viewImg(list)"
+                  @click="viewImg(list, item)"
                   width="100%" height="100%" :src="list.fileUrls ? list.fileUrls : getUrl(list.fileId)"></u-image>
               </view>
             </template>
@@ -255,6 +255,9 @@ export default {
   name: "performanceInfo",
   data() {
     return {
+      pdfImg: require('@/channelPackage/common/img/pdf.jpg'),
+      excelImg: require('@/channelPackage/common/img/excel.png'),
+      wordImg: require('@/channelPackage/common/img/word.jpg'),
       id: null, // 成交id-编辑用
       dictObj: {
         types: [
@@ -510,6 +513,8 @@ export default {
               vo.fileList.push(
                 {
                   ...item,
+                  fileUrls: this.getFileUrls(item, 'url'), // 获取对应文件的默认图片
+                  type: this.getFileUrls(item, 'type'), // 获取文件类型：excel、word、pdf
                   name: item.fileName
                 }
               );
@@ -518,6 +523,44 @@ export default {
         });
       }
       return fileList;
+    },
+    getFileUrls(file, getType = '') {
+      let url = '';
+      let type = '';
+      if (file.fileId && file.fileName) {
+        if (file.fileName.endsWith(".pdf")) {
+          // pdf
+          url = this.pdfImg;
+          type = "pdf";
+        } else if (file.fileName.endsWith(".doc")) {
+          // word
+          url = this.wordImg;
+          type = "doc";
+        } else if (file.fileName.endsWith(".docx")) {
+          // word
+          url = this.wordImg;
+          type = "docx";
+        } else if (file.fileName.endsWith(".xls")) {
+          // excel
+          url = this.excelImg;
+          type = "xls";
+        } else if (file.fileName.endsWith(".xlsx")) {
+          // excel
+          url = this.excelImg;
+          type = "xlsx";
+        } else {
+          // 默认是图片
+          url = "";
+          type = "";
+        }
+      }
+      if (getType === 'url') {
+        // 返回默认文件图片
+        return url;
+      } else {
+        // 返回文件类型
+        return type
+      }
     },
     // 获取对应类型的字典集合
     async getAllDictByTypes(obj) {
@@ -550,16 +593,76 @@ export default {
       return name;
     },
     // 预览图片
-    viewImg(file) {
-      let url = '';
+    viewImg(file, item) {
+      console.log(file);
+      console.log(item);
+      // return ;
       if (file.fileUrls) {
-        url = file.fileUrls;
+        // 说明是文件
+        this.openFile(file);
       } else {
-        url = tool.getFileUrl(file.fileId);
+        // 图片
+        let urls = [];
+        let current = 0;
+        if (item.fileList && item.fileList.length) {
+          item.fileList.forEach((list) => {
+            if (!list.fileUrls) {
+              urls.push(tool.getFileUrl(list.fileId));
+            }
+          });
+        }
+        if (urls && urls.length) {
+          urls.forEach((item, index) => {
+            if (item === tool.getFileUrl(file.fileId)) {
+              current = index;
+            }
+          });
+        }
+        uni.previewImage({
+          urls: urls,
+          current: current,
+        });
       }
-      uni.previewImage({
-        urls: [url]
-      })
+    },
+    // 在线打开文件
+    openFile(item) {
+      if (!item.type) {
+        uni.showToast({
+          title: '无法打开该文档',
+          duration: 3000
+        });
+        return ;
+      }
+      uni.downloadFile({
+        url: tool.getFileDownloadUrl(item.fileId),
+        success: (res) => {
+          if (res.statusCode === 200) {
+            console.log('下载成功', res.tempFilePath);
+            uni.openDocument({
+              filePath: res.tempFilePath,
+              fileType: item.type,
+              showMenu: true,
+              success: (res) => {
+                console.log('打开文档成功');
+              },
+              fail: (err) => {
+                console.log('打开文档出错', err);
+                uni.showToast({
+                  title: '无法打开该文档',
+                  duration: 3000
+                });
+              }
+            });
+          }
+        },
+        fail: (err) => {
+          console.log('下载出错', err);
+          uni.showToast({
+            title: '下载出错',
+            duration: 3000
+          });
+        }
+      });
     },
     // 返回
     handleBack() {

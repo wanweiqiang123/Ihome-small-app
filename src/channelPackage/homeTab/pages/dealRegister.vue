@@ -376,6 +376,7 @@ export default {
         proId: this.info.proId,
         buildingId: buildNo,
         exDeal: 0,
+		exReport: 0,
       });
     },
     roomNoClick(v) {
