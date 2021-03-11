@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 14:42:14
+ * @LastEditTime: 2021-03-11 15:22:32
 -->
 <template>
   <LoginPage>
@@ -61,11 +61,12 @@
             right-icon="arrow-right"
             class="hide-icon"
             prop="buyUnitName"
+            :required="!isRecognize"
           >
             <u-input
               v-model="form.buyUnitName"
               type="select"
-              placeholder="请选择栋座"
+              :placeholder="`${isRecognize ? '认筹阶段可不选择栋座': '请选择栋座'}`"
               @click="buildingBlockShow = true"
             />
           </u-form-item>
@@ -74,11 +75,12 @@
             right-icon="arrow-right"
             class="hide-icon"
             prop="roomNo"
+            :required="!isRecognize"
           >
             <u-input
               v-model="form.roomNo"
               type="select"
-              placeholder="请选择房号"
+              :placeholder="`${isRecognize ? '认筹阶段可不选择房号':'请选择房号'}`"
               @click="roomNoShow = true"
             />
           </u-form-item>
@@ -212,7 +214,11 @@
 <script>
 import { phoneValidator, validIdentityCard } from "../../common/validate.js";
 import { getDetailApi, postNoticeCreateApi } from "../../api/customer";
-import { postBuildByProId, postRoomByProId } from "../../api/staff";
+import {
+  postBuildByProId,
+  postRoomByProId,
+  getRecognizeById,
+} from "../../api/staff";
 export default {
   data() {
     return {
@@ -260,6 +266,7 @@ export default {
         buyUnitName: "",
         roomNo: "",
       },
+      isRecognize: false,
       roomRules: {
         buyUnitName: [
           { required: true, message: "请选择栋座", trigger: "change" },
@@ -309,6 +316,23 @@ export default {
         proId: res.proId,
       });
       this.getRoomList();
+      this.isRecognize = await getRecognizeById(res.termId);
+      this.roomRules = {
+        buyUnitName: [
+          {
+            required: !this.isRecognize,
+            message: "请选择栋座",
+            trigger: "change",
+          },
+        ],
+        roomNo: [
+          {
+            required: !this.isRecognize,
+            message: "请选择房号",
+            trigger: "change",
+          },
+        ],
+      };
     },
     // 获取房号
     async getRoomList(buildNo) {
@@ -358,12 +382,14 @@ export default {
       this.ownerList.forEach((v, i) => {
         this.refForm(i, this.ownerList[i]);
       });
-      const roomRes = new Promise((resolve, reject) => {
-        this.$refs.roomFrom.validate((val) => {
-          val ? resolve() : reject(err);
+      if (!this.isRecognize) {
+        const roomRes = new Promise((resolve, reject) => {
+          this.$refs.roomFrom.validate((val) => {
+            val ? resolve() : reject(err);
+          });
         });
-      });
-      this.arr.push(roomRes);
+        this.arr.push(roomRes);
+      }
       Promise.all(this.arr)
         .then(async () => {
           this.form.ownerList = [...this.ownerList];
@@ -377,7 +403,7 @@ export default {
             id: res.noticeId,
             templateId: res.templateId,
             notificationType: "Notification",
-            type: "sign",
+            type: "view",
           };
           uni.navigateTo({
             url: `/customerPackage/notification/index`,
