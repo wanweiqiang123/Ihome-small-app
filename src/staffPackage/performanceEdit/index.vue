@@ -1165,6 +1165,7 @@ export default {
         this.postData.roomNo = '';
         this.postData.buildingId = '';
         this.postData.buildingName = '';
+        this.baseInfoInDeal.customerAddVOS = []; // 重置客户数据
         await this.initDocument(this.baseInfoByTerm);
         await this.resetReceiveVO();
         await this.resetData();
@@ -1428,6 +1429,7 @@ export default {
       this.contNoList = []; // 分销协议编号
       this.packageIdsList = []; // ids
       this.postData.customerVO = []; // 客户信息
+      this.baseInfoInDeal.customerAddVOS = []; // 重置客户数据
       this.postData.offerNoticeVO = []; // 优惠告知书
       // this.postData.documentVO = []; // 上传附件
       let list = ['contType', 'contTypeName', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall',
