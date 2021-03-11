@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
- * @LastEditors: ywl
- * @LastEditTime: 2021-03-04 19:53:25
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-03-11 15:03:30
 -->
 <template>
   <LoginPage>
@@ -110,7 +110,7 @@
               <u-input
                 v-model="form.buyUnitName"
                 type="select"
-                :placeholder="`${isRecognize ? '认筹阶段可不选择房号': '请选择栋座'}`"
+                :placeholder="`${isRecognize ? '认筹阶段可不选择栋座': '请选择栋座'}`"
                 @click="handleShowBuild"
               />
             </u-form-item>
