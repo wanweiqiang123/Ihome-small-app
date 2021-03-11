@@ -453,6 +453,13 @@ export default {
     },
     // 在线打开文件
     openFile(item) {
+      if (!item.fileType) {
+        uni.showToast({
+          title: '无法打开该文档',
+          duration: 3000
+        });
+        return ;
+      }
       uni.downloadFile({
         url: item.downLoadUrl,
         success: (res) => {
