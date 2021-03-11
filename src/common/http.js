@@ -29,10 +29,13 @@ const api = (url, data = {}, option = {}) => {
             mask: true
         })
     }
-    let header = {};
+    let header = {
+        'sales-protocol': 'wx'
+    };
     if (token) {
         if (!url.startsWith('/sales-api/sales-oauth2/oauth/token?grant_type=change')) {
             header = {
+                'sales-protocol': 'wx',
                 'Authorization': 'bearer ' + token
             }
         }
