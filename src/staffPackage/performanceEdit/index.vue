@@ -195,7 +195,7 @@
             v-for="(item, index) in postData.offerNoticeVO" :key="index">
             <view class="notice-under-line" @click="handleViewNotice(item)">{{item.noticeNo}}</view>
             <u-icon
-              v-if="index === 0 && canAddNoticeFlag"
+              v-show="index === 0 && canAddNoticeFlag"
               @click.native="deleteNotice(index)"
               slot="right"
               name="close-circle-fill"
@@ -218,7 +218,7 @@
             v-for="(item, index) in postData.customerVO" :key="index">
             <view>{{item.customerPhone}}</view>
             <u-icon
-              v-if="!baseInfoInDeal.customerAddVOS.length"
+              v-show="!baseInfoInDeal.customerAddVOS.length"
               @click.native="deleteCustom(index)"
               slot="right"
               name="close-circle-fill"
