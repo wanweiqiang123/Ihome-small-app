@@ -608,6 +608,7 @@ export default {
       showDate: false,
       currentDateType: '', // 当前选择日期的类型
       currentPriceType: '', // 当前输入价格的input框
+      hasPrice: false, // 价格input框是否有值
       params: {
         year: true,
         month: true,
@@ -1311,6 +1312,45 @@ export default {
       if (!flag) {
         this.currentPriceType = type;
         this.keyBoardShow = true;
+        if (['', undefined, null].includes(this.postData[type])) {
+          this.hasPrice = false;
+        } else {
+          this.hasPrice = true;
+        }
+      }
+    },
+    // 键盘退格键被点击
+    backSpace() {
+      console.log('backSpace');
+      if (!['', undefined, null].includes(this.postData[this.currentPriceType])) {
+        if (this.postData[this.currentPriceType].toString().length) {
+          this.postData[this.currentPriceType] = this.postData[this.currentPriceType].toString();
+          this.postData[this.currentPriceType] = this.postData[this.currentPriceType].substr(
+            0,
+            this.postData[this.currentPriceType].length - 1
+          );
+        }
+      }
+    },
+    // 数字键盘改变值
+    keyChange(e) {
+      if (this.hasPrice) {
+        // 原本有值
+        if (e != "." && e != 0) {
+          this.postData[this.currentPriceType] = '' + e;
+          this.hasPrice = false; // 保证能连续输入
+        }
+      } else {
+        if (this.postData[this.currentPriceType]?.includes(".")) {
+          if (e != ".") {
+            let arr = this.postData[this.currentPriceType].split(".");
+            if (arr[1].length < 2) {
+              this.postData[this.currentPriceType] += e;
+            }
+          }
+        } else {
+          this.postData[this.currentPriceType] += e;
+        }
       }
     },
     // 合同类型、分销协议编号、细分业务模式、认购价格、签约价格改变之后要初始化收派金额
@@ -1856,28 +1896,6 @@ export default {
         for (let keys in this[objName]) {
           this[objName][keys] = "";
         }
-      }
-    },
-    // 键盘退格键被点击
-    backSpace() {
-      if (this.postData[this.currentPriceType].length) {
-        this.postData[this.currentPriceType] = this.postData[this.currentPriceType].substr(
-          0,
-          this.postData[this.currentPriceType].length - 1
-        );
-      }
-    },
-    // 数字键盘改变值
-    keyChange(e) {
-      if (this.postData[this.currentPriceType]?.includes(".")) {
-        if (e != ".") {
-          let arr = this.postData[this.currentPriceType].split(".");
-          if (arr[1].length < 2) {
-            this.postData[this.currentPriceType] += e;
-          }
-        }
-      } else {
-        this.postData[this.currentPriceType] += e;
       }
     },
     // 删除图片/文件
