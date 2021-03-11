@@ -301,7 +301,7 @@
             <template v-if="item.fileList.length > 0">
               <view class="file-list-wrapper" v-for="list in item.fileList" :key="list.fileId">
                 <u-icon
-                  v-if="!list.canDelete"
+                  v-show="!list.canDelete"
                   @click="deleteImg(infoIndex, list)"
                   class="icon" name="close-circle-fill" color="#FA3534" size="50"></u-icon>
                 <u-image
