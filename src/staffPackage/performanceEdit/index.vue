@@ -1959,6 +1959,7 @@ export default {
     // 预览图片
     viewImg(file, item) {
       console.log(file);
+      console.log(item);
       // return ;
       if (file.fileUrls) {
         // 说明是文件
