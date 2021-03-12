@@ -387,6 +387,7 @@
     <u-picker
       v-model="showDate"
       mode="time"
+      :default-time="defaultTime"
       @confirm="confirmDate"
       :params="params"></u-picker>
     <!-- 数字键盘 -->
@@ -570,6 +571,7 @@ export default {
       showDeleteWin: false, // 删除图片提示框
       deleteIndex: null,
       deleteItem: null,
+      defaultTime: '',
       keyBoardShow: false, // 价格键盘
       dictObj: {
         types: [
@@ -1298,6 +1300,7 @@ export default {
       flag = this.isDisabled(type, 'dealVO');
       if (!flag) {
         this.currentDateType = type;
+        this.defaultTime = this.postData[type] ? this.postData[type] : ''; // 设置选中日期
         this.showDate = true;
       }
     },
