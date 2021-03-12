@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2021-01-04 11:20:06
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 14:16:11
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-03-12 14:59:43
 -->
 <template>
   <LoginPage>
@@ -16,54 +16,13 @@
       >
         <u-loading slot="loading"></u-loading>
       </u-image>
-      <!-- <view
-        class="fixed-btn"
-        v-if="option.type === 'Notification'"
-      >
-        <u-button
-          type="success"
-          open-type="share"
-          :custom-style="{
-            borderRadius: 'unset',
-            marginBottom: '10rpx',
-            padding: '0 20rpx'
-          }"
-        >转发</u-button>
+      <!-- <view class="share-btn">
         <u-button
           type="primary"
-          :custom-style="{
-            borderRadius: 'unset',
-            marginBottom: '10rpx',
-            padding: '0 20rpx'
-          }"
-          @click="handleTo"
-        >修改</u-button>
-        <u-button
-          type="error"
-          :custom-style="{
-            borderRadius: 'unset',
-            marginBottom: '10rpx',
-            padding: '0 20rpx'
-          }"
-          @click="isShow = true"
-        >作废</u-button>
+          open-type="share"
+        >转发</u-button>
       </view> -->
-      <view class="share-btn">
-        <u-button
-          type="primary"
-          open-type="share"
-        >转发</u-button>
-      </view>
     </view>
-    <!-- 模态框 -->
-    <u-modal
-      v-model="isShow"
-      content="是否确认作废?"
-      show-cancel-button
-      confirm-color="#fa3534"
-      :async-close="true"
-      @confirm="confirm"
-    ></u-modal>
   </LoginPage>
 </template>
 
@@ -75,7 +34,6 @@ export default {
   name: "notice-preview",
   data() {
     return {
-      isShow: false,
       fileUrl: "",
       option: {
         type: null,
@@ -100,18 +58,6 @@ export default {
       uni.navigateTo({
         url: `/staffPackage/noticeCreate/index?id=${this.option.id}`,
       });
-    },
-    async confirm() {
-      try {
-        await postNoticeDelete({ id: this.option.id });
-        this.isShow = false;
-        this.$tool.toast("作废成功");
-        this.$tool.back(null, { type: "init", page: null });
-      } catch (error) {
-        console.log(error);
-        this.isShow = false;
-        this.$tool.toast("作废失败");
-      }
     },
     async pdf2Pic(tId) {
       const { fileId } = await getPdf2PicApi(tId);

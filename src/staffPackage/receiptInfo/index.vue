@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-19 15:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-11 16:27:28
+ * @LastEditTime: 2021-03-12 15:00:49
 -->
 <template>
   <view class="receipt info">
@@ -240,13 +240,14 @@
                   shape="circle"
                   @click="preview(item)"
                 >查看</u-button> -->
+                <!-- 转发 -->
                 <u-button
                   v-if="item.notificationStatus === 'WaitBeSigned'"
                   type="primary"
                   size="medium"
                   shape="circle"
                   @click="gotoNotice(item)"
-                >转发</u-button>
+                >查看</u-button>
                 <u-button
                   v-else
                   type="primary"
