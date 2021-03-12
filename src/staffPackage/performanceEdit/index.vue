@@ -2039,9 +2039,9 @@ export default {
       let self = this;
       if (index === 0) {
         uni.chooseImage({
-          count: 1, // 默认9
+          count: 9, // 默认9
           success: (res) => {
-            // console.log(res);
+            console.log(res);
             if (res && res.tempFiles && res.tempFiles.length > 0) {
               let flag = false;
               flag = self.validFileSizeAndType(res.tempFiles, 'img');
@@ -2084,7 +2084,7 @@ export default {
         });
       } else {
         wx.chooseMessageFile({
-          count: 1, // 最大可选
+          count: 9, // 最大可选
           type: 'file',
           success: (res) => {
             // console.log(res);

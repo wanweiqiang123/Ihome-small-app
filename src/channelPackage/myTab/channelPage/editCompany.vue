@@ -68,7 +68,7 @@
                 @click="deleteImg(infoIndex, list)"
                 class="icon" name="close-circle-fill" color="#FA3534" size="50"></u-icon>
               <u-image
-                @click="viewImg(list)"
+                @click="viewImg(list, item)"
                 width="100%" height="100%" :src="list.fileUrls ? list.fileUrls : getUrl(list.fileId)"></u-image>
             </view>
           </template>
@@ -360,7 +360,7 @@ export default {
       let self = this;
       if (index === 0) {
         uni.chooseImage({
-          count: 1, // 默认9
+          count: 9, // 默认9
           success: (res) => {
             console.log('chooseImage', res);
             if (res && res.tempFiles && res.tempFiles.length > 0) {
@@ -385,7 +385,10 @@ export default {
                         item.fileList.push(
                           {
                             ...data.data[0],
-                            fileUrls: ''
+                            fileUrls: '',
+                            fileName: `${data?.data[0]?.generateFileName}.${data?.data[0]?.generateFileType}`,
+                            fileType: data?.data[0]?.generateFileType,
+                            name: `${data?.data[0]?.generateFileName}.${data?.data[0]?.generateFileType}`,
                           }
                         )
                       }
@@ -402,7 +405,7 @@ export default {
         });
       } else {
         wx.chooseMessageFile({
-          count: 1, // 最大可选
+          count: 9, // 最大可选
           type: 'file',
           success: (res) => {
             // console.log(res);
@@ -428,7 +431,10 @@ export default {
                         item.fileList.push(
                           {
                             ...data.data[0],
-                            fileUrls: self.getFileImg(data.data[0])
+                            fileUrls: self.getFileImg(data.data[0]),
+                            fileName: `${data?.data[0]?.generateFileName}.${data?.data[0]?.generateFileType}`,
+                            fileType: data?.data[0]?.generateFileType,
+                            name: `${data?.data[0]?.generateFileName}.${data?.data[0]?.generateFileType}`,
                           }
                         )
                       }
@@ -460,16 +466,75 @@ export default {
       tool.toast('移除成功');
     },
     // 预览图片
-    viewImg(file) {
-      let url = '';
+    viewImg(file, item) {
+      console.log(file);
+      console.log(item);
       if (file.fileUrls) {
-        url = file.fileUrls;
+        // 说明是文件
+        this.openFile(file);
       } else {
-        url = tool.getFileUrl(file.fileId);
+        // 图片
+        let urls = [];
+        let current = 0;
+        if (item.fileList && item.fileList.length) {
+          item.fileList.forEach((list) => {
+            if (!list.fileUrls) {
+              urls.push(tool.getFileUrl(list.fileId));
+            }
+          });
+        }
+        if (urls && urls.length) {
+          urls.forEach((item, index) => {
+            if (item === tool.getFileUrl(file.fileId)) {
+              current = index;
+            }
+          });
+        }
+        uni.previewImage({
+          urls: urls,
+          current: current,
+        });
       }
-      uni.previewImage({
-        urls: [url]
-      })
+    },
+    // 在线打开文件
+    openFile(item) {
+      if (!item.fileType) {
+        uni.showToast({
+          title: '无法打开该文档',
+          duration: 3000
+        });
+        return ;
+      }
+      uni.downloadFile({
+        url: tool.getFileDownloadUrl(item.fileId),
+        success: (res) => {
+          if (res.statusCode === 200) {
+            console.log('下载成功', res.tempFilePath);
+            uni.openDocument({
+              filePath: res.tempFilePath,
+              fileType: item.fileType,
+              showMenu: true,
+              success: (res) => {
+                console.log('打开文档成功');
+              },
+              fail: (err) => {
+                console.log('打开文档出错', err);
+                uni.showToast({
+                  title: '无法打开该文档',
+                  duration: 3000
+                });
+              }
+            });
+          }
+        },
+        fail: (err) => {
+          console.log('下载出错', err);
+          uni.showToast({
+            title: '下载出错',
+            duration: 3000
+          });
+        }
+      });
     },
     // 校验上传的图片的大小和类型是否符合要求
     validFileSizeAndType(fileList = [], type = '') {
@@ -507,6 +572,27 @@ export default {
       } else {
         return false;
       }
+    },
+    // 获取文件的图片
+    getFileImg(file) {
+      let url = '';
+      let pdfReg = /pdf/i;
+      let wordReg = /doc|docx/i;
+      let excelReg = /xls|xlsx/i;
+      let fileTypes = '';
+      if (pdfReg.test(file.generateFileType)) {
+        fileTypes = 'pdf';
+        url = this.pdfImg;
+      }
+      if (wordReg.test(file.generateFileType)) {
+        fileTypes = 'word';
+        url = this.wordImg;
+      }
+      if (excelReg.test(file.generateFileType)) {
+        fileTypes = 'excel';
+        url = this.excelImg;
+      }
+      return url;
     },
     // 确定选择公司类型
     confirmCompanyType(value) {
@@ -571,19 +657,22 @@ export default {
         this.channelPersons = info.channelPersons[0];
       }
       // 附件类型
-      if (this.annexList.length && info.channelAttachments && info.channelAttachments.length) {
+      if (this.annexList && this.annexList.length) {
         this.annexList.forEach((list) => {
           list.fileList = [];
-          info.channelAttachments.forEach((item) => {
-            if (item.type === list.code) {
-              list.fileList.push(
-                {
-                  ...item,
-                  fileSrc: tool.getFileUrl(item.fileId)
-                }
-              );
-            }
-          });
+          if (info && info.channelAttachments && info.channelAttachments.length) {
+            info.channelAttachments.forEach((item) => {
+              if (item.type === list.code) {
+                list.fileList.push(
+                  {
+                    ...item,
+                    fileUrls: this.getFileUrls(item, 'url'), // 获取对应文件的默认图片
+                    fileType: this.getFileUrls(item, 'type'), // 获取文件类型：excel、word、pdf
+                  }
+                );
+              }
+            });
+          }
         });
       }
       // 地区
@@ -601,6 +690,44 @@ export default {
         this.paymentForm.branchNo = null;
       }
       // console.log('123123123', this.annexList);
+    },
+    getFileUrls(file, getType = '') {
+      let url = '';
+      let type = '';
+      if (file.fileId && file.fileName) {
+        if (file.fileName.endsWith(".pdf")) {
+          // pdf
+          url = this.pdfImg;
+          type = "pdf";
+        } else if (file.fileName.endsWith(".doc")) {
+          // word
+          url = this.wordImg;
+          type = "doc";
+        } else if (file.fileName.endsWith(".docx")) {
+          // word
+          url = this.wordImg;
+          type = "docx";
+        } else if (file.fileName.endsWith(".xls")) {
+          // excel
+          url = this.excelImg;
+          type = "xls";
+        } else if (file.fileName.endsWith(".xlsx")) {
+          // excel
+          url = this.excelImg;
+          type = "xlsx";
+        } else {
+          // 默认是图片
+          url = "";
+          type = "";
+        }
+      }
+      if (getType === 'url') {
+        // 返回默认文件图片
+        return url;
+      } else {
+        // 返回文件类型
+        return type
+      }
     },
     // 保存
     async handleSave() {
