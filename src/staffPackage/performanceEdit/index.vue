@@ -1304,9 +1304,20 @@ export default {
     // 确定选择时间
     confirmDate(item) {
       console.log(item);
-      if (this.currentDateType) {
-        this.postData[this.currentDateType] = `${item.year}-${item.month}-${item.day}`;
-      }
+      let selectDateTime = new Date(`${item?.year}-${item?.month}-${item?.day}`).getTime();
+      let currentDateTime = new Date().getTime();
+      console.log('selectDateTime', selectDateTime);
+      console.log('currentDateTime', currentDateTime);
+      this.$nextTick(() => {
+        if (selectDateTime > currentDateTime) {
+          this.showDate = true;
+          this.$tool.toast("选择的日期不能在今天之后");
+        } else {
+          if (this.currentDateType) {
+            this.postData[this.currentDateType] = `${item.year}-${item.month}-${item.day}`;
+          }
+        }
+      });
     },
     // 输入价格
     handleInputPrice(type) {
