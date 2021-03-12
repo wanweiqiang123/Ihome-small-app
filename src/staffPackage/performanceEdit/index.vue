@@ -1344,15 +1344,20 @@ export default {
           this.hasPrice = false; // 保证能连续输入
         }
       } else {
-        if (this.postData[this.currentPriceType]?.includes(".")) {
-          if (e != ".") {
-            let arr = this.postData[this.currentPriceType].split(".");
-            if (arr[1].length < 2) {
-              this.postData[this.currentPriceType] += e;
-            }
-          }
+        if (['', null, undefined].includes(this.postData[this.currentPriceType])) {
+          this.postData[this.currentPriceType] = '' + e;
         } else {
-          this.postData[this.currentPriceType] += e;
+          this.postData[this.currentPriceType] = this.postData[this.currentPriceType].toString();
+          if (this.postData[this.currentPriceType]?.includes(".")) {
+            if (e != ".") {
+              let arr = this.postData[this.currentPriceType].split(".");
+              if (arr[1].length < 2) {
+                this.postData[this.currentPriceType] += e;
+              }
+            }
+          } else {
+            this.postData[this.currentPriceType] += e;
+          }
         }
       }
     },
