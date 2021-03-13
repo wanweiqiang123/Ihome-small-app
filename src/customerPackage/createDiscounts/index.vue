@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-13 09:35:31
+ * @LastEditTime: 2021-03-13 09:57:57
 -->
 <template>
   <view>
@@ -280,13 +280,11 @@ export default {
       console.log(scene, "scene");
       this.noticeId = options.scene;
       console.log(this.noticeId, "noticeId");
-    } else {
-      this.noticeId = "";
     }
     let url =
       "/pages/login/index/index?redirect=" +
       encodeURIComponent(
-        "customerPackage/createDiscounts/index?scene=" + this.noticeId
+        `customerPackage/createDiscounts/index?scene=${this.noticeId}`
       );
     console.log(url, "url");
     if (!storageTool.getToken()) {
@@ -303,7 +301,7 @@ export default {
     if (this.noticeId) {
       this.getInfo();
     } else {
-      this.$tool.toast(`${this.noticeId}参数有误`);
+      this.$tool.toast(`优惠告知书Id不存在`);
     }
   },
   methods: {
