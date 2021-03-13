@@ -67,14 +67,46 @@
         lower-threshold="50"
         v-if="tablePage.length"
       >
-        <template v-for="(item, i) in tablePage">
-          <view
-            :key="i"
-            class="list-item"
-            @click="goBackPage(item)"
-          >{{item[paramsKey]}}
+        <view v-if="!cssType">
+          <template v-for="(item, i) in tablePage">
+            <view
+              :key="i"
+              class="list-item"
+              @click="goBackPage(item)"
+            >{{item[paramsKey]}}
+            </view>
+          </template>
+        </view>
+        <view v-else>
+          <!--选择优惠告知书 start-->
+          <view v-if="cssType === 'notice'">
+            <template v-for="(item, i) in tablePage">
+              <view
+                :key="i"
+                class="list-item"
+                @click="goBackPage(item)">
+                <view class="notice-title">{{getDictName(item.notificationType, NotificationTypeList)}} ({{item.noticeNo}})</view>
+                <view class="notice-explain">优惠方式：{{item.explain | emptyFilter}}</view>
+                <view class="notice-explain">项目周期：{{item.cycleName | emptyFilter}}</view>
+                <view class="notice-explain">业主信息：{{item.ownerInfoStr | emptyFilter}}</view>
+              </view>
+            </template>
           </view>
-        </template>
+          <!--选择优惠告知书 end-->
+          <!--选择客户 start-->
+          <view v-if="cssType === 'custom'">
+            <template v-for="(item, i) in tablePage">
+              <view
+                :key="i"
+                class="list-item item-flex"
+                @click="goBackPage(item)">
+                <view>{{item.custName | emptyFilter}}</view>
+                <view class="phone">{{item.custTel | emptyFilter}}</view>
+              </view>
+            </template>
+          </view>
+          <!--选择客户 end-->
+        </view>
         <view style="padding: 20rpx 0 10rpx 0">
           <u-loadmore
             v-if="isShow"
@@ -98,6 +130,7 @@
 <script>
 import * as apiList from "../../../api/index";
 import pagination from "../../../mixins/pagination";
+import {getAllDictByType} from "@/api";
 const debounce = (function () {
   let timer;
   return function (fn, interval) {
@@ -110,6 +143,14 @@ export default {
   components: {},
   data() {
     return {
+      cssType: '', // 自定义要展示的内容名字
+      dictObj: {
+        types: [
+          "NotificationType"
+        ]
+      }, // 需要用到的字典类型参数
+      dictList: null, // 部分字典数据
+      NotificationTypeList: [], // 优惠告知书类型字典
       isArea: false,
       keyword: "",
       areaShow: false,
@@ -150,14 +191,21 @@ export default {
       }
     },
   },
-  onLoad() {
+  async onLoad() {
+    this.cssType = getApp()?.globalData?.searchParams?.cssType;
+    // 根据需要获取字典
+    if (['notice'].includes(this.cssType)) {
+      this.dictList = await this.getAllDictByTypes(this.dictObj);
+      this.NotificationTypeList = await this.getSignDict("NotificationType");
+      console.log('NotificationTypeList', this.NotificationTypeList);
+    }
     this.paramsKey = getApp().globalData.searchParams.key;
     this.paramsId = getApp().globalData.searchParams.id;
     this.type = getApp().globalData.searchParams.type;
     if (this.isArea && !this.areaList?.length) {
-      this.getAreaOption();
+      await this.getAreaOption();
     }
-    this.getListMixin();
+    await this.getListMixin();
   },
   methods: {
     async getAreaOption() {
@@ -231,7 +279,58 @@ export default {
       } else {
         this.searchNull = true;
       }
+      // 处理选择优惠告知书展示的业主信息
+      if (this.cssType === 'notice' && this.tablePage && this.tablePage.length) {
+        await this.initNoticeTable();
+      }
       this.$forceUpdate();
+    },
+
+    // 处理选择优惠告知书展示的业主信息
+    initNoticeTable() {
+      this.tablePage.forEach((item) => {
+        let nameArr = [];
+        let nameStr = '';
+        if (item.ownerList && item.ownerList.length) {
+          item.ownerList.forEach((list) => {
+            nameArr.push(`${list.ownerName ? list.ownerName : '---'} (${list.ownerMobile ? list.ownerMobile : '---'})`);
+          });
+        }
+        if (nameArr && nameArr.length) {
+          nameStr = nameArr.join('；');
+        }
+        this.$set(item, 'ownerInfoStr', nameStr);
+      });
+    },
+
+    // 获取对应类型的字典集合
+    async getAllDictByTypes(obj) {
+      const dictList = await getAllDictByType(obj);
+      return dictList;
+    },
+    // 获取单个类型字典
+    async getSignDict(type = '') {
+      let list = [];
+      if (this.dictList) {
+        Object.keys(this.dictList).forEach((key) => {
+          if (key === type) {
+            list = this.dictList[key];
+          }
+        });
+      }
+      return list;
+    },
+    // 获取字典的name
+    getDictName(type = "", list = []) {
+      let name = '';
+      if (type && list && list.length) {
+        list.forEach((item) => {
+          if (item.code === type) {
+            name = item.name;
+          }
+        });
+      }
+      return name
     },
   },
 };
@@ -276,7 +375,34 @@ export default {
   text-align: left;
   padding: 20rpx 10rpx 20rpx 20rpx;
   border-bottom: 1px solid #e4e7ed;
+
+  .notice-title {
+    font-weight: bold;
+    margin-bottom: 10rpx;
+  }
+
+  .notice-explain {
+    font-size: 24rpx;
+    color: #606266;
+    margin-top: 6rpx;
+  }
 }
+
+.item-flex {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  view {
+    flex: 1;
+  }
+
+  .phone {
+    text-align: right;
+  }
+}
+
 .searchNull {
   position: absolute;
   top: 40%;

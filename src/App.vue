@@ -18,6 +18,7 @@ export default {
     attestationInfo: {}, // 认证信息
     noticeInfo: {}, //优惠告知书签署预览信息
     searchParams: {
+      cssType: '', // 组件样式
       api: null, // 搜索的api
       key: null, // 搜索的关键字
       id: null, //  搜索的关键字id

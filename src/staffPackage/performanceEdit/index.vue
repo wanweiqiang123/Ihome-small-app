@@ -2217,6 +2217,7 @@ export default {
     // 添加优惠告知书
     handleSelectNotice() {
       getApp().globalData.searchParams = {
+        cssType: 'notice',
         api: "postNoticeDealList",
         key: "noticeNo",
         id: "id",
@@ -2309,6 +2310,7 @@ export default {
     // 添加客户
     handleSelectCustomer() {
       getApp().globalData.searchParams = {
+        cssType: 'custom',
         api: "postCustomerGetCustList",
         key: "custName",
         id: "id",
