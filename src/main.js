@@ -65,31 +65,34 @@ Vue.filter('emptyFilter', (msg) => {
 
 Vue.prototype.$has = function (key) {
   let userinfo = storageTool.getUserInfo();
-
-  let list = [];//权限列表（从用户信息中读取）
-  userinfo.wechatAppResourceList.forEach((item => {
-    list.push(item.code);
-  }));
-  let result = false;//是否有权限
-  if (key instanceof Array) {
-    //数组类型
-    let set1 = new Set(key);
-    let set2 = new Set(list);
-    //交集
-    let intersect = [...new Set([...set1].filter(x => set2.has(x)))];
-    if (intersect.length == 0) {
-      result = false;
-    } else {
-      result = true;
-    }
-  } else if (typeof key == 'string') {
-    //字符串类型
-    result = list.includes(key);
+  if (userinfo.account = 'admin' || userinfo.roleList.includes("RAdmin")) {
+    return true;
   } else {
-    result = false;
-    console.error('只支持数组或字符串:' + typeof key)
+    let list = [];//权限列表（从用户信息中读取）
+    userinfo.wechatAppResourceList.forEach((item => {
+      list.push(item.code);
+    }));
+    let result = false;//是否有权限
+    if (key instanceof Array) {
+      //数组类型
+      let set1 = new Set(key);
+      let set2 = new Set(list);
+      //交集
+      let intersect = [...new Set([...set1].filter(x => set2.has(x)))];
+      if (intersect.length == 0) {
+        result = false;
+      } else {
+        result = true;
+      }
+    } else if (typeof key == 'string') {
+      //字符串类型
+      result = list.includes(key);
+    } else {
+      result = false;
+      console.error('只支持数组或字符串:' + typeof key)
+    }
+    return result;
   }
-  return result;
 }
 Vue.prototype.$RoleTool = function (code) {
   let userinfo = storageTool.getUserInfo();
