@@ -8,12 +8,12 @@
  */
 
 import { currentEnvConfig } from './env-config'
-import { storageTool } from './common/storageTool'
+import storageTool from './common/storageTool'
 function getJsLogAppId() {
     let write = true;//配置上报参数
     let appid = null;
     if (write) {
-        appid = 'JvHengMP_' + currentEnvConfig.env + "_" + currentEnvConfig.envName;
+        appid = 'JvHengMP_' + currentEnvConfig.env + "_" + __wxConfig.envVersion;
     }
     return appid;
 }
@@ -24,12 +24,13 @@ function jsLog(err, type) {
         let routes = getCurrentPages(); // 获取当前打开过的页面路由数组
         let curRoute = routes[routes.length - 1].route; //获取当前页面路由
         let curParam = routes[routes.length - 1].options; //获取路由参数
-        let path="";
+        let path = "";
         Object.keys(curParam || {}).forEach((key) => {
-          let t = key + "=" + curParam[key] + "&";
-          path += t;
+            let t = key + "=" + curParam[key] + "&";
+            path += t;
         });
         if (jsLogAppId) {
+
             let userInfo = storageTool.getUserInfo() || {};
             try {
                 let postData = {
@@ -55,7 +56,7 @@ function jsLog(err, type) {
 
                     },
                     fail: res => {
-                        console.log('fail', res.data);
+                        console.log('fail', res.errMsg);
                     }
                 });
             } catch (error) {
