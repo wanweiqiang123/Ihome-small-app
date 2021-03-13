@@ -4,211 +4,209 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-11 15:22:32
+ * @LastEditTime: 2021-03-13 09:35:31
 -->
 <template>
-  <LoginPage>
-    <view>
-      <u-card
-        :border="false"
-        padding="20"
-        margin="30rpx 30rpx 0 30rpx"
+  <view>
+    <u-card
+      :border="false"
+      padding="20"
+      margin="30rpx 30rpx 0 30rpx"
+    >
+      <view
+        class="head"
+        slot="head"
       >
-        <view
-          class="head"
-          slot="head"
-        >
-          <view>
-            <img
-              class="head-img"
-              :src="src"
-              alt=""
-            >
-          </view>
-          <view class="head-title">优惠信息</view>
-        </view>
-        <view
-          class="body"
-          slot="body"
-        >
-          <view class="body-msg">
-            <view>项目名称</view>
-            <view class="color">{{form.proName | emptyFilter}}</view>
-          </view>
-          <view class="body-msg">
-            <view>优惠方式</view>
-            <view class="color">{{form.explain | emptyFilter}}</view>
-          </view>
-          <view class="body-msg">
-            <view>服务费金额</view>
-            <view class="color">¥{{form.paymentAmount | emptyFilter}}</view>
-          </view>
-        </view>
-      </u-card>
-      <u-gap
-        height="20"
-        bg-color="#f3f4f6"
-      ></u-gap>
-      <view class="select">
-        <u-form
-          class="select-msg"
-          :model="form"
-          ref="roomFrom"
-          label-width="190"
-        >
-          <u-form-item
-            label="选择栋座"
-            right-icon="arrow-right"
-            class="hide-icon"
-            prop="buyUnitName"
-            :required="!isRecognize"
+        <view>
+          <img
+            class="head-img"
+            :src="src"
+            alt=""
           >
-            <u-input
-              v-model="form.buyUnitName"
-              type="select"
-              :placeholder="`${isRecognize ? '认筹阶段可不选择栋座': '请选择栋座'}`"
-              @click="buildingBlockShow = true"
-            />
-          </u-form-item>
-          <u-form-item
-            label="选择房号"
-            right-icon="arrow-right"
-            class="hide-icon"
-            prop="roomNo"
-            :required="!isRecognize"
-          >
-            <u-input
-              v-model="form.roomNo"
-              type="select"
-              :placeholder="`${isRecognize ? '认筹阶段可不选择房号':'请选择房号'}`"
-              @click="roomNoShow = true"
-            />
-          </u-form-item>
-        </u-form>
-        <u-select
-          title="选择栋座"
-          confirm-color="#dd524d"
-          v-model="buildingBlockShow"
-          :list="buildingBlockList"
-          @confirm="buildingBlockClick"
-          value-name="buildingId"
-          label-name="buildingName"
-        ></u-select>
-        <u-select
-          title="选择房号"
-          confirm-color="#dd524d"
-          v-model="roomNoShow"
-          :list="roomNoList"
-          @confirm="roomNoClick"
-          value-name="roomId"
-          label-name="roomNo"
-        ></u-select>
+        </view>
+        <view class="head-title">优惠信息</view>
       </view>
-      <u-gap
-        height="80"
-        bg-color="#f3f4f6"
-      ></u-gap>
-      <view class="owner">
-        <view class="owner-tilte">
-          <view class="owner-tilte-left">业主信息</view>
-          <view class="owner-tilte-right">如有多个业主通过右侧“
+      <view
+        class="body"
+        slot="body"
+      >
+        <view class="body-msg">
+          <view>项目名称</view>
+          <view class="color">{{form.proName | emptyFilter}}</view>
+        </view>
+        <view class="body-msg">
+          <view>优惠方式</view>
+          <view class="color">{{form.explain | emptyFilter}}</view>
+        </view>
+        <view class="body-msg">
+          <view>服务费金额</view>
+          <view class="color">¥{{form.paymentAmount | emptyFilter}}</view>
+        </view>
+      </view>
+    </u-card>
+    <u-gap
+      height="20"
+      bg-color="#f3f4f6"
+    ></u-gap>
+    <view class="select">
+      <u-form
+        class="select-msg"
+        :model="form"
+        ref="roomFrom"
+        label-width="190"
+      >
+        <u-form-item
+          label="选择栋座"
+          right-icon="arrow-right"
+          class="hide-icon"
+          prop="buyUnitName"
+          :required="!isRecognize"
+        >
+          <u-input
+            v-model="form.buyUnitName"
+            type="select"
+            :placeholder="`${isRecognize ? '认筹阶段可不选择栋座': '请选择栋座'}`"
+            @click="buildingBlockShow = true"
+          />
+        </u-form-item>
+        <u-form-item
+          label="选择房号"
+          right-icon="arrow-right"
+          class="hide-icon"
+          prop="roomNo"
+          :required="!isRecognize"
+        >
+          <u-input
+            v-model="form.roomNo"
+            type="select"
+            :placeholder="`${isRecognize ? '认筹阶段可不选择房号':'请选择房号'}`"
+            @click="roomNoShow = true"
+          />
+        </u-form-item>
+      </u-form>
+      <u-select
+        title="选择栋座"
+        confirm-color="#dd524d"
+        v-model="buildingBlockShow"
+        :list="buildingBlockList"
+        @confirm="buildingBlockClick"
+        value-name="buildingId"
+        label-name="buildingName"
+      ></u-select>
+      <u-select
+        title="选择房号"
+        confirm-color="#dd524d"
+        v-model="roomNoShow"
+        :list="roomNoList"
+        @confirm="roomNoClick"
+        value-name="roomId"
+        label-name="roomNo"
+      ></u-select>
+    </view>
+    <u-gap
+      height="80"
+      bg-color="#f3f4f6"
+    ></u-gap>
+    <view class="owner">
+      <view class="owner-tilte">
+        <view class="owner-tilte-left">业主信息</view>
+        <view class="owner-tilte-right">如有多个业主通过右侧“
+          <u-icon
+            name="plus-circle"
+            size="32"
+          ></u-icon>
+          ”按钮新增
+        </view>
+      </view>
+      <template v-for="(item, i) in ownerList">
+        <view
+          class="owner-layout"
+          :key="i"
+        >
+          <u-form
+            :model="item"
+            :ref="`uForm`"
+            class="owner-msg"
+            label-width="190"
+          >
+            <u-form-item
+              class="owner-msg-item"
+              label="业主姓名"
+              required
+              prop="ownerName"
+            >
+              <u-input
+                v-model="item.ownerName"
+                :auto-height="autoHeight"
+                placeholder="请输入姓名"
+                clearable
+              />
+            </u-form-item>
+            <u-form-item
+              class="owner-msg-item"
+              label="手机号码"
+              required
+              prop="ownerMobile"
+            >
+              <u-input
+                v-model="item.ownerMobile"
+                :auto-height="autoHeight"
+                placeholder="请输入手机号码"
+                clearable
+              />
+            </u-form-item>
+            <u-form-item
+              class="owner-msg-item"
+              label="身份证号"
+              required
+              prop="ownerCertificateNo"
+            >
+              <u-input
+                v-model="item.ownerCertificateNo"
+                :auto-height="autoHeight"
+                placeholder="请输入身份证号"
+                clearable
+              />
+            </u-form-item>
+          </u-form>
+          <view
+            v-if="i === 0"
+            class="owner-icon"
+            @click="addOwner"
+          >
             <u-icon
               name="plus-circle"
+              color="#2979ff"
               size="32"
             ></u-icon>
-            ”按钮新增
+          </view>
+          <view
+            v-else
+            class="owner-icon"
+            @click="subtractOwner(i)"
+          >
+            <u-icon
+              name="close-circle"
+              color="#2979ff"
+              size="32"
+            ></u-icon>
           </view>
         </view>
-        <template v-for="(item, i) in ownerList">
-          <view
-            class="owner-layout"
-            :key="i"
-          >
-            <u-form
-              :model="item"
-              :ref="`uForm`"
-              class="owner-msg"
-              label-width="190"
-            >
-              <u-form-item
-                class="owner-msg-item"
-                label="业主姓名"
-                required
-                prop="ownerName"
-              >
-                <u-input
-                  v-model="item.ownerName"
-                  :auto-height="autoHeight"
-                  placeholder="请输入姓名"
-                  clearable
-                />
-              </u-form-item>
-              <u-form-item
-                class="owner-msg-item"
-                label="手机号码"
-                required
-                prop="ownerMobile"
-              >
-                <u-input
-                  v-model="item.ownerMobile"
-                  :auto-height="autoHeight"
-                  placeholder="请输入手机号码"
-                  clearable
-                />
-              </u-form-item>
-              <u-form-item
-                class="owner-msg-item"
-                label="身份证号"
-                required
-                prop="ownerCertificateNo"
-              >
-                <u-input
-                  v-model="item.ownerCertificateNo"
-                  :auto-height="autoHeight"
-                  placeholder="请输入身份证号"
-                  clearable
-                />
-              </u-form-item>
-            </u-form>
-            <view
-              v-if="i === 0"
-              class="owner-icon"
-              @click="addOwner"
-            >
-              <u-icon
-                name="plus-circle"
-                color="#2979ff"
-                size="32"
-              ></u-icon>
-            </view>
-            <view
-              v-else
-              class="owner-icon"
-              @click="subtractOwner(i)"
-            >
-              <u-icon
-                name="close-circle"
-                color="#2979ff"
-                size="32"
-              ></u-icon>
-            </view>
-          </view>
-          <u-gap
-            :key="i"
-            height="20"
-            bg-color="#f3f4f6"
-          ></u-gap>
-        </template>
-      </view>
-      <view class="button">
-        <u-button
-          type="primary"
-          size="medium"
-          @click="submit"
-        >保存并预览优惠告知书</u-button>
-      </view>
+        <u-gap
+          :key="i"
+          height="20"
+          bg-color="#f3f4f6"
+        ></u-gap>
+      </template>
     </view>
-  </LoginPage>
+    <view class="button">
+      <u-button
+        type="primary"
+        size="medium"
+        @click="submit"
+      >保存并预览优惠告知书</u-button>
+    </view>
+  </view>
 </template>
 
 <script>
@@ -219,6 +217,7 @@ import {
   postRoomByProId,
   getRecognizeById,
 } from "../../api/staff";
+import storageTool from "@/common/storageTool";
 export default {
   data() {
     return {
@@ -276,7 +275,25 @@ export default {
     };
   },
   onLoad(options) {
-    this.noticeId = options.id;
+    if (options && options.scene) {
+      const scene = decodeURIComponent(options.scene);
+      console.log(scene, "scene");
+      this.noticeId = options.scene;
+      console.log(this.noticeId, "noticeId");
+    } else {
+      this.noticeId = "";
+    }
+    let url =
+      "/pages/login/index/index?redirect=" +
+      encodeURIComponent(
+        "customerPackage/createDiscounts/index?scene=" + this.noticeId
+      );
+    console.log(url, "url");
+    if (!storageTool.getToken()) {
+      uni.redirectTo({
+        url: url,
+      });
+    }
   },
   onReady() {
     this.$refs.uForm[0].setRules(this.rules);
@@ -285,6 +302,8 @@ export default {
   onShow() {
     if (this.noticeId) {
       this.getInfo();
+    } else {
+      this.$tool.toast(`${this.noticeId}参数有误`);
     }
   },
   methods: {
