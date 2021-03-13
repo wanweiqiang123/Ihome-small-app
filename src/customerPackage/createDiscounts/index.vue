@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-13 09:57:57
+ * @LastEditTime: 2021-03-13 10:35:41
 -->
 <template>
   <view>
@@ -278,7 +278,7 @@ export default {
     if (options && options.scene) {
       const scene = decodeURIComponent(options.scene);
       console.log(scene, "scene");
-      this.noticeId = options.scene;
+      this.noticeId = scene;
       console.log(this.noticeId, "noticeId");
     }
     let url =

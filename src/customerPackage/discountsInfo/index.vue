@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-05 16:18:14
+ * @LastEditTime: 2021-03-13 12:20:25
 -->
 <template>
   <view class="info safe-area-inset-bottom">
@@ -520,15 +520,12 @@ export default {
     },
 
     handleToRefund() {
-      const arr = this.info.noticeList.filter(
+      const item = this.info.noticeList.fild(
         (v) =>
           v.notificationType === "RefundApplication" &&
           v.notificationStatus === "WaitBeSigned"
       );
-      console.log(arr);
-      uni.navigateTo({
-        url: `/customerPackage/createRefund/index?id=${arr[0].id}`,
-      });
+      if (item) this.signNotice(item, "sign");
     },
 
     gotoSignNotification() {
@@ -561,7 +558,16 @@ export default {
     // 签署
     signNotice(val, type) {
       if (val.notificationType === "RefundApplication") {
-        this.handleToRefund();
+        if (val.refundInfoStatus) {
+          getApp().noticeInfo = { ...val, type: type };
+          uni.navigateTo({
+            url: `/customerPackage/notification/index`,
+          });
+        } else {
+          uni.navigateTo({
+            url: `/customerPackage/createRefund/index?id=${val.id}`,
+          });
+        }
       } else {
         getApp().noticeInfo = { ...val, type: type };
         uni.navigateTo({
