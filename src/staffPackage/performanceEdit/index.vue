@@ -622,7 +622,8 @@ export default {
       contNoList: [], // 分销协议列表---initPage接口
       postData: {
         dealCode: '',
-        cycleId: '', // 接口用到的id
+        proId: '', // 接口用到的proId
+        cycleId: '', // 接口用到的cycleId
         cycleName: '',
         modelCode: '',
         refineModel: '',
@@ -913,6 +914,7 @@ export default {
       this.postData.reportId = info?.reportId;
       this.postData.sceneSales = info?.sceneSales;
       // 分割
+      this.postData.proId = info?.projectId;
       this.postData.cycleId = info?.cycleId;
       this.postData.cycleName = info?.cycleName;
       this.postData.refineModelName = info?.refineModel ? this.getDictName(info?.refineModel, this.SubdivideList) : '';
@@ -1437,8 +1439,9 @@ export default {
           await this.resetData();
         }
         this.$nextTick(async () => {
-          this.postData.cycleId = data.termId;
-          this.postData.cycleName= data.termName;
+          this.postData.proId = data?.proId;
+          this.postData.cycleId = data?.termId;
+          this.postData.cycleName= data?.termName;
           await this.getBaseDealInfo(data.termId);
         });
       }
@@ -2217,6 +2220,7 @@ export default {
     // 添加优惠告知书
     handleSelectNotice() {
       getApp().globalData.searchParams = {
+        cssType: 'notice',
         api: "postNoticeDealList",
         key: "noticeNo",
         id: "id",
@@ -2309,6 +2313,7 @@ export default {
     // 添加客户
     handleSelectCustomer() {
       getApp().globalData.searchParams = {
+        cssType: 'custom',
         api: "postCustomerGetCustList",
         key: "custName",
         id: "id",
@@ -2501,6 +2506,7 @@ export default {
           "charge": "",
           "contNo": "",
           "contType": "",
+          "proId": "", // 2021-03-13 需要增加
           "cycleId": '',
           "dataSign": "",
           "dealOrgId": '',
@@ -2586,6 +2592,7 @@ export default {
       obj.dealVO.businessType = this.baseInfoByTerm.busTypeEnum;
       obj.dealVO.charge = this.baseInfoByTerm.chargeEnum;
       obj.dealVO.contType = this.postData.contType;
+      obj.dealVO.proId = this.postData.proId;
       obj.dealVO.cycleId = this.postData.cycleId;
       obj.dealVO.dataSign = this.postData.dataSign;
       obj.dealVO.dealOrgId = this.postData.dealOrgId;
