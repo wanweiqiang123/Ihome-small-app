@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-05 16:19:46
+ * @LastEditTime: 2021-03-13 14:57:09
 -->
 <template>
   <LoginPage>
@@ -35,6 +35,7 @@
             v-model="payNum"
             label="付款金额"
             :clearable="false"
+            placeholder="请输入付款金额"
             focus
             @blur="payNumChange"
             disabled
