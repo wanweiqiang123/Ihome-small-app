@@ -82,10 +82,10 @@
             <u-image
               v-for="(srcItem, srcIndex) in item.fileList"
               :key="srcIndex"
-              @click="previewImg(srcItem)"
+              @click="previewImg(srcItem, item)"
               width="200rpx"
               height="200rpx"
-              :src="srcItem.fileSrc"></u-image>
+              :src="srcItem.fileUrls ? srcItem.fileUrls : getUrl(srcItem.fileId)"></u-image>
           </view>
         </view>
       </view>
@@ -147,6 +147,9 @@
   export default {
     data() {
       return {
+        pdfImg: require('@/channelPackage/common/img/pdf.jpg'),
+        excelImg: require('@/channelPackage/common/img/excel.png'),
+        wordImg: require('@/channelPackage/common/img/word.jpg'),
         userInfo: null,
         companyInfo: {
           statusName: null, // 状态
@@ -209,11 +212,74 @@
         });
       },
       // 查看附件
-      previewImg(item) {
-        // console.log(item);
-        if (!item.fileId) return;
-        uni.previewImage({
-          urls: [item.fileSrc]
+      previewImg(file, item) {
+        console.log(file);
+        console.log(item);
+        if (file.fileUrls) {
+          // 说明是文件
+          this.openFile(file);
+        } else {
+          // 图片
+          let urls = [];
+          let current = 0;
+          if (item.fileList && item.fileList.length) {
+            item.fileList.forEach((list) => {
+              if (!list.fileUrls) {
+                urls.push(tool.getFileUrl(list.fileId));
+              }
+            });
+          }
+          if (urls && urls.length) {
+            urls.forEach((item, index) => {
+              if (item === tool.getFileUrl(file.fileId)) {
+                current = index;
+              }
+            });
+          }
+          uni.previewImage({
+            urls: urls,
+            current: current,
+          });
+        }
+      },
+      // 在线打开文件
+      openFile(item) {
+        if (!item.fileType) {
+          uni.showToast({
+            title: '无法打开该文档',
+            duration: 3000
+          });
+          return ;
+        }
+        uni.downloadFile({
+          url: tool.getFileDownloadUrl(item.fileId),
+          success: (res) => {
+            if (res.statusCode === 200) {
+              console.log('下载成功', res.tempFilePath);
+              uni.openDocument({
+                filePath: res.tempFilePath,
+                fileType: item.fileType,
+                showMenu: true,
+                success: (res) => {
+                  console.log('打开文档成功');
+                },
+                fail: (err) => {
+                  console.log('打开文档出错', err);
+                  uni.showToast({
+                    title: '无法打开该文档',
+                    duration: 3000
+                  });
+                }
+              });
+            }
+          },
+          fail: (err) => {
+            console.log('下载出错', err);
+            uni.showToast({
+              title: '下载出错',
+              duration: 3000
+            });
+          }
         });
       },
       // 公司结佣账号切换
@@ -229,25 +295,66 @@
           this.channelPersons = info.channelPersons[0];
         }
         // 附件类型
-        if (this.annexList.length && info.channelAttachments && info.channelAttachments.length) {
+        if (this.annexList && this.annexList.length) {
           this.annexList.forEach((list) => {
             list.fileList = [];
-            info.channelAttachments.forEach((item) => {
-              if (item.type === list.code) {
-                list.fileList.push(
-                  {
-                    ...item,
-                    fileSrc: tool.getFileUrl(item.fileId)
-                  }
-                );
-              }
-            });
+            if (info && info.channelAttachments && info.channelAttachments.length) {
+              info.channelAttachments.forEach((item) => {
+                if (item.type === list.code) {
+                  list.fileList.push(
+                    {
+                      ...item,
+                      fileUrls: this.getFileUrls(item, 'url'), // 获取对应文件的默认图片
+                      fileType: this.getFileUrls(item, 'type'), // 获取文件类型：excel、word、pdf
+                    }
+                  );
+                }
+              });
+            }
           });
         }
         this.annexList = this.annexList.filter((list) => {
           return list.fileList.length > 0;
         });
         console.log('123123123', this.annexList);
+      },
+      getFileUrls(file, getType = '') {
+        let url = '';
+        let type = '';
+        if (file.fileId && file.fileName) {
+          if (file.fileName.endsWith(".pdf")) {
+            // pdf
+            url = this.pdfImg;
+            type = "pdf";
+          } else if (file.fileName.endsWith(".doc")) {
+            // word
+            url = this.wordImg;
+            type = "doc";
+          } else if (file.fileName.endsWith(".docx")) {
+            // word
+            url = this.wordImg;
+            type = "docx";
+          } else if (file.fileName.endsWith(".xls")) {
+            // excel
+            url = this.excelImg;
+            type = "xls";
+          } else if (file.fileName.endsWith(".xlsx")) {
+            // excel
+            url = this.excelImg;
+            type = "xlsx";
+          } else {
+            // 默认是图片
+            url = "";
+            type = "";
+          }
+        }
+        if (getType === 'url') {
+          // 返回默认文件图片
+          return url;
+        } else {
+          // 返回文件类型
+          return type
+        }
       },
       // 获取对应字典name
       async getDictName(code, type) {
@@ -279,6 +386,12 @@
           this.annexList = list;
         }
       },
+      // 获取图片完整的url
+      getUrl(id) {
+        if (!id) return "";
+        let url = tool.getFileUrl(id);
+        return url;
+      }
     }
   };
 </script>

@@ -72,7 +72,7 @@
                     @click="deleteImg(infoIndex, list)"
                     class="icon" name="close-circle-fill" color="#FA3534" size="50"></u-icon>
                   <u-image
-                    @click="viewImg(list)"
+                    @click="viewImg(list, item)"
                     width="100%" height="100%" :src="list.fileUrls ? list.fileUrls : getUrl(list.fileId)"></u-image>
                 </view>
               </template>
@@ -334,7 +334,7 @@ export default {
       let self = this;
       if (index === 0) {
         uni.chooseImage({
-          count: 1, // 默认9
+          count: 9, // 默认9
           success: (res) => {
             console.log('chooseImage', res);
             if (res && res.tempFiles && res.tempFiles.length > 0) {
@@ -359,7 +359,10 @@ export default {
                         item.fileList.push(
                           {
                             ...data.data[0],
-                            fileUrls: ''
+                            fileUrls: '',
+                            fileName: `${data?.data[0]?.generateFileName}.${data?.data[0]?.generateFileType}`,
+                            type: data?.data[0]?.generateFileType,
+                            name: `${data?.data[0]?.generateFileName}.${data?.data[0]?.generateFileType}`,
                           }
                         )
                       }
@@ -376,7 +379,7 @@ export default {
         });
       } else {
         wx.chooseMessageFile({
-          count: 1, // 最大可选
+          count: 9, // 最大可选
           type: 'file',
           success: (res) => {
             // console.log(res);
@@ -402,7 +405,10 @@ export default {
                         item.fileList.push(
                           {
                             ...data.data[0],
-                            fileUrls: self.getFileImg(data.data[0])
+                            fileUrls: self.getFileImg(data.data[0]),
+                            fileName: `${data?.data[0]?.generateFileName}.${data?.data[0]?.generateFileType}`,
+                            type: data?.data[0]?.generateFileType,
+                            name: `${data?.data[0]?.generateFileName}.${data?.data[0]?.generateFileType}`,
                           }
                         )
                       }
@@ -434,16 +440,75 @@ export default {
       tool.toast('移除成功');
     },
     // 预览图片
-    viewImg(file) {
-      let url = '';
+    viewImg(file, item) {
+      console.log(file);
+      console.log(item);
       if (file.fileUrls) {
-        url = file.fileUrls;
+        // 说明是文件
+        this.openFile(file);
       } else {
-        url = tool.getFileUrl(file.fileId);
+        // 图片
+        let urls = [];
+        let current = 0;
+        if (item.fileList && item.fileList.length) {
+          item.fileList.forEach((list) => {
+            if (!list.fileUrls) {
+              urls.push(tool.getFileUrl(list.fileId));
+            }
+          });
+        }
+        if (urls && urls.length) {
+          urls.forEach((item, index) => {
+            if (item === tool.getFileUrl(file.fileId)) {
+              current = index;
+            }
+          });
+        }
+        uni.previewImage({
+          urls: urls,
+          current: current,
+        });
       }
-      uni.previewImage({
-        urls: [url]
-      })
+    },
+    // 在线打开文件
+    openFile(item) {
+      if (!item.type) {
+        uni.showToast({
+          title: '无法打开该文档',
+          duration: 3000
+        });
+        return ;
+      }
+      uni.downloadFile({
+        url: tool.getFileDownloadUrl(item.fileId),
+        success: (res) => {
+          if (res.statusCode === 200) {
+            console.log('下载成功', res.tempFilePath);
+            uni.openDocument({
+              filePath: res.tempFilePath,
+              fileType: item.type,
+              showMenu: true,
+              success: (res) => {
+                console.log('打开文档成功');
+              },
+              fail: (err) => {
+                console.log('打开文档出错', err);
+                uni.showToast({
+                  title: '无法打开该文档',
+                  duration: 3000
+                });
+              }
+            });
+          }
+        },
+        fail: (err) => {
+          console.log('下载出错', err);
+          uni.showToast({
+            title: '下载出错',
+            duration: 3000
+          });
+        }
+      });
     },
     // 校验上传的图片的大小和类型是否符合要求
     validFileSizeAndType(fileList = [], type = '') {
@@ -514,6 +579,7 @@ export default {
     async handleSave() {
       let self = this;
       let flag = false;
+      console.log(self.annexInfo);
       // 校验附件是否有值
       flag = self.validAnnex(self.annexInfo);
       if (!flag) {

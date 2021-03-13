@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-19 15:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-05 14:10:11
+ * @LastEditTime: 2021-03-12 15:00:49
 -->
 <template>
   <view class="receipt info">
@@ -233,26 +233,27 @@
                 <view class="swiper-item-num">编号（{{item.noticeNo}}）</view>
               </view>
               <view class="swiper-item-btn">
-                <u-button
+                <!-- <u-button
                   v-if="item.notificationStatus === 'BecomeEffective'"
                   type="primary"
                   size="medium"
                   shape="circle"
                   @click="preview(item)"
-                >查看</u-button>
+                >查看</u-button> -->
+                <!-- 转发 -->
                 <u-button
-                  v-else-if="item.notificationStatus === 'WaitBeSigned'"
+                  v-if="item.notificationStatus === 'WaitBeSigned'"
                   type="primary"
                   size="medium"
                   shape="circle"
                   @click="gotoNotice(item)"
-                >转发</u-button>
+                >查看</u-button>
                 <u-button
                   v-else
                   type="primary"
                   size="medium"
                   shape="circle"
-                  @click="gotoNotice(item)"
+                  @click="preview(item)"
                 >查看</u-button>
               </view>
             </view>
@@ -436,26 +437,9 @@ export default {
     },
     // 转发预览
     async gotoNotice(val) {
-      if (val) {
-        switch (val.notificationStatus) {
-          case "WaitPay":
-          case "WaitReview":
-          case "Paid":
-            const res = await getPreviewApi(this.noticeId);
-            if (res) {
-              getApp().globalData.webViewSrc = res;
-              uni.navigateTo({
-                url: `/pages/webView/preview/index`,
-              });
-            }
-            break;
-          default:
-            uni.navigateTo({
-              url: `/staffPackage/noticePreview/index?id=${val.id}&tId=${val.templateId}&type=${val.notificationType}&sign=${val.notificationStatus}`,
-            });
-            break;
-        }
-      }
+      uni.navigateTo({
+        url: `/staffPackage/noticePreview/index?id=${val.id}&tId=${val.templateId}&type=${val.notificationType}&sign=${val.notificationStatus}`,
+      });
     },
     handleGoto(val) {
       getApp().paidData = {

@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-26 10:15:18
- * @LastEditors: wwq
- * @LastEditTime: 2021-03-05 11:36:08
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-03-12 15:53:54
 -->
 <template>
   <view class="commission-wrapper">
@@ -164,10 +164,12 @@ export default {
       return dictList;
     },
     async getListMixin() {
+      const userInfo = this.$storageTool.getUserInfo();
       this.setPageDataMixin(
         await payApplyList({
           ...this.queryPageParameters,
           applyCode: this.keyword,
+          agencyId: userInfo.channelId,
         })
       );
     },

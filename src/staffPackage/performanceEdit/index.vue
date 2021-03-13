@@ -387,6 +387,7 @@
     <u-picker
       v-model="showDate"
       mode="time"
+      :default-time="defaultTime"
       @confirm="confirmDate"
       :params="params"></u-picker>
     <!-- 数字键盘 -->
@@ -570,6 +571,7 @@ export default {
       showDeleteWin: false, // 删除图片提示框
       deleteIndex: null,
       deleteItem: null,
+      defaultTime: '',
       keyBoardShow: false, // 价格键盘
       dictObj: {
         types: [
@@ -1298,15 +1300,27 @@ export default {
       flag = this.isDisabled(type, 'dealVO');
       if (!flag) {
         this.currentDateType = type;
+        this.defaultTime = this.postData[type] ? this.postData[type] : ''; // 设置选中日期
         this.showDate = true;
       }
     },
     // 确定选择时间
     confirmDate(item) {
       console.log(item);
-      if (this.currentDateType) {
-        this.postData[this.currentDateType] = `${item.year}-${item.month}-${item.day}`;
-      }
+      let selectDateTime = new Date(`${item?.year}-${item?.month}-${item?.day}`).getTime();
+      let currentDateTime = new Date().getTime();
+      console.log('selectDateTime', selectDateTime);
+      console.log('currentDateTime', currentDateTime);
+      this.$nextTick(() => {
+        if (selectDateTime > currentDateTime) {
+          this.showDate = true;
+          this.$tool.toast("选择的日期不能在今天之后");
+        } else {
+          if (this.currentDateType) {
+            this.postData[this.currentDateType] = `${item.year}-${item.month}-${item.day}`;
+          }
+        }
+      });
     },
     // 输入价格
     handleInputPrice(type) {
@@ -1344,15 +1358,20 @@ export default {
           this.hasPrice = false; // 保证能连续输入
         }
       } else {
-        if (this.postData[this.currentPriceType]?.includes(".")) {
-          if (e != ".") {
-            let arr = this.postData[this.currentPriceType].split(".");
-            if (arr[1].length < 2) {
-              this.postData[this.currentPriceType] += e;
-            }
-          }
+        if (['', null, undefined].includes(this.postData[this.currentPriceType])) {
+          this.postData[this.currentPriceType] = '' + e;
         } else {
-          this.postData[this.currentPriceType] += e;
+          this.postData[this.currentPriceType] = this.postData[this.currentPriceType].toString();
+          if (this.postData[this.currentPriceType]?.includes(".")) {
+            if (e != ".") {
+              let arr = this.postData[this.currentPriceType].split(".");
+              if (arr[1].length < 2) {
+                this.postData[this.currentPriceType] += e;
+              }
+            }
+          } else {
+            this.postData[this.currentPriceType] += e;
+          }
         }
       }
     },
@@ -2039,9 +2058,9 @@ export default {
       let self = this;
       if (index === 0) {
         uni.chooseImage({
-          count: 1, // 默认9
+          count: 9, // 默认9
           success: (res) => {
-            // console.log(res);
+            console.log(res);
             if (res && res.tempFiles && res.tempFiles.length > 0) {
               let flag = false;
               flag = self.validFileSizeAndType(res.tempFiles, 'img');
@@ -2084,7 +2103,7 @@ export default {
         });
       } else {
         wx.chooseMessageFile({
-          count: 1, // 最大可选
+          count: 9, // 最大可选
           type: 'file',
           success: (res) => {
             // console.log(res);
