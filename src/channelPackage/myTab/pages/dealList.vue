@@ -133,6 +133,7 @@ export default {
     return {
       keyword: "",
       queryPageParameters: {
+        isMobileTermination: true,
         proName: "",
         stageName: "",
       },
