@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2021-02-17 17:31:28
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 14:18:13
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-03-15 09:12:12
 -->
 <!--
  * @Descripttion: 
@@ -24,7 +24,6 @@
         >
           <text class="upload-title">{{item.name}}</text>
           <u-upload
-            max-count="10"
             class="upload"
             width="160"
             height="160"
