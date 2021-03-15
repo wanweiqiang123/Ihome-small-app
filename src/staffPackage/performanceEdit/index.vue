@@ -2383,7 +2383,7 @@ export default {
           return;
         }
       }
-      if (!this.postData.signPrice && !this.postData.subscribePrice) {
+      if (['', null, undefined].includes(this.postData?.signPrice) && ['', null, undefined].includes(this.postData?.subscribePrice)) {
         this.$tool.toast("认购价格、签约价格不能都为空！");
         return;
       }
