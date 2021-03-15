@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-25 09:01:02
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 11:46:50
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-03-15 09:16:35
 -->
 <template>
   <view class="upload-attachment-wrapper">
@@ -16,7 +16,6 @@
         >
           <text class="upload-title">{{item.name}}</text>
           <u-upload
-            max-count="10"
             class="upload"
             width="160"
             height="160"
