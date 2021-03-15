@@ -198,6 +198,7 @@ export default {
     },
     reset() {
       Object.assign(this.queryPageParameters, {
+        isMobileTermination: true,
         projectCycle: "",
         proName: "",
         stageName: "",
