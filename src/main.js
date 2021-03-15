@@ -1,10 +1,10 @@
 /*
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
- * @LastEditors: zyc
- * @LastEditTime: 2021-03-04 11:01:29
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-03-15 16:58:12
  */
 
 import Vue from 'vue'
@@ -66,7 +66,7 @@ Vue.filter('emptyFilter', (msg) => {
 
 Vue.prototype.$has = function (key) {
   let userinfo = storageTool.getUserInfo();
-  if (userinfo.account = 'admin' || userinfo.roleList.includes("RAdmin")) {
+  if (userinfo.account == 'admin' || userinfo.roleList.includes("RAdmin")) {
     return true;
   } else {
     let list = [];//权限列表（从用户信息中读取）
