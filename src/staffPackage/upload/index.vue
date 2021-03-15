@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-02-17 17:31:28
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-15 09:12:12
+ * @LastEditTime: 2021-03-15 10:15:53
 -->
 <!--
  * @Descripttion: 
@@ -34,6 +34,7 @@
             :header="header"
             :show-progress="false"
             :file-list="item.showList"
+            :before-remove="beforeRemove"
             name="files"
           ></u-upload>
         </view>
@@ -124,6 +125,13 @@ export default {
           v.fileList.splice(index, 1);
         }
       });
+    },
+    beforeRemove(index, lists) {
+      if (lists[index].response) {
+        return true;
+      } else {
+        return false;
+      }
     },
     async successChange(data, code) {
       this.dictList.forEach((v) => {
