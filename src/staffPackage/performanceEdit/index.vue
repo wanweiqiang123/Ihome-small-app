@@ -1054,7 +1054,7 @@ export default {
         if (this.postData.contNo && this.contNoList && this.contNoList.length) {
           this.contNoList.forEach((list) => {
             if (list.contractNo === this.postData.contNo) {
-              this.postData.isMat = item.advancementSituation;
+              this.postData.isMat = list.advancementSituation;
               this.packageIdsList = list.packageMxIds && list.packageMxIds.length ? list.packageMxIds : [];
             }
           });
