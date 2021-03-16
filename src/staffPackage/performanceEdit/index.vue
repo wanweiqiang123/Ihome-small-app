@@ -1050,6 +1050,15 @@ export default {
       // 分销协议编号
       if (baseInfo.contracts && baseInfo.contracts.length > 0) {
         this.contNoList = baseInfo.contracts;
+        // 初始化分销协议ids
+        if (this.postData.contNo && this.contNoList && this.contNoList.length) {
+          this.contNoList.forEach((list) => {
+            if (list.contractNo === this.postData.contNo) {
+              this.postData.isMat = item.advancementSituation;
+              this.packageIdsList = list.packageMxIds && list.packageMxIds.length ? list.packageMxIds : [];
+            }
+          });
+        }
       } else {
         this.contNoList = [];
       }
