@@ -11,6 +11,9 @@
     <view class="info-item">
       <view class="form-title u-border-bottom">公司基本信息</view>
       <u-form :model="paymentForm" ref="paymentForm" :label-width="210">
+        <u-form-item label="信用代码" required prop="creditCode">
+          <u-input v-model="paymentForm.creditCode" :clearable="true" placeholder="请输入信用代码"/>
+        </u-form-item>
         <u-form-item label="公司简称" required prop="shortName">
           <u-input v-model="paymentForm.shortName" :clearable="true" placeholder="请输入公司简称"/>
         </u-form-item>
@@ -229,6 +232,14 @@ export default {
         region: null
       },
       rules: {
+        creditCode: [
+          { required: true, message: '请输入信用代码', trigger: ['blur'] },
+          {
+            pattern: /^[A-Za-z0-9]{18}$/,
+            message: "格式不正确，请输入18位正确的信用代码",
+            trigger: "change"
+          }
+        ],
         shortName: [
           { required: true, message: '请输入公司简称', trigger: ['blur'] }
         ],

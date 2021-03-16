@@ -944,7 +944,7 @@ export default {
       this.postData.signDate = info?.signDate ? info?.signDate : '';
       this.postData.signPrice = info?.signPrice ? info?.signPrice : '0';
       // 优惠告知书
-      await this.getInformation(info?.id);
+      await this.getInformation(info?.id, info?.cycleId);
       // 客户
       this.postData.customerVO = info.customerList;
       // 收派金额
@@ -1080,9 +1080,9 @@ export default {
       }
     },
     // 编辑 - 获取优惠告知书列表
-    async getInformation(id = '') {
-      if (!id) return ;
-      let list = await post_notice_customer_information({dealId: id});
+    async getInformation(id = '', cycleId = '') {
+      if (!id || !cycleId) return ;
+      let list = await post_notice_customer_information({dealId: id, cycleId: cycleId});
       if (list && list.length > 0) {
         this.postData.offerNoticeVO = list;
       } else {
