@@ -976,7 +976,7 @@ export default {
       console.log(this.postData.documentVO);
       // 通过项目周期id获取基础信息
       await this.editBaseDealInfo(info.cycleId, info?.house?.buildingId, info?.house?.propertyType);
-      await this.editPageById(info.cycleId, info?.house?.roomId, info?.house?.propertyType, info?.parentId);
+      await this.editPageById(info.cycleId, info?.house?.roomId, info?.house?.propertyType, info?.parentId, info?.refineModel);
     },
     // 编辑 - 通过项目周期id获取基础信息
     async editBaseDealInfo(id = "", buildingId, property) {
@@ -1036,14 +1036,15 @@ export default {
       }
     },
     // 编辑 - 根据项目周期和房号初始化页面数据
-    async editPageById(cycleId, roomId, propertyType = '', parentId = '') {
-      if (!cycleId || !roomId || !propertyType) return;
+    async editPageById(cycleId, roomId, propertyType = '', parentId = '', refineModel = '') {
+      if (!cycleId || !roomId || !propertyType || !refineModel) return;
       let params = {
         parentId: parentId,
         cycleId: cycleId,
         roomId: roomId,
         isMainDeal: true, // 是否主成交
         property: propertyType, // 物业类型
+        refineModel: refineModel, // 细分业务模式
       };
       let baseInfo = await post_pageData_initBasic(params);
       this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || {}));
@@ -1678,6 +1679,7 @@ export default {
         roomId: roomId,
         isMainDeal: true, // 是否主成交
         property: propertyType, // 物业类型
+        refineModel: this.postData.refineModel, // 细分业务模式
       };
       let baseInfo = await post_pageData_initBasic(params);
       this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || {}));
