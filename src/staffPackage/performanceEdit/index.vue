@@ -940,9 +940,9 @@ export default {
         this.postData.brokerId = info.agencyList[0].brokerId;
       }
       this.postData.subscribeDate = info?.subscribeDate ? info?.subscribeDate : '';
-      this.postData.subscribePrice = info?.subscribePrice ? info?.subscribePrice : '';
+      this.postData.subscribePrice = info?.subscribePrice ? info?.subscribePrice : '0';
       this.postData.signDate = info?.signDate ? info?.signDate : '';
-      this.postData.signPrice = info?.signPrice ? info?.signPrice : '';
+      this.postData.signPrice = info?.signPrice ? info?.signPrice : '0';
       // 优惠告知书
       await this.getInformation(info?.id);
       // 客户
