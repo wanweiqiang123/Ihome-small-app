@@ -1404,6 +1404,7 @@ export default {
     // 选择项目周期
     handleSelectCycle() {
       getApp().globalData.searchParams = {
+        searchTip: "输入项目周期搜索",
         api: "postAllTermApi",
         key: "termName",
         id: "termId",
@@ -2221,8 +2222,9 @@ export default {
     handleSelectNotice() {
       getApp().globalData.searchParams = {
         cssType: 'notice',
+        searchTip: '输入业主姓名或电话',
         api: "postNoticeDealList",
-        key: "noticeNo",
+        key: "costInfo",
         id: "id",
         type: "notice",
         other: {
@@ -2314,8 +2316,9 @@ export default {
     handleSelectCustomer() {
       getApp().globalData.searchParams = {
         cssType: 'custom',
+        searchTip: '输入客户姓名或者电话',
         api: "postCustomerGetCustList",
-        key: "custName",
+        key: "custInfo",
         id: "id",
         type: "custom",
       };

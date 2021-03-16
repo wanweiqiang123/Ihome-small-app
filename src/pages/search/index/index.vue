@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-20 17:03:55
- * @LastEditors: wwq
- * @LastEditTime: 2021-03-10 16:16:57
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-03-16 09:12:10
 -->
 <template>
   <view class="box">
@@ -12,7 +12,7 @@
       <view class="search">
         <u-search
           style="flex: 1"
-          placeholder="请输入关键字"
+          :placeholder="searchTip"
           v-model="keyword"
           clearabled
           action-text="搜索"
@@ -169,6 +169,7 @@ export default {
       paramsKey: "",
       paramsId: "",
       type: "",
+      searchTip: "请输入关键字",
     };
   },
   computed: {
@@ -193,6 +194,11 @@ export default {
   },
   async onLoad() {
     this.cssType = getApp()?.globalData?.searchParams?.cssType;
+    if (getApp()?.globalData?.searchParams?.searchTip) {
+      this.searchTip = getApp()?.globalData?.searchParams?.searchTip;
+    } else {
+      this.searchTip = "请输入关键字";
+    }
     // 根据需要获取字典
     if (['notice'].includes(this.cssType)) {
       this.dictList = await this.getAllDictByTypes(this.dictObj);
