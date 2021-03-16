@@ -4,15 +4,15 @@
  * @Author: lsj
  * @Date: 2020-11-27 15:36:22
  * @LastEditors: lsj
- * @LastEditTime: 2021-02-20 17:52:10
+ * @LastEditTime: 2021-03-16 19:22:13
 -->
 <template>
   <view class="edit-company-wrapper">
-    <view class="info-item">
-      <view class="form-title u-border-bottom">公司基本信息</view>
-      <u-form :model="paymentForm" ref="paymentForm" :label-width="210">
+    <u-form :model="paymentForm" ref="paymentForm" :label-width="210">
+      <view class="info-item">
+        <view class="form-title u-border-bottom">公司基本信息</view>
         <u-form-item label="信用代码" required prop="creditCode">
-          <u-input v-model="paymentForm.creditCode" :clearable="true" placeholder="请输入信用代码"/>
+          <u-input v-model="paymentForm.creditCode" maxlength="18" :clearable="true" placeholder="请输入信用代码"/>
         </u-form-item>
         <u-form-item label="公司简称" required prop="shortName">
           <u-input v-model="paymentForm.shortName" :clearable="true" placeholder="请输入公司简称"/>
@@ -54,37 +54,35 @@
         <u-form-item label="住所" required prop="address">
           <u-input v-model="paymentForm.address" :clearable="true" placeholder="请输入住所"/>
         </u-form-item>
-      </u-form>
-    </view>
-    <view class="info-item">
-      <view class="form-title u-border-bottom">公司附件</view>
-      <view class="annex-list-wrapper" v-for="item in annexList" :key="item.id">
-        <view class="annex-type">
-          <text v-if="item.subType === 'must'"
-                class="annex-required">*</text>
-          {{item.name}}
-        </view>
-        <view class="upload-file-wrapper">
-          <template v-if="item.fileList.length > 0">
-            <view class="file-list-wrapper" v-for="list in item.fileList" :key="list.fileId">
-              <u-icon
-                @click="deleteImg(infoIndex, list)"
-                class="icon" name="close-circle-fill" color="#FA3534" size="50"></u-icon>
-              <u-image
-                @click="viewImg(list, item)"
-                width="100%" height="100%" :src="list.fileUrls ? list.fileUrls : getUrl(list.fileId)"></u-image>
+      </view>
+      <view class="info-item">
+        <view class="form-title u-border-bottom">公司附件</view>
+        <view class="annex-list-wrapper" v-for="item in annexList" :key="item.id">
+          <view class="annex-type">
+            <text v-if="item.subType === 'must'"
+                  class="annex-required">*</text>
+            {{item.name}}
+          </view>
+          <view class="upload-file-wrapper">
+            <template v-if="item.fileList.length > 0">
+              <view class="file-list-wrapper" v-for="list in item.fileList" :key="list.fileId">
+                <u-icon
+                  @click="deleteImg(infoIndex, list)"
+                  class="icon" name="close-circle-fill" color="#FA3534" size="50"></u-icon>
+                <u-image
+                  @click="viewImg(list, item)"
+                  width="100%" height="100%" :src="list.fileUrls ? list.fileUrls : getUrl(list.fileId)"></u-image>
+              </view>
+            </template>
+            <view class="upload-icon" @click="uploadByType(item)">
+              <u-icon name="plus" color="#606266" size="40"></u-icon>
+              <view class="select">选择文件</view>
             </view>
-          </template>
-          <view class="upload-icon" @click="uploadByType(item)">
-            <u-icon name="plus" color="#606266" size="40"></u-icon>
-            <view class="select">选择文件</view>
           </view>
         </view>
       </view>
-    </view>
-    <view class="info-item">
-      <view class="form-title u-border-bottom">基本存款信息</view>
-      <u-form :model="paymentForm" ref="paymentForm" :label-width="210">
+      <view class="info-item">
+        <view class="form-title u-border-bottom">基本存款信息</view>
         <u-form-item label="账户名称" required prop="accountName">
           <u-input
             v-model="paymentForm.accountName"
@@ -101,8 +99,8 @@
             v-model="paymentForm.accountNo"
             placeholder="银行卡号" :clearable="true" input-align="left"/>
         </u-form-item>
-      </u-form>
-    </view>
+      </view>
+    </u-form>
     <view class="btn">
       <u-button type="primary" @click="handleSave">保存</u-button>
     </view>
@@ -207,71 +205,79 @@ export default {
         }
       }
     };
+    const validCreditCode = async (rule, value, callback) => {
+      console.log('validCreditCode', value);
+      if (!value) {
+        callback(new Error('请输入信用代码！'));
+      } else {
+        let reg = /^[A-Za-z0-9]{18}$/;
+        if (!reg.test(value)) {
+          callback(new Error('请输入18位正确的信用代码！'));
+        } else {
+          callback();
+        }
+      }
+    };
     return {
       pdfImg: require('@/channelPackage/common/img/pdf.jpg'),
       excelImg: require('@/channelPackage/common/img/excel.png'),
       wordImg: require('@/channelPackage/common/img/word.jpg'),
       paymentForm: {
-        id:null,
-        name:null,
-        creditCode:null,
-        shortName:null,
-        type:null,
-        typeName:null,
-        legalPerson:null,
-        legalIdentityCode:null,
-        setupTime:null,
-        capital:null,
-        businessTime:null,
-        account:null,
-        address:null,
-        accountName: null,
-        branchName: null,
-        branchNo: null,
-        accountNo: null,
-        region: null
+        id:'',
+        name:'',
+        creditCode:'',
+        shortName:'',
+        type:'',
+        typeName:'',
+        legalPerson:'',
+        legalIdentityCode:'',
+        setupTime:'',
+        capital:'',
+        businessTime:'',
+        account:'',
+        address:'',
+        accountName: '',
+        branchName: '',
+        branchNo: '',
+        accountNo: '',
+        region: ''
       },
       rules: {
         creditCode: [
-          { required: true, message: '请输入信用代码', trigger: ['blur'] },
-          {
-            pattern: /^[A-Za-z0-9]{18}$/,
-            message: "格式不正确，请输入18位正确的信用代码",
-            trigger: "change"
-          }
+          { validator: validCreditCode, trigger: 'blur' },
         ],
         shortName: [
-          { required: true, message: '请输入公司简称', trigger: ['blur'] }
+          { required: true, message: '请输入公司简称', trigger: 'blur' }
         ],
         typeName: [
           { required: true, message: '请选择公司类型', trigger: ['blur', 'change'] }
         ],
         legalPerson: [
-          { required: true, message: '请输入法定代表人', trigger: ['blur'] }
+          { required: true, message: '请输入法定代表人', trigger: 'blur' }
         ],
         legalIdentityCode: [
-          { validator: validIdentityCard, trigger: ['blur'] }
+          { validator: validIdentityCard, trigger: 'blur' }
         ],
         setupTime: [
           { validator: validSetupTime, trigger: ['blur', 'change'] }
         ],
         capital: [
-          { required: true, message: '请输入注册资本', trigger: ['blur'] }
+          { required: true, message: '请输入注册资本', trigger: 'blur' }
         ],
         region: [
           { required: true, message: '请选择地区', trigger: ['blur', 'change'] }
         ],
         address: [
-          { required: true, message: '请输入住所', trigger: ['blur'] }
+          { required: true, message: '请输入住所', trigger: 'blur' }
         ],
         accountName: [
-          { required: true, message: '请输入账户名称', trigger: ['blur'] }
+          { required: true, message: '请输入账户名称', trigger: 'blur' }
         ],
         branchName: [
           { required: true, message: '请选择开户银行', trigger: ['blur', 'change'] }
         ],
         accountNo: [
-          { required: true, message: '请输入银行卡号', trigger: ['blur'] }
+          { required: true, message: '请输入银行卡号', trigger: 'blur' }
         ]
       },
       dateParams:  {
@@ -313,7 +319,7 @@ export default {
           subText: 'pdf、word、excel文件，大小不能超过10M'
         }
       ],
-      currentUploadType: null, // 上传的附件类型
+      currentUploadType: '', // 上传的附件类型
       companyTypeList: [],
       showCompanyType: false, // 公司类型
       showDeleteWin: false,
@@ -323,6 +329,7 @@ export default {
   },
   onReady() {
     // 必须要在onReady生命周期，因为onLoad生命周期组件可能尚未创建完毕
+    console.log(this.rules);
     this.$refs.paymentForm.setRules(this.rules);
   },
   async onLoad() {
