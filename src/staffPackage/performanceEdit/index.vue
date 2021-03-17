@@ -713,6 +713,7 @@ export default {
       },
       packageIdsList: [], // 收派套餐ids：分销模式---选择分销协议后获取；非分销协议---请求接口获取
       baseInfoByTerm: {
+        exMinyuan: '', // 是否明源源：1---是，0---否
         chargeEnum: '',
         proId: '', // 项目id --- 用于查询分销协议列表
         termId: '', // 项目周期id
@@ -1239,13 +1240,24 @@ export default {
     * */
     isDisabled(key = '', type = '') {
       const data = this.baseInfoInDeal.myReturnVO;
+      let isMingYuanFlag = this.baseInfoByTerm?.exMinyuan === 1;
       if (!key || !type || !data[type]?.[key]) return false;
       let flag = false;
-      // 2.对应明源字段是否有值
-      if (data[type][key] && this.postData.roomId) {
-        flag = true;
+      // 对应明源字段是否有值
+      if (type === 'houseVO') {
+        // 针对房间vo特殊判断
+        if (data[type][key] && this.postData.roomId && isMingYuanFlag) {
+          flag = true;
+        } else {
+          flag = false;
+        }
       } else {
-        flag = false;
+        // 其他vo的判断
+        if (data[type][key] && this.postData.roomId) {
+          flag = true;
+        } else {
+          flag = false;
+        }
       }
       return flag;
     },
