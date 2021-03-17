@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-13 14:57:09
+ * @LastEditTime: 2021-03-16 14:05:37
 -->
 <template>
   <LoginPage>
@@ -237,8 +237,6 @@ export default {
       } else {
         this.payNum += e;
       }
-
-      // this.payNum = this.$tool.tofixed(parseFloat(this.payNum), 2);
     },
 
     backspace() {

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-17 09:23:15
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-27 15:08:24
+ * @LastEditTime: 2021-03-17 10:12:46
 -->
 <template>
   <view>
@@ -123,6 +123,7 @@
           <u-input
             v-model="form.accountHolderName"
             placeholder="请输入开户人姓名"
+            cursor-spacing="100"
           />
         </u-form-item>
         <u-form-item
@@ -131,8 +132,10 @@
           prop="account"
         >
           <u-input
+            type="number"
             v-model="form.account"
             placeholder="请输入银行帐号"
+            cursor-spacing="100"
           />
         </u-form-item>
       </u-form>
@@ -149,6 +152,7 @@
 
 <script>
 import { getNoticeRefundApi, postUpdateRefundApi } from "../../api/customer";
+import { isNumberValidato } from "../../common/validate.js";
 export default {
   data() {
     return {
@@ -185,6 +189,7 @@ export default {
             message: "请输入银行帐号",
             trigger: "change",
           },
+          { validator: isNumberValidato, trigger: "change" },
         ],
         branchName: [
           {
