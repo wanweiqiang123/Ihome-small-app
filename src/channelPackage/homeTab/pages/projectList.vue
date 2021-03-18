@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-17 15:26:33
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 14:30:12
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-03-18 16:18:10
 -->
 <template>
   <view class="project-list-wrapper">
@@ -219,6 +219,9 @@
           </view>
         </view>
       </view>
+      <view class="empty-wrapper" v-if="!tablePage.length">
+        <u-empty text="暂无数据" mode="list"></u-empty>
+      </view>
     </view>
     <u-select
       v-model="selectcity"
@@ -378,7 +381,7 @@ export default {
           ],
         },
       ],
-      homeImg: require("@/channelPackage/common/img/house.jpg"),
+      projectImg: require("@/channelPackage/common/img/project.png"), // 项目列表默认图
     };
   },
   computed: {
@@ -390,11 +393,11 @@ export default {
     this.areaRegion = await this.getArea();
     const channelId = this.$storageTool.getUserInfo().channelId;
     this.cityList = await getGradeCitiesByChannelIdApi(channelId);
-    if (this.cityList.length) {
+    if (this.cityList && this.cityList.length) {
       this.city = this.cityList[0];
-      this.getChildCity(this.city);
+      await this.getChildCity(this.city);
     }
-    this.getListMixin();
+    await this.getListMixin();
   },
   // onShow() {
   //   let item = getApp().globalData.searchBackData;
@@ -414,7 +417,7 @@ export default {
         ...res,
         list: res.list.map((v) => ({
           ...v,
-          attachAddr: this.$tool.getFileUrl(v.attachAddr),
+          attachAddr: v.attachAddr ? this.$tool.getFileUrl(v.attachAddr) : this.projectImg,
         })),
       };
       this.setPageDataMixin(item);
@@ -962,6 +965,11 @@ export default {
     width: 100%;
     box-sizing: border-box;
     padding: 2rpx 20rpx;
+
+    .empty-wrapper {
+      width: 100%;
+      height: calc(100vh - 200rpx);
+    }
 
     .project-scroll-view {
       min-height: 500rpx;
