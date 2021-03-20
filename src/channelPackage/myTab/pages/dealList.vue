@@ -135,7 +135,7 @@ export default {
       keyword: "",
       queryPageParameters: {
         isMobileTermination: true,
-        IsMainDealOnly: true,
+        isMainDealOnly: true,
         proName: "",
         stageName: "",
       },
@@ -201,7 +201,7 @@ export default {
     reset() {
       Object.assign(this.queryPageParameters, {
         isMobileTermination: true,
-        IsMainDealOnly: true,
+        isMainDealOnly: true,
         projectCycle: "",
         proName: "",
         stageName: "",

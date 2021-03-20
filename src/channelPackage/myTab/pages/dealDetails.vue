@@ -173,9 +173,9 @@
                 :key="h"
                 width="160"
                 height="160"
-                :src="image"
+                :src="image.documentUrls ? image.documentUrls : getUrl(image.fileId)"
                 style="display: inline-block; padding: 10rpx"
-                @click="imageShow(item.srcList, h)"
+                @click="imageShow(image, item)"
               ></u-image>
             </template>
           </view>
@@ -188,9 +188,13 @@
 <script>
 import { postdealReportRecordApi, geiPayDealDetail } from "@/api/channel";
 import { getAllByTypeApi } from "@/api/index";
+import tool from "@/common/tool";
 export default {
   data() {
     return {
+      pdfImg: require('@/channelPackage/common/img/pdf.jpg'),
+      excelImg: require('@/channelPackage/common/img/excel.png'),
+      wordImg: require('@/channelPackage/common/img/word.jpg'),
       detailsType: "",
       detailsCode: "",
       paymentForm: {
@@ -337,10 +341,61 @@ export default {
       res.documentShowList.forEach((v) => {
         this.dictList.forEach((j) => {
           if (v.fileType === j.code) {
-            j.srcList.push(this.$tool.getFileUrl(v.fileId));
+            j.srcList.push(
+              {
+                ...v,
+                documentUrls: this.getFileUrls(v, 'url'), // 获取对应文件的默认图片
+                documentType: this.getFileUrls(v, 'type'), // 获取文件类型：excel、word、pdf
+              }
+            );
           }
         });
       });
+      console.log('dictList', this.dictList);
+    },
+    getFileUrls(file, getType = '') {
+      let url = '';
+      let type = '';
+      if (file.fileId && file.fileName) {
+        if (file.fileName.endsWith(".pdf")) {
+          // pdf
+          url = this.pdfImg;
+          type = "pdf";
+        } else if (file.fileName.endsWith(".doc")) {
+          // word
+          url = this.wordImg;
+          type = "doc";
+        } else if (file.fileName.endsWith(".docx")) {
+          // word
+          url = this.wordImg;
+          type = "docx";
+        } else if (file.fileName.endsWith(".xls")) {
+          // excel
+          url = this.excelImg;
+          type = "xls";
+        } else if (file.fileName.endsWith(".xlsx")) {
+          // excel
+          url = this.excelImg;
+          type = "xlsx";
+        } else {
+          // 默认是图片
+          url = "";
+          type = "";
+        }
+      }
+      if (getType === 'url') {
+        // 返回默认文件图片
+        return url;
+      } else {
+        // 返回文件类型
+        return type
+      }
+    },
+    // 获取图片完整的url
+    getUrl(id) {
+      if (!id) return "";
+      let url = tool.getFileUrl(id);
+      return url;
     },
     // 结佣-成交详情初始化页面
     async initPageByCommission() {
@@ -375,10 +430,74 @@ export default {
         return "";
       }
     },
-    imageShow(src, i) {
-      uni.previewImage({
-        urls: src,
-        current: i,
+    imageShow(file, item) {
+      console.log(file);
+      console.log(item);
+      if (file.documentUrls) {
+        // 说明是文件
+        this.openFile(file);
+      } else {
+        // 图片
+        let urls = [];
+        let current = 0;
+        if (item.srcList && item.srcList.length) {
+          item.srcList.forEach((list) => {
+            if (!list.documentUrls) {
+              urls.push(tool.getFileUrl(list.fileId));
+            }
+          });
+        }
+        if (urls && urls.length) {
+          urls.forEach((item, index) => {
+            if (item === tool.getFileUrl(file.fileId)) {
+              current = index;
+            }
+          });
+        }
+        uni.previewImage({
+          urls: urls,
+          current: current,
+        });
+      }
+    },
+    // 在线打开文件
+    openFile(item) {
+      if (!item.documentType) {
+        uni.showToast({
+          title: '无法打开该文档',
+          duration: 3000
+        });
+        return ;
+      }
+      uni.downloadFile({
+        url: tool.getFileDownloadUrl(item.fileId),
+        success: (res) => {
+          if (res.statusCode === 200) {
+            console.log('下载成功', res.tempFilePath);
+            uni.openDocument({
+              filePath: res.tempFilePath,
+              fileType: item.documentType,
+              showMenu: true,
+              success: (res) => {
+                console.log('打开文档成功');
+              },
+              fail: (err) => {
+                console.log('打开文档出错', err);
+                uni.showToast({
+                  title: '无法打开该文档',
+                  duration: 3000
+                });
+              }
+            });
+          }
+        },
+        fail: (err) => {
+          console.log('下载出错', err);
+          uni.showToast({
+            title: '下载出错',
+            duration: 3000
+          });
+        }
       });
     },
   },
