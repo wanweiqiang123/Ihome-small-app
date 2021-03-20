@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-17 10:08:05
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 14:56:23
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-03-20 08:59:11
 -->
 <template>
   <ChannelTabBar>
@@ -19,7 +19,8 @@
           bg-color="#FFFFFF"
           border-color="#FFFFFF"
           :show-action="false"
-          @search="getListMixin()"
+          @search="searchClient"
+          @blur="searchClient"
           placeholder="请输入客户姓名/电话"
           v-model="queryPageParameters.nameOrTel"
         ></u-search>
@@ -105,10 +106,6 @@ export default {
   onShow() {},
   methods: {
     async getListMixin() {
-      this.tableTotal = 0;
-      this.tablePage = [];
-      this.queryPageParameters.pageNum = 1;
-      this.queryPageParameters.pageSize = 10;
       this.setPageDataMixin(await getCustomerList(this.queryPageParameters));
       // await getCustomerList(this.queryPageParameters)
     },
@@ -133,6 +130,11 @@ export default {
         url: `/channelPackage/clientTab/pages/clientDetails?id=${item.id}`,
       });
     },
+    // 搜索
+    searchClient() {
+      this.tablePage = [];
+      this.queryPageParameters.pageNum = 1;
+    }
   },
 };
 </script>
