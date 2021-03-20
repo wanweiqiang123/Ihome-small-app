@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-27 13:05:22
  * @LastEditors: lsj
- * @LastEditTime: 2021-03-08 14:32:18
+ * @LastEditTime: 2021-03-20 08:46:33
 -->
 <template>
   <view class="deal-list-wrapper">
@@ -19,7 +19,8 @@
         border-color="#DCDCDC"
         :show-action="false"
         placeholder="请输入客户姓名或手机号码"
-        @search="getListMixin()"
+        @search="searchDealList"
+        @blur="searchDealList"
         v-model="keyword"
       ></u-search>
       <view
@@ -174,10 +175,10 @@ export default {
   },
   methods: {
     async getListMixin() {
-      this.tableTotal = 0;
-      this.tablePage = [];
-      this.queryPageParameters.pageNum = 1;
-      this.queryPageParameters.pageSize = 10;
+      // this.tableTotal = 0;
+      // this.tablePage = [];
+      // this.queryPageParameters.pageNum = 1;
+      // this.queryPageParameters.pageSize = 10;
       if (this.keyword) {
         this.queryPageParameters.phoneOrCusName = this.keyword;
       } else {
@@ -208,7 +209,7 @@ export default {
       });
     },
     async confirm() {
-      this.getListMixin();
+      await this.searchDealList();
     },
     confirmStage(e) {
       this.queryPageParameters.stageName = e[0].label;
@@ -220,6 +221,18 @@ export default {
         url: `/channelPackage/myTab/pages/dealDetails?type=report&&code=${code}`,
       });
     },
+    // 查询
+    async searchDealList() {
+      this.tablePage = [];
+      this.queryPageParameters.pageNum = 1;
+      if (this.keyword) {
+        this.queryPageParameters.phoneOrCusName = this.keyword;
+      } else {
+        this.queryPageParameters.phoneOrCusName = "";
+      }
+      this.queryPageParameters.agencyId = this.userInfo?.channelId;
+      this.setPageDataMixin(await postDealListApi(this.queryPageParameters));
+    }
   },
 };
 </script>
@@ -253,7 +266,8 @@ export default {
 
   .list-wrapper {
     width: 100%;
-    height: calc(100vh - 95rpx);
+    //height: calc(100vh - 95rpx);
+    //height: calc(100vh);
     overflow-y: auto;
     background-color: #f5f5f5;
 
