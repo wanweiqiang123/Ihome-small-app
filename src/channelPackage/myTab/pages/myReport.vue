@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-24 15:22:09
- * @LastEditors: wwq
- * @LastEditTime: 2021-03-04 09:50:22
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-03-20 09:05:11
 -->
 <template>
   <view class="my-report-wrapper">
@@ -67,6 +67,9 @@
             v-show="currentTabs === 1"
           >成交登记</u-button>
         </view>
+      </view>
+      <view class="empty-wrapper" v-if="!tablePage.length">
+        <u-empty text="暂无数据" mode="list"></u-empty>
       </view>
     </view>
   </view>
@@ -215,7 +218,7 @@ export default {
 
   .my-report-list {
     width: 100%;
-    height: calc(100vh - 170rpx);
+    //height: calc(100vh - 170rpx);
     overflow-y: auto;
     box-sizing: border-box;
     padding: 18rpx 30rpx;
@@ -295,6 +298,11 @@ export default {
           margin-left: 20rpx;
         }
       }
+    }
+
+    .empty-wrapper {
+      width: 100%;
+      height: calc(100vh - 170rpx);
     }
   }
 }
