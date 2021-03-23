@@ -103,7 +103,8 @@
 				{
 					"path": "discountsInfo/index",
 					"style": {
-						"navigationBarTitleText": "购房优惠详情"
+						"navigationBarTitleText": "购房优惠详情",
+						"enablePullDownRefresh": true
 					}
 				},
 				{
