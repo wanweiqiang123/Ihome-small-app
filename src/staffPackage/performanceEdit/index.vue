@@ -713,6 +713,7 @@ export default {
       },
       packageIdsList: [], // 收派套餐ids：分销模式---选择分销协议后获取；非分销协议---请求接口获取
       baseInfoByTerm: {
+        exMinyuan: '', // 是否明源源：1---是，0---否
         chargeEnum: '',
         proId: '', // 项目id --- 用于查询分销协议列表
         termId: '', // 项目周期id
@@ -1146,11 +1147,40 @@ export default {
     },
     // 确定选择细分业务模式
     confirmRefineModel(item) {
+      let self = this;
       if (item && item.length) {
         this.postData.refineModelName = item[0].label;
         this.postData.refineModel = item[0].value;
         // 初始化收派套餐
-        this.initReceive();
+        this.$nextTick(async () => {
+          if (self.postData.roomId) {
+            await this.initReceiveByRoom();
+          } else {
+            await this.initReceive();
+          }
+        });
+      }
+    },
+    // 改变了细分业务模式需要重置收派套餐信息
+    async initReceiveByRoom() {
+      if (!this.postData.cycleId || !this.postData.roomId || !this.postData.propertyType) return;
+      let params = {
+        parentId: this.id ? this.editBaseInfo.parentId : null,
+        cycleId: this.postData.cycleId,
+        roomId: this.postData.roomId,
+        isMainDeal: true, // 是否主成交
+        property: this.postData.propertyType, // 物业类型
+        refineModel: this.postData.refineModel, // 细分业务模式
+      };
+      let baseInfo = await post_pageData_initBasic(params);
+      this.postData.agentReceiveVO = []; // 清空代理费类型收派
+      if (baseInfo && baseInfo.receiveVOS && baseInfo.receiveVOS.length) {
+        let tempList = await this.initReceiveVOS(baseInfo.receiveVOS);
+        if (this.postData.agentReceiveVO && this.postData.agentReceiveVO.length) {
+          this.postData.agentReceiveVO.push(...tempList);
+        } else {
+          this.postData.agentReceiveVO = tempList;
+        }
       }
     },
     // 选择成交阶段
@@ -1239,13 +1269,24 @@ export default {
     * */
     isDisabled(key = '', type = '') {
       const data = this.baseInfoInDeal.myReturnVO;
+      let isMingYuanFlag = this.baseInfoByTerm?.exMinyuan === 1;
       if (!key || !type || !data[type]?.[key]) return false;
       let flag = false;
-      // 2.对应明源字段是否有值
-      if (data[type][key] && this.postData.roomId) {
-        flag = true;
+      // 对应明源字段是否有值
+      if (type === 'houseVO') {
+        // 针对房间vo特殊判断
+        if (data[type][key] && this.postData.roomId && isMingYuanFlag) {
+          flag = true;
+        } else {
+          flag = false;
+        }
       } else {
-        flag = false;
+        // 其他vo的判断
+        if (data[type][key] && this.postData.roomId) {
+          flag = true;
+        } else {
+          flag = false;
+        }
       }
       return flag;
     },

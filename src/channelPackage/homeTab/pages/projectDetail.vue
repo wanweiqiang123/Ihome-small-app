@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-23 11:15:50
- * @LastEditors: wwq
- * @LastEditTime: 2021-03-03 16:31:46
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-03-18 16:19:26
 -->
 <template>
   <view class="project-detail-wrapper">
@@ -174,7 +174,7 @@ export default {
         exCollect: false,
       }, // 详情信息
       banner: require("@/channelPackage/common/img/house.jpg"),
-      homeImg: require("@/channelPackage/common/img/house.jpg"),
+      homeImg: require("@/channelPackage/common/img/room.png"),
       tabList: [
         {
           name: "项目简介",

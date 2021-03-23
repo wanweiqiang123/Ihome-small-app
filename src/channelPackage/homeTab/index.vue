@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-12 10:16:57
- * @LastEditors: wwq
- * @LastEditTime: 2021-03-03 16:42:10
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-03-18 16:16:46
 -->
 <template>
   <ChannelTabBar>
@@ -136,7 +136,6 @@ export default {
           title: "昨夜星辰昨夜风，画楼西畔桂堂东",
         },
       ],
-      houseImg: require("@/channelPackage/common/img/house.jpg"),
       gridList: [
         {
           icon: require("@/channelPackage/common/icon/list.png"),
@@ -164,7 +163,7 @@ export default {
         },
       ],
       icon_5: require("@/channelPackage/common/icon/recommend.png"),
-      homeImg: require("@/channelPackage/common/img/house.jpg"),
+      homeImg: require("@/channelPackage/common/img/house.png"),
     };
   },
   computed: {
