@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-26 09:38:11
  * @LastEditors: lsj
- * @LastEditTime: 2021-02-20 17:47:58
+ * @LastEditTime: 2021-03-25 11:03:48
 -->
 <template>
   <view class="performance">
@@ -2303,6 +2303,17 @@ export default {
       let noticeInfo = await post_notice_deal_details__noticeId(postData);
       if (noticeInfo.dealNotices && noticeInfo.dealNotices.length) {
         noticeInfo.dealNotices.forEach((item) => {
+          // 附件增加fileId
+          if (item.annexList && item.annexList.length) {
+            item.annexList.forEach((list) => {
+              list.canDelete = true;
+              list.fileId = list.fileNo; // 统一id
+              list.fileName = list.attachmentSuffix; // 统一名字
+              list.name = list.attachmentSuffix; // 统一名字
+              list.fileUrls = this.getFileUrls(list.attachmentSuffix, 'url'); // 获取文件图片
+              list.type = this.getFileUrls(list.attachmentSuffix, 'type'); // 获取文件类型
+            });
+          }
           item.noticeId = item.id;
           item.addType = "manual";
         });
@@ -2317,8 +2328,61 @@ export default {
           item.addId = item.id; // 手动添加的时候保存id --- 为了回显收派金额
         });
       }
-      this.postData.offerNoticeVO = noticeInfo.dealNotices;
-      this.postData.customerVO = noticeInfo.customerConvertResponse;
+      let copyList = JSON.parse(JSON.stringify(this.postData.offerNoticeVO || []));
+      // 先清除原优惠告知书带出的附件
+      this.deleteNoticeAnnex(copyList);
+      this.$nextTick(() => {
+        this.postData.offerNoticeVO = noticeInfo.dealNotices;
+        this.postData.customerVO = noticeInfo.customerConvertResponse;
+        // 需要把对应附件展示在上传附件信息模块中
+        this.addNoticeAnnex(noticeInfo.dealNotices);
+      });
+    },
+    /* 删除优惠告知书带出的优惠告知书类型附件
+    *  delList：Array，当前删除的优惠告知书信息。
+    * */
+    deleteNoticeAnnex(delList = []) {
+      if (delList && delList.length && this.postData.documentVO && this.postData.documentVO.length) {
+        this.postData.documentVO.forEach((vo) => {
+          // 只需要遍历上传附件类型为优惠告知书的类型
+          if (vo.code === 'Notice' && vo.fileList && vo.fileList.length) {
+            delList.forEach((list) => {
+              if (list.annexList && list.annexList.length) {
+                list.annexList.forEach((item) => {
+                  vo.fileList = vo.fileList.filter((voList) => {
+                    return voList.fileId !== item.fileId;
+                  });
+                })
+              }
+              if (list.noticeAttachmentList && list.noticeAttachmentList.length) {
+                list.noticeAttachmentList.forEach((item) => {
+                  vo.fileList = vo.fileList.filter((voList) => {
+                    return voList.fileId !== item.fileId;
+                  });
+                })
+              }
+            });
+          }
+        });
+      }
+    },
+
+    /* 需要把对应附件展示在上传附件信息模块中
+    *  addList：Array，当前添加的优惠告知书信息。
+    * */
+    addNoticeAnnex(addList = []) {
+      if (addList && addList.length && this.postData.documentVO && this.postData.documentVO.length) {
+        this.postData.documentVO.forEach((vo) => {
+          // 只需要遍历上传附件类型为优惠告知书的类型
+          if (vo.code === 'Notice') {
+            addList.forEach((list) => {
+              if (list.annexList && list.annexList.length) {
+                vo.fileList.push(...list.annexList);
+              }
+            });
+          }
+        });
+      }
     },
     // 预览优惠告知书
     handleViewNotice(item) {
