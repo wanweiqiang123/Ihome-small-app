@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
  * @LastEditors: lsj
- * @LastEditTime: 2021-03-15 16:58:12
+ * @LastEditTime: 2021-03-25 17:13:50
  */
 
 import Vue from 'vue'
@@ -50,6 +50,8 @@ import StaffTabBar from './components/TabBar/StaffTabBar.vue'
 import LoginPage from './components/LoginPage.vue'
 
 import EmptyLoading from './components/EmptyLoading.vue'
+import IhTimeRange from './components/IhTimeRange/index'
+Vue.component('IhTimeRange', IhTimeRange);
 Vue.component('LoginPage', LoginPage);
 Vue.component('EmptyLoading', EmptyLoading);
 
