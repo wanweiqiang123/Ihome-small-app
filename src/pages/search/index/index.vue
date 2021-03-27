@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-20 17:03:55
  * @LastEditors: lsj
- * @LastEditTime: 2021-03-16 09:12:10
+ * @LastEditTime: 2021-03-27 09:38:36
 -->
 <template>
   <view class="box">
@@ -106,6 +106,19 @@
             </template>
           </view>
           <!--选择客户 end-->
+          <!--选择经纪人 start-->
+          <view v-if="cssType === 'broker'">
+            <template v-for="(item, i) in tablePage">
+              <view
+                :key="i"
+                class="list-item item-flex"
+                @click="goBackPage(item)">
+                <view>{{item.name | emptyFilter}}</view>
+                <view class="phone">{{item.mobile | emptyFilter}}</view>
+              </view>
+            </template>
+          </view>
+          <!--选择经纪人 end-->
         </view>
         <view style="padding: 20rpx 0 10rpx 0">
           <u-loadmore

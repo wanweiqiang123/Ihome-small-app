@@ -3,8 +3,8 @@
  * @version:
  * @Author: ywl
  * @Date: 2020-12-10 15:30:58
- * @LastEditors: ywl
- * @LastEditTime: 2021-03-01 10:03:11
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-03-27 10:13:02
  */
 import { getApi, postApi } from '../common/http.js';
 
@@ -437,6 +437,16 @@ export async function post_deal_delete__id(data = {}, option = {}) {
  */
 export async function post_notice_customer_information(data = {}, option = {}) {
   return await postApi(`/sales-api/contract/notice/customer/information`, data, option)
+}
+
+/**
+ * @description: 业绩申报 - 新增/编辑 - 选择渠道商后，带出分销协议
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function post_deal_pageData_initDistribution(data = {}, option = {}) {
+  return await postApi(`/sales-api/deal/pageData/initDistribution`, data, option)
 }
 
 /**

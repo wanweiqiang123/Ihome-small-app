@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-10 10:09:50
- * @LastEditors: wwq
- * @LastEditTime: 2021-03-04 16:00:35
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-03-27 10:11:38
  */
 
 import { getApi, postApi } from '../common/http.js';
@@ -232,4 +232,14 @@ export async function getFuzzySearchByCityForAnChangApi(data, option = {}) {
 // 案场帮录专用项目周期搜索
 export async function getTermListByProIdApi(data, option = {}) {
     return await postApi(`/sales-api/project/term/getTermListByProId`, data, option);
+}
+
+// 员工案场-业绩申报-根据项目周期id选择渠道公司列表
+export async function getAgencyListApi(data, option = {}) {
+    return await postApi(`/sales-api/contract/distribution/channels/cycleId`, data, option);
+}
+
+// 员工案场-业绩申报-根据渠道公司id选择经纪人列表
+export async function getBrokerListApi(data, option = {}) {
+  return await postApi(`/sales-api/channel/channelAgent/getDealChannelAgentList`, data, option);
 }
