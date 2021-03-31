@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-31 10:16:44
+ * @LastEditTime: 2021-03-31 15:06:30
 -->
 <template>
   <LoginPage>
@@ -578,6 +578,7 @@ export default {
       isUpdate: false,
       distri: [],
       isOtherShow: false,
+      originalRoomId: null,
     };
   },
   filters: {
@@ -834,16 +835,21 @@ export default {
             // 认筹阶段不需要判断房号
             this.submieMethod();
           } else {
-            try {
-              let isBool = await this.isShowTis(this.form.roomNumberId);
-              if (isBool) {
-                this.submieMethod();
-              } else {
-                this.isShowRoomTip = true;
-                this.isUpdate = false;
+            if (this.form.roomNumberId !== this.originalRoomId) {
+              // 修改不同的房号
+              try {
+                let isBool = await this.isShowTis(this.form.roomNumberId);
+                if (isBool) {
+                  this.submieMethod();
+                } else {
+                  this.isShowRoomTip = true;
+                  this.isUpdate = false;
+                }
+              } catch (error) {
+                console.log(error);
               }
-            } catch (error) {
-              console.log(error);
+            } else {
+              this.submieMethod();
             }
           }
         })
@@ -865,16 +871,21 @@ export default {
             // 认筹阶段不需要判断房号
             this.updateMethod();
           } else {
-            try {
-              let isBool = await this.isShowTis(this.form.roomNumberId);
-              if (isBool) {
-                this.updateMethod();
-              } else {
-                this.isShowRoomTip = true;
-                this.isUpdate = true;
+            if (this.form.roomNumberId !== this.originalRoomId) {
+              // 修改不同的房号
+              try {
+                let isBool = await this.isShowTis(this.form.roomNumberId);
+                if (isBool) {
+                  this.updateMethod();
+                } else {
+                  this.isShowRoomTip = true;
+                  this.isUpdate = true;
+                }
+              } catch (error) {
+                console.log(error);
               }
-            } catch (error) {
-              console.log(error);
+            } else {
+              this.updateMethod();
             }
           }
         })
@@ -975,6 +986,7 @@ export default {
         noticeAttachmentList: [],
         reviewStatus: info.reviewStatus,
       };
+      this.originalRoomId = info.roomNumberId;
       info.ownerType === "Personal"
         ? (this.ownerInfo = info.ownerList)
         : (this.enterpriseFrom = info.ownerList[0]);
