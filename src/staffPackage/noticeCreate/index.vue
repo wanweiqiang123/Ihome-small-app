@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
- * @LastEditors: wwq
- * @LastEditTime: 2021-03-11 15:03:30
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-03-31 10:16:44
 -->
 <template>
   <LoginPage>
@@ -14,7 +14,7 @@
           <u-image
             width="80rpx"
             height="80rpx"
-            src="http://pics.sc.chinaz.com/files/pic/pic9/201912/hpic1886.jpg"
+            :src="logoSrc"
             shape="circle"
           ></u-image>
           <text class="title-text">优惠信息</text>
@@ -455,6 +455,7 @@ export default {
       roomSelectList: [],
       isOther: false,
       isType: true,
+      logoSrc: require("@/static/logo.png"),
       form: {
         channel: "CustomerService",
         cycleId: null,

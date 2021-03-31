@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-18 11:38:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-03 17:52:55
+ * @LastEditTime: 2021-03-31 10:18:46
 -->
 <template>
   <LoginPage>
@@ -14,7 +14,7 @@
           <u-image
             width="80rpx"
             height="80rpx"
-            src="http://pics.sc.chinaz.com/files/pic/pic9/201912/hpic1886.jpg"
+            :src="logoSrc"
             shape="circle"
           ></u-image>
           <text class="title-text">优惠信息</text>
@@ -210,6 +210,7 @@ export default {
         promotionMethod: "",
         notificationStatus: "",
       },
+      logoSrc: require("@/static/logo.png"),
       option: {},
       isPaper: false,
       header: {

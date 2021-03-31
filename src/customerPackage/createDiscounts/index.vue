@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
- * @LastEditors: wwq
- * @LastEditTime: 2021-03-13 10:35:41
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-03-31 10:24:03
 -->
 <template>
   <view>
@@ -221,7 +221,7 @@ import storageTool from "@/common/storageTool";
 export default {
   data() {
     return {
-      src: "http://pic2.sc.chinaz.com/Files/pic/pic9/202002/hpic2119_s.jpg",
+      src: require("@/static/logo.png"),
       buildingBlockShow: false,
       buildingBlockList: [],
       roomNoShow: false,

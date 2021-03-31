@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-17 09:23:15
- * @LastEditors: wwq
- * @LastEditTime: 2021-03-17 10:12:46
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-03-31 10:24:11
 -->
 <template>
   <view>
@@ -156,7 +156,7 @@ import { isNumberValidato } from "../../common/validate.js";
 export default {
   data() {
     return {
-      src: "http://pic2.sc.chinaz.com/Files/pic/pic9/202002/hpic2119_s.jpg",
+      src: require("@/static/logo.png"),
       info: {
         buyUnitName: "",
         projectName: "",
