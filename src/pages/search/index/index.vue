@@ -21,6 +21,14 @@
           @custom="searchSomething"
           @clear="searchData"
         ></u-search>
+        <view class="icon" v-if="isAddCustomer">
+          <u-icon
+            @click="goToAddCustomer"
+            name="plus"
+            color="#888888"
+            size="30"
+          ></u-icon>
+        </view>
       </view>
       <view
         class="district"
@@ -156,6 +164,7 @@ export default {
   components: {},
   data() {
     return {
+      isAddCustomer: false, // 是否显示添加客户按钮，默认false
       cssType: '', // 自定义要展示的内容名字
       dictObj: {
         types: [
@@ -206,6 +215,7 @@ export default {
     },
   },
   async onLoad() {
+    this.isAddCustomer = getApp()?.globalData?.searchParams?.isAddCustomer ? getApp()?.globalData?.searchParams?.isAddCustomer : false;
     this.cssType = getApp()?.globalData?.searchParams?.cssType;
     if (getApp()?.globalData?.searchParams?.searchTip) {
       this.searchTip = getApp()?.globalData?.searchParams?.searchTip;
@@ -227,6 +237,15 @@ export default {
     await this.getListMixin();
   },
   methods: {
+    goToAddCustomer() {
+      console.log('goToAddCustomer');
+      if (this.isAddCustomer) {
+        // 添加客户模块
+        uni.navigateTo({
+          url: "/staffPackage/performanceEdit/customer/index",
+        });
+      }
+    },
     async getAreaOption() {
       let data = await apiList["getAreaApi"]();
       let first = this.$u.deepClone(data[0]);
@@ -368,8 +387,23 @@ export default {
 }
 .search {
   display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   padding-bottom: 10rpx;
+
+  .icon {
+    width: 72rpx;
+    height: 72rpx;
+    line-height: 68rpx;
+    text-align: center;
+    background: #ffffff;
+    border: 1rpx solid #dcdcdc;
+    border-radius: 36rpx;
+    box-sizing: border-box;
+    margin-left: 10rpx;
+  }
 }
 .district {
   padding-top: 20rpx;

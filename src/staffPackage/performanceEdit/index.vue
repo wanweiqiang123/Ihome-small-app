@@ -55,7 +55,7 @@
             <u-input
               v-model="postData.propertyTypeName"
               :select-open="showPropertyType"
-              @click="showPropertyType = true"
+              @click="handleSelectProperty"
               type="select"
               placeholder="请选择物业类型"/>
           </u-form-item>
@@ -97,44 +97,53 @@
           </u-form-item>
           <u-form-item
             v-if="postData.contType === 'DistriDeal'"
+            label="公司类型"
             required
-            label="分销协议编号"
             class="hide-icon"
-            right-icon="arrow-right" prop="contNo">
+            right-icon="arrow-right" prop="agencyTypeName">
             <u-input
-              v-model="postData.contNo"
-              :select-open="showContNo"
-              @click="showContNo = true"
+              v-model="postData.agencyTypeName"
+              :select-open="showAgencyType"
+              @click="showAgencyType = true"
               type="select"
-              placeholder="请选择分销协议编号"/>
-          </u-form-item>
-          <u-form-item
-            v-if="postData.recordStr"
-            required
-            label="报备信息">
-            <u-input disabled v-model="postData.recordStr"/>
+              placeholder="请选择分销公司类型"/>
           </u-form-item>
           <u-form-item
             v-if="postData.contType === 'DistriDeal'"
             required
             label="渠道公司"
             class="hide-icon"
-            right-icon="arrow-right">
+            right-icon="arrow-right" prop="agencyName">
             <u-input
               v-model="postData.agencyName"
-              disabled
-              type="select"/>
+              @click="handleSelectAgency"
+              type="select"
+              placeholder="请选择渠道公司"/>
           </u-form-item>
           <u-form-item
             v-if="postData.contType === 'DistriDeal'"
             required
             label="经纪人"
             class="hide-icon"
-            right-icon="arrow-right">
+            right-icon="arrow-right" prop="brokerName">
             <u-input
               v-model="postData.brokerName"
-              disabled
-              type="select"/>
+              @click="handleSelectBroker"
+              type="select"
+              placeholder="请选择经纪人"/>
+          </u-form-item>
+          <u-form-item
+            v-if="postData.contType === 'DistriDeal'"
+            required
+            label="渠道分销合同"
+            class="hide-icon"
+            right-icon="arrow-right" prop="contNo">
+            <u-input
+              v-model="postData.contNo"
+              :select-open="showContNo"
+              @click="handleSelectContNo"
+              type="select"
+              placeholder="请选择渠道分销合同"/>
           </u-form-item>
           <u-form-item
             :required="['Subscribe', 'SignUp'].includes(postData.stage)"
@@ -376,6 +385,15 @@
       @confirm="confirmContType"
     ></u-select>
     <u-select
+      v-model="showAgencyType"
+      :list="AgencyTypeList"
+      safe-area-inset-bottom
+      title="请选择公司类型"
+      value-name="code"
+      label-name="name"
+      @confirm="confirmAgencyType"
+    ></u-select>
+    <u-select
       v-model="showContNo"
       :list="contNoList"
       safe-area-inset-bottom
@@ -445,7 +463,8 @@ import {
   postBuildByProId,
   postRoomByProId,
   get_deal_get__id,
-  post_notice_customer_information
+  post_notice_customer_information,
+  post_deal_pageData_initDistribution,
 } from "@/api/staff";
 import {getAllDictByType} from "@/api";
 import tool from "@/common/tool";
@@ -482,6 +501,22 @@ export default {
           callback();
           return;
         }
+      }
+    }
+    // 公司类型
+    let agencyTypeValidator = (rule, value, callback) => {
+      if (this.postData.contType === 'DistriDeal') {
+        // 分销成交必选
+        if (!value) {
+          callback(new Error('请选择分销公司类型'));
+          return;
+        } else {
+          callback();
+          return;
+        }
+      } else {
+        callback();
+        return;
       }
     }
     // 认购价格
@@ -584,7 +619,8 @@ export default {
           "ChannelLevel",
           "DealFileType",
           "FeeType",
-          "NotificationType"
+          "NotificationType",
+          "AgencyType"
         ]
       }, // 需要用到的字典类型参数
       DealFileTypeList: [],
@@ -605,7 +641,9 @@ export default {
       showRoom: false,
       roomSelectList: [],
       showContType: false,
+      showAgencyType: false,
       ContTypeList: [],
+      AgencyTypeList: [],
       showContNo: false,
       showDate: false,
       currentDateType: '', // 当前选择日期的类型
@@ -638,7 +676,10 @@ export default {
         roomId: '', // 房号ID
         contType: '',
         contTypeName: '',
-        contNo: '',
+        agencyType: '', // 公司类型
+        agencyTypeName: '', // 公司类型name
+        contNo: '', // 渠道分销合同
+        contNoName: '', // 渠道分销合同name
         recordStr: '',
         subscribePrice: '',
         subscribeDate: '',
@@ -678,6 +719,9 @@ export default {
         ],
         contTypeName: [
           {required: true, message: "合同类型必选", trigger: "change"},
+        ],
+        agencyTypeName: [
+          {validator: agencyTypeValidator, trigger: "change"},
         ],
         refineModelName: [
           {required: true, message: "细分模式必选", trigger: "blur"},
@@ -871,6 +915,7 @@ export default {
     this.DealFileTypeList = await this.getSignDict("DealFileType");
     this.NotificationTypeList = await this.getSignDict("NotificationType");
     this.FeeTypeList = await this.getSignDict("FeeType");
+    this.AgencyTypeList = await this.getSignDict("AgencyType");
     await this.getToken();
     if (option && option.id) {
       this.id = option.id;
@@ -890,6 +935,14 @@ export default {
     }
     if (item && item.type === "notice") {
       await this.finishAddNotice(item.data);
+      getApp().globalData.searchBackData = {};
+    }
+    if (item && item.type === "agency") {
+      await this.finishAddAgency(item.data);
+      getApp().globalData.searchBackData = {};
+    }
+    if (item && item.type === "broker") {
+      await this.finishAddBroker(item.data);
       getApp().globalData.searchBackData = {};
     }
   },
@@ -1198,6 +1251,14 @@ export default {
         this.postData.stage = item[0].value;
       }
     },
+    // 选择物业类型
+    handleSelectProperty() {
+      if (!this.postData.cycleId) {
+        this.$tool.toast("请先选择项目周期");
+        return ;
+      }
+      this.showPropertyType = true;
+    },
     // 确定选择物业类型
     async confirmPropertyType(item) {
       if (item && item.length) {
@@ -1302,26 +1363,145 @@ export default {
     },
     // 选择合同类型
     handleShowContType() {
-      // 选择的房号查询是否存在已成交报备信息，如果存在则将合同类型设置为分销成交，不可修改
-      if (this.baseInfoInDeal.contType === 'DistriDeal' && this.baseInfoInDeal.hasRecord && this.postData.roomId) {
-        return ;
-      }
+      // 选择的房号查询是否存在已成交报备信息，如果存在则将合同类型设置为分销成交，不可修改 --- 2021-03-27 新需求暂时屏蔽
+      // if (this.baseInfoInDeal.contType === 'DistriDeal' && this.baseInfoInDeal.hasRecord && this.postData.roomId) {
+      //   return ;
+      // }
       this.showContType = true;
     },
     // 确定合同类型
     async confirmContType(item) {
       console.log(item);
       if (item && item.length) {
-        if (item[0].value === "DistriDeal" && !this.baseInfoInDeal.hasRecord && this.postData.roomId) {
-          this.$tool.toast("系统查询不到此房号的已成交报备信息，请先维护报备信息！");
-          return;
-        }
+        // 2021-03-27 新需求暂时屏蔽
+        // if (item[0].value === "DistriDeal" && !this.baseInfoInDeal.hasRecord && this.postData.roomId) {
+        //   this.$tool.toast("系统查询不到此房号的已成交报备信息，请先维护报备信息！");
+        //   return;
+        // }
         this.postData.contTypeName = item[0].label;
         this.postData.contType = item[0].value;
         // 初始化收派套餐
         await this.initReceive();
         // 构建附件表格数据
         await this.getDocumentList(item[0].value);
+      }
+    },
+    // 确定合同类型
+    async confirmAgencyType(item) {
+      console.log(item);
+      if (item && item.length) {
+        this.postData.agencyType = item[0].label;
+        this.postData.agencyTypeName = item[0].value;
+      }
+      // 1. 先初始化收派信息
+      if (this.postData.contNo) {
+        this.initReceive();
+      }
+      // 2. 初始化渠道公司和经纪人
+      this.postData.agencyId = '';
+      this.postData.agencyName = '';
+      this.postData.contNo = '';
+      this.postData.contNoName = '';
+    },
+    // 选择渠道公司
+    handleSelectAgency() {
+      if (!this.postData.cycleId) {
+        // 没有选周期不能选渠道公司
+        this.$tool.toast("请先选择项目周期");
+        return ;
+      }
+      if (!this.postData.agencyType) {
+        // 没有公司类型不能选渠道公司
+        this.$tool.toast("请先选择公司类型");
+        return ;
+      }
+      getApp().globalData.searchParams = {
+        searchTip: "输入公司名称",
+        api: "getAgencyListApi",
+        key: "channelCompanyName",
+        id: "channelCompanyId",
+        type: "agency",
+        other: {
+          cycleId: this.postData.cycleId
+        }
+      };
+      uni.navigateTo({
+        url: "/pages/search/index/index",
+      });
+    },
+    // 确定选择渠道公司
+    async finishAddAgency(data) {
+      console.log(data);
+      if (data && data.channelCompanyId) {
+        this.postData.agencyId = data?.channelCompanyId;
+        this.postData.agencyName = data?.channelCompanyName;
+        await this.getContNoList(this.postData.agencyId);
+      }
+    },
+    // 选择经纪人
+    handleSelectBroker() {
+      if (!this.postData.agencyId) {
+        // 没有选渠道公司不能选经纪人
+        this.$tool.toast("请先选择渠道公司");
+        return ;
+      }
+      getApp().globalData.searchParams = {
+        searchTip: "输入经纪人姓名或手机号码",
+        cssType: 'broker',
+        api: "getBrokerListApi",
+        key: "name",
+        id: "id",
+        type: "broker",
+        other: {
+          channelId: this.postData.agencyId
+        }
+      };
+      uni.navigateTo({
+        url: "/pages/search/index/index",
+      });
+    },
+    // 确定选择经纪人
+    finishAddBroker(data) {
+      console.log(data);
+      if (data && data.id) {
+        this.postData.brokerId = data?.id;
+        this.postData.brokerName = data?.name;
+      }
+    },
+    // 选择分销协议
+    async handleSelectContNo() {
+      if (!this.postData.propertyType) {
+        this.$tool.toast("请先选择物业类型");
+        return;
+      }
+      if (!this.postData.agencyId) {
+        this.$tool.toast("请先选择渠道公司");
+        return;
+      }
+      this.showContNo = true;
+      // await this.getContNoList();
+    },
+    // 根据选择的渠道商，获取分销协议
+    async getContNoList(agencyId = '') {
+      if (!agencyId) return ;
+      let postData = {
+        channelId: agencyId,
+        cycleId: this.postData.cycleId,
+        property: this.postData.propertyType,
+      }
+      let res = await post_deal_pageData_initDistribution(postData);
+      console.log('getContNoList', res);
+      if (res && res.contracts && res.contracts.length > 0) {
+        this.contNoList = res.contracts;
+        // 处理默认值问题
+        // 增加需求：当分销协议只有一个的时候，默认选中
+        if (res.contracts.length === 1) {
+          this.$nextTick(() => {
+            this.initContNo(res.contracts[0]);
+          });
+        }
+      } else {
+        this.contNoList = [];
       }
     },
     // 确定选择分销协议
@@ -1753,29 +1933,29 @@ export default {
           break;
       }
       // 分销协议编号
-      if (baseInfo.contracts && baseInfo.contracts.length > 0) {
-        this.contNoList = baseInfo.contracts;
-        // 增加需求：当分销协议只有一个的时候，默认选中
-        if (baseInfo && baseInfo.contracts && baseInfo.contracts.length === 1) {
-          this.$nextTick(() => {
-            this.initContNo(baseInfo.contracts[0]);
-          });
-        }
-      } else {
-        this.contNoList = [];
-        this.postData.contNo = "";
-        this.postData.isMat = "";
-        this.packageIdsList = [];
-      }
+      // if (baseInfo.contracts && baseInfo.contracts.length > 0) {
+      //   this.contNoList = baseInfo.contracts;
+      //   // 增加需求：当分销协议只有一个的时候，默认选中
+      //   if (baseInfo && baseInfo.contracts && baseInfo.contracts.length === 1) {
+      //     this.$nextTick(() => {
+      //       this.initContNo(baseInfo.contracts[0]);
+      //     });
+      //   }
+      // } else {
+      //   this.contNoList = [];
+      //   this.postData.contNo = "";
+      //   this.postData.isMat = "";
+      //   this.packageIdsList = [];
+      // }
       // 分销成交和非分销成交不一样
-      if (baseInfo.contType === 'DistriDeal') {
-        // 分销成交模式
-        // 1. 初始化渠道商/渠道公司
-        await this.initAgency(baseInfo.agencyVOs, true);
-      } else if (['SelfChannelDeal', 'NaturalVisitDeal'].includes(baseInfo.contType)) {
-        // 非分销成交模式 --- 自然来访 / 自渠成交
-        await this.initAgency(baseInfo.agencyVOs, false);
-      }
+      // if (baseInfo.contType === 'DistriDeal') {
+      //   // 分销成交模式
+      //   // 1. 初始化渠道商/渠道公司
+      //   await this.initAgency(baseInfo.agencyVOs, true);
+      // } else if (['SelfChannelDeal', 'NaturalVisitDeal'].includes(baseInfo.contType)) {
+      //   // 非分销成交模式 --- 自然来访 / 自渠成交
+      //   await this.initAgency(baseInfo.agencyVOs, false);
+      // }
       // 栋座
       if (baseInfo.buildingId && !this.postData.buildingId) {
         this.postData.buildingId = baseInfo.buildingId;
@@ -2377,7 +2557,11 @@ export default {
           if (vo.code === 'Notice') {
             addList.forEach((list) => {
               if (list.annexList && list.annexList.length) {
-                vo.fileList.push(...list.annexList);
+                list.annexList.forEach((L) => {
+                  L.fileType = 'Notice';
+                  L.canDelete = true;
+                  vo.fileList.push(L);
+                });
               }
             });
           }
@@ -2432,6 +2616,7 @@ export default {
     handleSelectCustomer() {
       getApp().globalData.searchParams = {
         cssType: 'custom',
+        isAddCustomer: true,
         searchTip: '输入客户姓名或者电话',
         api: "postCustomerGetCustList",
         key: "custInfo",
@@ -2557,6 +2742,7 @@ export default {
     },
     // 提交
     handleSubmit() {
+      console.log('handleSubmit', this.postData);
       if(this.postData.stage === "SignUp") {
         this.showSubmitWin = true;
       } else {

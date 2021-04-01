@@ -478,6 +478,18 @@
 					}
 				},
 				{
+					"path": "performanceEdit/customer/index",
+					"style": {
+						"navigationBarTitleText": "新增客户"
+					}
+				},
+				{
+					"path": "performanceEdit/uploadAttachment",
+					"style": {
+						"navigationBarTitleText": "补充附件"
+					}
+				},
+				{
 					"path": "performance/info",
 					"style": {
 						"navigationBarTitleText": "业绩申报详情"

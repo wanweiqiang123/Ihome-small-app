@@ -450,6 +450,16 @@ export async function post_deal_pageData_initDistribution(data = {}, option = {}
 }
 
 /**
+ * @description: 业绩申报 - 新增客户
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function addCustomerApi(data = {}, option = {}) {
+  return await postApi(`/sales-api/customer/customer/addCustomer`, data, option)
+}
+
+/**
  * @description: 查询报备成交详情-小程序端
  * @param {*} data
  * @param {*} option

@@ -56,6 +56,13 @@
               :custom-style="{ padding: '0 40rpx' }"
             >删除</u-button>
             <u-button
+              @click="handleUpload(item)"
+              size="mini"
+              shape="circle"
+              class="foot-btn"
+              :custom-style="{ padding: '0 40rpx' }"
+            >补充附件</u-button>
+            <u-button
               v-if="isShowBtn(item, 'updated')"
               @click="handleUpdated(item)"
               size="mini"
@@ -272,6 +279,14 @@ export default {
       if (item.id) {
         uni.navigateTo({
           url: `/staffPackage/performanceEdit/index?id=${item.id}`,
+        });
+      }
+    },
+    // 补充附件
+    handleUpload(item) {
+      if (item.id) {
+        uni.navigateTo({
+          url: `/staffPackage/performanceEdit/uploadAttachment?id=${item.id}`,
         });
       }
     },

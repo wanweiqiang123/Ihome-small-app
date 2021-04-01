@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-09 14:31:14
- * @LastEditors: ywl
- * @LastEditTime: 2021-03-08 16:56:27
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-03-31 11:23:16
 -->
 <script>
 // const Raven = require("./common/raven");
@@ -18,6 +18,7 @@ export default {
     attestationInfo: {}, // 认证信息
     noticeInfo: {}, //优惠告知书签署预览信息
     searchParams: {
+      isAddCustomer: false, // 是否显示添加客户按钮，默认false
       cssType: '', // 组件样式 - 可选
       searchTip: '', // 搜索框提示语 - 可选
       api: null, // 搜索的api
