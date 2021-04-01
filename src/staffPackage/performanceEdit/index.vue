@@ -984,7 +984,10 @@ export default {
       this.postData.area = info?.house?.area ? info?.house?.area : '';
       this.postData.contType = info?.contType ? info?.contType : '';
       this.postData.contTypeName = info?.contType ? this.getDictName(info?.contType, this.ContTypeList) : '';
+      this.postData.agencyType = info?.agencyType ? info?.agencyType : '';
+      this.postData.agencyTypeName = info?.agencyType ? this.getDictName(info?.agencyType, this.AgencyTypeList) : '';
       this.postData.contNo = info?.contNo ? info?.contNo : '';
+      this.postData.contNoName = info?.contNoName ? info?.contNoName : '';
       this.postData.recordStr = info?.recordStr ? info?.recordStr : '';
       if (info.agencyList && info.agencyList.length) {
         this.postData.agencyName = info.agencyList[0].agencyName;
