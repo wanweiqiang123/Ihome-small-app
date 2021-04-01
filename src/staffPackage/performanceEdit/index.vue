@@ -1418,16 +1418,29 @@ export default {
         this.$tool.toast("请先选择公司类型");
         return ;
       }
-      getApp().globalData.searchParams = {
-        searchTip: "输入公司名称",
-        api: "getAgencyListApi",
-        key: "channelCompanyName",
-        id: "channelCompanyId",
-        type: "agency",
-        other: {
-          cycleId: this.postData.cycleId
-        }
-      };
+      // 内部公司还是外部公司
+      if (this.postData.agencyType === "Internal") {
+        // 内部公司
+        getApp().globalData.searchParams = {
+          searchTip: "输入公司名称",
+          api: "getAgencyListByInApi",
+          key: "name",
+          id: "id",
+          type: "agency"
+        };
+      } else {
+        // 外部
+        getApp().globalData.searchParams = {
+          searchTip: "输入公司名称",
+          api: "getAgencyListApi",
+          key: "channelCompanyName",
+          id: "channelCompanyId",
+          type: "agency",
+          other: {
+            cycleId: this.postData.cycleId
+          }
+        };
+      }
       uni.navigateTo({
         url: "/pages/search/index/index",
       });
@@ -1435,11 +1448,20 @@ export default {
     // 确定选择渠道公司
     async finishAddAgency(data) {
       console.log(data);
-      if (data && data.channelCompanyId) {
-        this.postData.agencyId = data?.channelCompanyId;
-        this.postData.agencyName = data?.channelCompanyName;
-        await this.getContNoList(this.postData.agencyId);
+      if (this.postData.agencyType === "Internal") {
+        // 内部公司
+        if (data && data.id) {
+          this.postData.agencyId = data?.id;
+          this.postData.agencyName = data?.name;
+        }
+      } else {
+        // 外部
+        if (data && data.channelCompanyId) {
+          this.postData.agencyId = data?.channelCompanyId;
+          this.postData.agencyName = data?.channelCompanyName;
+        }
       }
+      await this.getContNoList(this.postData.agencyId);
     },
     // 选择经纪人
     handleSelectBroker() {

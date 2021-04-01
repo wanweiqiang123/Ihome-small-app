@@ -234,9 +234,14 @@ export async function getTermListByProIdApi(data, option = {}) {
     return await postApi(`/sales-api/project/term/getTermListByProId`, data, option);
 }
 
-// 员工案场-业绩申报-根据项目周期id选择渠道公司列表
+// 员工案场-业绩申报-根据项目周期id选择渠道公司列表 - 外部
 export async function getAgencyListApi(data, option = {}) {
     return await postApi(`/sales-api/contract/distribution/channels/cycleId`, data, option);
+}
+
+// 员工案场-业绩申报-根据项目周期id选择渠道公司列表 - 内部
+export async function getAgencyListByInApi(data, option = {}) {
+    return await postApi(`/sales-api/system/company/getPage`, data, option);
 }
 
 // 员工案场-业绩申报-根据渠道公司id选择经纪人列表
