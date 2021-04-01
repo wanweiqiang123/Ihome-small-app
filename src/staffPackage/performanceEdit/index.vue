@@ -237,37 +237,37 @@
       </view>
       <view class="performance-form">
         <view class="form-title u-border-bottom">收派金额</view>
-        <view v-if="postData.agentReceiveVO.length">
-          <view class="form-title u-border-bottom">代理费套餐</view>
-          <u-form label-width="170">
-            <u-form-item
-              class="hide-icon"
-              right-icon="arrow-right"
-              v-for="(item, index) in postData.agentReceiveVO" :key="index"
-              :label="item.partyACustomerName">
-              <view
-                :class="item.packageId ? 'active-package' : ''"
-                @click.native="handleSelectPackage(item, 'agentReceiveVO', index)">
-                {{item.packageId ? "收派标准" : "请选择收派标准"}}
-              </view>
-            </u-form-item>
-          </u-form>
-        </view>
         <view v-if="postData.serviceReceiveVO.length">
-          <view class="form-title u-border-bottom">服务费套餐</view>
-          <u-form label-width="170">
-            <u-form-item
-              class="hide-icon"
-              right-icon="arrow-right"
-              v-for="(item, index) in postData.serviceReceiveVO" :key="index"
-              :label="item.partyACustomerName">
-              <view
-                :class="item.packageId ? 'active-package' : ''"
-                @click.native="handleSelectPackage(item, 'serviceReceiveVO', index)">
+          <view
+            class="receive-wrapper"
+            v-for="(item, index) in postData.serviceReceiveVO" :key="index"
+            @click.native="handleSelectPackage(item, 'serviceReceiveVO', index)">
+            <view class="left">
+              <view class="title">{{item.partyACustomerName}}</view>
+              <view :class="item.packageId ? 'name active-package' : 'name'">
                 {{item.packageId ? "收派标准" : "请选择收派标准"}}
               </view>
-            </u-form-item>
-          </u-form>
+            </view>
+            <view class="right">
+              <u-icon name="arrow-right" color="#C0C4CC" size="30"></u-icon>
+            </view>
+          </view>
+        </view>
+        <view v-if="postData.agentReceiveVO.length">
+          <view
+            class="receive-wrapper"
+            v-for="(item, index) in postData.agentReceiveVO" :key="index"
+            @click.native="handleSelectPackage(item, 'agentReceiveVO', index)">
+            <view class="left">
+              <view class="title">{{item.partyACustomerName}}</view>
+              <view :class="item.packageId ? 'active-package name' : 'name'">
+                {{item.packageId ? "收派标准" : "请选择收派标准"}}
+              </view>
+            </view>
+            <view class="right">
+              <u-icon name="arrow-right" color="#C0C4CC" size="30"></u-icon>
+            </view>
+          </view>
         </view>
       </view>
       <view class="performance-table">
@@ -1386,12 +1386,12 @@ export default {
         await this.getDocumentList(item[0].value);
       }
     },
-    // 确定合同类型
+    // 确定公司类型
     async confirmAgencyType(item) {
       console.log(item);
       if (item && item.length) {
-        this.postData.agencyType = item[0].label;
-        this.postData.agencyTypeName = item[0].value;
+        this.postData.agencyTypeName = item[0].label;
+        this.postData.agencyType = item[0].value;
       }
       // 1. 先初始化收派信息
       if (this.postData.contNo) {
@@ -3077,6 +3077,41 @@ export default {
     }
     & + & {
       margin-top: 20rpx;
+    }
+
+    .receive-wrapper {
+      width: 100%;
+      display: flex;
+      flex-flow: row;
+      justify-content: center;
+      align-items: center;
+      box-sizing: border-box;
+      padding: 14rpx 24rpx;
+      //height: 90rpx;
+      border-bottom: 1rpx solid #e4e7ed;
+
+      .left {
+        flex: 1;
+
+        .title {
+          font-size: 14px;
+          box-sizing: border-box;
+        }
+
+        .name {
+          font-size: 12px;
+          color: grey;
+        }
+
+        .active-package {
+          color: $u-type-primary;
+          text-decoration: underline;
+        }
+      }
+
+      .right {
+
+      }
     }
 
     .annex-list-wrapper {

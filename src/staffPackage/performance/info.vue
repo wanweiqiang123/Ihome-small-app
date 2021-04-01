@@ -19,6 +19,7 @@
             <u-input
               disabled
               v-model="postData.cycleName"
+              placeholder=" "
               type="select"/>
           </u-form-item>
           <u-form-item
@@ -28,6 +29,7 @@
             <u-input
               v-model="postData.refineModelName"
               disabled
+              placeholder=" "
               type="select"/>
           </u-form-item>
           <u-form-item
@@ -37,6 +39,7 @@
             <u-input
               v-model="postData.stageName"
               disabled
+              placeholder=" "
               type="select"/>
           </u-form-item>
           <u-form-item
@@ -46,6 +49,7 @@
             <u-input
               v-model="postData.propertyTypeName"
               disabled
+              placeholder=" "
               type="select"/>
           </u-form-item>
           <u-form-item
@@ -55,6 +59,7 @@
             <u-input
               v-model="postData.buildingName"
               disabled
+              placeholder=" "
               type="select"/>
           </u-form-item>
           <u-form-item
@@ -64,6 +69,7 @@
             <u-input
               v-model="postData.roomNo"
               disabled
+              placeholder=" "
               type="select"/>
           </u-form-item>
           <u-form-item
@@ -73,20 +79,19 @@
             <u-input
               v-model="postData.contTypeName"
               disabled
+              placeholder=" "
               type="select"/>
           </u-form-item>
           <u-form-item
             v-if="postData.contType === 'DistriDeal'"
-            label="分销协议编号"
+            label="公司类型"
             class="hide-icon"
-            right-icon="arrow-right" prop="contNo">
+            right-icon="arrow-right">
             <u-input
-              v-model="postData.contNo"
+              v-model="postData.agencyTypeName"
               disabled
+              placeholder=" "
               type="select"/>
-          </u-form-item>
-          <u-form-item v-if="postData.recordStr" label="报备信息">
-            <u-input disabled v-model="postData.recordStr"/>
           </u-form-item>
           <u-form-item
             v-if="postData.contType === 'DistriDeal'"
@@ -96,6 +101,7 @@
             <u-input
               v-model="postData.agencyName"
               disabled
+              placeholder=" "
               type="select"/>
           </u-form-item>
           <u-form-item
@@ -106,6 +112,18 @@
             <u-input
               v-model="postData.brokerName"
               disabled
+              placeholder=" "
+              type="select"/>
+          </u-form-item>
+          <u-form-item
+            v-if="postData.contType === 'DistriDeal'"
+            label="渠道分销合同"
+            class="hide-icon"
+            right-icon="arrow-right" prop="contNo">
+            <u-input
+              v-model="postData.contNoName"
+              disabled
+              placeholder=" "
               type="select"/>
           </u-form-item>
           <u-form-item label="认购价格" prop="subscribePrice">
@@ -120,13 +138,14 @@
             <u-input
               v-model="postData.subscribeDate"
               disabled
+              placeholder=" "
               type="select"/>
           </u-form-item>
           <u-form-item label="签约价格" prop="signPrice">
             <u-input
               disabled
               v-model="postData.signPrice"
-              placeholder="请输入签约价格"/>
+              placeholder=" "/>
           </u-form-item>
           <u-form-item
             label="签约日期"
@@ -135,6 +154,7 @@
             <u-input
               v-model="postData.signDate"
               disabled
+              placeholder=" "
               type="select"/>
           </u-form-item>
         </u-form>
@@ -165,33 +185,35 @@
       </view>
       <view class="performance-form">
         <view class="form-title u-border-bottom">收派金额</view>
-        <view v-if="postData.agentReceiveVO.length">
-          <view class="form-title u-border-bottom">代理费套餐</view>
-          <u-form label-width="170">
-            <u-form-item
-              class="hide-icon"
-              right-icon="arrow-right"
-              v-for="(item, index) in postData.agentReceiveVO" :key="index"
-              :label="item.partyACustomerName">
-              <view :class="item.packageId ? 'active-package' : ''">
-                {{item.packageId ? "收派标准" : "请选择收派标准"}}
-              </view>
-            </u-form-item>
-          </u-form>
-        </view>
         <view v-if="postData.serviceReceiveVO.length">
-          <view class="form-title u-border-bottom">服务费套餐</view>
-          <u-form label-width="170">
-            <u-form-item
-              class="hide-icon"
-              right-icon="arrow-right"
-              v-for="(item, index) in postData.serviceReceiveVO" :key="index"
-              :label="item.partyACustomerName">
-              <view :class="item.packageId ? 'active-package' : ''">
+          <view
+            class="receive-wrapper"
+            v-for="(item, index) in postData.serviceReceiveVO" :key="index">
+            <view class="left">
+              <view class="title">{{item.partyACustomerName}}</view>
+              <view :class="item.packageId ? 'name active-package' : 'name'">
                 {{item.packageId ? "收派标准" : "请选择收派标准"}}
               </view>
-            </u-form-item>
-          </u-form>
+            </view>
+            <view class="right">
+              <u-icon name="arrow-right" color="#C0C4CC" size="30"></u-icon>
+            </view>
+          </view>
+        </view>
+        <view v-if="postData.agentReceiveVO.length">
+          <view
+            class="receive-wrapper"
+            v-for="(item, index) in postData.agentReceiveVO" :key="index">
+            <view class="left">
+              <view class="title">{{item.partyACustomerName}}</view>
+              <view :class="item.packageId ? 'active-package name' : 'name'">
+                {{item.packageId ? "收派标准" : "请选择收派标准"}}
+              </view>
+            </view>
+            <view class="right">
+              <u-icon name="arrow-right" color="#C0C4CC" size="30"></u-icon>
+            </view>
+          </view>
         </view>
       </view>
       <view class="performance-table">
@@ -270,13 +292,15 @@ export default {
           "ChannelLevel",
           "DealFileType",
           "FeeType",
-          "NotificationType"
+          "NotificationType",
+          "AgencyType"
         ]
       }, // 需要用到的字典类型参数
       SubdivideList: [],
       DealStageList: [],
       PropertyList: [],
       ContTypeList: [],
+      AgencyTypeList: [],
       DealFileTypeList: [],
       NotificationTypeList: [],
       FeeTypeList: [],
@@ -297,7 +321,10 @@ export default {
         roomId: '', // 房号ID
         contType: '',
         contTypeName: '',
+        agencyType: '',
+        agencyTypeName: '',
         contNo: '',
+        contNoName: '',
         recordStr: '',
         subscribePrice: '',
         subscribeDate: '',
@@ -435,6 +462,7 @@ export default {
     this.DealStageList = await this.getSignDict("DealStage");
     this.PropertyList = await this.getSignDict("Property");
     this.ContTypeList = await this.getSignDict("ContType");
+    this.AgencyTypeList = await this.getSignDict("AgencyType");
     this.DealFileTypeList = await this.getSignDict("DealFileType");
     this.NotificationTypeList = await this.getSignDict("NotificationType");
     this.FeeTypeList = await this.getSignDict("FeeType");
@@ -458,7 +486,10 @@ export default {
       this.postData.roomNo = info?.house?.roomNo ? info?.house?.roomNo : '';
       this.postData.contTypeName = info?.contType ? this.getDictName(info?.contType, this.ContTypeList) : '';
       this.postData.contType = info?.contType ? info?.contType : '';
+      this.postData.agencyType = info?.agencyType ? info?.agencyType : '';
+      this.postData.agencyTypeName = info?.agencyType ? this.getDictName(info?.agencyType, this.AgencyTypeList) : '';
       this.postData.contNo = info?.contNo ? info?.contNo : '';
+      this.postData.contNoName = info?.contNoName ? info?.contNoName : '';
       this.postData.recordStr = info?.recordStr ? info?.recordStr : '';
       if (info.agencyList && info.agencyList.length) {
         this.postData.agencyName = info.agencyList[0].agencyName;
@@ -699,6 +730,41 @@ export default {
       margin-top: 20rpx;
     }
 
+    .receive-wrapper {
+      width: 100%;
+      display: flex;
+      flex-flow: row;
+      justify-content: center;
+      align-items: center;
+      box-sizing: border-box;
+      padding: 14rpx 24rpx;
+      //height: 90rpx;
+      border-bottom: 1rpx solid #e4e7ed;
+
+      .left {
+        flex: 1;
+
+        .title {
+          font-size: 14px;
+          box-sizing: border-box;
+        }
+
+        .name {
+          font-size: 12px;
+          color: grey;
+        }
+
+        .active-package {
+          color: $u-type-primary;
+          text-decoration: underline;
+        }
+      }
+
+      .right {
+
+      }
+    }
+
     .annex-list-wrapper {
       width: 100%;
       padding: 0rpx 20rpx 20rpx 20rpx;
@@ -796,9 +862,5 @@ export default {
 }
 .form-upload {
   padding: 10rpx 12rpx;
-}
-.active-package {
-  color: $u-type-primary;
-  text-decoration: underline;
 }
 </style>
