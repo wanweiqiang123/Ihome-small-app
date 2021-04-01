@@ -56,6 +56,7 @@
               :custom-style="{ padding: '0 40rpx' }"
             >删除</u-button>
             <u-button
+              v-if="isShowBtn(item, 'upload')"
               @click="handleUpload(item)"
               size="mini"
               shape="circle"
@@ -455,6 +456,12 @@ export default {
         case "updated":
           // 修改
           if (item.status === "Draft" && item.entryPersonId === this.currentUserId) {
+            flag = true;
+          }
+          break;
+        case "upload":
+          // 补充附件：
+          if (item.status !== "Draft" && item.entryPersonId === this.currentUserId) {
             flag = true;
           }
           break;
