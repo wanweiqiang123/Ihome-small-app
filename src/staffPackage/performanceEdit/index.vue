@@ -620,7 +620,7 @@ export default {
           "DealFileType",
           "FeeType",
           "NotificationType",
-          "AgencyType"
+          "CompanyKindEnum"
         ]
       }, // 需要用到的字典类型参数
       DealFileTypeList: [],
@@ -915,7 +915,7 @@ export default {
     this.DealFileTypeList = await this.getSignDict("DealFileType");
     this.NotificationTypeList = await this.getSignDict("NotificationType");
     this.FeeTypeList = await this.getSignDict("FeeType");
-    this.AgencyTypeList = await this.getSignDict("AgencyType");
+    this.AgencyTypeList = await this.getSignDict("CompanyKindEnum");
     await this.getToken();
     if (option && option.id) {
       this.id = option.id;
