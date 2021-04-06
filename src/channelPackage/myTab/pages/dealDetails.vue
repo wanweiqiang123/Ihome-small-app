@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-27 08:14:50
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 14:36:30
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-04-06 19:33:25
 -->
 <template>
   <view class="deal-details-wrapper">
@@ -131,25 +131,44 @@
       v-if="detailsType === 'report'"
     >
       <view class="form-title u-border-bottom">结佣信息</view>
-      <view class="u-margin-20">
-        <u-table>
-          <u-tr>
-            <u-th
-              v-for="thItem in tableData.thList"
-              :key="thItem.id"
-            >{{thItem.name | emptyFilter}}</u-th>
-          </u-tr>
-          <u-tr
-            v-for="trItem in tableData.trList"
-            :key="trItem.id"
-          >
-            <u-td
-              v-for="tdItem in trItem.value"
-              :key="tdItem.id"
-            >{{tdItem | emptyFilter}}</u-td>
-          </u-tr>
-        </u-table>
-      </view>
+      <u-form :label-width="190">
+        <u-form-item label="应结佣金额">
+          <u-input
+            v-model="info.channelComm"
+            placeholder=" "
+            disabled
+            :clearable="false"
+            input-align="left"
+          />
+        </u-form-item>
+        <u-form-item label="已结佣金额">
+          <u-input
+            v-model="info.totalPaidChannelComm"
+            placeholder=" "
+            disabled
+            :clearable="false"
+            input-align="left"
+          />
+        </u-form-item>
+        <u-form-item label="未结佣金额">
+          <u-input
+            v-model="info.totalUnpaidChannelComm"
+            placeholder=" "
+            disabled
+            :clearable="false"
+            input-align="left"
+          />
+        </u-form-item>
+        <u-form-item label="当前可结金额">
+          <u-input
+            v-model="info.totalChannelComm"
+            placeholder=" "
+            disabled
+            :clearable="false"
+            input-align="left"
+          />
+        </u-form-item>
+      </u-form>
     </view>
     <view
       class="info-item"
@@ -204,29 +223,12 @@ export default {
         totalInCommFees: "",
         commissionRecordResponseList: [],
       },
-      tableData: {
-        thList: [
-          {
-            id: "1",
-            name: "结佣类型",
-          },
-          {
-            id: "2",
-            name: "可结佣",
-          },
-          {
-            id: "3",
-            name: "已结佣",
-          },
-          {
-            id: "4",
-            name: "未结佣",
-          },
-        ],
-        trList: [],
-      },
       info: {
         house: {},
+        channelComm: "", // 应结佣金额
+        totalPaidChannelComm: "", // 已结佣金额
+        totalChannelComm: "", // 当前可结金额
+        totalUnpaidChannelComm: "", // 未结佣金额
       },
       customer: {
         customerName: "",
@@ -291,50 +293,33 @@ export default {
           ),
         },
       };
-      this.tableData.trList = [
-        {
-          id: "1",
-          value: [
-            "服务费",
-            res.channelServiceComm,
-            res.paidChannelServiceComm,
-            res.unpaidChannelServiceComm,
-          ],
-        },
-        {
-          id: "2",
-          value: [
-            "代理费",
-            res.channelAgentComm,
-            res.paidChannelAgentComm,
-            res.unpaidChannelAgentComm,
-          ],
-        },
-        {
-          id: "3",
-          value: [
-            "合计",
-            this.$tool.tofixed(
-              this.$tool.add(res.channelServiceComm, res.channelAgentComm),
-              2
-            ),
-            this.$tool.tofixed(
-              this.$tool.add(
-                res.paidChannelServiceComm,
-                res.paidChannelAgentComm
-              ),
-              2
-            ),
-            this.$tool.tofixed(
-              this.$tool.add(
-                res.unpaidChannelServiceComm,
-                res.unpaidChannelAgentComm
-              ),
-              2
-            ),
-          ],
-        },
-      ];
+      // 应结佣金额
+      this.info.channelComm = res.channelComm ? res.channelComm : '0';
+      // 已结佣金额
+      this.info.totalPaidChannelComm = this.$tool.tofixed(
+        this.$tool.add(
+          res.paidChannelServiceComm,
+          res.paidChannelAgentComm
+        ),
+        2
+      ).toString();
+      console.log('this.info.totalPaidChannelComm', this.info.totalPaidChannelComm)
+      // 当前可结金额
+      this.info.totalChannelComm = this.$tool.tofixed(
+        this.$tool.add(
+          res.channelAgentComm,
+          res.channelServiceComm
+        ),
+        2
+      ).toString();
+      // 未结佣金额
+      this.info.totalUnpaidChannelComm = this.$tool.tofixed(
+        this.$tool.add(
+          res.unpaidChannelAgentComm,
+          res.unpaidChannelServiceComm
+        ),
+        2
+      ).toString();
       this.customer = this.info.customerList.find(
         (v) => v.isCustomer === "Yes"
       );
