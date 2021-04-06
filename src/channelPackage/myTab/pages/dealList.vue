@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-27 13:05:22
  * @LastEditors: lsj
- * @LastEditTime: 2021-03-20 08:46:33
+ * @LastEditTime: 2021-04-06 17:20:16
 -->
 <template>
   <view class="deal-list-wrapper">
@@ -38,12 +38,9 @@
       <view
         class="list-item"
         v-for="(item, i) in tablePage"
-        :key="i"
-        @click="viewDealDetail(item.dealCode)"
-      >
+        :key="i">
         <view class="item-code u-padding-bottom-20">
           <view class="code">{{item.dealCode | emptyFilter}}</view>
-          <view class="detail">详情</view>
           <u-icon
             name="arrow-right"
             color="#999999"
@@ -66,6 +63,22 @@
               <view class="border">{{item.paidCommAmount ? item.paidCommAmount : 0}}</view>
             </view>
           </view>
+        </view>
+        <view class="item-btn">
+          <u-button
+            shape="circle"
+            :custom-style="{ padding: '0 40rpx', marginRight: '20rpx' }"
+            size="mini"
+            type="primary"
+            @click="handleUpload(item)"
+          >上传附件</u-button>
+          <u-button
+            shape="circle"
+            :custom-style="{ padding: '0 40rpx'}"
+            size="mini"
+            type="primary"
+            @click="viewDealDetail(item.dealCode)"
+          >详情</u-button>
         </view>
       </view>
       <view class="empty-wrapper" v-if="!tablePage.length">
@@ -215,6 +228,14 @@ export default {
       this.queryPageParameters.stageName = e[0].label;
       this.queryPageParameters.stage = e[0].value;
     },
+    // 补充附件
+    handleUpload(item) {
+      if (item.id) {
+        uni.navigateTo({
+          url: `/staffPackage/performanceEdit/uploadAttachment?id=${item.id}`,
+        });
+      }
+    },
     // 查看中介报备成交详情
     viewDealDetail(code) {
       uni.navigateTo({
@@ -288,12 +309,6 @@ export default {
           flex: 1;
           font-weight: 600;
         }
-
-        .detail {
-          box-sizing: border-box;
-          margin: 0rpx 10rpx;
-          color: #999999;
-        }
       }
 
       .item-content {
@@ -301,6 +316,9 @@ export default {
         display: flex;
         flex-direction: row;
         align-items: flex-end;
+        box-sizing: border-box;
+        padding-bottom: 22rpx;
+        border-bottom: 1rpx solid #dadada;
 
         .content-left {
           flex: 1;
@@ -353,6 +371,12 @@ export default {
             }
           }
         }
+      }
+
+      .item-btn {
+        text-align: right;
+        box-sizing: border-box;
+        padding-top: 20rpx;
       }
     }
   }
