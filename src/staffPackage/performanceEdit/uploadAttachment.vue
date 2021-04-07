@@ -23,7 +23,7 @@
                 width="100%" height="100%" :src="list.fileUrls ? list.fileUrls : getUrl(list.fileId)"></u-image>
             </view>
           </template>
-          <view class="upload-icon" @click="uploadByType(item)">
+          <view class="upload-icon" @click="uploadByType(item)" v-if="item.code !== 'ContractInfo'">
             <u-icon name="plus" color="#606266" size="40"></u-icon>
             <view class="select">选择文件</view>
           </view>
@@ -55,7 +55,8 @@
 
 <script>
 import {
-  get_deal_get__id
+  get_deal_get__id,
+  postAddDocs
 } from "@/api/staff";
 import { getAllByTypeApi } from "@/api/index";
 import storageTool from "@/common/storageTool.js";
@@ -230,6 +231,7 @@ export default {
                             fileName: `${data?.data[0]?.generateFileName}.${data?.data[0]?.generateFileType}`,
                             type: data?.data[0]?.generateFileType,
                             name: `${data?.data[0]?.generateFileName}.${data?.data[0]?.generateFileType}`,
+                            isAdd: true // 新增的
                           }
                         )
                       }
@@ -276,6 +278,7 @@ export default {
                             fileName: `${data?.data[0]?.generateFileName}.${data?.data[0]?.generateFileType}`,
                             type: data?.data[0]?.generateFileType,
                             name: `${data?.data[0]?.generateFileName}.${data?.data[0]?.generateFileType}`,
+                            isAdd: true // 新增的
                           }
                         )
                       }
@@ -377,6 +380,7 @@ export default {
       console.log(info);
       this.dictList = this.initDocumentList(info.charge, info.contType, info.documentList);
     },
+    // 初始化附件列表
     initDocumentList(charge = '', contType = '', list = []) {
       let fileList = JSON.parse(JSON.stringify(this.DealFileTypeList)); // 附件类型
       // 根据收费模式过滤
@@ -406,7 +410,8 @@ export default {
                     name: item.fileName,
                     fileUrls: this.getFileUrls(item, 'url'), // 获取对应文件的默认图片
                     type: this.getFileUrls(item, 'type'), // 获取文件类型：excel、word、pdf
-                    canDelete: true
+                    canDelete: true,
+                    isAdd: false // 新增的
                   }
                 );
               }
@@ -416,6 +421,7 @@ export default {
       }
       return fileList;
     },
+    // 获取文件图标
     getFileUrls(file, getType = '') {
       let url = '';
       let type = '';
@@ -457,10 +463,37 @@ export default {
     // 提交
     async handleSubmit() {
       console.log('提交');
-      // this.$tool.toast("提交成功");
-      // uni.navigateTo({
-      //   url: `/channelPackage/myTab/pages/myReport`,
-      // });
+      console.log(this.dictList);
+      let tempList = [];
+      if (this.dictList && this.dictList.length) {
+        this.dictList.forEach((list) => {
+          if (list.fileList && list.fileList.length) {
+            list.fileList.forEach((item) => {
+              if (item.isAdd) {
+                tempList.push(
+                  {
+                    fileId: item.fileId,
+                    fileName: item.fileName,
+                    fileType: list.code
+                  }
+                )
+              }
+            });
+          }
+        });
+      }
+      if (!tempList.length) {
+        this.$tool.toast("没有新增附件，无需提交");
+        return;
+      }
+      let postData = {
+        dealId: this.dealId,
+        documentAddVOS: tempList
+      }
+      let info = await postAddDocs(postData);
+      console.log(info);
+      this.$tool.toast("提交成功");
+      uni.navigateBack();
     },
   },
 };

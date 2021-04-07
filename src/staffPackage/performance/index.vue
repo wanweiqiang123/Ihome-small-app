@@ -384,6 +384,7 @@ export default {
         status: ['Draft'].includes(this.queryPageParameters.status) ? this.queryPageParameters.status : null,
         isConfirmed: null, // 是否已确认
         isMobileTermination: true,
+        isMainDealOnly: true,
         pageNum: this.queryPageParameters.pageNum,
         pageSize: this.queryPageParameters.pageSize,
       }

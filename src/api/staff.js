@@ -468,3 +468,13 @@ export async function addCustomerApi(data = {}, option = {}) {
 export async function getReportById(data = {}, option = {}) {
   return await getApi(`/sales-api/customer/report/getReportById/${data.id}`, option)
 }
+
+/**
+ * @description: 补充附件功-提交接口
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function postAddDocs(data = {}, option = {}) {
+  return await postApi(`/sales-api/deal/deal/addDocs`, data, option)
+}
