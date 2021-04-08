@@ -66,6 +66,7 @@
         </view>
         <view class="item-btn">
           <u-button
+            v-if="item.status === 'Draft'"
             shape="circle"
             :custom-style="{ padding: '0 40rpx', marginRight: '20rpx' }"
             size="mini"
