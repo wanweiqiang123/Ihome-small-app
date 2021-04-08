@@ -85,7 +85,7 @@
 </template>
 
 <script>
-import {post_pageData_initSelectablePackage} from "@/api/staff";
+import {post_collectandsend_getCollectadnsendConditionMxByIds} from "@/api/staff";
 import {getAllDictByType} from "@/api";
 import pagination from "@/mixins/pagination";
 const debounce = (function () {
@@ -184,7 +184,7 @@ export default {
         ...self.queryPageParameters,
         ...self.queryData
       }
-      let item = await post_pageData_initSelectablePackage(self.queryPageParameters);
+      let item = await post_collectandsend_getCollectadnsendConditionMxByIds(self.queryPageParameters);
       if (type && item.list && item.list.length) {
         if (this.tablePage.length) {
           this.tablePage.push(...item.list);

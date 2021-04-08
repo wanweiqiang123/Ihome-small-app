@@ -100,9 +100,9 @@
             label="公司类型"
             required
             class="hide-icon"
-            right-icon="arrow-right" prop="agencyTypeName">
+            right-icon="arrow-right" prop="companyKind">
             <u-input
-              v-model="postData.agencyTypeName"
+              v-model="postData.companyKindName"
               :select-open="showAgencyType"
               @click="showAgencyType = true"
               type="select"
@@ -318,7 +318,7 @@
                   width="100%" height="100%" :src="list.fileUrls ? list.fileUrls : getUrl(list.fileId)"></u-image>
               </view>
             </template>
-            <view class="upload-icon" @click="uploadByType(item)">
+            <view class="upload-icon" @click="uploadByType(item)" v-if="item.code !== 'ContractInfo'">
               <u-icon name="plus" color="#606266" size="40"></u-icon>
               <view class="select">选择文件</view>
             </view>
@@ -465,7 +465,9 @@ import {
   get_deal_get__id,
   post_notice_customer_information,
   post_deal_pageData_initDistribution,
+  post_distributionmx_receive_detail
 } from "@/api/staff";
+import {getAllByTypeApi} from "@/api/index";
 import {getAllDictByType} from "@/api";
 import tool from "@/common/tool";
 import storageTool from "@/common/storageTool";
@@ -619,8 +621,7 @@ export default {
           "ChannelLevel",
           "DealFileType",
           "FeeType",
-          "NotificationType",
-          "CompanyKindEnum"
+          "NotificationType"
         ]
       }, // 需要用到的字典类型参数
       DealFileTypeList: [],
@@ -676,8 +677,8 @@ export default {
         roomId: '', // 房号ID
         contType: '',
         contTypeName: '',
-        agencyType: '', // 公司类型
-        agencyTypeName: '', // 公司类型name
+        companyKind: '', // 公司类型
+        companyKindName: '', // 公司类型name
         contNo: '', // 渠道分销合同
         contNoName: '', // 渠道分销合同name
         recordStr: '',
@@ -720,7 +721,7 @@ export default {
         contTypeName: [
           {required: true, message: "合同类型必选", trigger: "change"},
         ],
-        agencyTypeName: [
+        companyKind: [
           {validator: agencyTypeValidator, trigger: "change"},
         ],
         refineModelName: [
@@ -757,6 +758,7 @@ export default {
       },
       packageIdsList: [], // 收派套餐ids：分销模式---选择分销协议后获取；非分销协议---请求接口获取
       baseInfoByTerm: {
+        startDivisionId: null, // 启动事业部ID
         exMinyuan: '', // 是否明源源：1---是，0---否
         chargeEnum: '',
         proId: '', // 项目id --- 用于查询分销协议列表
@@ -915,12 +917,13 @@ export default {
     this.DealFileTypeList = await this.getSignDict("DealFileType");
     this.NotificationTypeList = await this.getSignDict("NotificationType");
     this.FeeTypeList = await this.getSignDict("FeeType");
-    this.AgencyTypeList = await this.getSignDict("CompanyKindEnum");
     await this.getToken();
     if (option && option.id) {
       this.id = option.id;
       await this.initEditPage(option.id);
     }
+    // 获取公司类型选项
+    await this.getCompanyTypeList();
   },
   async onShow() {
     let item = getApp().globalData.searchBackData;
@@ -947,6 +950,14 @@ export default {
     }
   },
   methods: {
+    // 获取公司类型
+    async getCompanyTypeList() {
+      this.AgencyTypeList = await getAllByTypeApi({
+        tag:"Channel",
+        type:"CompanyKind",
+        valid:"Valid",
+      });
+    },
     // 编辑 - 初始化页面
     async initEditPage(id) {
       let info  = await get_deal_get__id({id: id});
@@ -984,8 +995,8 @@ export default {
       this.postData.area = info?.house?.area ? info?.house?.area : '';
       this.postData.contType = info?.contType ? info?.contType : '';
       this.postData.contTypeName = info?.contType ? this.getDictName(info?.contType, this.ContTypeList) : '';
-      this.postData.agencyType = info?.agencyType ? info?.agencyType : '';
-      this.postData.agencyTypeName = info?.agencyType ? this.getDictName(info?.agencyType, this.AgencyTypeList) : '';
+      this.postData.companyKind = info?.companyKind ? info?.companyKind : '';
+      this.postData.companyKindName = info?.companyKind ? this.getDictName(info?.companyKind, this.AgencyTypeList) : '';
       this.postData.contNo = info?.contNo ? info?.contNo : '';
       this.postData.contNoName = info?.contNoName ? info?.contNoName : '';
       this.postData.recordStr = info?.recordStr ? info?.recordStr : '';
@@ -1375,12 +1386,13 @@ export default {
     // 确定合同类型
     async confirmContType(item) {
       console.log(item);
+      this.postData.companyKindName = "";
+      this.postData.companyKind = "";
+      this.postData.agencyId = '';
+      this.postData.agencyName = '';
+      this.postData.contNo = '';
+      this.postData.contNoName = '';
       if (item && item.length) {
-        // 2021-03-27 新需求暂时屏蔽
-        // if (item[0].value === "DistriDeal" && !this.baseInfoInDeal.hasRecord && this.postData.roomId) {
-        //   this.$tool.toast("系统查询不到此房号的已成交报备信息，请先维护报备信息！");
-        //   return;
-        // }
         this.postData.contTypeName = item[0].label;
         this.postData.contType = item[0].value;
         // 初始化收派套餐
@@ -1393,8 +1405,8 @@ export default {
     async confirmAgencyType(item) {
       console.log(item);
       if (item && item.length) {
-        this.postData.agencyTypeName = item[0].label;
-        this.postData.agencyType = item[0].value;
+        this.postData.companyKindName = item[0].label;
+        this.postData.companyKind = item[0].value;
       }
       // 1. 先初始化收派信息
       if (this.postData.contNo) {
@@ -1413,13 +1425,13 @@ export default {
         this.$tool.toast("请先选择项目周期");
         return ;
       }
-      if (!this.postData.agencyType) {
+      if (!this.postData.companyKind) {
         // 没有公司类型不能选渠道公司
         this.$tool.toast("请先选择公司类型");
         return ;
       }
       // 内部公司还是外部公司
-      if (this.postData.agencyType === "Internal") {
+      if (this.postData.companyKind === "InfieldCompany") {
         // 内部公司
         getApp().globalData.searchParams = {
           searchTip: "输入公司名称",
@@ -1433,11 +1445,11 @@ export default {
         getApp().globalData.searchParams = {
           searchTip: "输入公司名称",
           api: "getAgencyListApi",
-          key: "channelCompanyName",
-          id: "channelCompanyId",
+          key: "name",
+          id: "id",
           type: "agency",
           other: {
-            cycleId: this.postData.cycleId
+            departmentOrgId: this.baseInfoByTerm.startDivisionId
           }
         };
       }
@@ -1448,20 +1460,9 @@ export default {
     // 确定选择渠道公司
     async finishAddAgency(data) {
       console.log(data);
-      if (this.postData.agencyType === "Internal") {
-        // 内部公司
-        if (data && data.id) {
-          this.postData.agencyId = data?.id;
-          this.postData.agencyName = data?.name;
-        }
-      } else {
-        // 外部
-        if (data && data.channelCompanyId) {
-          this.postData.agencyId = data?.channelCompanyId;
-          this.postData.agencyName = data?.channelCompanyName;
-        }
-      }
-      await this.getContNoList(this.postData.agencyId);
+      this.postData.agencyId = data?.id;
+      this.postData.agencyName = data?.name;
+      await this.getOneAgentTeamContNo(this.postData.agencyId, this.postData.cycleId, this.postData.companyKind);
     },
     // 选择经纪人
     handleSelectBroker() {
@@ -1495,18 +1496,13 @@ export default {
     },
     // 选择分销协议
     async handleSelectContNo() {
-      if (!this.postData.propertyType) {
-        this.$tool.toast("请先选择物业类型");
-        return;
-      }
       if (!this.postData.agencyId) {
         this.$tool.toast("请先选择渠道公司");
         return;
       }
       this.showContNo = true;
-      // await this.getContNoList();
     },
-    // 根据选择的渠道商，获取分销协议
+    // 根据选择的渠道商，获取渠道分销合同
     async getContNoList(agencyId = '') {
       if (!agencyId) return ;
       let postData = {
@@ -1529,12 +1525,27 @@ export default {
         this.contNoList = [];
       }
     },
+    /*
+    * 获取渠道分销合同
+    * channelCompanyId: String。渠道公司id
+    * cycleId: String。项目周期id
+    * companyKind: String。渠道公司类型 AgencyCompany
+    * */
+    async getOneAgentTeamContNo(channelCompanyId = '', cycleId = '', companyKind = '') {
+      let postData = {
+        channelCompanyId: channelCompanyId,
+        channelCompanyKind: companyKind,
+        cycleId: cycleId,
+      }
+      this.contNoList = await post_distributionmx_receive_detail(postData);
+      console.log(this.contNoList);
+    },
     // 确定选择分销协议
     confirmContNo(option) {
       console.log(option);
       this.postData.isMat = '';
       this.packageIdsList = [];
-      // let isVoidFlag = false;
+      this.showContAnnexList([]);
       if (option && option.length) {
         this.postData.contNo = option[0].value;
         if (this.contNoList && this.contNoList.length) {
@@ -1543,14 +1554,49 @@ export default {
               // 是否垫佣
               this.postData.isMat = item.advancementSituation;
               // 分销模式下获取分销协议返回的收派套餐id
-              this.packageIdsList = item.packageMxIds && item.packageMxIds.length ? item.packageMxIds : [];
-              // isVoidFlag = item.voidService;
+              this.packageIdsList = this.getIdsList(item.distributionMxList);
+              // 回显合同附件信息
+              this.showContAnnexList(item.annexList);
             }
           });
         }
       }
       // 初始化收派套餐
       this.initReceive();
+    },
+    // 获取合同中收派信息的idsList
+    getIdsList(list = []) {
+      let idList = [];
+      if (list && list.length > 0) {
+        list.forEach((item) => {
+          idList.push(item.conditionId);
+        });
+      }
+      return idList;
+    },
+    // 回显合同附件信息
+    showContAnnexList(annexList = []) {
+      // 添加对应的合同附件
+      if (this.postData && this.postData.documentVO && this.postData.documentVO.length) {
+        this.postData.documentVO.forEach((vo) => {
+          if (vo.code === 'ContractInfo') {
+            let tempList = [];
+            if (annexList && annexList.length) {
+              annexList.forEach((list) => {
+                tempList.push(
+                  {
+                    ...list,
+                    fileId: list.fileNo,
+                    fileName: list.attachmentSuffix,
+                    canDelete: true, // 是否可以删除
+                  }
+                )
+              });
+            }
+            vo.fileList = tempList;
+          }
+        });
+      }
     },
     // 选择时间
     handleSelectDate(type) {
@@ -2685,33 +2731,6 @@ export default {
     // 选择收派套餐
     handleSelectPackage(item, type, index) {
       // console.log(item);
-      if (this.postData.hasRecord) {
-        // 分销模式
-        if (!this.postData.contNo) {
-          this.$tool.toast("请先选择分销协议编号");
-          return;
-        }
-      } else {
-        // 非分销模式
-        // 合同类型contType + 物业类型propertyType + 细分业务类型refineModel + 立项周期cycleId，这几个条件必须满足
-        let tips = [];
-        if (!this.baseInfoByTerm.termId) {
-          tips.push('项目周期');
-        }
-        if (!this.postData.refineModel) {
-          tips.push('细分业务模式');
-        }
-        if (!this.postData.propertyType) {
-          tips.push('物业类型');
-        }
-        if (!this.postData.contType) {
-          tips.push('合同类型');
-        }
-        if (tips.length) {
-          this.$tool.toast(`请先选择${tips.join('，')}`);
-          return;
-        }
-      }
       if (['', null, undefined].includes(this.postData?.signPrice) && ['', null, undefined].includes(this.postData?.subscribePrice)) {
         this.$tool.toast("认购价格、签约价格不能都为空！");
         return;
@@ -2719,13 +2738,13 @@ export default {
       this.currentPackageType = type;
       this.currentPackageIndex = index;
       this.packageData = {
-        termId: this.baseInfoByTerm.termId, // 项目周期id
+        cycleId: this.baseInfoByTerm.termId, // 项目周期id
         contType: this.postData.contType, // 合同类型
-        hasRecord: this.postData.hasRecord, // 是否有成交报备(是否分销成交)
-        contNo: this.postData.contNo, // 分销协议编号
-        distributionIds: this.packageIdsList, // 分销成交 --- 选择分销协议后的ids
-        feeType: item.type, // 费用类型
-        partyACustomerId: item.partyACustomer, // 甲方或客户
+        // hasRecord: this.postData.hasRecord, // 是否有成交报备(是否分销成交)
+        // contNo: this.postData.contNo, // 分销协议编号
+        packageMxIds: this.packageIdsList, // 分销成交 --- 选择分销协议后的ids
+        costTypeEnum: item.type, // 费用类型
+        partyAId: item.partyACustomer, // 甲方或客户
         property: this.postData.propertyType, // 物业类型
         subdivide: this.postData.refineModel, // 细分业务模式
       };
@@ -2884,7 +2903,7 @@ export default {
               dealId: this.id,
               agencyId: this.postData.agencyId,
               brokerId: this.postData.brokerId,
-              channelLevel: this.postData.channelLevel,
+              companyKind: this.postData.companyKind
             }
           )
         } else {
@@ -2892,7 +2911,7 @@ export default {
             {
               agencyId: this.postData.agencyId,
               brokerId: this.postData.brokerId,
-              channelLevel: this.postData.channelLevel,
+              companyKind: this.postData.companyKind
             }
           )
         }

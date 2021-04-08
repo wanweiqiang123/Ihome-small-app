@@ -236,7 +236,7 @@ export async function getTermListByProIdApi(data, option = {}) {
 
 // 员工案场-业绩申报-根据项目周期id选择渠道公司列表 - 外部
 export async function getAgencyListApi(data, option = {}) {
-    return await postApi(`/sales-api/contract/distribution/channels/cycleId`, data, option);
+    return await postApi(`/sales-api/channel/channel/getListByName`, data, option);
 }
 
 // 员工案场-业绩申报-根据项目周期id选择渠道公司列表 - 内部

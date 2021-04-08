@@ -380,6 +380,16 @@ export async function post_pageData_initSelectablePackage(data = {}, option = {}
 }
 
 /**
+ * @description: 业绩申报 - 派发套餐明细(选择收派套餐) - 新
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function post_collectandsend_getCollectadnsendConditionMxByIds(data = {}, option = {}) {
+  return await postApi(`/sales-api/project/collectandsend/getCollectadnsendConditionMxByIds`, data, option)
+}
+
+/**
  * @description: 业绩申报 - 派发套餐明细(选择收派套餐)
  * @param {*} data
  * @param {*} option
@@ -447,6 +457,16 @@ export async function post_notice_customer_information(data = {}, option = {}) {
  */
 export async function post_deal_pageData_initDistribution(data = {}, option = {}) {
   return await postApi(`/sales-api/deal/pageData/initDistribution`, data, option)
+}
+
+/**
+ * @description: 业绩申报 - 新增/编辑 - 选择渠道商后，带出分销协议 (新)
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function post_distributionmx_receive_detail(data = {}, option = {}) {
+  return await postApi(`/sales-api/contract/distributionmx/receive/detail`, data, option)
 }
 
 /**
