@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-19 18:44:57
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-05 14:13:41
+ * @LastEditTime: 2021-04-08 18:47:34
 -->
 <template>
   <view class="receipt">
@@ -293,7 +293,7 @@ export default {
           if (info) {
             Object.assign(this.form, info);
           } else {
-            this.$tool.toast("检查单号为空");
+            this.$tool.toast("系统不存在该订单号");
           }
         } catch (error) {
           console.log(error);
