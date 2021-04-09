@@ -1588,6 +1588,7 @@ export default {
                     ...list,
                     fileId: list.fileNo,
                     fileName: list.attachmentSuffix,
+                    fileType: 'ContractInfo', // 合同信息
                     canDelete: true, // 是否可以删除
                   }
                 )
