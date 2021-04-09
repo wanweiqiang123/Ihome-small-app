@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
- * @LastEditors: ywl
- * @LastEditTime: 2021-03-31 10:24:03
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-04-09 09:41:02
 -->
 <template>
   <view>
@@ -210,7 +210,7 @@
 </template>
 
 <script>
-import { phoneValidator, validIdentityCard } from "../../common/validate.js";
+import { phoneValidator } from "../../common/validate.js";
 import { getDetailApi, postNoticeCreateApi } from "../../api/customer";
 import {
   postBuildByProId,
@@ -221,7 +221,7 @@ import storageTool from "@/common/storageTool";
 export default {
   data() {
     return {
-      src: require("@/static/logo.png"),
+      src: "http://pic2.sc.chinaz.com/Files/pic/pic9/202002/hpic2119_s.jpg",
       buildingBlockShow: false,
       buildingBlockList: [],
       roomNoShow: false,
@@ -256,7 +256,12 @@ export default {
             message: "请输入身份证号",
             trigger: "change",
           },
-          { validator: validIdentityCard, trigger: "change" },
+          {
+            min: 15,
+            max: 18,
+            message: "身份证号长度在15~18位之间",
+            trigger: "change",
+          },
         ],
       },
       noticeId: "",

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-17 18:10:07
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-06 16:48:06
+ * @LastEditTime: 2021-04-09 09:31:07
 -->
 <template>
   <view class="client-container safe-area-inset-bottom">
@@ -383,13 +383,11 @@ export default {
       this.info.projectPic = res.projectPic
         ? this.$tool.getFileUrl(res.projectPic)
         : this.homeImg;
+      this.reportType = res.reportTypeEnum ? res.reportTypeEnum : "FullNumber";
       getApp().globalData.searchBackData = {};
     } else if (item && item.type === "term") {
       this.info.proCycleName = item.data.termName;
       this.info.proCycleId = item.data.termId;
-      this.reportType = item.data.reportTypeEnum
-        ? item.data.reportTypeEnum
-        : "FullNumber";
       getApp().globalData.searchBackData = {};
     } else if (item && item.type === "channel") {
       Object.assign(this.channelForm, {
