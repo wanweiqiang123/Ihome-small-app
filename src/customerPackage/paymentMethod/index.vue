@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
- * @LastEditors: wwq
- * @LastEditTime: 2021-03-16 14:05:37
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-04-09 17:09:29
 -->
 <template>
   <LoginPage>
@@ -37,9 +37,7 @@
             :clearable="false"
             placeholder="请输入付款金额"
             focus
-            @blur="payNumChange"
-            disabled
-            @click="show = true"
+            type="number"
           ></u-field>
         </view>
       </view>
@@ -168,9 +166,9 @@ export default {
   },
   watch: {
     payNum(v) {
-      if (Number(v) > Number(this.payData.unpaid)) {
-        this.payNum = this.payData.unpaid + "";
-      }
+      // if (Number(v) > Number(this.payData.unpaid)) {
+      //   this.payNum = this.payData.unpaid + "";
+      // }
     },
   },
   async onLoad() {
