@@ -39,9 +39,10 @@ const storageTool = {
     },
     /**获取token*/
     getToken() {
-        let expires_in = uni.getStorageSync(expiresInKey)
-        if (expires_in) {
-            let m = new Date(expires_in).getTime() - new Date().getTime();
+        let expires_in = uni.getStorageSync(expiresInKey);
+        let expires_in_ios = expires_in.replace(/-/g, '/');//此处解决ios new Date 兼容性问题
+        if (expires_in_ios) {
+            let m = new Date(expires_in_ios).getTime() - new Date().getTime();
             if (m < 0) {
                 this.removeToken();
                 return null;
