@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-19 18:44:57
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-08 18:47:34
+ * @LastEditTime: 2021-04-09 16:57:05
 -->
 <template>
   <view class="receipt">
@@ -79,8 +79,7 @@
             <u-input
               v-model="form.amount"
               placeholder="请输入收款金额"
-              disabled
-              @click="keyBoardShow = true"
+              type="number"
             />
           </u-form-item>
           <u-form-item

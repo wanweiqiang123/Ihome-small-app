@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-31 15:06:30
+ * @LastEditTime: 2021-04-09 16:52:45
 -->
 <template>
   <LoginPage>
@@ -421,7 +421,6 @@
 <script>
 import {
   phoneValidator,
-  validIdentityCard,
   noTrim,
   isNumberValidato,
 } from "../../common/validate.js";
@@ -564,7 +563,6 @@ export default {
             message: "请输入身份证号",
             trigger: "change",
           },
-          { validator: validIdentityCard, trigger: "change" },
         ],
       },
       header: {
