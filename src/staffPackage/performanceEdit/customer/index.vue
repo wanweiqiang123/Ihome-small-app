@@ -172,7 +172,8 @@ export default {
           { required: true, message: "请选择证件类型", trigger: ["blur"] }
         ],
         certificateNumber: [
-          { validator: validCertificateNumber, trigger: ["blur"] }
+          // { validator: validCertificateNumber, trigger: ["blur"] },
+          { required: true, message: "请输入证件编号", trigger: ["blur"] }
         ],
         email: [
           { validator: emailOrNullValidato, trigger: ["blur"] }
