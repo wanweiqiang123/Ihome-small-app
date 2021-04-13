@@ -1490,7 +1490,7 @@ export default {
     finishAddBroker(data) {
       console.log(data);
       if (data && data.id) {
-        this.postData.brokerId = data?.id;
+        this.postData.brokerId = data?.userId;
         this.postData.brokerName = data?.name;
       }
     },

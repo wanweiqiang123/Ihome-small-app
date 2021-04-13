@@ -99,7 +99,7 @@ export async function postProjectsApi(data = {}, option = {}) {
 
 /* 查询项目周期列表 */
 export async function postAllTermApi(data = {}, option = {}) {
-    return await postApi('/sales-api/project/term/getList', data, option)
+    return await postApi('/sales-api/project/term/getDealList', data, option)
 }
 
 /**字典列表，全部数据*/
