@@ -62,6 +62,7 @@ import { getAllByTypeApi } from "@/api/index";
 import storageTool from "@/common/storageTool.js";
 import tool from "@/common/tool";
 export default {
+  name: "uploadAttachment",
   data() {
     return {
       pdfImg: require('@/channelPackage/common/img/pdf.jpg'),

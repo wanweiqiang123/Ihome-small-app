@@ -139,7 +139,7 @@
             class="hide-icon"
             right-icon="arrow-right" prop="contNo">
             <u-input
-              v-model="postData.contNo"
+              v-model="postData.contTitle"
               :select-open="showContNo"
               @click="handleSelectContNo"
               type="select"
@@ -397,9 +397,9 @@
       v-model="showContNo"
       :list="contNoList"
       safe-area-inset-bottom
-      title="请选择分销协议"
+      title="请选择渠道分销合同"
       value-name="contractNo"
-      label-name="contractNo"
+      label-name="contractTitle"
       @confirm="confirmContNo"
     ></u-select>
     <u-picker
@@ -413,7 +413,7 @@
       ref="uKeyboard"
       mode="number"
       v-model="keyBoardShow"
-      :mask="false"
+      :mask="true"
       @change="keyChange"
       safe-area-inset-bottom
       @backspace="backSpace"
@@ -680,7 +680,7 @@ export default {
         companyKind: '', // 公司类型
         companyKindName: '', // 公司类型name
         contNo: '', // 渠道分销合同
-        contNoName: '', // 渠道分销合同name
+        contTitle: '', // 渠道分销合同name
         recordStr: '',
         subscribePrice: '',
         subscribeDate: '',
@@ -998,7 +998,7 @@ export default {
       this.postData.companyKind = info?.companyKind ? info?.companyKind : '';
       this.postData.companyKindName = info?.companyKind ? this.getDictName(info?.companyKind, this.AgencyTypeList) : '';
       this.postData.contNo = info?.contNo ? info?.contNo : '';
-      this.postData.contNoName = info?.contNoName ? info?.contNoName : '';
+      this.postData.contTitle = info?.contTitle ? info?.contTitle : '';
       this.postData.recordStr = info?.recordStr ? info?.recordStr : '';
       if (info.agencyList && info.agencyList.length) {
         this.postData.agencyName = info.agencyList[0].agencyName;
@@ -1391,7 +1391,7 @@ export default {
       this.postData.agencyId = '';
       this.postData.agencyName = '';
       this.postData.contNo = '';
-      this.postData.contNoName = '';
+      this.postData.contTitle = '';
       if (item && item.length) {
         this.postData.contTypeName = item[0].label;
         this.postData.contType = item[0].value;
@@ -1416,7 +1416,7 @@ export default {
       this.postData.agencyId = '';
       this.postData.agencyName = '';
       this.postData.contNo = '';
-      this.postData.contNoName = '';
+      this.postData.contTitle = '';
     },
     // 选择渠道公司
     handleSelectAgency() {
@@ -1540,7 +1540,7 @@ export default {
       this.contNoList = await post_distributionmx_receive_detail(postData);
       console.log(this.contNoList);
     },
-    // 确定选择分销协议
+    // 确定选择渠道分销合同
     confirmContNo(option) {
       console.log(option);
       this.postData.isMat = '';
@@ -1548,6 +1548,7 @@ export default {
       this.showContAnnexList([]);
       if (option && option.length) {
         this.postData.contNo = option[0].value;
+        this.postData.contTitle = option[0].label;
         if (this.contNoList && this.contNoList.length) {
           this.contNoList.forEach((item) => {
             if (item.contractNo === option[0].value) {
@@ -1560,6 +1561,9 @@ export default {
             }
           });
         }
+      } else {
+        this.postData.contNo = "";
+        this.postData.contTitle = "";
       }
       // 初始化收派套餐
       this.initReceive();
@@ -1985,7 +1989,7 @@ export default {
       // 多分优惠告知书情况
       // console.log(this.postData.offerNoticeVO);
       this.postData.contNo = ''; // 重置选择的编号
-      this.postData.contNoName = ''; // 重置选择的编号
+      this.postData.contTitle = ''; // 重置选择的编号名字
       // 同房号是否存在多份优惠告知书
       this.postData.offerNoticeVO = [];
       switch (baseInfo.dealNoticeStatus) {
