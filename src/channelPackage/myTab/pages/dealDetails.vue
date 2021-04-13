@@ -182,11 +182,10 @@
             v-for="(item, index) in dictList"
             :key="index"
           >
-            <template v-if="item.srcList.length">
+            <template>
               <view>
                 <text class="img-type">{{ item.name }}</text>
               </view>
-
               <u-image
                 v-for="(image, h) in item.srcList"
                 :key="h"
@@ -254,7 +253,7 @@ export default {
             "VisitConfirForm",
             "DealConfirForm",
             "SignVoucher",
-            "POSForm",
+            "SubscribeBook",
             "OwnerID",
           ].includes(v.code)
         ) {
