@@ -1415,6 +1415,8 @@ export default {
       // 2. 初始化渠道公司和经纪人
       this.postData.agencyId = '';
       this.postData.agencyName = '';
+      this.postData.brokerId = '';
+      this.postData.brokerName = '';
       this.postData.contNo = '';
       this.postData.contTitle = '';
     },
@@ -1462,6 +1464,14 @@ export default {
       console.log(data);
       this.postData.agencyId = data?.id;
       this.postData.agencyName = data?.name;
+      // 1. 先初始化收派信息
+      if (this.postData.contNo) {
+        this.initReceive();
+      }
+      this.postData.brokerId = '';
+      this.postData.brokerName = '';
+      this.postData.contNo = '';
+      this.postData.contTitle = '';
       await this.getOneAgentTeamContNo(this.postData.agencyId, this.postData.cycleId, this.postData.companyKind);
     },
     // 选择经纪人
