@@ -464,7 +464,6 @@ import {
   postRoomByProId,
   get_deal_get__id,
   post_notice_customer_information,
-  post_deal_pageData_initDistribution,
   post_distributionmx_receive_detail
 } from "@/api/staff";
 import {getAllByTypeApi} from "@/api/index";
@@ -963,7 +962,19 @@ export default {
       let info  = await get_deal_get__id({id: id});
       this.editBaseInfo = JSON.parse(JSON.stringify(info || {}));
       console.log(info);
-      // 分割
+      // 获取渠道分销合同的值
+      this.packageIdsList = [];
+      if (info.agencyList && info.agencyList.length) {
+        this.contNoList = await this.getOneAgentTeamContNo('contNo', info.agencyList[0].agencyId, info.cycleId, info.agencyList[0].companyKind);
+        // 获取对应的渠道分销合同的ids
+        if (this.contNoList && this.contNoList.length) {
+          this.contNoList.forEach((list) => {
+            if (list.contractNo === info.contNo) {
+              this.packageIdsList = this.getIdsList(list.distributionMxList);
+            }
+          });
+        }
+      }
       this.postData = {
         ...this.postData,
         ...info
@@ -1116,21 +1127,6 @@ export default {
       };
       let baseInfo = await post_pageData_initBasic(params);
       this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || {}));
-      // 分销协议编号
-      if (baseInfo.contracts && baseInfo.contracts.length > 0) {
-        this.contNoList = baseInfo.contracts;
-        // 初始化分销协议ids
-        if (this.postData.contNo && this.contNoList && this.contNoList.length) {
-          this.contNoList.forEach((list) => {
-            if (list.contractNo === this.postData.contNo) {
-              this.postData.isMat = list.advancementSituation;
-              this.packageIdsList = list.packageMxIds && list.packageMxIds.length ? list.packageMxIds : [];
-            }
-          });
-        }
-      } else {
-        this.contNoList = [];
-      }
       // 判断是否可以添加优惠告知书逻辑
       switch (baseInfo.dealNoticeStatus) {
         case "NoneNotice":
@@ -1511,29 +1507,6 @@ export default {
         return;
       }
       this.showContNo = true;
-    },
-    // 根据选择的渠道商，获取渠道分销合同
-    async getContNoList(agencyId = '') {
-      if (!agencyId) return ;
-      let postData = {
-        channelId: agencyId,
-        cycleId: this.postData.cycleId,
-        property: this.postData.propertyType,
-      }
-      let res = await post_deal_pageData_initDistribution(postData);
-      console.log('getContNoList', res);
-      if (res && res.contracts && res.contracts.length > 0) {
-        this.contNoList = res.contracts;
-        // 处理默认值问题
-        // 增加需求：当分销协议只有一个的时候，默认选中
-        if (res.contracts.length === 1) {
-          this.$nextTick(() => {
-            this.initContNo(res.contracts[0]);
-          });
-        }
-      } else {
-        this.contNoList = [];
-      }
     },
     /*
     * 获取渠道分销合同
@@ -2018,30 +1991,6 @@ export default {
           this.$tool.toast("同房号存在多份已生效的优惠告知书");
           break;
       }
-      // 分销协议编号
-      // if (baseInfo.contracts && baseInfo.contracts.length > 0) {
-      //   this.contNoList = baseInfo.contracts;
-      //   // 增加需求：当分销协议只有一个的时候，默认选中
-      //   if (baseInfo && baseInfo.contracts && baseInfo.contracts.length === 1) {
-      //     this.$nextTick(() => {
-      //       this.initContNo(baseInfo.contracts[0]);
-      //     });
-      //   }
-      // } else {
-      //   this.contNoList = [];
-      //   this.postData.contNo = "";
-      //   this.postData.isMat = "";
-      //   this.packageIdsList = [];
-      // }
-      // 分销成交和非分销成交不一样
-      // if (baseInfo.contType === 'DistriDeal') {
-      //   // 分销成交模式
-      //   // 1. 初始化渠道商/渠道公司
-      //   await this.initAgency(baseInfo.agencyVOs, true);
-      // } else if (['SelfChannelDeal', 'NaturalVisitDeal'].includes(baseInfo.contType)) {
-      //   // 非分销成交模式 --- 自然来访 / 自渠成交
-      //   await this.initAgency(baseInfo.agencyVOs, false);
-      // }
       // 栋座
       if (baseInfo.buildingId && !this.postData.buildingId) {
         this.postData.buildingId = baseInfo.buildingId;
