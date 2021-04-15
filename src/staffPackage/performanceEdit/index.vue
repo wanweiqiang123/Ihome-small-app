@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-26 09:38:11
  * @LastEditors: lsj
- * @LastEditTime: 2021-03-25 11:03:48
+ * @LastEditTime: 2021-04-15 12:04:48
 -->
 <template>
   <view class="performance">
@@ -1700,7 +1700,7 @@ export default {
         id: "termId",
         type: "term",
         other: {
-          auditEnum: 'ConstractAdopt', // 只显示合同审核通过的
+          // auditEnum: 'ConstractAdopt', // 只显示合同审核通过的
           state: 'Start', // 只显示启用
         }
       };
