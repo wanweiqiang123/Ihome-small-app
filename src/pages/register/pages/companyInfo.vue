@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lsj
  * @Date: 2020-12-12 11:25:11
  * @LastEditors: lsj
- * @LastEditTime: 2021-02-20 17:31:16
+ * @LastEditTime: 2021-04-15 09:22:11
 -->
 <template>
   <view class="company-info-wrapper">
@@ -584,6 +584,7 @@ export default {
       flag = self.validAnnex(self.annexInfo);
       if (!flag) {
         tool.toast('请上传具体附件');
+        return;
       }
       this.$refs.companyForm.validate(valid => {
         if (valid && flag) {
