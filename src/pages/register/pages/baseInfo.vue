@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lsj
  * @Date: 2020-12-12 10:50:30
  * @LastEditors: lsj
- * @LastEditTime: 2021-02-20 17:34:20
+ * @LastEditTime: 2021-04-15 09:37:36
 -->
 <template>
   <view class="base-info-wrapper">
@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import { phoneValidator, validIdentityCard, emailOrNullValidato } from '@/common/validate';
+import { phoneValidator, emailOrNullValidato } from '@/common/validate';
 import storageTool from "@/common/storageTool";
 import tool from "@/common/tool";
 
@@ -106,7 +106,7 @@ export default {
           { validator: phoneValidator, trigger: ['blur'] }
         ],
         identityCode: [
-          { validator: validIdentityCard, trigger: ['blur'] }
+          { required: true, message: '请输入身份证号码', trigger: ['blur'] }
         ],
         invitationCode: [
           { required: true, message: '请输入邀请码', trigger: ['blur'] }

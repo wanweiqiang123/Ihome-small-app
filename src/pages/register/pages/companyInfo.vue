@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lsj
  * @Date: 2020-12-12 11:25:11
  * @LastEditors: lsj
- * @LastEditTime: 2021-02-20 17:31:16
+ * @LastEditTime: 2021-04-15 09:37:33
 -->
 <template>
   <view class="company-info-wrapper">
@@ -170,7 +170,7 @@
 
 <script>
 import { getAreaList, getDictByType, getBankBranchList, channelRegister, channelCheckSetupTime } from '@/api/channel';
-import { validIdentityCard } from '@/common/validate';
+// import { validIdentityCard } from '@/common/validate';
 import {getUserInfoApi, userSwitchApi} from "@/api";
 import storageTool from "@/common/storageTool";
 import tool from '@/common/tool';
@@ -244,7 +244,7 @@ export default {
           { required: true, message: '请输入法定代表人', trigger: ['blur'] }
         ],
         legalIdentityCode: [
-          { validator: validIdentityCard, trigger: ['blur'] }
+          { required: true, message: '请输入法人身份证号码', trigger: ['blur'] }
         ],
         setupTime: [
           { validator: validSetupTime, trigger: ['blur', 'change'] }
@@ -584,6 +584,7 @@ export default {
       flag = self.validAnnex(self.annexInfo);
       if (!flag) {
         tool.toast('请上传具体附件');
+        return;
       }
       this.$refs.companyForm.validate(valid => {
         if (valid && flag) {

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-10 10:09:50
  * @LastEditors: lsj
- * @LastEditTime: 2021-03-27 10:11:38
+ * @LastEditTime: 2021-04-16 10:23:22
  */
 
 import { getApi, postApi } from '../common/http.js';
@@ -247,4 +247,24 @@ export async function getAgencyListByInApi(data, option = {}) {
 // 员工案场-业绩申报-根据渠道公司id选择经纪人列表
 export async function getBrokerListApi(data, option = {}) {
   return await postApi(`/sales-api/channel/channelAgent/getDealChannelAgentList`, data, option);
+}
+
+/**
+ * @description: 根据周期的项目id、物业类型获取栋座
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function postBuildByProId(data = {}, option = {}) {
+    return await postApi('/sales-api/project/building/getFuzzySearchByPage', data, option)
+}
+
+/**
+ * @description: 根据周期的项目id、栋座id获取房号
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function postRoomByProId(data = {}, option = {}) {
+    return await postApi('/sales-api/project/room/getFuzzySearchByPage', data, option)
 }
