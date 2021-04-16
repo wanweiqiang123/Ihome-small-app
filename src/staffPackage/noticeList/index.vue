@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-11-23 15:54:19
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 14:15:56
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-04-16 15:34:49
 -->
 
 <template>
@@ -104,7 +104,6 @@
             <u-input
               v-model="queryPageParameters.unitName"
               placeholder="请选择栋座"
-              :select-open="buildSelectShow"
               @click="handleShowBuild()"
               type="select"
               border
@@ -116,7 +115,6 @@
           >
             <u-input
               v-model="queryPageParameters.roomNo"
-              :select-open="roomSelectShow"
               placeholder="请选择房号"
               @click="handleShowRoom()"
               type="select"
@@ -190,24 +188,6 @@
       </PopupSearch>
       <!-- 下拉框 -->
       <u-select
-        v-model="buildSelectShow"
-        :list="buildSelectList"
-        safe-area-inset-bottom
-        title="选择栋座"
-        value-name="buildingId"
-        label-name="buildingName"
-        @confirm="buildConfirm"
-      ></u-select>
-      <u-select
-        v-model="roomSelectShow"
-        :list="roomSelectList"
-        safe-area-inset-bottom
-        title="选择房号"
-        value-name="roomId"
-        label-name="roomNo"
-        @confirm="roomConfirm"
-      ></u-select>
-      <u-select
         v-model="reviewSelShow"
         :list="noticeReview"
         safe-area-inset-bottom
@@ -225,11 +205,7 @@ import PopupSearch from "../../components/PopupSearch/index.vue";
 import IhCheckbox from "../../components/IhCheckbox/index.vue";
 import pagination from "../../mixins/pagination";
 import { getAllByTypeApi } from "../../api/index";
-import {
-  postNoticeList,
-  postBuildByProId,
-  postRoomByProId,
-} from "../../api/staff";
+import { postNoticeList } from "../../api/staff";
 
 export default {
   name: "notice-list",
@@ -260,10 +236,6 @@ export default {
       noticeStatus: [],
       reviewSelShow: false,
       noticeReview: [],
-      buildSelectShow: false,
-      buildSelectList: [],
-      roomSelectShow: false,
-      roomSelectList: [],
     };
   },
   filters: {
@@ -324,6 +296,7 @@ export default {
     },
     handleToSearch() {
       getApp().globalData.searchParams = {
+        searchTip: "输入项目",
         api: "postProjectsApi",
         key: "proName",
         id: "proId",
@@ -333,40 +306,70 @@ export default {
         url: "/pages/search/index/index",
       });
     },
+    projectConfirm(item) {
+      this.queryPageParameters.projectId = item.proId;
+      this.queryPageParameters.proName = item.proName;
+      this.queryPageParameters.unitName = "";
+      this.queryPageParameters.buyUnit = null;
+      this.queryPageParameters.roomNumberId = null;
+      this.queryPageParameters.roomNo = "";
+    },
     reviewConfirm(val) {
       let item = val[0];
       this.queryPageParameters.reviewText = item.label;
       this.queryPageParameters.reviewStatus = item.value;
     },
-    async buildConfirm(val) {
-      let item = val[0];
-      this.queryPageParameters.unitName = item.label;
-      this.queryPageParameters.buyUnit = item.value;
+    buildConfirm(val) {
+      this.queryPageParameters.unitName = val.buildingName;
+      this.queryPageParameters.buyUnit = val.buildingId;
       this.queryPageParameters.roomNumberId = null;
       this.queryPageParameters.roomNo = "";
-      this.roomSelectList = await postRoomByProId({
-        proId: this.queryPageParameters.projectId,
-        buildingId: this.queryPageParameters.buyUnit,
-      });
     },
     handleShowBuild() {
       if (!this.queryPageParameters.projectId) {
         this.$tool.toast("请先选择项目");
         return;
       }
-      this.buildSelectShow = true;
+      getApp().globalData.searchParams = {
+        searchTip: "输入栋座",
+        api: "postBuildByProId",
+        key: "buildingName",
+        id: "buildingId",
+        type: "building",
+        other: {
+          proId: this.queryPageParameters.projectId,
+        },
+      };
+      uni.navigateTo({
+        url: "/pages/search/index/index",
+      });
     },
-    roomConfirm(val) {
-      let item = val[0];
-      this.queryPageParameters.roomNumberId = item.value;
-      this.queryPageParameters.roomNo = item.label;
+    roomConfirm(item) {
+      this.queryPageParameters.roomNumberId = item.roomId;
+      this.queryPageParameters.roomNo = item.roomNo;
     },
     handleShowRoom() {
-      if (!this.queryPageParameters.projectId) {
-        this.$tool.toast("请先选择项目");
+      if (
+        !this.queryPageParameters.projectId ||
+        !this.queryPageParameters.buyUnit
+      ) {
+        this.$tool.toast("请先选择项目, 栋座");
         return;
       }
-      this.roomSelectShow = true;
+      getApp().globalData.searchParams = {
+        searchTip: "输入房号",
+        api: "postRoomByProId",
+        key: "roomNo",
+        id: "roomId",
+        type: "roomNo",
+        other: {
+          proId: this.queryPageParameters.projectId,
+          buildingId: this.queryPageParameters.buyUnit,
+        },
+      };
+      uni.navigateTo({
+        url: "/pages/search/index/index",
+      });
     },
     reset() {
       Object.assign(this.queryPageParameters, {
@@ -406,11 +409,15 @@ export default {
   async onShow() {
     let item = getApp().globalData.searchBackData;
     if (item && item.type === "project") {
-      this.queryPageParameters.projectId = item.data.proId;
-      this.queryPageParameters.proName = item.data.proName;
-      this.buildSelectList = await postBuildByProId({
-        proId: this.queryPageParameters.projectId,
-      });
+      this.projectConfirm(item.data);
+      getApp().globalData.searchBackData = {};
+    }
+    if (item && item.type === "building") {
+      this.buildConfirm(item.data);
+      getApp().globalData.searchBackData = {};
+    }
+    if (item && item.type === "roomNo") {
+      this.roomConfirm(item.data);
       getApp().globalData.searchBackData = {};
     }
   },

@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
- * @LastEditors: wwq
- * @LastEditTime: 2021-04-16 12:09:12
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-04-16 15:52:38
 -->
 <template>
   <view>
@@ -66,7 +66,7 @@
             v-model="form.buyUnitName"
             type="select"
             :placeholder="`${isRecognize ? '认筹阶段可不选择栋座': '请选择栋座'}`"
-            @click="buildingBlockShow = true"
+            @click="handleShowBuild"
           />
         </u-form-item>
         <u-form-item
@@ -80,28 +80,10 @@
             v-model="form.roomNo"
             type="select"
             :placeholder="`${isRecognize ? '认筹阶段可不选择房号':'请选择房号'}`"
-            @click="roomNoShow = true"
+            @click="handleShowRoom"
           />
         </u-form-item>
       </u-form>
-      <u-select
-        title="选择栋座"
-        confirm-color="#dd524d"
-        v-model="buildingBlockShow"
-        :list="buildingBlockList"
-        @confirm="buildingBlockClick"
-        value-name="buildingId"
-        label-name="buildingName"
-      ></u-select>
-      <u-select
-        title="选择房号"
-        confirm-color="#dd524d"
-        v-model="roomNoShow"
-        :list="roomNoList"
-        @confirm="roomNoClick"
-        value-name="roomId"
-        label-name="roomNo"
-      ></u-select>
     </view>
     <u-gap
       height="80"
@@ -221,11 +203,7 @@ import storageTool from "@/common/storageTool";
 export default {
   data() {
     return {
-      src: "http://pic2.sc.chinaz.com/Files/pic/pic9/202002/hpic2119_s.jpg",
-      buildingBlockShow: false,
-      buildingBlockList: [],
-      roomNoShow: false,
-      roomNoList: [],
+      src: require("@/static/logo.png"),
       ownerList: [
         {
           ownerName: "",
@@ -296,11 +274,20 @@ export default {
     this.$refs.uForm[0].setRules(this.rules);
     this.$refs.roomFrom.setRules(this.roomRules);
   },
-  onShow() {
+  async onShow() {
+    let item = getApp().globalData.searchBackData;
     if (this.noticeId) {
-      this.getInfo();
+      await this.getInfo();
     } else {
       this.$tool.toast(`优惠告知书Id不存在`);
+    }
+    if (item && item.type === "building") {
+      this.buildingBlockClick(item.data);
+      getApp().globalData.searchBackData = {};
+    }
+    if (item && item.type === "roomNo") {
+      this.roomNoClick(item.data);
+      getApp().globalData.searchBackData = {};
     }
   },
   methods: {
@@ -308,7 +295,7 @@ export default {
     async getInfo() {
       const res = await getDetailApi(this.noticeId);
       console.log(res);
-      this.form = {
+      Object.assign(this.form, {
         channel: "Customer",
         cycleId: res.termId,
         explain: res.modeDescription,
@@ -318,20 +305,11 @@ export default {
         paymentAmount: res.premiumReceived,
         promotionMethod: "Automatic",
         refundDays: res.partyARefundDays,
-        roomNumberId: "",
         templateType: "ElectronicTemplate",
         proName: res.proName,
-        buyUnit: "",
-        buyUnitName: "",
-        roomNo: "",
-        roomNumberId: "",
         exPreferentialItem: res.exPreferentialItem,
-      };
-      this.proId = res.proId;
-      this.buildingBlockList = await postBuildByProId({
-        proId: res.proId,
       });
-      this.getRoomList();
+      this.proId = res.proId;
       this.isRecognize = await getRecognizeById(res.termId);
       this.roomRules = {
         buyUnitName: [
@@ -350,23 +328,54 @@ export default {
         ],
       };
     },
-    // 获取房号
-    async getRoomList(buildNo) {
-      this.roomNoList = await postRoomByProId({
-        proId: this.proId,
-        buildingId: buildNo,
+    // 查询房号
+    handleShowRoom() {
+      if (!this.form.buyUnit) {
+        this.$tool.toast("请先选择栋座");
+        return;
+      }
+      getApp().globalData.searchParams = {
+        searchTip: "输入房号",
+        api: "postRoomByProId",
+        key: "roomNo",
+        id: "roomId",
+        type: "roomNo",
+        other: {
+          proId: this.proId,
+          buildingId: this.form.buyUnit,
+          exDeal: 0,
+        },
+      };
+      uni.navigateTo({
+        url: "/pages/search/index/index",
+      });
+    },
+    // 查询栋座
+    handleShowBuild() {
+      getApp().globalData.searchParams = {
+        searchTip: "输入栋座",
+        api: "postBuildByProId",
+        key: "buildingName",
+        id: "buildingId",
+        type: "building",
+        other: {
+          proId: this.proId,
+        },
+      };
+      uni.navigateTo({
+        url: "/pages/search/index/index",
       });
     },
     buildingBlockClick(v) {
-      this.form.buyUnitName = v[0].label;
-      this.form.buyUnit = v[0].value;
+      console.log(v);
+      this.form.buyUnitName = v.buildingName;
+      this.form.buyUnit = v.buildingId;
       this.form.roomNo = "";
       this.form.roomNumberId = "";
-      this.getRoomList(this.form.buyUnit);
     },
     roomNoClick(v) {
-      this.form.roomNo = v[0].label;
-      this.form.roomNumberId = v[0].value;
+      this.form.roomNo = v.roomNo;
+      this.form.roomNumberId = v.roomId;
     },
     addOwner() {
       this.ownerList.push({
