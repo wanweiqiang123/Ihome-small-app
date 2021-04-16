@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-09 09:41:02
+ * @LastEditTime: 2021-04-16 12:09:12
 -->
 <template>
   <view>
@@ -254,12 +254,6 @@ export default {
           {
             required: true,
             message: "请输入身份证号",
-            trigger: "change",
-          },
-          {
-            min: 15,
-            max: 18,
-            message: "身份证号长度在15~18位之间",
             trigger: "change",
           },
         ],
