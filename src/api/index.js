@@ -256,8 +256,9 @@ export async function getBrokerListApi(data, option = {}) {
  * @return {*} Promise
  */
 export async function postBuildByProId(data = {}, option = {}) {
-    return await postApi('/sales-api/project/building/getFuzzySearch', data, option)
+    return await postApi('/sales-api/project/building/getFuzzySearchByPage', data, option)
 }
+
 /**
  * @description: 根据周期的项目id、栋座id获取房号
  * @param {*} data
@@ -265,5 +266,5 @@ export async function postBuildByProId(data = {}, option = {}) {
  * @return {*} Promise
  */
 export async function postRoomByProId(data = {}, option = {}) {
-    return await postApi('/sales-api/project/room/getFuzzySearch', data, option)
+    return await postApi('/sales-api/project/room/getFuzzySearchByPage', data, option)
 }

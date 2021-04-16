@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-26 09:38:11
  * @LastEditors: lsj
- * @LastEditTime: 2021-04-15 12:04:48
+ * @LastEditTime: 2021-04-16 10:48:50
 -->
 <template>
   <view class="performance">
@@ -66,7 +66,6 @@
             right-icon="arrow-right" prop="buildingName">
             <u-input
               v-model="postData.buildingName"
-              :select-open="showBuild"
               @click="handleShowBuild"
               type="select"
               placeholder="请选择栋座"/>
@@ -78,7 +77,6 @@
             right-icon="arrow-right" prop="roomNo">
             <u-input
               v-model="postData.roomNo"
-              :select-open="showRoom"
               @click="handleShowRoom"
               type="select"
               placeholder="请选择房号"/>
@@ -358,24 +356,6 @@
       @confirm="confirmPropertyType"
     ></u-select>
     <u-select
-      v-model="showBuild"
-      :list="buildSelectList"
-      safe-area-inset-bottom
-      title="请选择栋座"
-      value-name="buildingId"
-      label-name="buildingName"
-      @confirm="confirmBuild"
-    ></u-select>
-    <u-select
-      v-model="showRoom"
-      :list="roomSelectList"
-      safe-area-inset-bottom
-      title="请选择房号"
-      value-name="roomId"
-      label-name="roomNo"
-      @confirm="confirmRoom"
-    ></u-select>
-    <u-select
       v-model="showContType"
       :list="ContTypeList"
       safe-area-inset-bottom
@@ -636,10 +616,6 @@ export default {
       stageList: [],
       showPropertyType: false,
       propertyTypeList: [],
-      showBuild: false,
-      buildSelectList: [],
-      showRoom: false,
-      roomSelectList: [],
       showContType: false,
       showAgencyType: false,
       ContTypeList: [],
@@ -947,6 +923,14 @@ export default {
       await this.finishAddBroker(item.data);
       getApp().globalData.searchBackData = {};
     }
+    if (item && item.type === "building") {
+      await this.finishAddBuilding(item.data);
+      getApp().globalData.searchBackData = {};
+    }
+    if (item && item.type === "roomNo") {
+      await this.finishAddRoomNo(item.data);
+      getApp().globalData.searchBackData = {};
+    }
   },
   methods: {
     // 获取公司类型
@@ -1092,27 +1076,7 @@ export default {
       }
       // 物业类型
       this.propertyTypeList = await this.initPropertyType(baseInfo.propertyEnums);
-      this.buildSelectList = await postBuildByProId({
-        proId: baseInfo.proId,
-        propertyEnum: property,
-      });
       this.ContTypeList = await this.getContTypeList(baseInfo.busEnum); // 获取合同类型
-      // 初始化房号选择列表
-      await this.editInitRoomList(baseInfo.proId, buildingId);
-    },
-    // 编辑 - 获取房号选项
-    async editInitRoomList(proId = '', buildingId = '') {
-      if (!proId || !buildingId) return;
-      this.roomSelectList = await postRoomByProId({
-        proId: proId,
-        buildingId: buildingId,
-        exDeal: 0
-      });
-      if (this.roomSelectList.length) {
-        this.roomSelectList = this.roomSelectList.filter((list) => {
-          return list.exDeal === 0; // 获取没有锁定的房号
-        });
-      }
     },
     // 编辑 - 根据项目周期和房号初始化页面数据
     async editPageById(cycleId, roomId, propertyType = '', parentId = '', refineModel = '') {
@@ -1274,10 +1238,6 @@ export default {
       if (item && item.length) {
         this.postData.propertyTypeName = item[0].label;
         this.postData.propertyType = item[0].value;
-        this.buildSelectList = await postBuildByProId({
-          proId: this.baseInfoByTerm.proId,
-          propertyEnum: item[0].value,
-        });
         this.postData.roomId = '';
         this.postData.roomNo = '';
         this.postData.buildingId = '';
@@ -1286,7 +1246,6 @@ export default {
         await this.initDocument(this.baseInfoByTerm);
         await this.resetReceiveVO();
         await this.resetData();
-        // console.log('this.buildSelectList', this.buildSelectList);
       }
     },
     // 物业类型、栋座、房号改变，收派金额模块只需要清空代理费
@@ -1299,30 +1258,33 @@ export default {
         this.$tool.toast("请先选择物业类型");
         return;
       }
-      this.showBuild = true;
+      getApp().globalData.searchParams = {
+        searchTip: "输入栋座",
+        api: "postBuildByProId",
+        key: "buildingName",
+        id: "buildingId",
+        type: "building",
+        other: {
+          proId: this.postData.proId,
+          propertyEnum: this.postData.propertyType
+        }
+      };
+      uni.navigateTo({
+        url: "/pages/search/index/index",
+      });
     },
     // 确定选择栋座
-    async confirmBuild(item) {
-      if (item && item.length) {
-        this.postData.buildingName = item[0].label;
-        this.postData.buildingId = item[0].value;
-        this.roomSelectList = await postRoomByProId({
-          proId: this.baseInfoByTerm.proId,
-          buildingId: item[0].value,
-          exDeal: 0
-        });
-        if (this.roomSelectList.length) {
-          this.roomSelectList = this.roomSelectList.filter((list) => {
-            return list.exDeal === 0; // 获取没有锁定的房号
-          });
-        }
-        this.postData.roomId = '';
-        this.postData.roomNo = '';
-        await this.resetReceiveVO();
-        await this.initDocument(this.baseInfoByTerm);
-        await this.resetData();
-        // console.log('this.roomSelectList', this.roomSelectList);
+    async finishAddBuilding(data) {
+      console.log(data);
+      if (data && data.buildingId) {
+        this.postData.buildingId = data?.buildingId;
+        this.postData.buildingName = data?.buildingName;
       }
+      this.postData.roomId = '';
+      this.postData.roomNo = '';
+      await this.resetReceiveVO();
+      await this.initDocument(this.baseInfoByTerm);
+      await this.resetData();
     },
     // 选择房号
     handleShowRoom() {
@@ -1330,7 +1292,32 @@ export default {
         this.$tool.toast("请先选择栋座");
         return;
       }
-      this.showRoom = true;
+      getApp().globalData.searchParams = {
+        searchTip: "输入房号",
+        api: "postRoomByProId",
+        key: "roomNo",
+        id: "roomId",
+        type: "roomNo",
+        other: {
+          proId: this.postData.proId,
+          buildingId: this.postData.buildingId,
+          exDeal: 0
+        }
+      };
+      uni.navigateTo({
+        url: "/pages/search/index/index",
+      });
+    },
+    // 确定选择房号
+    async finishAddRoomNo(data) {
+      console.log(data);
+      if (data && data.roomId) {
+        this.postData.roomId = data?.roomId;
+        this.postData.roomNo = data?.roomNo;
+      }
+      await this.resetReceiveVO();
+      await this.resetData(); // 重置数据
+      await this.initPageById(this.baseInfoByTerm.termId, data?.roomId, this.postData.propertyType);
     },
     /*
     * 判断字段是否可以修改
@@ -1360,16 +1347,6 @@ export default {
         }
       }
       return flag;
-    },
-    // 确定选择房号
-    async confirmRoom(item) {
-      if (item && item.length) {
-        this.postData.roomNo = item[0].label;
-        this.postData.roomId = item[0].value;
-        await this.resetReceiveVO();
-        await this.resetData(); // 重置数据
-        await this.initPageById(this.baseInfoByTerm.termId, item[0].value, this.postData.propertyType);
-      }
     },
     // 选择合同类型
     handleShowContType() {
