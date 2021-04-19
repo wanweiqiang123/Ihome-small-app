@@ -104,7 +104,7 @@
               :select-open="showAgencyType"
               @click="showAgencyType = true"
               type="select"
-              placeholder="请选择分销公司类型"/>
+              placeholder="请选择公司类型"/>
           </u-form-item>
           <u-form-item
             v-if="postData.contType === 'DistriDeal'"
@@ -119,7 +119,7 @@
               placeholder="请选择渠道公司"/>
           </u-form-item>
           <u-form-item
-            v-if="postData.contType === 'DistriDeal'"
+            v-if="postData.contType === 'DistriDeal' && postData.companyKind === 'ChannelCompany'"
             required
             label="经纪人"
             class="hide-icon"
@@ -484,22 +484,6 @@ export default {
         }
       }
     }
-    // 公司类型
-    let agencyTypeValidator = (rule, value, callback) => {
-      if (this.postData.contType === 'DistriDeal') {
-        // 分销成交必选
-        if (!value) {
-          callback(new Error('请选择分销公司类型'));
-          return;
-        } else {
-          callback();
-          return;
-        }
-      } else {
-        callback();
-        return;
-      }
-    }
     // 认购价格
     let subscribePriceValidator = (rule, value, callback) => {
       if (['Subscribe', 'SignUp'].includes(this.postData.stage)) {
@@ -550,6 +534,52 @@ export default {
       if (['SignUp'].includes(this.postData.stage)) {
         if (!value) {
           callback(new Error('签约日期不能为空'));
+          return;
+        } else {
+          callback();
+          return;
+        }
+      } else {
+        callback();
+        return;
+      }
+    }
+    // 公司类型
+    let agencyTypeValidator = (rule, value, callback) => {
+      if (this.postData.contType === 'DistriDeal') {
+        // 分销成交必选
+        if (!value) {
+          callback(new Error('请选择公司类型'));
+          return;
+        } else {
+          callback();
+          return;
+        }
+      } else {
+        callback();
+        return;
+      }
+    }
+    // 渠道公司
+    let agencyNameValidator = (rule, value, callback) => {
+      if (this.postData.contType === 'DistriDeal') {
+        if (!value) {
+          callback(new Error('请选择渠道公司'));
+          return;
+        } else {
+          callback();
+          return;
+        }
+      } else {
+        callback();
+        return;
+      }
+    }
+    // 经纪人
+    let brokerNameValidator = (rule, value, callback) => {
+      if (this.postData.contType === 'DistriDeal' && this.postData.companyKind === 'ChannelCompany') {
+        if (!value) {
+          callback(new Error('请选择经纪人'));
           return;
         } else {
           callback();
@@ -715,7 +745,7 @@ export default {
           {validator: roomNoValidator, trigger: "change"},
         ],
         contNo: [
-          {required: true, message: "分销协议必选", trigger: "change"},
+          {required: true, message: "渠道分销合同必选", trigger: "change"},
         ],
         subscribePrice: [
           {validator: subscribePriceValidator, trigger: "change"},
@@ -728,6 +758,12 @@ export default {
         ],
         signDate: [
           {validator: signDateValidator, trigger: "change"},
+        ],
+        agencyName: [
+          {validator: agencyNameValidator, trigger: "change"},
+        ],
+        brokerName: [
+          {validator: brokerNameValidator, trigger: "change"},
         ],
         notEmpty: []
       },
