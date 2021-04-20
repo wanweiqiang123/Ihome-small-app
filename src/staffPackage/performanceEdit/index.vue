@@ -1416,6 +1416,7 @@ export default {
       if (this.postData.contNo) {
         this.initReceive();
       }
+      this.packageIdsList = [];
       // 2. 初始化渠道公司和经纪人
       this.postData.agencyId = '';
       this.postData.agencyName = '';
@@ -1472,6 +1473,7 @@ export default {
       if (this.postData.contNo) {
         this.initReceive();
       }
+      this.packageIdsList = [];
       this.postData.brokerId = '';
       this.postData.brokerName = '';
       this.postData.contNo = '';
