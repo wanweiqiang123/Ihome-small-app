@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
- * @LastEditors: ywl
- * @LastEditTime: 2021-04-09 17:09:29
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-04-20 15:18:18
 -->
 <template>
   <LoginPage>
@@ -88,7 +88,7 @@
       </view>
       <view
         class="pay-hint"
-        v-if="!hidePayStatus"
+        v-if="false"
       >
         付款成功后可能存在延迟，请耐心等待1~2分钟！
         如付款成功后长时间还未更新记录请及时联系工作人员。
