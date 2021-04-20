@@ -980,7 +980,7 @@ export default {
       // 获取渠道分销合同的值
       this.packageIdsList = [];
       if (info.agencyList && info.agencyList.length) {
-        this.contNoList = await this.getOneAgentTeamContNo('contNo', info.agencyList[0].agencyId, info.cycleId, info.agencyList[0].companyKind);
+        this.contNoList = await this.getOneAgentTeamContNo(info.agencyList[0].agencyId, info.cycleId, info.agencyList[0].companyKind);
         // 获取对应的渠道分销合同的ids
         if (this.contNoList && this.contNoList.length) {
           this.contNoList.forEach((list) => {
@@ -1025,13 +1025,14 @@ export default {
       this.postData.contTitle = info?.contTitle ? info?.contTitle : '';
       this.postData.recordStr = info?.recordStr ? info?.recordStr : '';
       if (info.agencyList && info.agencyList.length) {
+        //companyKindName agencyName brokerName
         this.postData.agencyName = info.agencyList[0].agencyName;
         this.postData.agencyId = info.agencyList[0].agencyId;
         this.postData.channelLevel = info.agencyList[0].channelLevel;
         this.postData.brokerName = info.agencyList[0].broker;
         this.postData.brokerId = info.agencyList[0].brokerId;
         this.postData.companyKind = info.agencyList[0].companyKind;
-        this.postData.companyKindName = info?.companyKind ? this.getDictName(info.agencyList[0].companyKind, this.AgencyTypeList) : '';
+        this.postData.companyKindName = info.agencyList[0].companyKind ? this.getDictName(info.agencyList[0].companyKind, this.AgencyTypeList) : '';
       }
       this.postData.subscribeDate = info?.subscribeDate ? info?.subscribeDate : '';
       this.postData.subscribePrice = info?.subscribePrice ? info?.subscribePrice : '0';
@@ -1575,12 +1576,15 @@ export default {
             let tempList = [];
             if (annexList && annexList.length) {
               annexList.forEach((list) => {
+                list.fileName = list.attachmentSuffix;
                 tempList.push(
                   {
                     ...list,
                     fileId: list.fileNo,
-                    fileName: list.attachmentSuffix,
+                    name: list.attachmentSuffix,
                     fileType: 'ContractInfo', // 合同信息
+                    fileUrls: this.getFileUrls(list, 'url'), // 获取对应文件的默认图片
+                    type: this.getFileUrls(list, 'type'), // 获取文件类型：excel、word、pdf
                     canDelete: true, // 是否可以删除
                   }
                 )
