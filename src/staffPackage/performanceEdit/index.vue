@@ -132,10 +132,9 @@
           </u-form-item>
           <u-form-item
             v-if="postData.contType === 'DistriDeal'"
-            required
             label="渠道分销合同"
             class="hide-icon"
-            right-icon="arrow-right" prop="contNo">
+            right-icon="arrow-right">
             <u-input
               v-model="postData.contTitle"
               :select-open="showContNo"
@@ -740,9 +739,9 @@ export default {
         roomNo: [
           {validator: roomNoValidator, trigger: "change"},
         ],
-        contNo: [
-          {required: true, message: "渠道分销合同必选", trigger: "change"},
-        ],
+        // contNo: [
+        //   {required: true, message: "渠道分销合同必选", trigger: "change"},
+        // ],
         subscribePrice: [
           {validator: subscribePriceValidator, trigger: "change"},
         ],
