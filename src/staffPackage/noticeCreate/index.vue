@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-09 16:52:45
+ * @LastEditTime: 2021-04-16 15:34:09
 -->
 <template>
   <LoginPage>
@@ -374,24 +374,6 @@
         :default-value="[0]"
         @confirm="selectConfirm"
       ></u-select>
-      <u-select
-        v-model="buildSelectShow"
-        :list="buildSelectList"
-        safe-area-inset-bottom
-        title="选择栋座"
-        value-name="buildingId"
-        label-name="buildingName"
-        @confirm="buildConfirm"
-      ></u-select>
-      <u-select
-        v-model="roomSelectShow"
-        :list="roomSelectList"
-        safe-area-inset-bottom
-        title="选择房号"
-        value-name="roomId"
-        label-name="roomNo"
-        @confirm="roomConfirm"
-      ></u-select>
       <!-- 模态框 -->
       <u-modal
         v-model="isOtherShow"
@@ -428,8 +410,6 @@ import storageTool from "../../common/storageTool.js";
 import { getAllByTypeApi } from "../../api/index.js";
 import {
   getMannerListByTermId,
-  postBuildByProId,
-  postRoomByProId,
   postNoticeCreate,
   getNoticeInfo,
   postNoticeUpdate,
@@ -448,10 +428,6 @@ export default {
       selectShow: false,
       isRecognize: false,
       selectList: [],
-      buildSelectShow: false,
-      buildSelectList: [],
-      roomSelectShow: false,
-      roomSelectList: [],
       isOther: false,
       isType: true,
       logoSrc: require("@/static/logo.png"),
@@ -694,42 +670,54 @@ export default {
           .concat(list);
       }
     },
-    buildConfirm(val) {
-      let item = val[0];
-      this.form.buyUnitName = item.label;
-      this.form.buyUnit = item.value;
+    buildConfirm(item) {
+      this.form.buyUnitName = item.buildingName;
+      this.form.buyUnit = item.buildingId;
       this.form.roomNumberName = "";
       this.form.roomNumberId = null;
-      this.getRoomList();
     },
     handleShowBuild() {
       if (!this.proId) {
         this.$tool.toast("请先选择联动周期");
         return;
       }
-      this.buildSelectShow = true;
+      getApp().globalData.searchParams = {
+        searchTip: "输入栋座",
+        api: "postBuildByProId",
+        key: "buildingName",
+        id: "buildingId",
+        type: "building",
+        other: {
+          proId: this.proId,
+        },
+      };
+      uni.navigateTo({
+        url: "/pages/search/index/index",
+      });
     },
-    async getBuildList() {
-      this.buildSelectList = await postBuildByProId({ proId: this.proId });
-    },
-    roomConfirm(val) {
-      let item = val[0];
-      this.form.roomNumberId = item.value;
-      this.form.roomNumberName = item.label;
+    roomConfirm(item) {
+      this.form.roomNumberId = item.roomId;
+      this.form.roomNumberName = item.roomNo;
     },
     handleShowRoom() {
-      if (!this.proId) {
-        this.$tool.toast("请先选择联动周期");
+      if (!this.proId || !this.form.buyUnit) {
+        this.$tool.toast("请先选择联动周期, 栋座");
         return;
       }
-      this.roomSelectShow = true;
-    },
-    async getRoomList() {
-      this.roomSelectList = [];
-      this.roomSelectList = await postRoomByProId({
-        proId: this.proId,
-        buildingId: this.form.buyUnit,
-        exDeal: 0,
+      getApp().globalData.searchParams = {
+        searchTip: "输入房号",
+        api: "postRoomByProId",
+        key: "roomNo",
+        id: "roomId",
+        type: "roomNo",
+        other: {
+          proId: this.proId,
+          buildingId: this.form.buyUnit,
+          exDeal: 0,
+        },
+      };
+      uni.navigateTo({
+        url: "/pages/search/index/index",
       });
     },
     beforeUpload() {
@@ -1028,8 +1016,6 @@ export default {
         ],
       };
       this.getMannerList();
-      this.getBuildList();
-      this.getRoomList();
     },
   },
   onReady() {
@@ -1078,13 +1064,16 @@ export default {
             paymentAmount: "",
           });
           this.getMannerList();
-          this.getBuildList();
-          this.getRoomList();
           // 清空搜索出来周期
           getApp().globalData.searchBackData = {};
           break;
-
-        default:
+        case "building":
+          this.buildConfirm(item.data);
+          getApp().globalData.searchBackData = {};
+          break;
+        case "roomNo":
+          this.roomConfirm(item.data);
+          getApp().globalData.searchBackData = {};
           break;
       }
     }
