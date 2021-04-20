@@ -1577,10 +1577,11 @@ export default {
             if (annexList && annexList.length) {
               annexList.forEach((list) => {
                 list.fileName = list.attachmentSuffix;
+                list.fileId = list.fileNo;
                 tempList.push(
                   {
                     ...list,
-                    fileId: list.fileNo,
+                    // fileId: list.fileNo,
                     name: list.attachmentSuffix,
                     fileType: 'ContractInfo', // 合同信息
                     fileUrls: this.getFileUrls(list, 'url'), // 获取对应文件的默认图片
