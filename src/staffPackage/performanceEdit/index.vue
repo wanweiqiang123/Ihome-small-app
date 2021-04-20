@@ -915,6 +915,8 @@ export default {
   },
   async onLoad(option) {
     console.log('performanceEdit:', option);
+    // 获取公司类型选项
+    await this.getCompanyTypeList();
     this.dictList = await this.getAllDictByTypes(this.dictObj);
     this.SubdivideList = await this.getSignDict("Subdivide");
     this.DealStageList = await this.getSignDict("DealStage");
@@ -928,8 +930,6 @@ export default {
       this.id = option.id;
       await this.initEditPage(option.id);
     }
-    // 获取公司类型选项
-    await this.getCompanyTypeList();
   },
   async onShow() {
     let item = getApp().globalData.searchBackData;
@@ -1021,8 +1021,6 @@ export default {
       this.postData.area = info?.house?.area ? info?.house?.area : '';
       this.postData.contType = info?.contType ? info?.contType : '';
       this.postData.contTypeName = info?.contType ? this.getDictName(info?.contType, this.ContTypeList) : '';
-      this.postData.companyKind = info?.companyKind ? info?.companyKind : '';
-      this.postData.companyKindName = info?.companyKind ? this.getDictName(info?.companyKind, this.AgencyTypeList) : '';
       this.postData.contNo = info?.contNo ? info?.contNo : '';
       this.postData.contTitle = info?.contTitle ? info?.contTitle : '';
       this.postData.recordStr = info?.recordStr ? info?.recordStr : '';
@@ -1032,6 +1030,8 @@ export default {
         this.postData.channelLevel = info.agencyList[0].channelLevel;
         this.postData.brokerName = info.agencyList[0].broker;
         this.postData.brokerId = info.agencyList[0].brokerId;
+        this.postData.companyKind = info.agencyList[0].companyKind;
+        this.postData.companyKindName = info?.companyKind ? this.getDictName(info.agencyList[0].companyKind, this.AgencyTypeList) : '';
       }
       this.postData.subscribeDate = info?.subscribeDate ? info?.subscribeDate : '';
       this.postData.subscribePrice = info?.subscribePrice ? info?.subscribePrice : '0';
