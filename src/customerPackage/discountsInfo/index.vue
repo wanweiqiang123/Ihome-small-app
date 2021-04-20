@@ -3,15 +3,18 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
- * @LastEditors: ywl
- * @LastEditTime: 2021-03-24 16:01:19
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-04-20 15:16:17
 -->
 <template>
   <view class="info safe-area-inset-bottom">
     <view class="info-first">
       <view class="info-first-title">
         <view>
-          <view class="info-first-way">优惠方式</view>
+          <view
+            class="info-first-way"
+            v-if="info.discountInformationResponseVo.paymentAmount"
+          >优惠方式</view>
           <view class="info-first-discount">{{info.discountInformationResponseVo.explain | emptyFilter}}</view>
         </view>
         <view class="background"></view>
@@ -697,7 +700,7 @@ export default {
       .background {
         width: 406rpx;
         height: 187rpx;
-        background-image: url("../common/img/coupon.png");
+        // background-image: url("../common/img/coupon.png");
         background-size: cover;
         position: absolute;
         right: 0;
