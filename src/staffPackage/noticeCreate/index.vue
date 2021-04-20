@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-16 15:34:09
+ * @LastEditTime: 2021-04-20 16:40:27
 -->
 <template>
   <LoginPage>
@@ -344,6 +344,7 @@
           shape="circle"
           type="primary"
           @click="submit()"
+          :loading="submitLoading"
           v-if="isSubmit"
         >保存并预览优惠告知书</u-button>
         <template v-else>
@@ -359,6 +360,7 @@
               type="primary"
               class="ih-btn"
               @click="update()"
+              :loading="uploadLoading"
             >保 存</u-button>
           </view>
         </template>
@@ -423,6 +425,8 @@ export default {
   name: "notice-create",
   data() {
     return {
+      submitLoading: false,
+      uploadLoading: false,
       isSubmit: true,
       proId: null,
       selectShow: false,
@@ -881,6 +885,7 @@ export default {
     },
     async submieMethod() {
       try {
+        this.submitLoading = true;
         this.form.noticeAttachmentList = this.form.noticeAttachmentList.concat(
           this.subscriptionFile
         );
@@ -893,17 +898,19 @@ export default {
         } else {
           this.$tool.back(null, { type: "init", page: null });
         }
+        this.submitLoading = false;
       } catch (err) {
         console.log(err);
+        this.submitLoading = false;
       }
     },
     async updateMethod() {
       this.form.ownerEditList = this.form.ownerList;
       let list = this.form.noticeAttachmentList.filter((i) => !!i);
       let subList = this.subscriptionFile.filter((i) => !!i);
-      console.log(subList);
       list = list.concat(subList);
       try {
+        this.uploadLoading = true;
         const res = await postNoticeUpdate({
           ...this.form,
           notificationStatus: "WaitBeSigned",
@@ -925,8 +932,10 @@ export default {
             },
           });
         }
+        this.uploadLoading = false;
       } catch (err) {
         console.log(err);
+        this.uploadLoading = false;
       }
     },
     async isShowTis(roomNumberId) {
