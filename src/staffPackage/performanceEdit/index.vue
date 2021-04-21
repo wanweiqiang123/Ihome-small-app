@@ -999,7 +999,7 @@ export default {
       this.postData.dealOrgId = info?.dealOrgId;
       this.postData.isConsign = info?.isConsign;
       this.postData.isMarketProject = info?.isMarketProject;
-      this.postData.isMat = info?.isMat;
+      // this.postData.isMat = info?.isMat;
       this.postData.modelCode = info?.modelCode;
       this.postData.oneAgentTeamId = info?.oneAgentTeamId;
       this.postData.recordState = info?.recordState;
