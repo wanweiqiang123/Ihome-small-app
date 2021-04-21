@@ -1402,6 +1402,7 @@ export default {
       this.postData.agencyName = '';
       this.postData.contNo = '';
       this.postData.contTitle = '';
+      this.postData.isMat = '';
       if (item && item.length) {
         this.postData.contTypeName = item[0].label;
         this.postData.contType = item[0].value;
@@ -1419,9 +1420,7 @@ export default {
         this.postData.companyKind = item[0].value;
       }
       // 1. 先初始化收派信息
-      if (this.postData.contNo) {
-        this.initReceive();
-      }
+      this.initReceive();
       this.packageIdsList = [];
       // 2. 初始化渠道公司和经纪人
       this.postData.agencyId = '';
@@ -1430,6 +1429,7 @@ export default {
       this.postData.brokerName = '';
       this.postData.contNo = '';
       this.postData.contTitle = '';
+      this.postData.isMat = "";
     },
     // 选择渠道公司
     handleSelectAgency() {
@@ -1476,14 +1476,13 @@ export default {
       this.postData.agencyId = data?.id;
       this.postData.agencyName = data?.name;
       // 1. 先初始化收派信息
-      if (this.postData.contNo) {
-        this.initReceive();
-      }
+      this.initReceive();
       this.packageIdsList = [];
       this.postData.brokerId = '';
       this.postData.brokerName = '';
       this.postData.contNo = '';
       this.postData.contTitle = '';
+      this.postData.isMat = '';
       await this.getOneAgentTeamContNo(this.postData.agencyId, this.postData.cycleId, this.postData.companyKind);
     },
     // 选择经纪人
