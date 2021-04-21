@@ -981,7 +981,7 @@ export default {
       this.packageIdsList = [];
       if (info.agencyList && info.agencyList.length) {
         if (info.agencyList[0].agencyId) {
-          this.contNoList = await this.getOneAgentTeamContNo(info.agencyList[0].agencyId, info.cycleId, info.agencyList[0].companyKind);
+          await this.getOneAgentTeamContNo(info.agencyList[0].agencyId, info.cycleId, info.agencyList[0].companyKind);
         } else {
           this.contNoList = [];
         }
