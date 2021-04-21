@@ -104,7 +104,7 @@
               :select-open="showAgencyType"
               @click="showAgencyType = true"
               type="select"
-              placeholder="请选择分销公司类型"/>
+              placeholder="请选择公司类型"/>
           </u-form-item>
           <u-form-item
             v-if="postData.contType === 'DistriDeal'"
@@ -119,7 +119,7 @@
               placeholder="请选择渠道公司"/>
           </u-form-item>
           <u-form-item
-            v-if="postData.contType === 'DistriDeal'"
+            v-if="postData.contType === 'DistriDeal' && postData.companyKind === 'ChannelCompany'"
             required
             label="经纪人"
             class="hide-icon"
@@ -132,10 +132,9 @@
           </u-form-item>
           <u-form-item
             v-if="postData.contType === 'DistriDeal'"
-            required
             label="渠道分销合同"
             class="hide-icon"
-            right-icon="arrow-right" prop="contNo">
+            right-icon="arrow-right">
             <u-input
               v-model="postData.contTitle"
               :select-open="showContNo"
@@ -373,15 +372,12 @@
       label-name="name"
       @confirm="confirmAgencyType"
     ></u-select>
-    <u-select
-      v-model="showContNo"
-      :list="contNoList"
-      safe-area-inset-bottom
-      title="请选择渠道分销合同"
-      value-name="contractNo"
-      label-name="contractTitle"
-      @confirm="confirmContNo"
-    ></u-select>
+    <!-- 选择渠道分销合同页面 -->
+    <ContNoList
+        @finish="confirmContNo"
+        @close="showContNo = false"
+        v-if="showContNo"
+        :list="contNoList"></ContNoList>
     <u-picker
       v-model="showDate"
       mode="time"
@@ -431,6 +427,7 @@
 
 <script>
 import PopupIndex from "./popup/index.vue";
+import ContNoList from "./popup/contNoList.vue";
 import {
   post_buModelContType_subList,
   post_buModelContType_getList,
@@ -440,8 +437,6 @@ import {
   post_deal_entryDealBasicInf,
   post_deal_updateDealBasicInf,
   getBaseDealInfo,
-  postBuildByProId,
-  postRoomByProId,
   get_deal_get__id,
   post_notice_customer_information,
   post_distributionmx_receive_detail
@@ -452,7 +447,7 @@ import tool from "@/common/tool";
 import storageTool from "@/common/storageTool";
 export default {
   name: "performanceEdit",
-  components: { PopupIndex },
+  components: { PopupIndex, ContNoList },
   data() {
     // 栋座
     let buildingNameValidator = (rule, value, callback) => {
@@ -482,22 +477,6 @@ export default {
           callback();
           return;
         }
-      }
-    }
-    // 公司类型
-    let agencyTypeValidator = (rule, value, callback) => {
-      if (this.postData.contType === 'DistriDeal') {
-        // 分销成交必选
-        if (!value) {
-          callback(new Error('请选择分销公司类型'));
-          return;
-        } else {
-          callback();
-          return;
-        }
-      } else {
-        callback();
-        return;
       }
     }
     // 认购价格
@@ -550,6 +529,52 @@ export default {
       if (['SignUp'].includes(this.postData.stage)) {
         if (!value) {
           callback(new Error('签约日期不能为空'));
+          return;
+        } else {
+          callback();
+          return;
+        }
+      } else {
+        callback();
+        return;
+      }
+    }
+    // 公司类型
+    let agencyTypeValidator = (rule, value, callback) => {
+      if (this.postData.contType === 'DistriDeal') {
+        // 分销成交必选
+        if (!value) {
+          callback(new Error('请选择公司类型'));
+          return;
+        } else {
+          callback();
+          return;
+        }
+      } else {
+        callback();
+        return;
+      }
+    }
+    // 渠道公司
+    let agencyNameValidator = (rule, value, callback) => {
+      if (this.postData.contType === 'DistriDeal') {
+        if (!value) {
+          callback(new Error('请选择渠道公司'));
+          return;
+        } else {
+          callback();
+          return;
+        }
+      } else {
+        callback();
+        return;
+      }
+    }
+    // 经纪人
+    let brokerNameValidator = (rule, value, callback) => {
+      if (this.postData.contType === 'DistriDeal' && this.postData.companyKind === 'ChannelCompany') {
+        if (!value) {
+          callback(new Error('请选择经纪人'));
           return;
         } else {
           callback();
@@ -714,9 +739,9 @@ export default {
         roomNo: [
           {validator: roomNoValidator, trigger: "change"},
         ],
-        contNo: [
-          {required: true, message: "分销协议必选", trigger: "change"},
-        ],
+        // contNo: [
+        //   {required: true, message: "渠道分销合同必选", trigger: "change"},
+        // ],
         subscribePrice: [
           {validator: subscribePriceValidator, trigger: "change"},
         ],
@@ -728,6 +753,12 @@ export default {
         ],
         signDate: [
           {validator: signDateValidator, trigger: "change"},
+        ],
+        agencyName: [
+          {validator: agencyNameValidator, trigger: "change"},
+        ],
+        brokerName: [
+          {validator: brokerNameValidator, trigger: "change"},
         ],
         notEmpty: []
       },
@@ -884,6 +915,8 @@ export default {
   },
   async onLoad(option) {
     console.log('performanceEdit:', option);
+    // 获取公司类型选项
+    await this.getCompanyTypeList();
     this.dictList = await this.getAllDictByTypes(this.dictObj);
     this.SubdivideList = await this.getSignDict("Subdivide");
     this.DealStageList = await this.getSignDict("DealStage");
@@ -897,8 +930,6 @@ export default {
       this.id = option.id;
       await this.initEditPage(option.id);
     }
-    // 获取公司类型选项
-    await this.getCompanyTypeList();
   },
   async onShow() {
     let item = getApp().globalData.searchBackData;
@@ -949,7 +980,11 @@ export default {
       // 获取渠道分销合同的值
       this.packageIdsList = [];
       if (info.agencyList && info.agencyList.length) {
-        this.contNoList = await this.getOneAgentTeamContNo('contNo', info.agencyList[0].agencyId, info.cycleId, info.agencyList[0].companyKind);
+        if (info.agencyList[0].agencyId) {
+          this.contNoList = await this.getOneAgentTeamContNo(info.agencyList[0].agencyId, info.cycleId, info.agencyList[0].companyKind);
+        } else {
+          this.contNoList = [];
+        }
         // 获取对应的渠道分销合同的ids
         if (this.contNoList && this.contNoList.length) {
           this.contNoList.forEach((list) => {
@@ -968,6 +1003,7 @@ export default {
       this.postData.dealOrgId = info?.dealOrgId;
       this.postData.isConsign = info?.isConsign;
       this.postData.isMarketProject = info?.isMarketProject;
+      // this.postData.isMat = info?.isMat;
       this.postData.modelCode = info?.modelCode;
       this.postData.oneAgentTeamId = info?.oneAgentTeamId;
       this.postData.recordState = info?.recordState;
@@ -990,17 +1026,18 @@ export default {
       this.postData.area = info?.house?.area ? info?.house?.area : '';
       this.postData.contType = info?.contType ? info?.contType : '';
       this.postData.contTypeName = info?.contType ? this.getDictName(info?.contType, this.ContTypeList) : '';
-      this.postData.companyKind = info?.companyKind ? info?.companyKind : '';
-      this.postData.companyKindName = info?.companyKind ? this.getDictName(info?.companyKind, this.AgencyTypeList) : '';
       this.postData.contNo = info?.contNo ? info?.contNo : '';
       this.postData.contTitle = info?.contTitle ? info?.contTitle : '';
       this.postData.recordStr = info?.recordStr ? info?.recordStr : '';
       if (info.agencyList && info.agencyList.length) {
+        //companyKindName agencyName brokerName
         this.postData.agencyName = info.agencyList[0].agencyName;
         this.postData.agencyId = info.agencyList[0].agencyId;
         this.postData.channelLevel = info.agencyList[0].channelLevel;
         this.postData.brokerName = info.agencyList[0].broker;
         this.postData.brokerId = info.agencyList[0].brokerId;
+        this.postData.companyKind = info.agencyList[0].companyKind;
+        this.postData.companyKindName = info.agencyList[0].companyKind ? this.getDictName(info.agencyList[0].companyKind, this.AgencyTypeList) : '';
       }
       this.postData.subscribeDate = info?.subscribeDate ? info?.subscribeDate : '';
       this.postData.subscribePrice = info?.subscribePrice ? info?.subscribePrice : '0';
@@ -1385,6 +1422,7 @@ export default {
       if (this.postData.contNo) {
         this.initReceive();
       }
+      this.packageIdsList = [];
       // 2. 初始化渠道公司和经纪人
       this.postData.agencyId = '';
       this.postData.agencyName = '';
@@ -1441,6 +1479,7 @@ export default {
       if (this.postData.contNo) {
         this.initReceive();
       }
+      this.packageIdsList = [];
       this.postData.brokerId = '';
       this.postData.brokerName = '';
       this.postData.contNo = '';
@@ -1506,27 +1545,22 @@ export default {
       this.postData.isMat = '';
       this.packageIdsList = [];
       this.showContAnnexList([]);
-      if (option && option.length) {
-        this.postData.contNo = option[0].value;
-        this.postData.contTitle = option[0].label;
-        if (this.contNoList && this.contNoList.length) {
-          this.contNoList.forEach((item) => {
-            if (item.contractNo === option[0].value) {
-              // 是否垫佣
-              this.postData.isMat = item.advancementSituation;
-              // 分销模式下获取分销协议返回的收派套餐id
-              this.packageIdsList = this.getIdsList(item.distributionMxList);
-              // 回显合同附件信息
-              this.showContAnnexList(item.annexList);
-            }
-          });
-        }
+      if (option && option.contractNo) {
+        this.postData.contNo = option.contractNo;
+        this.postData.contTitle = option.contractTitle;
+        this.postData.isMat = option.advancementSituation;
+        // 分销模式下获取分销协议返回的收派套餐id
+        this.packageIdsList = this.getIdsList(option.distributionMxList);
+        // 回显合同附件信息
+        this.showContAnnexList(option.annexList);
       } else {
         this.postData.contNo = "";
         this.postData.contTitle = "";
+        this.packageIdsList = [];
       }
       // 初始化收派套餐
       this.initReceive();
+      this.showContNo = false;
     },
     // 获取合同中收派信息的idsList
     getIdsList(list = []) {
@@ -1547,12 +1581,16 @@ export default {
             let tempList = [];
             if (annexList && annexList.length) {
               annexList.forEach((list) => {
+                list.fileName = list.attachmentSuffix;
+                list.fileId = list.fileNo;
                 tempList.push(
                   {
                     ...list,
-                    fileId: list.fileNo,
-                    fileName: list.attachmentSuffix,
+                    // fileId: list.fileNo,
+                    name: list.attachmentSuffix,
                     fileType: 'ContractInfo', // 合同信息
+                    fileUrls: this.getFileUrls(list, 'url'), // 获取对应文件的默认图片
+                    type: this.getFileUrls(list, 'type'), // 获取文件类型：excel、word、pdf
                     canDelete: true, // 是否可以删除
                   }
                 )

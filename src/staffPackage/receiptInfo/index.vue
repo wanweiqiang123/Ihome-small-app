@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-19 15:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-12 15:00:49
+ * @LastEditTime: 2021-04-19 15:43:07
 -->
 <template>
   <view class="receipt info">
@@ -404,23 +404,38 @@ export default {
       this.refund = res;
     },
     // 查看预览
-    preview(val) {
+    async preview(val) {
       if (val.templateType === "ElectronicTemplate") {
-        let url = this.$tool.getFileUrl(val.templateId);
-        uni.downloadFile({
-          url: url,
-          success: function (res) {
-            var filePath = res.tempFilePath;
-            uni.openDocument({
-              filePath: filePath,
-              fileType: "pdf",
-              showMenu: true,
+        switch (val.notificationStatus) {
+          case "WaitPay":
+          case "WaitReview":
+          case "Paid":
+            const res = await getPreviewApi(this.noticeId);
+            if (res) {
+              getApp().globalData.webViewSrc = res;
+              uni.navigateTo({
+                url: `/pages/webView/preview/index`,
+              });
+            }
+            break;
+          case "BecomeEffective":
+          case "Invalidation":
+            let url = this.$tool.getFileUrl(val.templateId);
+            uni.downloadFile({
+              url: url,
               success: function (res) {
-                console.log("打开文档成功");
+                var filePath = res.tempFilePath;
+                uni.openDocument({
+                  filePath: filePath,
+                  fileType: "pdf",
+                  showMenu: true,
+                  success: function (res) {
+                    console.log("打开文档成功");
+                  },
+                });
               },
             });
-          },
-        });
+        }
       } else {
         if (val.noticeAttachmentList.length) {
           let preList = val.noticeAttachmentList.map((i) =>

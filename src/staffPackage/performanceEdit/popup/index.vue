@@ -167,7 +167,7 @@ export default {
     this.dictList = await this.getAllDictByTypes(this.dictObj);
     this.ContTypeList = await this.getSignDict("ContType");
     this.TransactionList = await this.getSignDict("Transaction");
-    this.getListMixin();
+    await this.getListMixin();
   },
   methods: {
     // 上拉加载
