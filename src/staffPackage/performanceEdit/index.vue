@@ -980,7 +980,11 @@ export default {
       // 获取渠道分销合同的值
       this.packageIdsList = [];
       if (info.agencyList && info.agencyList.length) {
-        this.contNoList = await this.getOneAgentTeamContNo(info.agencyList[0].agencyId, info.cycleId, info.agencyList[0].companyKind);
+        if (info.agencyList[0].agencyId) {
+          this.contNoList = await this.getOneAgentTeamContNo(info.agencyList[0].agencyId, info.cycleId, info.agencyList[0].companyKind);
+        } else {
+          this.contNoList = [];
+        }
         // 获取对应的渠道分销合同的ids
         if (this.contNoList && this.contNoList.length) {
           this.contNoList.forEach((list) => {
