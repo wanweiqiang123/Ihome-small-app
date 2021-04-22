@@ -138,12 +138,6 @@
 					}
 				},
 				{
-					"path": "unpaid/index",
-					"style": {
-						"navigationBarTitleText": "待付款订单"
-					}
-				},
-				{
 					"path": "paySuccess/index",
 					"style": {
 						"navigationBarTitleText": "在线支付"
