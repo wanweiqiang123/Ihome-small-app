@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-30 17:20:45
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-28 17:26:32
+ * @LastEditTime: 2021-04-22 19:04:24
 -->
 <template>
   <view class="base-info-wrapper">
@@ -16,85 +16,183 @@
       <view>完成身份验证，可核对真实身份，</view>
       <view>保障合法权益</view>
     </view>
-    <view class="form">
-      <u-field
-        label-width="150"
-        v-model="info.ownerName"
-        label="姓名"
-        disabled
-      >
-      </u-field>
-      <u-field
-        label-width="150"
-        v-model="info.ownerCertificateNo"
-        label="身份证号码"
-        disabled
-      >
-      </u-field>
-      <u-field
-        label-width="150"
-        v-model="info.ownerMobile"
-        label="手机号码"
-        disabled
-      >
-      </u-field>
-      <u-field
-        label-width="150"
-        v-model="info.verificationCode"
-        label="验证码"
-        placeholder="请填写验证码"
-      >
-        <u-button
-          size="mini"
-          slot="right"
-          type="success"
-          @click="getCode"
-        >{{codeText}}</u-button>
-      </u-field>
-      <u-verification-code
-        ref="uCode"
-        @change="codeChange"
-      ></u-verification-code>
+    <view v-if="phoneShow">
+      <view class="form">
+        <u-field
+          label-width="150"
+          v-model="info.custName"
+          label="姓名"
+          disabled
+        >
+        </u-field>
+        <u-field
+          label-width="150"
+          v-model="info.certificateNumber"
+          label="身份证号码"
+          disabled
+        >
+        </u-field>
+        <u-field
+          label-width="150"
+          v-model="info.custTel"
+          label="手机号码"
+          disabled
+        >
+        </u-field>
+        <u-field
+          label-width="150"
+          v-model="info.shortMsg"
+          label="验证码"
+          placeholder="请填写验证码"
+        >
+          <u-button
+            size="mini"
+            slot="right"
+            type="success"
+            @click="getCode"
+          >{{codeText}}</u-button>
+        </u-field>
+        <u-verification-code
+          ref="uCode"
+          @change="codeChange"
+        ></u-verification-code>
+      </view>
     </view>
+    <view v-else>
+      <view class="form">
+        <u-field
+          label-width="150"
+          v-model="info.custName"
+          label="姓名"
+          disabled
+        >
+        </u-field>
+        <u-field
+          label-width="150"
+          v-model="info.certificateNumber"
+          label="身份证号码"
+          disabled
+        >
+        </u-field>
+      </view>
+      <u-gap
+        height="20"
+        bg-color="#f1f1f1"
+      ></u-gap>
+      <view class="form face">
+        <view class="face-title">选择扫脸方式</view>
+        <u-radio-group
+          v-model="faceWay"
+          wrap
+        >
+          <u-radio
+            @change="radioChange"
+            v-for="(item, index) in FaceRecognition"
+            :key="index"
+            :name="item.code"
+          >
+            {{item.name}}
+          </u-radio>
+        </u-radio-group>
+      </view>
+    </view>
+    <view
+      class="other"
+      @click="otherChange"
+    >其他认证方式</view>
     <view class="buttons">
       <u-button
+        :loading="nextLoading"
         type="primary"
         @click="gotoAttestation"
-      >实名认证</u-button>
+      >下一步</u-button>
     </view>
+
+    <u-action-sheet
+      v-model="showSwitchOther"
+      :list="switchList"
+      :tips="{
+        text: '请选择认证方式'
+      }"
+      @click="submitSwitchOther"
+      safe-area-inset-bottom
+    ></u-action-sheet>
+    <Linkto
+      v-model="linktoShow"
+      :url="linkUrl"
+      :custTel="info.custTel"
+      :custName="info.custName"
+    ></Linkto>
   </view>
 </template>
 <script>
-import { postVerificationApi, postCertificationApi } from "../../api/customer";
+import {
+  getFlowIdAndSendMesApi,
+  getMsgCheckAndShimingSaveApi,
+  getfaceRecognitionApi,
+} from "../../api/customer";
+import { getAllByTypeApi } from "../../api/index";
+import Linkto from "./linkto.vue";
 export default {
+  components: { Linkto },
   data() {
     return {
       info: {
-        ownerName: "",
-        ownerMobile: "",
-        ownerCertificateNo: "",
-        verificationCode: "",
+        custName: "",
+        custTel: "",
+        certificateNumber: "",
+        shortMsg: "",
         noticeId: "",
         templateId: "",
         notificationType: "",
         type: "",
+        faceauthMode: "",
       },
       codeText: "",
+      phoneShow: true,
+      showSwitchOther: false,
+      switchList: [],
+      faceWay: "ZHIMACREDIT",
+      nextLoading: false,
+      FaceRecognition: [],
+      linktoShow: false,
+      linkUrl: "",
     };
   },
-  onShow() {
-    this.info = { ...getApp().globalData.attestationInfo };
+  async onShow() {
+    this.FaceRecognition = await this.getDictAll("FaceRecognition");
+    this.info = {
+      ...getApp().globalData.attestationInfo,
+      custName: getApp().globalData.attestationInfo.ownerName,
+      custTel: getApp().globalData.attestationInfo.ownerMobile,
+      certificateNumber: getApp().globalData.attestationInfo.ownerCertificateNo,
+    };
   },
   methods: {
+    // 字典翻译
+    async getDictAll(type) {
+      const dictList = await getAllByTypeApi({ type });
+      return dictList;
+    },
+    // 字典匹配
+    getDictName(code, list) {
+      if (list.length) {
+        const item = list.find((v) => v.code === code);
+        return item?.name;
+      }
+    },
     codeChange(text) {
       this.codeText = text;
     },
     async getCode() {
       if (this.$refs.uCode.canGetCode) {
-        let postData = { ...this.info };
-        delete postData.templateId;
-        delete postData.verificationCode;
-        await postVerificationApi(postData);
+        let postData = {};
+        postData.cardType = "IDCard";
+        postData.certificateNumber = this.info.certificateNumber;
+        postData.custName = this.info.custName;
+        postData.custTel = this.info.custTel;
+        postData.custType = "Individual";
+        await getFlowIdAndSendMesApi(postData);
         uni.showLoading({
           title: "正在获取验证码",
         });
@@ -106,25 +204,67 @@ export default {
         this.$u.toast("倒计时结束后再发送");
       }
     },
+    otherChange() {
+      this.switchList = [
+        {
+          text: this.phoneShow ? "人脸识别" : "短信认证",
+        },
+      ];
+      this.showSwitchOther = true;
+    },
+
+    submitSwitchOther(v) {
+      this.phoneShow = !this.phoneShow;
+    },
+
+    radioChange(v) {
+      this.info.faceauthMode = v;
+    },
     async gotoAttestation() {
+      console.log(this.linktoShow);
       let obj = {};
-      obj = { ...this.info };
-      delete obj.templateId;
-      await postCertificationApi(obj);
-      if (this.info.type === "one") {
-        getApp().noticeInfo = {
-          templateId: this.info.templateId,
-          id: this.info.noticeId,
-          notificationType: this.info.notificationType,
-          type: "sign",
-        };
-        uni.navigateTo({
-          url: `/customerPackage/notification/index`,
-        });
+      obj.cardType = "IDCard";
+      obj.certificateNumber = this.info.certificateNumber;
+      obj.custName = this.info.custName;
+      obj.custTel = this.info.custTel;
+      obj.custType = "Individual";
+      obj.shortMsg = this.info.shortMsg;
+      this.nextLoading = true;
+      if (this.phoneShow) {
+        try {
+          await getMsgCheckAndShimingSaveApi(obj);
+          this.nextLoading = false;
+          if (this.info.type === "one") {
+            getApp().noticeInfo = {
+              templateId: this.info.templateId,
+              id: this.info.noticeId,
+              notificationType: this.info.notificationType,
+              type: "sign",
+            };
+            uni.navigateTo({
+              url: `/customerPackage/notification/index`,
+            });
+          } else {
+            uni.navigateTo({
+              url: `/customerPackage/signMore/index`,
+            });
+          }
+        } catch (err) {
+          this.nextLoading = false;
+        }
       } else {
-        uni.navigateTo({
-          url: `/customerPackage/signMore/index`,
-        });
+        obj.faceauthMode = this.info.faceauthMode;
+        try {
+          const res = await getfaceRecognitionApi(obj);
+          this.nextLoading = false;
+          if (res) {
+            this.linkUrl = res;
+            this.linktoShow = true;
+          }
+        } catch (err) {
+          this.nextLoading = false;
+          console.log(err);
+        }
       }
     },
   },
@@ -166,6 +306,17 @@ export default {
     margin-top: 50rpx;
     left: 50%;
     transform: translateX(-50%);
+  }
+  .other {
+    text-align: center;
+    color: #4881f9;
+    padding: 20px 0 0 0;
+  }
+  .face {
+    padding: 30rpx;
+    .face-title {
+      padding-bottom: 20rpx;
+    }
   }
 }
 </style>

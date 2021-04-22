@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-15 18:08:02
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-04 16:34:34
+ * @LastEditTime: 2021-04-22 18:48:01
  */
 import { getApi, postApi } from '../common/http.js';
 
@@ -84,14 +84,6 @@ export async function getPayStatusApi(data = {}, option = {}) {
 export async function postSignApi(data = {}, option = {}) {
   return await postApi(`/sales-api/contract/notice/wechat/sign`, data, option)
 }
-// 获取实名认证验证码
-export async function postVerificationApi(data = {}, option = {}) {
-  return await postApi(`/sales-api/contract/notice/verification/code`, data, option)
-}
-// 实名认证
-export async function postCertificationApi(data = {}, option = {}) {
-  return await postApi(`/sales-api/contract/notice/accounts/certification/check`, data, option)
-}
 // 扫码后获取优惠告知书信息
 export async function getDetailApi(data = {}, option = {}) {
   return await getApi(`/sales-api/project/preferential/getDetail/${data}`, option)
@@ -132,4 +124,24 @@ export async function postSigningApi(data = {}, option = {}) {
 // 退款信息
 export async function getRefundInfoApi(data = {}, option = {}) {
   return await getApi(`/sales-api/finance/payment/getRefundInfo/${data}`, option)
+}
+
+// 获取e签报短信实名流程
+export async function getFlowIdAndSendMesApi(data = {}, option = {}) {
+  return await postApi(`/sales-api/customer/customer/getFlowIdAndSendMes`, data, option)
+}
+
+// 校验e签宝短信是否正确
+export async function getMsgCheckAndShimingSaveApi(data = {}, option = {}) {
+  return await postApi(`/sales-api/customer/customer/getMsgCheckAndShimingSave`, data, option)
+}
+
+// 扫描人脸识别
+export async function getfaceRecognitionApi(data = {}, option = {}) {
+  return await postApi(`/sales-api/customer/customer/getfaceRecognition`, data, option)
+}
+
+// 通过手机号与身份证查找客户
+export async function isPoolSelectCustApi(data = {}, option = {}) {
+  return await postApi(`/sales-api/customer/customer/isPoolSelectCust`, data, option)
 }
