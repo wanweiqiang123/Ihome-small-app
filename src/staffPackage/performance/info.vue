@@ -498,7 +498,12 @@ export default {
       this.postData.contTitle = info?.contTitle ? info?.contTitle : '';
       this.postData.recordStr = info?.recordStr ? info?.recordStr : '';
       if (info.agencyList && info.agencyList.length) {
-        this.postData.agencyName = info.agencyList[0].agencyName;
+        if (info.agencyList[0].companyKind === 'InfieldCompany') {
+          // 内部公司和外部公司不一样
+          this.postData.agencyName = info.agencyList[0].companyName;
+        } else {
+          this.postData.agencyName = info.agencyList[0].agencyName;
+        }
         this.postData.brokerName = info.agencyList[0].broker;
         this.postData.companyKindName = info.agencyList[0].companyKind ? this.getDictName(info.agencyList[0].companyKind, this.AgencyTypeList) : '';
       }

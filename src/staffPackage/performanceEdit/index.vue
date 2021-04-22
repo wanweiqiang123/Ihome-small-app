@@ -981,7 +981,7 @@ export default {
       this.packageIdsList = [];
       if (info.agencyList && info.agencyList.length) {
         if (info.agencyList[0].agencyId) {
-          this.contNoList = await this.getOneAgentTeamContNo(info.agencyList[0].agencyId, info.cycleId, info.agencyList[0].companyKind);
+          await this.getOneAgentTeamContNo(info.agencyList[0].agencyId, info.cycleId, info.agencyList[0].companyKind);
         } else {
           this.contNoList = [];
         }
@@ -1030,8 +1030,12 @@ export default {
       this.postData.contTitle = info?.contTitle ? info?.contTitle : '';
       this.postData.recordStr = info?.recordStr ? info?.recordStr : '';
       if (info.agencyList && info.agencyList.length) {
-        //companyKindName agencyName brokerName
-        this.postData.agencyName = info.agencyList[0].agencyName;
+        if (info.agencyList[0].companyKind === 'InfieldCompany') {
+          // 内部公司和外部公司不一样
+          this.postData.agencyName = info.agencyList[0].companyName;
+        } else {
+          this.postData.agencyName = info.agencyList[0].agencyName;
+        }
         this.postData.agencyId = info.agencyList[0].agencyId;
         this.postData.channelLevel = info.agencyList[0].channelLevel;
         this.postData.brokerName = info.agencyList[0].broker;
@@ -1402,6 +1406,7 @@ export default {
       this.postData.agencyName = '';
       this.postData.contNo = '';
       this.postData.contTitle = '';
+      this.postData.isMat = '';
       if (item && item.length) {
         this.postData.contTypeName = item[0].label;
         this.postData.contType = item[0].value;
@@ -1419,9 +1424,7 @@ export default {
         this.postData.companyKind = item[0].value;
       }
       // 1. 先初始化收派信息
-      if (this.postData.contNo) {
-        this.initReceive();
-      }
+      this.initReceive();
       this.packageIdsList = [];
       // 2. 初始化渠道公司和经纪人
       this.postData.agencyId = '';
@@ -1430,6 +1433,7 @@ export default {
       this.postData.brokerName = '';
       this.postData.contNo = '';
       this.postData.contTitle = '';
+      this.postData.isMat = "";
     },
     // 选择渠道公司
     handleSelectAgency() {
@@ -1476,14 +1480,13 @@ export default {
       this.postData.agencyId = data?.id;
       this.postData.agencyName = data?.name;
       // 1. 先初始化收派信息
-      if (this.postData.contNo) {
-        this.initReceive();
-      }
+      this.initReceive();
       this.packageIdsList = [];
       this.postData.brokerId = '';
       this.postData.brokerName = '';
       this.postData.contNo = '';
       this.postData.contTitle = '';
+      this.postData.isMat = '';
       await this.getOneAgentTeamContNo(this.postData.agencyId, this.postData.cycleId, this.postData.companyKind);
     },
     // 选择经纪人
