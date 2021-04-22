@@ -103,7 +103,7 @@
 				{
 					"path": "discountsInfo/index",
 					"style": {
-						"navigationBarTitleText": "购房优惠详情",
+						"navigationBarTitleText": "购房详情",
 						"enablePullDownRefresh": true
 					}
 				},
@@ -135,12 +135,6 @@
 					"path": "payAuditing/index",
 					"style": {
 						"navigationBarTitleText": "付款待审核"
-					}
-				},
-				{
-					"path": "unpaid/index",
-					"style": {
-						"navigationBarTitleText": "待付款订单"
 					}
 				},
 				{

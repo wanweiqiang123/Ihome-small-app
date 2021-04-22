@@ -88,7 +88,7 @@
             class="hide-icon"
             right-icon="arrow-right">
             <u-input
-              v-model="postData.agencyTypeName"
+              v-model="postData.companyKindName"
               disabled
               placeholder=" "
               type="select"/>
@@ -121,7 +121,7 @@
             class="hide-icon"
             right-icon="arrow-right" prop="contNo">
             <u-input
-              v-model="postData.contNoName"
+              v-model="postData.contTitle"
               disabled
               placeholder=" "
               type="select"/>
@@ -271,7 +271,7 @@ import {
   get_deal_get__id,
   post_notice_customer_information
 } from "@/api/staff";
-import {getAllDictByType} from "@/api";
+import {getAllDictByType, getAllByTypeApi} from "@/api/index";
 import tool from "@/common/tool";
 export default {
   name: "performanceInfo",
@@ -292,8 +292,7 @@ export default {
           "ChannelLevel",
           "DealFileType",
           "FeeType",
-          "NotificationType",
-          "AgencyType"
+          "NotificationType"
         ]
       }, // 需要用到的字典类型参数
       SubdivideList: [],
@@ -322,9 +321,9 @@ export default {
         contType: '',
         contTypeName: '',
         agencyType: '',
-        agencyTypeName: '',
+        companyKindName: '',
         contNo: '',
-        contNoName: '',
+        contTitle: '',
         recordStr: '',
         subscribePrice: '',
         subscribeDate: '',
@@ -457,12 +456,13 @@ export default {
     }
   },
   async onLoad(option) {
+    // 获取公司类型选项
+    await this.getCompanyTypeList();
     this.dictList = await this.getAllDictByTypes(this.dictObj);
     this.SubdivideList = await this.getSignDict("Subdivide");
     this.DealStageList = await this.getSignDict("DealStage");
     this.PropertyList = await this.getSignDict("Property");
     this.ContTypeList = await this.getSignDict("ContType");
-    this.AgencyTypeList = await this.getSignDict("AgencyType");
     this.DealFileTypeList = await this.getSignDict("DealFileType");
     this.NotificationTypeList = await this.getSignDict("NotificationType");
     this.FeeTypeList = await this.getSignDict("FeeType");
@@ -471,6 +471,14 @@ export default {
     }
   },
   methods: {
+    // 获取公司类型
+    async getCompanyTypeList() {
+      this.AgencyTypeList = await getAllByTypeApi({
+        tag:"Channel",
+        type:"CompanyKind",
+        valid:"Valid",
+      });
+    },
     // 初始化页面
     async init(id) {
       let info  = await get_deal_get__id({id: id});
@@ -486,14 +494,18 @@ export default {
       this.postData.roomNo = info?.house?.roomNo ? info?.house?.roomNo : '';
       this.postData.contTypeName = info?.contType ? this.getDictName(info?.contType, this.ContTypeList) : '';
       this.postData.contType = info?.contType ? info?.contType : '';
-      this.postData.agencyType = info?.agencyType ? info?.agencyType : '';
-      this.postData.agencyTypeName = info?.agencyType ? this.getDictName(info?.agencyType, this.AgencyTypeList) : '';
       this.postData.contNo = info?.contNo ? info?.contNo : '';
-      this.postData.contNoName = info?.contNoName ? info?.contNoName : '';
+      this.postData.contTitle = info?.contTitle ? info?.contTitle : '';
       this.postData.recordStr = info?.recordStr ? info?.recordStr : '';
       if (info.agencyList && info.agencyList.length) {
-        this.postData.agencyName = info.agencyList[0].agencyName;
+        if (info.agencyList[0].companyKind === 'InfieldCompany') {
+          // 内部公司和外部公司不一样
+          this.postData.agencyName = info.agencyList[0].companyName;
+        } else {
+          this.postData.agencyName = info.agencyList[0].agencyName;
+        }
         this.postData.brokerName = info.agencyList[0].broker;
+        this.postData.companyKindName = info.agencyList[0].companyKind ? this.getDictName(info.agencyList[0].companyKind, this.AgencyTypeList) : '';
       }
       this.postData.subscribeDate = info?.subscribeDate ? info?.subscribeDate : '';
       this.postData.subscribePrice = info?.subscribePrice ? info?.subscribePrice : '';
