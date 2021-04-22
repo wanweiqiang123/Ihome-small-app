@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-24 09:42:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-20 16:40:27
+ * @LastEditTime: 2021-04-22 11:12:33
 -->
 <template>
   <LoginPage>
@@ -28,6 +28,12 @@
             label-width="190"
             :error-type="['message']"
           >
+            <u-form-item label="告知书类型">
+              <u-radio-group v-model="isType">
+                <u-radio :name="true">电子版</u-radio>
+                <u-radio :name="false">纸质版</u-radio>
+              </u-radio-group>
+            </u-form-item>
             <u-form-item
               label="项目联动周期"
               class="hide-icon"
@@ -134,7 +140,10 @@
                 @change="changeOwner"
               >
                 <u-radio name="Personal">个人</u-radio>
-                <u-radio name="Enterprise">企业</u-radio>
+                <u-radio
+                  name="Enterprise"
+                  v-show="!isType"
+                >企业</u-radio>
               </u-radio-group>
             </u-form-item>
           </u-form>
@@ -220,40 +229,6 @@
               </view>
             </view>
           </template>
-          <view class="form-title u-border-bottom">
-            <view>{{`切换为${isType ? '纸质' : '电子'}优惠告知书`}}</view>
-            <u-switch
-              v-model="isType"
-              @change="(isActive) => {
-                if (isActive) form.noticeAttachmentList = []
-              }"
-            ></u-switch>
-          </view>
-          <view
-            class="form-color"
-            v-if="!isType"
-          >
-            <u-form
-              label-width="220"
-              label-position="top"
-            >
-              <u-form-item label="优惠告知书附件">
-                <u-upload
-                  width="180"
-                  height="180"
-                  name="files"
-                  :action="$tool.getUploadUrl()"
-                  :header="header"
-                  :show-progress="false"
-                  :before-upload="beforeUpload"
-                  :before-remove="beforeRemove"
-                  :file-list="fileList"
-                  @on-success="successChange"
-                  @on-remove="removeChange"
-                ></u-upload>
-              </u-form-item>
-            </u-form>
-          </view>
         </template>
         <!-- 企业部分 -->
         <template v-else>
@@ -294,30 +269,11 @@
                   placeholder="请输入营业执照编号"
                 />
               </u-form-item>
-              <u-form-item
-                label="优惠告知书附件"
-                label-position="top"
-              >
-                <u-upload
-                  width="180"
-                  height="180"
-                  name="files"
-                  :action="$tool.getUploadUrl()"
-                  :header="header"
-                  :show-progress="false"
-                  :before-upload="beforeUpload"
-                  :before-remove="beforeRemove"
-                  @on-success="successChange"
-                  @on-remove="removeChange"
-                ></u-upload>
-              </u-form-item>
             </u-form>
           </view>
         </template>
-        <view
-          class="form-color"
-          v-if="isOther"
-        >
+        <view class="form-color margin-top-30">
+          <!-- v-if="isOther" -->
           <u-form
             label-width="220"
             label-position="top"
@@ -334,6 +290,23 @@
                 :file-list="subFileList"
                 @on-success="subscriptionSuccess"
                 @on-remove="subscriptionRemove"
+              ></u-upload>
+            </u-form-item>
+            <u-form-item
+              label="优惠告知书附件"
+              v-if="!isType"
+            >
+              <u-upload
+                width="180"
+                height="180"
+                name="files"
+                :action="$tool.getUploadUrl()"
+                :header="header"
+                :show-progress="false"
+                :before-upload="beforeUpload"
+                :before-remove="beforeRemove"
+                @on-success="successChange"
+                @on-remove="removeChange"
               ></u-upload>
             </u-form-item>
           </u-form>
@@ -993,15 +966,16 @@ export default {
         .map((val) => ({
           url: this.$tool.getFileUrl(val.fileNo),
         }));
+      console.log(this.fileList, "file");
+      this.subFileList = info.subscriptionAnnex.map((val) => ({
+        ...val,
+        url: this.$tool.getFileUrl(val.fileNo),
+      }));
+      this.subscriptionFile = info.subscriptionAnnex;
       // 自定义
       if (info.promotionMethod === "Manual") {
         this.isOther = true;
         this.form.manner = "自定义";
-        this.subFileList = info.subscriptionAnnex.map((val) => ({
-          ...val,
-          url: this.$tool.getFileUrl(val.fileNo),
-        }));
-        this.subscriptionFile = info.subscriptionAnnex;
       }
       try {
         this.isRecognize = await getRecognizeById(info.cycleId);
@@ -1138,11 +1112,13 @@ export default {
   padding: 20rpx 30rpx 110rpx;
   .form-color {
     background: #fff;
-    &:nth-child(2),
     &:nth-child(3) {
       margin-top: 30rpx;
     }
   }
+}
+.margin-top-30 {
+  margin-top: 30rpx;
 }
 .owner-tilte {
   display: flex;

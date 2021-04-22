@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-18 11:38:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-31 10:18:46
+ * @LastEditTime: 2021-04-22 17:50:37
 -->
 <template>
   <LoginPage>
@@ -78,6 +78,20 @@
               height="20"
               bg-color="#f1f1f1"
             ></u-gap>
+            <u-form-item label="认购书附件">
+              <view class="text-right">
+                <u-button
+                  size="mini"
+                  type="success"
+                  @click="subscriptionPreview"
+                >预览</u-button>
+              </view>
+            </u-form-item>
+            <u-gap
+              height="20"
+              bg-color="#f1f1f1"
+            ></u-gap>
+            <!-- 电子版 -->
             <u-form-item
               label="优惠告知书预览"
               v-if="!isPaper"
@@ -99,40 +113,26 @@
                 >预览</u-button>
               </view>
             </u-form-item>
+            <!-- 纸质版 -->
             <u-form-item
               label="优惠告知书附件"
               label-position="top"
               v-else
             >
-              <u-upload
-                width="180"
-                height="180"
-                name="files"
-                ref="fileRef"
-                :file-list="fileList"
-                :action="$tool.getUploadUrl()"
-                :header="header"
-                :show-progress="false"
-                :before-upload="beforeUpload"
-                :before-remove="beforeRemove"
-                @on-success="successChange"
-                @on-remove="removeChange"
-              ></u-upload>
+              <view class="file-list">
+                <template v-for="(i, n) in fileList">
+                  <u-image
+                    class="list-item"
+                    width="180"
+                    height="180"
+                    :key="n"
+                    :src="i.url"
+                    @click="filePerview(n)"
+                  ></u-image>
+                </template>
+              </view>
             </u-form-item>
             <template v-if="isOther">
-              <u-gap
-                height="20"
-                bg-color="#f1f1f1"
-              ></u-gap>
-              <u-form-item label="认购书附件">
-                <view class="text-right">
-                  <u-button
-                    size="mini"
-                    type="success"
-                    @click="subscriptionPreview"
-                  >预览</u-button>
-                </view>
-              </u-form-item>
               <u-gap
                 height="20"
                 bg-color="#f1f1f1"
@@ -144,31 +144,25 @@
             </template>
           </u-form>
         </view>
-        <template v-if="isPaper">
-          <u-gap
-            height="20"
-            bg-color="#f1f1f1"
-          ></u-gap>
+      </view>
+      <view class="notice-btn safe-area-inset-bottom">
+        <view class="btn-container">
           <u-button
             shape="circle"
-            type="primary"
+            type="success"
             class="ih-btn"
-            @click="submitFile()"
-          >提交附件</u-button>
-        </template>
-        <template v-if="form.notificationStatus === 'WaitPay'">
-          <u-gap
-            height="20"
-            bg-color="#f1f1f1"
-          ></u-gap>
+            @click="handleShowFile()"
+          >补充附件</u-button>
           <u-button
+            v-if="form.notificationStatus === 'WaitPay'"
             shape="circle"
             type="primary"
             class="ih-btn"
             @click="handleToReceipt()"
           >去添加收款</u-button>
-        </template>
+        </view>
       </view>
+      <!-- 弹窗 -->
       <u-modal
         v-model="isShow"
         :show-title="false"
@@ -179,6 +173,97 @@
         }"
         @confirm="modalConfirm"
       ></u-modal>
+      <!-- 弹出层 -->
+      <u-popup
+        v-model="isShowUpload"
+        mode="bottom"
+        height="100%"
+        :mask="false"
+        safe-area-inset-bottom
+        closeable
+      >
+        <view class="popup-bady">
+          <scroll-view
+            scroll-y="true"
+            class="popup-cantainer"
+          >
+            <u-form
+              ref="notice"
+              label-position="top"
+              :border-bottom="false"
+            >
+              <u-form-item
+                label="附件类型"
+                :border-bottom="false"
+              >
+                <u-input
+                  v-model="fileTypeData.name"
+                  placeholder="请选择"
+                  @click="isShowFileType = true"
+                  type="select"
+                  border
+                />
+              </u-form-item>
+              <u-form-item
+                label="附件材料"
+                :border-bottom="false"
+              >
+                <u-upload
+                  v-if="fileTypeData.type === 'NoticeAttachment'"
+                  width="180"
+                  height="180"
+                  name="files"
+                  ref="fileRef"
+                  :file-list="fileList"
+                  :action="$tool.getUploadUrl()"
+                  :header="header"
+                  :show-progress="false"
+                  :before-upload="beforeUpload"
+                  :before-remove="beforeRemove"
+                  @on-success="successChange"
+                  @on-remove="removeChange"
+                ></u-upload>
+                <u-upload
+                  v-else-if="fileTypeData.type === 'Subscription'"
+                  width="180"
+                  height="180"
+                  name="files"
+                  ref="subscriptionRef"
+                  :file-list="subscription"
+                  :action="$tool.getUploadUrl()"
+                  :header="header"
+                  :show-progress="false"
+                  :before-upload="beforeUpload"
+                  :before-remove="beforeRemove"
+                  @on-success="attachmentChange"
+                  @on-remove="removeAttachment"
+                ></u-upload>
+              </u-form-item>
+            </u-form>
+          </scroll-view>
+          <view class="popup-button">
+            <u-button
+              size="medium"
+              shape="circle"
+              @click="isShowUpload = false"
+            >取 消</u-button>
+            <u-button
+              size="medium"
+              type="primary"
+              shape="circle"
+              @click="submitFile()"
+            >保 存</u-button>
+          </view>
+        </view>
+      </u-popup>
+      <!-- 下拉框 -->
+      <u-select
+        v-model="isShowFileType"
+        :list="fileTypeList"
+        safe-area-inset-bottom
+        title="附件类型"
+        @confirm="typeConfirm"
+      ></u-select>
     </view>
   </LoginPage>
 </template>
@@ -218,9 +303,18 @@ export default {
       },
       fileList: [],
       noticeAttachmentList: [],
+      subscription: [],
+      subscriptionList: [],
       isRecognize: false,
       isShow: false,
       downUrl: "",
+      isShowUpload: false,
+      fileTypeData: {
+        type: "",
+        name: "",
+      },
+      isShowFileType: false,
+      fileTypeList: [],
     };
   },
   computed: {
@@ -237,18 +331,43 @@ export default {
         const res = await getNoticeInfo({ id });
         Object.assign(this.form, res);
         this.isRecognize = await getRecognizeById(res.cycleId);
+        this.isPaper = res.templateType === "PaperTemplate";
         this.fileList = res.noticeAttachmentList
           .filter((i) => i.type === "NoticeAttachment")
           .map((val) => ({
             url: this.$tool.getFileUrl(val.fileNo),
           }));
-        console.log(this.fileList);
-        this.isPaper = res.templateType === "PaperTemplate";
+        this.subscription = res.subscriptionAnnex.map((i) => ({
+          url: this.$tool.getFileUrl(i.fileNo),
+        }));
       }
+    },
+    handleShowFile() {
+      // 是否是纸质
+      if (this.isPaper) {
+        this.fileTypeList = [
+          { value: "Subscription", label: "认购书" },
+          { value: "NoticeAttachment", label: "优惠告知书" },
+        ];
+      } else {
+        this.fileTypeList = [{ value: "Subscription", label: "认购书" }];
+      }
+      this.isShowUpload = true;
+    },
+    typeConfirm(val) {
+      let item = val[0];
+      this.fileTypeData.type = item.value;
+      this.fileTypeData.name = item.label;
     },
     handleShow() {
       this.downUrl = this.$tool.getFileDownloadUrl(this.form.templateId);
       this.isShow = true;
+    },
+    filePerview(current) {
+      uni.previewImage({
+        urls: this.fileList.map((i) => i.url),
+        current,
+      });
     },
     subscriptionPreview() {
       if (this.form.subscriptionAnnex.length) {
@@ -257,7 +376,7 @@ export default {
         );
         uni.previewImage({
           urls: preList,
-          current: 1,
+          current: 0,
         });
       } else {
         this.$tool.toast("认购书为空");
@@ -332,18 +451,41 @@ export default {
         contractId: this.option.id,
       };
     },
+    attachmentChange(data, index, lists, name) {
+      this.subscriptionList[index] = {
+        fileNo: lists[index].response.data[0].fileId,
+        attachmentSuffix:
+          lists[index].response?.data[0].generateFileName +
+          "." +
+          lists[index].response?.data[0].generateFileType,
+        type: "Subscription",
+        contractId: this.option.id,
+      };
+    },
+    // 删除优惠告知书附件
     removeChange(index, lists, name) {
+      this.noticeAttachmentList.splice(index, 1);
+    },
+    // 删除认购书附件
+    removeAttachment(index, lists, name) {
       this.noticeAttachmentList.splice(index, 1);
     },
     async submitFile() {
       try {
-        let list = this.noticeAttachmentList.filter((i) => !!i);
-        console.log(list);
-        if (list.length) {
-          await postUploadAnnex(list);
+        let list = this.noticeAttachmentList.filter((i) => !!i); // 告知书附件
+        let subscription = this.subscriptionList.filter((i) => !!i); // 认购书附件
+        console.log(list, subscription);
+        if (list.length || subscription.length) {
+          await postUploadAnnex(list.concat(subscription));
           this.$tool.toast("上传成功");
           this.noticeAttachmentList = [];
-          this.$refs.fileRef.clear();
+          this.subscriptionList = [];
+          if (this.fileTypeData.type === "Subscription") {
+            this.$refs.subscriptionRef.clear();
+          } else {
+            this.$refs.fileRef.clear();
+          }
+          this.isShowUpload = false;
           this.getInfo(this.form.id);
           // this.$tool.back(null, { type: "update", page: null });
         } else {
@@ -365,6 +507,50 @@ export default {
 .notice {
   background-color: $u-bg-color;
   min-height: 100vh;
+}
+.notice-btn {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 90rpx;
+  box-sizing: content-box;
+  padding-top: 10rpx;
+  padding-left: 30rpx;
+  padding-right: 30rpx;
+  background: #fff;
+  z-index: 10;
+  .btn-container {
+    display: flex;
+  }
+  .ih-btn {
+    flex: 1;
+  }
+  .ih-btn + .ih-btn {
+    padding-left: 20rpx;
+  }
+}
+.file-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  .list-item {
+    margin: 10rpx;
+  }
+}
+.popup-bady {
+  padding-top: 80rpx;
+  height: 100%;
+  .popup-cantainer {
+    height: calc(100% - 114rpx);
+  }
+  .popup-button {
+    padding: 14rpx 50rpx 20rpx;
+    display: flex;
+    justify-content: space-between;
+    background: #fff;
+  }
 }
 .notice-info {
   padding: 20rpx 30rpx 40rpx;
@@ -390,7 +576,7 @@ export default {
   }
 }
 .form-content {
-  padding: 20rpx 30rpx;
+  padding: 20rpx 30rpx 120rpx;
   .form-color {
     background: #fff;
   }

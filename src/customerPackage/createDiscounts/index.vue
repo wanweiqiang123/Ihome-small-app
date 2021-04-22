@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-16 15:52:38
+ * @LastEditTime: 2021-04-22 18:41:16
 -->
 <template>
   <view>
@@ -181,10 +181,32 @@
         ></u-gap>
       </template>
     </view>
+    <view>
+      <u-form
+        label-width="220"
+        label-position="top"
+      >
+        <u-form-item label="认购书附件">
+          <u-upload
+            width="180"
+            height="180"
+            name="files"
+            :action="$tool.getUploadUrl()"
+            :header="header"
+            :show-progress="false"
+            :before-upload="beforeUpload"
+            :file-list="subFileList"
+            @on-success="subscriptionSuccess"
+            @on-remove="subscriptionRemove"
+          ></u-upload>
+        </u-form-item>
+      </u-form>
+    </view>
     <view class="button">
       <u-button
         type="primary"
         size="medium"
+        :loading="submitLoading"
         @click="submit"
       >保存并预览优惠告知书</u-button>
     </view>
@@ -241,6 +263,7 @@ export default {
       form: {
         buyUnitName: "",
         roomNo: "",
+        noticeAttachmentList: [],
       },
       isRecognize: false,
       roomRules: {
@@ -249,6 +272,12 @@ export default {
         ],
         roomNo: [{ required: true, message: "请选择房号", trigger: "change" }],
       },
+      header: {
+        Authorization: "bearer " + storageTool.getToken(),
+      },
+      subFileList: [],
+      subscriptionFile: [],
+      submitLoading: false,
     };
   },
   onLoad(options) {
@@ -327,6 +356,27 @@ export default {
           },
         ],
       };
+    },
+    beforeUpload() {
+      uni.showToast({
+        icon: "loading",
+        title: "正在上传...",
+        duration: 500000000000,
+      });
+      return true;
+    },
+    subscriptionSuccess(data, index, lists, name) {
+      this.subscriptionFile[index] = {
+        fileNo: lists[index].response.data[0].fileId,
+        attachmentSuffix:
+          lists[index].response?.data[0].generateFileName +
+          "." +
+          lists[index].response?.data[0].generateFileType,
+        type: "Subscription",
+      };
+    },
+    subscriptionRemove(index, lists, name) {
+      this.subscriptionFile.splice(index, 1);
     },
     // 查询房号
     handleShowRoom() {
@@ -418,21 +468,28 @@ export default {
       Promise.all(this.arr)
         .then(async () => {
           this.form.ownerList = [...this.ownerList];
+          this.form.noticeAttachmentList = this.subscriptionFile;
           console.log(this.form);
-          const res = await postNoticeCreateApi(this.form);
-          uni.showToast({
-            title: "保存成功",
-            icon: "none",
-          });
-          getApp().noticeInfo = {
-            id: res.noticeId,
-            templateId: res.templateId,
-            notificationType: "Notification",
-            type: "view",
-          };
-          uni.navigateTo({
-            url: `/customerPackage/notification/index`,
-          });
+          try {
+            this.submitLoading = true;
+            const res = await postNoticeCreateApi(this.form);
+            uni.showToast({
+              title: "保存成功",
+              icon: "none",
+            });
+            getApp().noticeInfo = {
+              id: res.noticeId,
+              templateId: res.templateId,
+              notificationType: "Notification",
+              type: "view",
+            };
+            uni.navigateTo({
+              url: `/customerPackage/notification/index`,
+            });
+          } catch (error) {
+            console.log(error);
+            this.submitLoading = false;
+          }
         })
         .catch(() => {
           console.log("验证不通过");
