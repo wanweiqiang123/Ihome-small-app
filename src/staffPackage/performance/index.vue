@@ -15,10 +15,10 @@
           :show-action="false"
           bg-color="#fff"
           @search="confirm"
-          @blur="confirm"
+          @clear="confirm"
           placeholder="输入成交编号或客户姓名"
           v-model="queryPageParameters.dealCodeOrCusName"
-          :clearabled="true"
+          clearabled
         ></u-search>
         <view class="filter-btn" @click="isShow = true">
           <span>筛选</span>
@@ -87,7 +87,7 @@
         <u-empty text="列表为空" mode="list"></u-empty>
       </view>
       <view
-        v-if="$RoleTool('RProjectSite')"
+        v-if="$has('B.WXAPP.STAFF.STAFFHOME.DECLARE')"
         class="performance-btn safe-area-inset-bottom">
         <u-button shape="circle" type="primary" @click="handleGo()">业绩申报</u-button>
       </view>
@@ -323,8 +323,8 @@ export default {
     async confirm() {
       this.tablePage = [];
       this.queryPageParameters.pageNum = 1;
-      this.setPageDataMixin(await getDealList(this.getData()));
-      // console.log(this.queryPageParameters);
+      this.getListMixin();
+      console.log('搜索：', this.queryPageParameters);
     },
     // 选择项目周期
     handleSelectCycle() {
