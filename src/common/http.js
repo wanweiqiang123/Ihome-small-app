@@ -68,7 +68,7 @@ const api = (url, data = {}, option = {}) => {
                 } else { // 返回值非 200，强制显示提示信息
                     if (res.statusCode === 401) {
                         if (url.startsWith('/sales-api/system/sessionUser/getUserInfo')) {
-                            resolve(res)
+                            reject(res);
                             return;
                         } else {
                             try {
