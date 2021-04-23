@@ -53,6 +53,12 @@ const storageTool = {
             return null;
         }
     },
+    /**获取token失效时间*/
+    getTokenExpiresTime() {
+        let expires_in = uni.getStorageSync(expiresInKey);
+        let expires_in_ios = expires_in.replace(/-/g, '/');//此处解决ios new Date 兼容性问题
+        return expires_in_ios;
+    },
     /**删除token*/
     removeToken() {
         uni.removeStorageSync(tokenKey);
