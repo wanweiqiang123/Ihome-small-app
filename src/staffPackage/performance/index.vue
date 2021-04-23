@@ -87,7 +87,7 @@
         <u-empty text="列表为空" mode="list"></u-empty>
       </view>
       <view
-        v-if="$RoleTool('RProjectSite')"
+        v-if="$has('B.WXAPP.STAFF.STAFFHOME.DECLARE')"
         class="performance-btn safe-area-inset-bottom">
         <u-button shape="circle" type="primary" @click="handleGo()">业绩申报</u-button>
       </view>
