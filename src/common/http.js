@@ -66,15 +66,29 @@ const api = (url, data = {}, option = {}) => {
                     }
 
                 } else { // 返回值非 200，强制显示提示信息
-                    if (!hideMsg) {
-                        tool.toast('[' + res.statusCode + '] 系统处理失败');
+                    if (res.statusCode === 401) {
+                        if (url.startsWith('/sales-api/system/sessionUser/getUserInfo')) {
+                            reject(res);
+                            return;
+                        } else {
+                            try {
+                                const tokenExpiresTime = storageTool.getTokenExpiresTime();
+                                tool.toast('登陆失效，请重新登陆。' + tokenExpiresTime);
+                                reject(res);
+                                return;
+                            } catch (error) {
+                                tool.toast('登陆失效，请重新登陆.' + JSON.stringify(error));
+                                reject(res);
+                                return;
+                            }
+                        }
+                    } else {
+                        if (!hideMsg) {
+                            tool.toast('[' + res.statusCode + '] 系统处理失败');
+                        }
+                        reject(res);
+                        return;
                     }
-                    // Raven.captureException(res, {
-                    //     level: "error",
-                    // });
-                    reject(res);
-                    return;
-
                 }
             },
             fail: (err) => { // 接口调用失败的回调函数

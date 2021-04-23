@@ -22,8 +22,8 @@ function jsLog(err, type) {
     try {
         let jsLogAppId = getJsLogAppId();
         let routes = getCurrentPages(); // 获取当前打开过的页面路由数组
-        let curRoute = routes[routes.length - 1].route; //获取当前页面路由
-        let curParam = routes[routes.length - 1].options; //获取路由参数
+        let curRoute = routes[routes.length - 1]?.route; //获取当前页面路由
+        let curParam = routes[routes.length - 1]?.options; //获取路由参数
         let path = "";
         Object.keys(curParam || {}).forEach((key) => {
             let t = key + "=" + curParam[key] + "&";
