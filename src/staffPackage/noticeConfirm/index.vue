@@ -4,11 +4,11 @@
  * @Author: ywl
  * @Date: 2020-11-23 17:32:25
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-31 10:20:06
+ * @LastEditTime: 2021-04-23 11:30:01
 -->
 <template>
   <LoginPage>
-    <view class="notice">
+    <view class="notice safe-area-inset-bottom">
       <view class="notice-info">
         <view class="title u-border-bottom">
           <u-image
