@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-18 11:38:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-23 08:54:23
+ * @LastEditTime: 2021-04-23 08:57:31
 -->
 <template>
   <LoginPage>
@@ -590,19 +590,6 @@ export default {
   color: $u-type-primary;
   font-family: "Source Han Sans CN";
 }
-// .btn-container {
-//   position: fixed;
-//   bottom: 0;
-//   left: 0;
-//   right: 0;
-//   z-index: 10;
-//   height: 90rpx;
-//   box-sizing: content-box;
-//   padding-top: 10rpx;
-//   padding-left: 30rpx;
-//   padding-right: 30rpx;
-//   background: #fff;
-// }
 .text-right {
   text-align: right;
 }
