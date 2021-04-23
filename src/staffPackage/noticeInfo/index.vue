@@ -4,11 +4,11 @@
  * @Author: ywl
  * @Date: 2021-01-18 11:38:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-22 17:50:37
+ * @LastEditTime: 2021-04-23 08:54:23
 -->
 <template>
   <LoginPage>
-    <view class="notice">
+    <view class="notice safe-area-inset-bottom">
       <view class="notice-info">
         <view class="title u-border-bottom">
           <u-image
@@ -590,19 +590,19 @@ export default {
   color: $u-type-primary;
   font-family: "Source Han Sans CN";
 }
-.btn-container {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 10;
-  height: 90rpx;
-  box-sizing: content-box;
-  padding-top: 10rpx;
-  padding-left: 30rpx;
-  padding-right: 30rpx;
-  background: #fff;
-}
+// .btn-container {
+//   position: fixed;
+//   bottom: 0;
+//   left: 0;
+//   right: 0;
+//   z-index: 10;
+//   height: 90rpx;
+//   box-sizing: content-box;
+//   padding-top: 10rpx;
+//   padding-left: 30rpx;
+//   padding-right: 30rpx;
+//   background: #fff;
+// }
 .text-right {
   text-align: right;
 }
