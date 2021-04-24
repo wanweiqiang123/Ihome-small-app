@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-30 17:20:45
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-22 19:04:24
+ * @LastEditTime: 2021-04-24 10:40:30
 -->
 <template>
   <view class="base-info-wrapper">
@@ -82,7 +82,7 @@
       <view class="form face">
         <view class="face-title">选择扫脸方式</view>
         <u-radio-group
-          v-model="faceWay"
+          v-model="info.faceauthMode"
           wrap
         >
           <u-radio
@@ -146,13 +146,12 @@ export default {
         templateId: "",
         notificationType: "",
         type: "",
-        faceauthMode: "",
+        faceauthMode: "ZHIMACREDIT",
       },
       codeText: "",
       phoneShow: true,
       showSwitchOther: false,
       switchList: [],
-      faceWay: "ZHIMACREDIT",
       nextLoading: false,
       FaceRecognition: [],
       linktoShow: false,

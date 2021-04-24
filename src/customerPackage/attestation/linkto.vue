@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-22 16:35:22
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-22 18:47:12
+ * @LastEditTime: 2021-04-24 10:49:01
 -->
 <template>
   <u-popup
@@ -111,6 +111,7 @@ export default {
         } else {
           this.close();
           this.$tool.toast("扫脸认证失败");
+          console.log("扫脸认证失败");
         }
       }
     },
