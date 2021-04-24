@@ -23,20 +23,10 @@
           <view class="name">{{ userInfo.name | emptyFilter }}</view>
           <view class="phone">{{ userInfo.mobilePhone | emptyFilter }}</view>
         </view>
-        <view
-          v-if="isShowGridList"
-          class="my-item-wrapper u-padding-right-14"
-        >
-          <u-grid
-            :col="3"
-            :border="false"
-            @click="goToGrid"
-          >
+        <view v-if="isShowGridList" class="my-item-wrapper u-padding-right-14">
+          <u-grid :col="3" :border="false" @click="goToGrid">
             <template v-for="item in gridList">
-              <u-grid-item
-                v-if="item.isShow"
-                :key="item.id"
-                :index="item.url">
+              <u-grid-item v-if="item.isShow" :key="item.id" :index="item.url">
                 <u-image
                   width="64rpx"
                   height="64rpx"
@@ -47,22 +37,16 @@
             </template>
           </u-grid>
         </view>
-        <u-gap
-          v-if="isShowGridList"
-          height="20"
-          bg-color="#F1F1F1"
-        ></u-gap>
-        <view
-          v-if="isShowManageList"
-          class="my-item-wrapper"
-        >
+        <u-gap v-if="isShowGridList" height="20" bg-color="#F1F1F1"></u-gap>
+        <view v-if="isShowManageList" class="my-item-wrapper">
           <view class="my-manage">渠道管理</view>
           <template v-for="item in manageList">
             <view
               class="my-item"
               :key="item.id"
               v-if="item.isShow"
-              @click="goToItem(item)">
+              @click="goToItem(item)"
+            >
               <view class="item-icon">
                 <u-image
                   width="40rpx"
@@ -72,20 +56,12 @@
               </view>
               <view class="item-name">{{ item.name | emptyFilter }}</view>
               <view class="item-arrow">
-                <u-icon
-                  name="arrow-right"
-                  color="#888888"
-                  size="40"
-                ></u-icon>
+                <u-icon name="arrow-right" color="#888888" size="40"></u-icon>
               </view>
             </view>
           </template>
         </view>
-        <u-gap
-          v-show="isShowManageList"
-          height="20"
-          bg-color="#F1F1F1"
-        ></u-gap>
+        <u-gap v-show="isShowManageList" height="20" bg-color="#F1F1F1"></u-gap>
         <view class="my-item-wrapper">
           <view
             class="my-item"
@@ -94,19 +70,11 @@
             @click="userSwitchClick"
           >
             <view class="item-icon">
-              <u-image
-                width="40rpx"
-                height="40rpx"
-                :src="item.icon"
-              ></u-image>
+              <u-image width="40rpx" height="40rpx" :src="item.icon"></u-image>
             </view>
             <view class="item-name">{{ item.name }}</view>
             <view class="item-arrow">
-              <u-icon
-                name="arrow-right"
-                color="#888888"
-                size="40"
-              ></u-icon>
+              <u-icon name="arrow-right" color="#888888" size="40"></u-icon>
             </view>
           </view>
         </view>
@@ -121,13 +89,19 @@
               :arrow="true"
             ></u-cell-item>
           </u-cell-group>
+          <u-cell-group>
+            <u-cell-item
+              v-if="qrcodeShow"
+              @click="updateClick()"
+              icon="info-circle"
+              title="更新版本"
+              :arrow="true"
+            ></u-cell-item>
+          </u-cell-group>
         </view>
 
         <view class="my-btn">
-          <u-button
-            shape="circle"
-            @click="handleLoginOut"
-          >退出登录</u-button>
+          <u-button shape="circle" @click="handleLoginOut">退出登录</u-button>
         </view>
       </view>
     </view>

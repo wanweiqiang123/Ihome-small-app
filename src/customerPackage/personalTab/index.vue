@@ -30,6 +30,12 @@
             :arrow="true"
           ></u-cell-item>
           <u-cell-item
+            @click="updateClick()"
+            icon="info-circle"
+            title="更新版本"
+            :arrow="true"
+          ></u-cell-item>
+          <u-cell-item
             v-if="qrcodeShow"
             @click="qrcodeGoto()"
             icon="share"
@@ -40,11 +46,9 @@
       </view>
 
       <view class="btn-container">
-        <u-button
-          shape="circle"
-          type="primary"
-          @click="handleLoginOut"
-        >退出账号</u-button>
+        <u-button shape="circle" type="primary" @click="handleLoginOut"
+          >退出账号</u-button
+        >
       </view>
     </view>
     <!-- 退出 -->
