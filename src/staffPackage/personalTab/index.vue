@@ -35,7 +35,14 @@
             title="切换用户"
             :arrow="true"
           ></u-cell-item>
-          <u-cell-item v-if="qrcodeShow"
+          <u-cell-item
+            @click="updateClick()"
+            icon="info-circle"
+            title="更新版本"
+            :arrow="true"
+          ></u-cell-item>
+          <u-cell-item
+            v-if="qrcodeShow"
             @click="qrcodeGoto()"
             icon="share"
             title="模拟二维码跳转"
