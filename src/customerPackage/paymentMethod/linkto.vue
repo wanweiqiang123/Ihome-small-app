@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 15:26:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 14:26:12
+ * @LastEditTime: 2021-04-24 14:09:05
 -->
 <template>
   <u-popup
@@ -76,6 +76,9 @@ export default {
           } else {
             this.linkToTimer = setInterval(this.getInfo, 3000);
           }
+        } else {
+          clearInterval(this.linkToTimer);
+          this.linkToTimer = null;
         }
       },
     },

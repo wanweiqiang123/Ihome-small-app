@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-22 16:35:22
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-24 10:49:01
+ * @LastEditTime: 2021-04-24 14:12:12
 -->
 <template>
   <u-popup
@@ -78,6 +78,9 @@ export default {
           } else {
             this.linkToTimer = setInterval(this.getInfo, 3000);
           }
+        } else {
+          clearInterval(this.linkToTimer);
+          this.linkToTimer = null;
         }
       },
     },
@@ -94,10 +97,11 @@ export default {
         }
       );
       if (item.isPull) {
+        console.log(item.isPull, "轮询");
+        console.log(item.ecertificationStatus, "是否实名");
         if (!item.ecertificationStatus) {
           //ecertificationStatus 0: 已实名, 1: 未实名
           this.close();
-          clearInterval(this.linkToTimer);
           getApp().noticeInfo = {
             templateId: getApp().globalData.attestationInfo.templateId,
             id: getApp().globalData.attestationInfo.noticeId,

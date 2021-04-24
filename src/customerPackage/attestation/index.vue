@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-30 17:20:45
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-24 10:40:30
+ * @LastEditTime: 2021-04-24 12:03:47
 -->
 <template>
   <view class="base-info-wrapper">
@@ -82,6 +82,7 @@
       <view class="form face">
         <view class="face-title">选择扫脸方式</view>
         <u-radio-group
+          class="rodioGroup"
           v-model="info.faceauthMode"
           wrap
         >
@@ -146,7 +147,7 @@ export default {
         templateId: "",
         notificationType: "",
         type: "",
-        faceauthMode: "ZHIMACREDIT",
+        faceauthMode: "",
       },
       codeText: "",
       phoneShow: true,
@@ -165,6 +166,7 @@ export default {
       custName: getApp().globalData.attestationInfo.ownerName,
       custTel: getApp().globalData.attestationInfo.ownerMobile,
       certificateNumber: getApp().globalData.attestationInfo.ownerCertificateNo,
+      faceauthMode: "ZHIMACREDIT",
     };
   },
   methods: {
@@ -315,6 +317,11 @@ export default {
     padding: 30rpx;
     .face-title {
       padding-bottom: 20rpx;
+    }
+    .rodioGroup {
+      /deep/ .u-radio {
+        margin-top: 20rpx;
+      }
     }
   }
 }
