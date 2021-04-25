@@ -3,8 +3,8 @@
  * @version:
  * @Author: ywl
  * @Date: 2020-12-10 15:30:58
- * @LastEditors: lsj
- * @LastEditTime: 2021-03-27 10:13:02
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-04-25 09:24:31
  */
 import { getApi, postApi } from '../common/http.js';
 
@@ -197,6 +197,7 @@ export async function postAddPayServe(data = {}, option = {}) {
 export async function getBankInfoApi(data = {}, option = {}) {
   return await getApi(`/sales-api/finance/payment/getBankInfo/${data}`, null, option)
 }
+
 /**
  * @description: 通过周期ID判断是否认筹
  * @param {*} data
@@ -205,6 +206,24 @@ export async function getBankInfoApi(data = {}, option = {}) {
  */
 export async function getRecognizeById(data = {}, option = {}) {
   return await getApi(`/sales-api/project/term/getRecognizeById/${data}`, null, option)
+}
+/**
+ * @description: 获取待付款记录ID
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function getBusinessIdApi(data = {}, option = {}) {
+  return await getApi(`/sales-api/finance/payment/getBusinessId/${data}`, option)
+}
+/**
+ * @description: 修改付款记录
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function postPaymentupdateApi(data = {}, option = {}) {
+  return await postApi(`/sales-api/finance/payment/update`, data, option)
 }
 /**
  * @description: 查询收款信息列表数据
