@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-30 17:20:45
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-24 12:03:47
+ * @LastEditTime: 2021-04-25 11:38:59
 -->
 <template>
   <view class="base-info-wrapper">
@@ -150,7 +150,7 @@ export default {
         faceauthMode: "",
       },
       codeText: "",
-      phoneShow: true,
+      phoneShow: false,
       showSwitchOther: false,
       switchList: [],
       nextLoading: false,
