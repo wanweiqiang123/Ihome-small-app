@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
- * @LastEditors: wwq
- * @LastEditTime: 2021-04-20 15:18:18
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-04-25 14:43:31
 -->
 <template>
   <LoginPage>
@@ -37,7 +37,7 @@
             :clearable="false"
             placeholder="请输入付款金额"
             focus
-            type="number"
+            type="digit"
           ></u-field>
         </view>
       </view>
