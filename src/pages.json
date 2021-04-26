@@ -90,14 +90,14 @@
 				{
 					"path": "homeTab/index",
 					"style": {
-						"navigationBarTitleText": "客户首页",
+						"navigationBarTitleText": "我的购房优惠",
 						"enablePullDownRefresh": true
 					}
 				},
 				{
 					"path": "personalTab/index",
 					"style": {
-						"navigationBarTitleText": "客户个人中心"
+						"navigationBarTitleText": "个人中心"
 					}
 				},
 				{
@@ -379,7 +379,7 @@
 				{
 					"path": "personalTab/index",
 					"style": {
-						"navigationBarTitleText": "案场个人中心"
+						"navigationBarTitleText": "个人中心"
 					}
 				},
 				{
