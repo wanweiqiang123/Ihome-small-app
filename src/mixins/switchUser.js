@@ -108,11 +108,9 @@ export default {
         updateClick() {
             //更新版本
             let version = wx.getAccountInfoSync().miniProgram.version;
-            let date = '2021-04-24';
-
             wx.showModal({
                 title: "是否检查更新？",
-                content: `当前版本 日期：${date}；版本：${version}`,
+                content: `当前版本：${version}`,
                 success(res) {
                     if (res.confirm) {
                         console.log('确定');
@@ -120,12 +118,8 @@ export default {
                     } else {
                         console.log('取消')
                     }
-
                 },
-
             });
-
-
         },
 
     }
