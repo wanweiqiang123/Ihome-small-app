@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-22 16:35:22
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-24 14:12:12
+ * @LastEditTime: 2021-04-24 16:40:11
 -->
 <template>
   <u-popup
@@ -39,6 +39,11 @@
         type="primary"
         @click="copyUrl"
       >复制链接</u-button>
+      <u-button
+        style="margin-top: 20rpx"
+        @click="getInfo"
+        type="primary"
+      >查询是否认证成功</u-button>
     </view>
   </u-popup>
 </template>
@@ -67,24 +72,24 @@ export default {
       linkToTimer: "",
     };
   },
-  watch: {
-    value: {
-      immediate: true,
-      handler(v) {
-        if (v) {
-          if (this.linkToTimer) {
-            clearInterval(this.linkToTimer);
-            this.linkToTimer = null;
-          } else {
-            this.linkToTimer = setInterval(this.getInfo, 3000);
-          }
-        } else {
-          clearInterval(this.linkToTimer);
-          this.linkToTimer = null;
-        }
-      },
-    },
-  },
+  // watch: {
+  // value: {
+  //   immediate: true,
+  //   handler(v) {
+  //     if (v) {
+  //       if (this.linkToTimer) {
+  //         clearInterval(this.linkToTimer);
+  //         this.linkToTimer = null;
+  //       } else {
+  //         this.linkToTimer = setInterval(this.getInfo, 3000);
+  //       }
+  //     } else {
+  //       clearInterval(this.linkToTimer);
+  //       this.linkToTimer = null;
+  //     }
+  //   },
+  // },
+  // },
   methods: {
     async getInfo() {
       const item = await isPoolSelectCustApi(
@@ -96,11 +101,10 @@ export default {
           hideLoading: true,
         }
       );
-      if (item.isPull) {
-        console.log(item.isPull, "轮询");
-        console.log(item.ecertificationStatus, "是否实名");
-        if (!item.ecertificationStatus) {
-          //ecertificationStatus 0: 已实名, 1: 未实名
+      switch (
+        Number(item.ecertificationStatus) //0: 已实名, 1: 实名失败, 2: 未实名
+      ) {
+        case 0:
           this.close();
           getApp().noticeInfo = {
             templateId: getApp().globalData.attestationInfo.templateId,
@@ -112,11 +116,14 @@ export default {
           uni.redirectTo({
             url: `/customerPackage/notification/index`,
           });
-        } else {
+          break;
+        case 1:
           this.close();
           this.$tool.toast("扫脸认证失败");
-          console.log("扫脸认证失败");
-        }
+          break;
+        case 2:
+          this.$tool.toast("未实名认证");
+          break;
       }
     },
     close() {

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-19 18:44:57
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-09 16:57:05
+ * @LastEditTime: 2021-04-25 14:41:47
 -->
 <template>
   <view class="receipt">
@@ -79,7 +79,7 @@
             <u-input
               v-model="form.amount"
               placeholder="请输入收款金额"
-              type="number"
+              type="digit"
             />
           </u-form-item>
           <u-form-item
@@ -140,6 +140,8 @@ import {
   getNoOrderInfo,
   postAddPayServe,
   getBankInfoApi,
+  getBusinessIdApi,
+  postPaymentupdateApi,
 } from "../../api/staff";
 
 export default {
@@ -362,7 +364,16 @@ export default {
                     ...this.backInfo,
                   }
                 : { ...params, ...this.form };
-            await postAddPayServe(data);
+            const isPay = await getBusinessIdApi(payData.businessId);
+            if (this.form.payType === "PosNoOrder") {
+              if (!isPay) {
+                await postAddPayServe(data);
+              } else {
+                await postPaymentupdateApi({ ...data, id: isPay });
+              }
+            } else {
+              await postAddPayServe(data);
+            }
             this.$tool.toast("提交成功");
             uni.navigateBack({ delta: 1 });
           } catch (error) {
