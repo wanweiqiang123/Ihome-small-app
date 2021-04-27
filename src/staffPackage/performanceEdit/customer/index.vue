@@ -69,6 +69,7 @@
         required
         prop="certificateNumber">
         <u-input
+          :maxlength="18"
           v-model="addFrom.certificateNumber"
           placeholder="请输入证件编号"/>
       </u-form-item>
