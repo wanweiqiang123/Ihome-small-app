@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-22 16:35:22
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-24 16:40:11
+ * @LastEditTime: 2021-04-27 18:46:05
 -->
 <template>
   <u-popup
@@ -119,7 +119,7 @@ export default {
           break;
         case 1:
           this.close();
-          this.$tool.toast("扫脸认证失败");
+          this.$tool.toast("认证失败");
           break;
         case 2:
           this.$tool.toast("未实名认证");

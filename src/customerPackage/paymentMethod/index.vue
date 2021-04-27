@@ -3,12 +3,15 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
- * @LastEditors: ywl
- * @LastEditTime: 2021-04-25 14:43:31
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-04-27 19:01:00
 -->
 <template>
   <LoginPage>
-    <view class="pay safe-area-inset-bottom">
+    <view
+      class="pay safe-area-inset-bottom"
+      v-if="isShow"
+    >
       <view class="pay-title margin-top">付款信息</view>
       <view class="pay-msg margin-top">
         <view class="pay-item">
@@ -162,6 +165,7 @@ export default {
       linktoType: "",
       linktoId: "",
       linktoShow: false,
+      isShow: false,
     };
   },
   watch: {
@@ -188,7 +192,12 @@ export default {
         tag: "Customer",
       });
     }
-    const res = await getUnpaidOrderOrAmountPaidApi(this.payData.businessId);
+    try {
+      const res = await getUnpaidOrderOrAmountPaidApi(this.payData.businessId);
+      this.isShow = true;
+    } catch (err) {
+      console.log(err);
+    }
     this.payData.paid = res.amountPaid;
     this.payData.unpaid = (
       Number(this.payData.paymentAmount) - Number(res.amountPaid)
