@@ -9,7 +9,7 @@
 import storageTool from "../common/storageTool";
 import tool from "../common/tool";
 import { userSwitchApi, getUserInfoApi } from "../api/index";
-import {autoUpdate} from '../common/autoUpdate'
+import { autoUpdate } from '../common/autoUpdate'
 
 export default {
     data() {
@@ -115,7 +115,7 @@ export default {
                 success(res) {
                     if (res.confirm) {
                         console.log('确定');
-                        autoUpdate(this);
+                        autoUpdate(this, true);
                     } else {
                         console.log('取消')
                     }

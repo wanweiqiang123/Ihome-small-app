@@ -54,7 +54,7 @@ export default {
   onLaunch: function () {
     console.log("App Launch");
     try {
-      autoUpdate(this);
+      autoUpdate(this,false);
     } catch (error) {}
   },
   onShow: function () {

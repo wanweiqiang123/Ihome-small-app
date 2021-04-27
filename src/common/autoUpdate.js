@@ -3,7 +3,8 @@
  * @param {*} self 
  */
 import tool from './tool';
-function autoUpdate(self) {
+//this   tip提示是否无需更新
+function autoUpdate(self, tip) {
     try {
         let version = ""; //版本号
         try {
@@ -59,7 +60,10 @@ function autoUpdate(self) {
                         });
                     });
                 } else {
-                    tool.toast('已是最新版本，无需更新');
+                    if (tip) {
+                        tool.toast('已是最新版本，无需更新');
+                    }
+
 
                 }
             });
