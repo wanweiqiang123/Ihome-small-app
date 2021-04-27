@@ -69,7 +69,6 @@
         required
         prop="certificateNumber">
         <u-input
-          :maxlength="18"
           v-model="addFrom.certificateNumber"
           placeholder="请输入证件编号"/>
       </u-form-item>
@@ -107,7 +106,7 @@
 </template>
 
 <script>
-import {addCustomerApi, post_deal_entryDealBasicInf, post_deal_updateDealBasicInf} from "@/api/staff";
+import {addCustomerApi} from "@/api/staff";
 import {getAllDictByType} from "@/api";
 import {phoneValidator, emailOrNullValidato} from "@/common/validate";
 export default {
