@@ -73,11 +73,11 @@ const api = (url, data = {}, option = {}) => {
                         } else {
                             try {
                                 const tokenExpiresTime = storageTool.getTokenExpiresTime();
-                                tool.toast('登陆失效，请重新登陆。' + tokenExpiresTime);
+                                // tool.toast('登陆失效，请重新登陆。' + tokenExpiresTime);
                                 reject(res);
                                 return;
                             } catch (error) {
-                                tool.toast('登陆失效，请重新登陆.' + JSON.stringify(error));
+                                // tool.toast('登陆失效，请重新登陆.' + JSON.stringify(error));
                                 reject(res);
                                 return;
                             }
