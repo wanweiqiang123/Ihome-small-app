@@ -64,6 +64,9 @@ let env = storageTool.getEnv();
 if (__wxConfig.envVersion == 'release') {
     env = 'prd';
 }
+if (env == 'dev') {
+    env = 'int';
+}
 const currentEnvConfig = envAll[env];
 
 /** api请求域名，带协议
