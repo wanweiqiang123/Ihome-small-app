@@ -13,52 +13,6 @@ import storageTool from './common/storageTool'
  * @param {*}
  * @return {*}
  */
-// const envConfig = {
-//     develop: {
-//         //开发环境
-//         "env": "develop",
-//         "envName": "开发环境",
-//         "protocol": 'https',
-//         "fileDomain": "devapi.polyihome.com",
-//         "apiDomain": "devapi.polyihome.com",
-//         "h5Domain": "m.polyihome.develop",
-//         "pcDomain": "web.polyihome.develop",
-
-//     },
-//     trial: {
-//         //测试环境（体验版）
-//         "env": "trial",
-//         "envName": "测试环境（体验版）",
-//         "protocol": 'https',
-//         "fileDomain": "intapi.polyihome.com",
-//         "apiDomain": "intapi.polyihome.com",
-//         "h5Domain": "testm.polyihome.com",
-//         "pcDomain": "testweb.polyihome.com",
-
-//     },
-//     // trial: {
-//     //     //预生产，用户环境（体验版）
-//     //     "env": "trial",
-//     //     "envName": "测试环境（体验版）",
-//     //     "protocol": 'https',
-//     //     "fileDomain": "testapi.polyihome.com",
-//     //     "apiDomain": "testapi.polyihome.com",
-//     //     "h5Domain": "testm.polyihome.com",
-//     //     "pcDomain": "testweb.polyihome.com",
-
-//     // },
-//     release: {
-//         //生产环境
-//         "env": "release",
-//         "envName": "生产环境",
-//         "protocol": 'https',
-//         "fileDomain": "api.polyihome.com",
-//         "apiDomain": "api.polyihome.com",
-//         "h5Domain": "m.polyihome.com",
-//         "pcDomain": "web.polyihome.com",
-
-//     }
-// }
 
 const envAll = {
     dev: {
@@ -105,6 +59,11 @@ const envAll = {
 }
 
 let env = storageTool.getEnv();
+
+//强制生产环境只用生产地址
+if (__wxConfig.envVersion == 'release') {
+    env = 'prd';
+}
 const currentEnvConfig = envAll[env];
 
 /** api请求域名，带协议
@@ -149,4 +108,4 @@ const h5Url = currentEnvConfig['protocol'] + '://' + currentEnvConfig['h5Domain'
 // }
 
 
-export { currentEnvConfig, baseUrl, h5Url }
+export { currentEnvConfig, baseUrl, h5Url, envAll }
