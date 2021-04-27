@@ -8,6 +8,7 @@
 -->
 <script>
 // const Raven = require("./common/raven");
+import { autoUpdate } from "./common/autoUpdate";
 export default {
   globalData: {
     initData: {
@@ -52,6 +53,9 @@ export default {
   },
   onLaunch: function () {
     console.log("App Launch");
+    try {
+      autoUpdate(this);
+    } catch (error) {}
   },
   onShow: function () {
     console.log("App Show");
