@@ -544,7 +544,6 @@ export default {
         this.postData.offerNoticeVO = [];
       }
     },
-    // 预览
     // 预览优惠告知书
     handleViewNotice(item) {
       console.log(item);
@@ -568,13 +567,15 @@ export default {
       } else {
         // 图片
         let imgList = item.noticeAttachmentList || item.annexList;
+        let urls = [];
         if (imgList && imgList.length) {
-          let preList = imgList.noticeAttachmentList.map((i) =>
-            this.$tool.getFileUrl(i.fileNo)
-          );
+          imgList.forEach((item) => {
+            if (item.fileNo) {
+              urls.push(this.$tool.getFileUrl(item.fileNo));
+            }
+          });
           uni.previewImage({
-            urls: preList,
-            current: 1,
+            urls: urls
           });
         } else {
           this.$tool.toast("附件为空");
