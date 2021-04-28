@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-22 16:35:22
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-27 18:46:05
+ * @LastEditTime: 2021-04-28 11:48:54
 -->
 <template>
   <u-popup
@@ -72,24 +72,6 @@ export default {
       linkToTimer: "",
     };
   },
-  // watch: {
-  // value: {
-  //   immediate: true,
-  //   handler(v) {
-  //     if (v) {
-  //       if (this.linkToTimer) {
-  //         clearInterval(this.linkToTimer);
-  //         this.linkToTimer = null;
-  //       } else {
-  //         this.linkToTimer = setInterval(this.getInfo, 3000);
-  //       }
-  //     } else {
-  //       clearInterval(this.linkToTimer);
-  //       this.linkToTimer = null;
-  //     }
-  //   },
-  // },
-  // },
   methods: {
     async getInfo() {
       const item = await isPoolSelectCustApi(
@@ -106,16 +88,22 @@ export default {
       ) {
         case 0:
           this.close();
-          getApp().noticeInfo = {
-            templateId: getApp().globalData.attestationInfo.templateId,
-            id: getApp().globalData.attestationInfo.noticeId,
-            notificationType: getApp().globalData.attestationInfo
-              .notificationType,
-            type: "sign",
-          };
-          uni.redirectTo({
-            url: `/customerPackage/notification/index`,
-          });
+          if (getApp().globalData.attestationInfo.type === "one") {
+            getApp().noticeInfo = {
+              templateId: getApp().globalData.attestationInfo.templateId,
+              id: getApp().globalData.attestationInfo.noticeId,
+              notificationType: getApp().globalData.attestationInfo
+                .notificationType,
+              type: "sign",
+            };
+            uni.redirectTo({
+              url: `/customerPackage/notification/index`,
+            });
+          } else {
+            uni.redirectTo({
+              url: `/customerPackage/signMore/index`,
+            });
+          }
           break;
         case 1:
           this.close();
