@@ -2536,11 +2536,22 @@ export default {
         noticeId: data.id
       }
       let noticeInfo = await post_notice_deal_details__noticeId(postData);
-      if (noticeInfo.dealNotices && noticeInfo.dealNotices.length) {
+      if (noticeInfo && noticeInfo.dealNotices && noticeInfo.dealNotices.length) {
         noticeInfo.dealNotices.forEach((item) => {
           // 存放优惠告知书带出的客户信息 - 后面提交/保存接口需要用到
+          item.customerInformationList = [];
           if (item.notificationStatus === 'BecomeEffective' && item.notificationType === 'Notification') {
-            item.customerInformationList = noticeInfo.customerConvertResponse;
+            if (noticeInfo.customerConvertResponse && noticeInfo.customerConvertResponse.length) {
+              noticeInfo.customerConvertResponse.forEach((res) => {
+                item.customerInformationList.push(
+                  {
+                    ownerCertificateNo: res.cardNo, // 业主证件号码
+                    ownerMobile: res.customerPhone, // 业主联系电话
+                    ownerName: res.customerName // 业主名字
+                  }
+                )
+              });
+            }
           }
           // 附件增加fileId
           if (item.annexList && item.annexList.length) {
@@ -2557,7 +2568,7 @@ export default {
           item.addType = "manual";
         });
       }
-      if (noticeInfo.customerConvertResponse && noticeInfo.customerConvertResponse.length) {
+      if (noticeInfo && noticeInfo.customerConvertResponse && noticeInfo.customerConvertResponse.length) {
         noticeInfo.customerConvertResponse.forEach((item, index) => {
           if (index === 0) {
             item.isCustomer = "Yes";
