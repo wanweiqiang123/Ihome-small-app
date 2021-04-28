@@ -240,7 +240,7 @@
             v-for="(item, index) in postData.serviceReceiveVO" :key="index"
             @click.native="handleSelectPackage(item, 'serviceReceiveVO', index)">
             <view class="left">
-              <view class="title">{{item.partyACustomerName}}</view>
+              <view class="title">{{item.partyACustomerName}}服务费</view>
               <view :class="item.packageId ? 'name active-package' : 'name'">
                 {{item.packageId ? "收派标准" : "请选择收派标准"}}
               </view>
@@ -256,7 +256,7 @@
             v-for="(item, index) in postData.agentReceiveVO" :key="index"
             @click.native="handleSelectPackage(item, 'agentReceiveVO', index)">
             <view class="left">
-              <view class="title">{{item.partyACustomerName}}</view>
+              <view class="title">{{item.partyACustomerName}}代理费</view>
               <view :class="item.packageId ? 'active-package name' : 'name'">
                 {{item.packageId ? "收派标准" : "请选择收派标准"}}
               </view>
