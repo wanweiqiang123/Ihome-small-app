@@ -3,7 +3,7 @@
 ## npm install  
 ## npm run serve  
 ## npm run build  
-
+ 
 ## 注意事项
 
 小程序代码上传限制是2M，注意静态图片的大小
