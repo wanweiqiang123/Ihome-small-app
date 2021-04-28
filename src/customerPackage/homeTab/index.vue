@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-22 19:04:49
+ * @LastEditTime: 2021-04-28 10:51:19
 -->
 <template>
   <view>
@@ -127,18 +127,6 @@ export default {
       uni.navigateTo({
         url: `/customerPackage/discountsInfo/index?id=${id}`,
       });
-      // getApp().globalData.attestationInfo = {
-      //   ownerName: "皮小强",
-      //   ownerMobile: "15119337612",
-      //   ownerCertificateNo: "441424199302050553",
-      //   noticeId: "1",
-      //   templateId: "2",
-      //   notificationType: "Notification",
-      //   type: "one",
-      // };
-      // uni.navigateTo({
-      //   url: `/customerPackage/attestation/index`,
-      // });
     },
     isHasNotification(val) {
       let isHasSign = val.some((v) => v.notificationStatus === "WaitBeSigned");

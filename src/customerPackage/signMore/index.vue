@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-28 15:50:48
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-04 11:48:06
+ * @LastEditTime: 2021-04-28 11:49:33
 -->
 <template>
   <view class="signmore">
@@ -34,12 +34,15 @@
         @click="gotosign"
       >签署以上协议</u-button>
     </view>
+    <Attestation v-model="attestationShow"></Attestation>
   </view>
 </template>
 <script>
 import { getAllByTypeApi, getPdf2PicApi } from "../../api/index";
 import { postSigningApi } from "../../api/customer";
+import Attestation from "../attestation/index";
 export default {
+  components: { Attestation },
   data() {
     return {
       list: [],
@@ -50,6 +53,7 @@ export default {
         color: "#ffffff",
         padding: "20rpx",
       },
+      attestationShow: false,
     };
   },
   async onLoad() {
@@ -97,9 +101,7 @@ export default {
           ownerCertificateNo: res.certificationResponseVO.ownerCertificateNo,
           type: "more",
         };
-        uni.navigateTo({
-          url: `/customerPackage/attestation/index`,
-        });
+        this.attestationShow = true;
       } else {
         getApp().globalData.webViewSrc = res.signedAddress;
         uni.navigateTo({

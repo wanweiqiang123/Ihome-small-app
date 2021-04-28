@@ -150,12 +150,6 @@
 					}
 				},
 				{
-					"path": "attestation/index",
-					"style": {
-						"navigationBarTitleText": "认证信息"
-					}
-				},
-				{
 					"path": "signMore/index",
 					"style": {
 						"navigationBarTitleText": "预览签署优惠告知书"
