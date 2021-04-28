@@ -1404,6 +1404,8 @@ export default {
       this.postData.companyKind = "";
       this.postData.agencyId = '';
       this.postData.agencyName = '';
+      this.postData.brokerId = '';
+      this.postData.brokerName = '';
       this.postData.contNo = '';
       this.postData.contTitle = '';
       this.postData.isMat = '';
