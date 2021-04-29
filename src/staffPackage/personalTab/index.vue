@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 11:22:52
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-29 15:58:12
+ * @LastEditTime: 2021-04-29 17:24:41
 -->
 <template>
   <StaffTabBar>
@@ -45,6 +45,7 @@
           <u-cell-item
             @click="userToolGoto()"
             icon="search"
+            v-show="isShow"
             title="用户查询工具"
             :arrow="true"
           ></u-cell-item>
@@ -95,6 +96,7 @@ export default {
   data() {
     return {
       isPrd: true,
+      isShow: this.$has("B.WXAPP.STAFF.CENTER.USERTOOL"),
       currentEnv: "",
       userInfo: {},
       photo: require("@/static/img/photo.png"),
