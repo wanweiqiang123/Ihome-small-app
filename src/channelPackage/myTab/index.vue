@@ -20,6 +20,7 @@
               :src="myAvatar"
             ></u-image>
           </view>
+          <view v-if="!isPrd">当前环境：{{ currentEnv }}</view>
           <view class="name">{{ userInfo.name | emptyFilter }}</view>
           <view class="phone">{{ userInfo.mobilePhone | emptyFilter }}</view>
         </view>
@@ -134,6 +135,8 @@ export default {
   mixins: [switchUser],
   data() {
     return {
+      isPrd: true,
+      currentEnv: "",
       myAvatar: require("@/channelPackage/common/icon/avatar.png"),
       gridList: [
         // {
@@ -245,6 +248,11 @@ export default {
   onLoad() {
     this.userInfo = storageTool.getUserInfo();
     // console.log('this.userInfo', this.userInfo);
+  },
+  onShow() {
+    this.currentEnv = storageTool.getEnv();
+    this.isPrd = __wxConfig.envVersion == "release";
+    console.log('this.isPrd', this.isPrd);
   },
   methods: {
     // 跳转

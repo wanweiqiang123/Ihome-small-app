@@ -18,6 +18,7 @@
             :src="photo"
           ></u-image>
         </view>
+        <view v-if="!isPrd">当前环境：{{ currentEnv }}</view>
         <view>{{ userInfo.name }}</view>
         <view>{{ userInfo.orgName }}</view>
       </view>
@@ -78,19 +79,24 @@
 
 <script>
 import storageTool from "../../common/storageTool";
-import { userSwitchApi, getUserInfoApi } from "../../api/index";
+// import { userSwitchApi, getUserInfoApi } from "../../api/index";
 import switchUser from "../../mixins/switchUser";
 export default {
   mixins: [switchUser],
   name: "personal-tab",
   data() {
     return {
+      isPrd: true,
+      currentEnv: "",
       userInfo: {},
       photo: require("@/static/img/photo.png"),
     };
   },
   methods: {},
   onShow() {
+    this.currentEnv = storageTool.getEnv();
+    this.isPrd = __wxConfig.envVersion == "release";
+    console.log('this.isPrd', this.isPrd);
     this.userInfo = storageTool.getUserInfo();
   },
 };
