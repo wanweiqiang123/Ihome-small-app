@@ -106,9 +106,10 @@ export default {
   align-items: center;
   .person-avatar-wrapper {
     width: 100%;
-    height: 380rpx;
+    //height: 380rpx;
     box-sizing: border-box;
-    padding-bottom: 38rpx;
+    padding-top: 20rpx;
+    padding-bottom: 60rpx;
     display: flex;
     flex-direction: column;
     justify-content: center;
