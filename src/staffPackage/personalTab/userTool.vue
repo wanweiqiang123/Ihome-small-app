@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-29 15:25:57
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-29 20:14:28
+ * @LastEditTime: 2021-04-29 20:26:03
 -->
 <template>
   <view>
@@ -168,7 +168,7 @@ export default {
     permissionOrgList() {
       let arr = this.userData.permissionOrgList.length
         ? this.userData.permissionOrgList.filter((v, i) => {
-            return v.name.includes(this.keyword2);
+            return v.name.includes(this.keyword2.trim());
           })
         : [];
       return arr;
@@ -176,7 +176,7 @@ export default {
     roleList() {
       let arr = this.userData.roleList.length
         ? this.userData.roleList.filter((v) => {
-            return v.name.includes(this.keyword1);
+            return v.name.includes(this.keyword1.trim());
           })
         : [];
       return arr;
@@ -205,7 +205,7 @@ export default {
       }
       try {
         const res = await getSessionUserByAccount({
-          account: this.account,
+          account: this.account.trim(),
         });
         if (res) {
           this.userData = res;
