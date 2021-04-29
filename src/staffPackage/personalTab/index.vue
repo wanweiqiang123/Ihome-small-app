@@ -19,7 +19,7 @@
           ></u-image>
         </view>
         <view v-if="!isPrd">当前环境：{{ currentEnv }}</view>
-        <view>{{ userInfo.name }}</view>
+        <view>{{ userInfo.name }} - {{ userInfo.jobName }}</view>
         <view>{{ userInfo.orgName }}</view>
       </view>
       <view class="person-item-wrapper">
@@ -40,6 +40,12 @@
             @click="updateClick()"
             icon="info-circle"
             title="更新版本"
+            :arrow="true"
+          ></u-cell-item>
+          <u-cell-item
+            @click="updateClick()"
+            icon="search"
+            title="用户查询工具"
             :arrow="true"
           ></u-cell-item>
           <u-cell-item
@@ -113,9 +119,10 @@ export default {
   align-items: center;
   .person-avatar-wrapper {
     width: 100%;
-    height: 380rpx;
+    //height: 410rpx;
     box-sizing: border-box;
-    padding-bottom: 38rpx;
+    padding-top: 20rpx;
+    padding-bottom: 60rpx;
     display: flex;
     flex-direction: column;
     justify-content: center;
