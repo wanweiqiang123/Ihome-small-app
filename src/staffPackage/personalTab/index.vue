@@ -107,7 +107,7 @@ export default {
   methods: {
     userToolGoto() {
       uni.navigateTo({
-        url: "/staffPackage/personalTab/component/userTool",
+        url: "/staffPackage/personalTab/userTool",
       });
     },
   },

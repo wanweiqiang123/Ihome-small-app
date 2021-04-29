@@ -551,7 +551,7 @@
 					}
 				},
 				{
-					"path": "personalTab/component/userTool",
+					"path": "personalTab/userTool",
 					"style": {
 						"navigationBarTitleText": "用户查询"
 					}

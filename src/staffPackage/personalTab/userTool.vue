@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-29 15:25:57
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-29 18:58:44
+ * @LastEditTime: 2021-04-29 19:58:10
 -->
 <template>
   <view>
@@ -16,6 +16,7 @@
         v-model="account"
         height="72"
         :clearabled="true"
+        :focus="true"
         @search="getUserInfo"
       ></u-search>
       <view
@@ -53,7 +54,6 @@
               placeholder="输入关键字筛选"
               v-model="keyword1"
               clearabled
-              :focus="true"
               :show-action="false"
             ></u-search>
           </view>
@@ -95,7 +95,6 @@
               placeholder="输入关键字筛选"
               v-model="keyword2"
               clearabled
-              :focus="true"
               :show-action="false"
             ></u-search>
           </view>
@@ -133,8 +132,8 @@
 </template>
 
 <script>
-import { getSessionUserByAccount } from "../../../api/staff";
-import { getAllByTypeApi } from "../../../api/index";
+import { getSessionUserByAccount } from "../../api/staff";
+import { getAllByTypeApi } from "../../api/index";
 
 export default {
   name: "userTool",
