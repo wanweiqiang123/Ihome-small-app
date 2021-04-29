@@ -549,6 +549,12 @@
 					"style": {
 						"navigationBarTitleText": "联动周期结佣情况"
 					}
+				},
+				{
+					"path": "personalTab/component/userTool",
+					"style": {
+						"navigationBarTitleText": "用户查询"
+					}
 				}
 			]
 		}

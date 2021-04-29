@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-11-23 11:22:52
- * @LastEditors: zyc
- * @LastEditTime: 2021-02-16 10:46:04
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-04-29 15:58:12
 -->
 <template>
   <StaffTabBar>
@@ -43,7 +43,7 @@
             :arrow="true"
           ></u-cell-item>
           <u-cell-item
-            @click="updateClick()"
+            @click="userToolGoto()"
             icon="search"
             title="用户查询工具"
             :arrow="true"
@@ -59,9 +59,11 @@
       </view>
 
       <view class="btn-container">
-        <u-button shape="circle" type="primary" @click="handleLoginOut"
-          >退出账号</u-button
-        >
+        <u-button
+          shape="circle"
+          type="primary"
+          @click="handleLoginOut"
+        >退出账号</u-button>
       </view>
     </view>
     <!-- 退出 -->
@@ -98,11 +100,17 @@ export default {
       photo: require("@/static/img/photo.png"),
     };
   },
-  methods: {},
+  methods: {
+    userToolGoto() {
+      uni.navigateTo({
+        url: "/staffPackage/personalTab/component/userTool",
+      });
+    },
+  },
   onShow() {
     this.currentEnv = storageTool.getEnv();
     this.isPrd = __wxConfig.envVersion == "release";
-    console.log('this.isPrd', this.isPrd);
+    console.log("this.isPrd", this.isPrd);
     this.userInfo = storageTool.getUserInfo();
   },
 };
