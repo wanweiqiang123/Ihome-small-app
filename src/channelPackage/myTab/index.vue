@@ -250,7 +250,7 @@ export default {
     // console.log('this.userInfo', this.userInfo);
   },
   onShow() {
-    this.currentEnv = storageTool.getEnv();
+    this.currentEnv = storageTool.getEnvName();
     this.isPrd = __wxConfig.envVersion == "release";
     console.log('this.isPrd', this.isPrd);
   },

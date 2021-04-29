@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-23 11:22:52
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-29 15:58:12
+ * @LastEditTime: 2021-04-29 17:24:41
 -->
 <template>
   <StaffTabBar>
@@ -19,6 +19,7 @@
           ></u-image>
         </view>
         <view v-if="!isPrd">当前环境：{{ currentEnv }}</view>
+        <view>{{ userInfo.account }}</view>
         <view>{{ userInfo.name }} - {{ userInfo.jobName }}</view>
         <view>{{ userInfo.orgName }}</view>
       </view>
@@ -45,6 +46,7 @@
           <u-cell-item
             @click="userToolGoto()"
             icon="search"
+            v-show="isShow"
             title="用户查询工具"
             :arrow="true"
           ></u-cell-item>
@@ -95,6 +97,7 @@ export default {
   data() {
     return {
       isPrd: true,
+      isShow: this.$has("B.WXAPP.STAFF.CENTER.USERTOOL"),
       currentEnv: "",
       userInfo: {},
       photo: require("@/static/img/photo.png"),
@@ -108,7 +111,7 @@ export default {
     },
   },
   onShow() {
-    this.currentEnv = storageTool.getEnv();
+    this.currentEnv = storageTool.getEnvName();
     this.isPrd = __wxConfig.envVersion == "release";
     console.log("this.isPrd", this.isPrd);
     this.userInfo = storageTool.getUserInfo();
