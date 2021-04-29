@@ -1409,6 +1409,7 @@ export default {
       this.postData.contNo = '';
       this.postData.contTitle = '';
       this.postData.isMat = '';
+      this.packageIdsList = [];
       if (item && item.length) {
         this.postData.contTypeName = item[0].label;
         this.postData.contType = item[0].value;
@@ -2744,7 +2745,7 @@ export default {
         contType: this.postData.contType, // 合同类型
         // hasRecord: this.postData.hasRecord, // 是否有成交报备(是否分销成交)
         // contNo: this.postData.contNo, // 分销协议编号
-        packageMxIds: this.packageIdsList, // 分销成交 --- 选择分销协议后的ids
+        packageMxIds: this.postData.contNo ? this.packageIdsList : [], // 分销成交 --- 选择分销协议后的ids
         costTypeEnum: item.type, // 费用类型
         partyAId: item.partyACustomer, // 甲方或客户
         property: this.postData.propertyType, // 物业类型
