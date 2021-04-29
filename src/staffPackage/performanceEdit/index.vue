@@ -2630,6 +2630,7 @@ export default {
                 list.annexList.forEach((L) => {
                   L.fileType = 'Notice';
                   L.canDelete = true;
+                  L.notSave = true; // 优惠告知书带出来的后端不保存
                   vo.fileList.push(L);
                 });
               }
