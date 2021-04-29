@@ -9,7 +9,7 @@
 <template>
   <ChannelTabBar>
     <view class="my-page-wrapper">
-      <view class="my-page-bg"></view>
+      <view class="my-page-bg" :class="!isPrd ? 'my-page-bg-height' : ''"></view>
       <view class="my-page-content">
         <view class="my-avatar-wrapper">
           <view class="avatar">
@@ -21,8 +21,8 @@
             ></u-image>
           </view>
           <view v-if="!isPrd">当前环境：{{ currentEnv }}</view>
-          <view class="name">{{ userInfo.name | emptyFilter }}</view>
-          <view class="phone">{{ userInfo.mobilePhone | emptyFilter }}</view>
+          <view>{{ userInfo.name | emptyFilter }}</view>
+          <view>{{ userInfo.mobilePhone | emptyFilter }}</view>
         </view>
         <view v-if="isShowGridList" class="my-item-wrapper u-padding-right-14">
           <u-grid :col="3" :border="false" @click="goToGrid">
@@ -300,6 +300,10 @@ export default {
     z-index: 0;
   }
 
+  .my-page-bg-height {
+    height: 386rpx;
+  }
+
   .my-page-content {
     width: 100%;
     height: 100%;
@@ -313,7 +317,9 @@ export default {
 
     .my-avatar-wrapper {
       width: 100%;
-      height: 278rpx;
+      //height: 278rpx;
+      padding-top: 20rpx;
+      padding-bottom: 12rpx;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
@@ -325,10 +331,11 @@ export default {
         box-sizing: border-box;
         color: #ffffff;
         font-family: PingFang SC;
+        margin-bottom: 8rpx;
       }
 
       .avatar {
-        margin-bottom: 12rpx;
+        //margin-bottom: 12rpx;
       }
 
       .name {
