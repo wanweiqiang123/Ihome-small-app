@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-24 10:45:20
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-27 19:01:00
+ * @LastEditTime: 2021-04-29 11:07:17
 -->
 <template>
   <LoginPage>
@@ -195,17 +195,18 @@ export default {
     try {
       const res = await getUnpaidOrderOrAmountPaidApi(this.payData.businessId);
       this.isShow = true;
+      this.payData.paid = res.amountPaid;
+      this.payData.unpaid = (
+        Number(this.payData.paymentAmount) - Number(res.amountPaid)
+      ).toFixed(2);
+      this.payNum =
+        (Number(this.payData.paymentAmount) - Number(res.amountPaid)).toFixed(
+          2
+        ) + "";
+      this.payType = res.payType ? res.payType : "Pos";
     } catch (err) {
       console.log(err);
     }
-    this.payData.paid = res.amountPaid;
-    this.payData.unpaid = (
-      Number(this.payData.paymentAmount) - Number(res.amountPaid)
-    ).toFixed(2);
-    this.payNum =
-      (Number(this.payData.paymentAmount) - Number(res.amountPaid)).toFixed(2) +
-      "";
-    this.payType = res.payType ? res.payType : "Pos";
   },
   methods: {
     // 字典翻译
