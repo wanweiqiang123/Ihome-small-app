@@ -46,7 +46,7 @@
           <u-cell-item
             @click="userToolGoto()"
             icon="search"
-            v-show="isShow"
+            v-if="isShow"
             title="用户查询工具"
             :arrow="true"
           ></u-cell-item>
