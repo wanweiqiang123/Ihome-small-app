@@ -10,41 +10,30 @@
   <view class="page login-page-style">
     <view style="margin: 50rpx"></view>
     <view class="img-logo">
-      <image
-        src="../../../static/login/logo.png"
-        mode="scaleToFill"
-      ></image>
+      <image src="../../../static/login/logo.png" mode="scaleToFill"></image>
     </view>
     <view style="margin: 70rpx; text-align: center">
-      <text
-        v-if="!isPrd"
-        @click="gotoEnv()"
-      >当前环境：{{ currentEnv }}</text>
+      <text v-if="!isPrd" @click="gotoEnv()">当前环境：{{ currentEnv }}</text>
     </view>
 
-    <view
-      style="padding: 10rpx 70rpx"
-      v-show="!loginWechat"
-    >
+    <view style="padding: 10rpx 70rpx" v-show="!loginWechat">
       <view class="page-tab">
         <view
           class="page-tab-item"
           :class="{ 'page-tab-item-active': current == 0 }"
           @click="activeTab(0)"
         >
-          手机号码登录</view>
+          手机号码登录</view
+        >
         <view
           class="page-tab-item"
           :class="{ 'page-tab-item-active': current == 1 }"
           @click="activeTab(1)"
-        >账号密码登录
+          >账号密码登录
         </view>
       </view>
 
-      <view
-        class="form-container"
-        v-show="current == 0"
-      >
+      <view class="form-container" v-show="current == 0">
         <view class="form-container-item">
           <image
             class="form-container-item-ico-all"
@@ -85,22 +74,18 @@
                 :plain="true"
                 :disabled="second != 60"
                 @click="sendCode"
-              >{{ codeBtnText }}</u-button>
+                >{{ codeBtnText }}</u-button
+              >
             </u-col>
           </u-row>
         </view>
         <view style="margin-top: 60rpx">
-          <u-button
-            type="primary"
-            shape="circle"
-            @click="loginPhone"
-          >登 录</u-button>
+          <u-button type="primary" shape="circle" @click="loginPhone"
+            >登 录</u-button
+          >
         </view>
       </view>
-      <view
-        class="form-container"
-        v-show="current == 1"
-      >
+      <view class="form-container" v-show="current == 1">
         <view class="form-container-item">
           <u-row gutter="12">
             <u-col span="11">
@@ -146,17 +131,12 @@
           </u-row>
         </view>
         <view style="margin-top: 60rpx">
-          <u-button
-            type="primary"
-            shape="circle"
-            @click="login"
-          >登 录</u-button>
+          <u-button type="primary" shape="circle" @click="login"
+            >登 录</u-button
+          >
         </view>
       </view>
-      <view
-        style="margin-top: 40rpx; text-align: right"
-        class="view-bottom"
-      >
+      <view style="margin-top: 40rpx; text-align: right" class="view-bottom">
         <u-button
           hover-class="none"
           :custom-style="customStyleNone"
@@ -176,7 +156,8 @@
           :plain="true"
           class="wechat-blue-login password-reset"
           @click="handleRegister"
-        >渠道商注册</u-button>
+          >渠道商注册</u-button
+        >
 
         <u-button
           hover-class="none"
@@ -215,24 +196,22 @@
         <text style="padding-left: 12rpx"> 微信登录 </text>
       </u-button>
     </view>
-    <view
-      class="register-wrapper"
-      v-show="loginWechat"
-    >
+    <view class="register-wrapper" v-show="loginWechat">
       <u-button
         shape="circle"
         hover-class="none"
         :custom-style="customStyle"
         type="primary"
         @click="otherLogin(false)"
-      >其他登录方式</u-button>
+        >其他登录方式</u-button
+      >
     </view>
     <!-- <view class="register-wrapper">
       <u-button shape="circle" @click="handleRegister">渠道商注册</u-button>
     </view> -->
     <view
       v-show="!loginWechat"
-      style="margin-top: 40rpx;text-align: right; margin-right: 80rpx;"
+      style="margin-top: 40rpx; text-align: right; margin-right: 80rpx"
     >
       <u-button
         shape="circle"
@@ -240,7 +219,8 @@
         :custom-style="customStyleNone"
         size="mini"
         @click="hendleGoTest"
-      >webView</u-button>
+        >webView</u-button
+      >
     </view>
     <view class="img-bottom">
       <image
@@ -344,24 +324,42 @@ export default {
       this.loginWechat = type;
     },
     async getPhoneNumber(e) {
+      let that = this;
       console.log(e);
       console.log(e.detail.errMsg);
       if (e.detail.errMsg.startsWith("getPhoneNumber:fail")) {
         //用户拒绝
       } else {
         try {
-          let uuid = storageTool.getUUID();
-          if (e.detail.encryptedData && e.detail.iv) {
-            let p = {
-              uuid: uuid,
-              encryptedData: e.detail.encryptedData,
-              iv: e.detail.iv,
-            };
-            console.log(p);
-            const res = await postGetPhoneNumberApi(p);
-            console.log(res);
-            this.loginSuccess(res);
-          }
+          uni.login({
+            success(res) {
+              console.log(res);
+              getOpenidApi(res.code, {
+                hideLoading: true,
+              })
+                .then(async (infoRes) => {
+                  storageTool.setUUID(infoRes.uuid);
+                  let uuid = storageTool.getUUID();
+                  if (e.detail.encryptedData && e.detail.iv) {
+                    let p = {
+                      uuid: uuid,
+                      encryptedData: e.detail.encryptedData,
+                      iv: e.detail.iv,
+                    };
+                    console.log(p);
+                    const res = await postGetPhoneNumberApi(p);
+                    console.log(res);
+                    that.loginSuccess(res);
+                  }
+                })
+                .catch((error) => {
+                  storageTool.removeUUID();
+                  let title = error?.msg || "登录失败!请重新进入小程序。";
+                  console.log(title);
+                  tool.toast(title);
+                });
+            },
+          });
         } catch (error) {
           console.log(error);
           storageTool.removeUUID();

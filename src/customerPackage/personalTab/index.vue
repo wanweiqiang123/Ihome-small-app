@@ -87,7 +87,7 @@ export default {
     };
   },
   onShow() {
-    this.currentEnv = storageTool.getEnv();
+    this.currentEnv = storageTool.getEnvName();
     this.isPrd = __wxConfig.envVersion == "release";
     console.log('this.isPrd', this.isPrd);
     this.userInfo = storageTool.getUserInfo();
