@@ -46,7 +46,7 @@
           <u-cell-item
             @click="userToolGoto()"
             icon="search"
-            v-if="isShow"
+            v-if="isShowUserTool"
             title="用户查询工具"
             :arrow="true"
           ></u-cell-item>
@@ -97,7 +97,8 @@ export default {
   data() {
     return {
       isPrd: true,
-      isShow: this.$has("B.WXAPP.STAFF.CENTER.USERTOOL"),
+      isShow: false,
+      isShowUserTool: this.$has("B.WXAPP.STAFF.CENTER.USERTOOL"),
       currentEnv: "",
       userInfo: {},
       photo: require("@/static/img/photo.png"),
