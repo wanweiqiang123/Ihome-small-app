@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-29 15:25:57
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-29 19:58:10
+ * @LastEditTime: 2021-04-29 20:14:28
 -->
 <template>
   <view>
@@ -15,7 +15,7 @@
         placeholder="请输入要查询用户账号"
         v-model="account"
         height="72"
-        :clearabled="true"
+        clearabled
         :focus="true"
         @search="getUserInfo"
       ></u-search>
@@ -166,15 +166,20 @@ export default {
   },
   computed: {
     permissionOrgList() {
-      let arr = this.userData.permissionOrgList.filter((v, i) => {
-        return v.name.includes(this.keyword2);
-      });
+      let arr = this.userData.permissionOrgList.length
+        ? this.userData.permissionOrgList.filter((v, i) => {
+            return v.name.includes(this.keyword2);
+          })
+        : [];
       return arr;
     },
     roleList() {
-      return this.userData.roleList.filter((v) => {
-        return v.name.includes(this.keyword1);
-      });
+      let arr = this.userData.roleList.length
+        ? this.userData.roleList.filter((v) => {
+            return v.name.includes(this.keyword1);
+          })
+        : [];
+      return arr;
     },
   },
   async onLoad() {
@@ -199,14 +204,25 @@ export default {
         return;
       }
       try {
-        this.userData = await getSessionUserByAccount({
+        const res = await getSessionUserByAccount({
           account: this.account,
         });
-        this.userData.permissionOrgList = this.userData.permissionOrgList.filter(
-          (v) => {
-            return ["Department", "Group"].includes(v.orgType);
-          }
-        );
+        if (res) {
+          this.userData = res;
+          this.userData.permissionOrgList = this.userData.permissionOrgList.filter(
+            (v) => {
+              return ["Department", "Group"].includes(v.orgType);
+            }
+          );
+        } else {
+          this.userData = {
+            name: "",
+            job: null,
+            org: null,
+            roleList: [],
+            permissionOrgList: [],
+          };
+        }
       } catch (error) {
         console.log(error);
       }
