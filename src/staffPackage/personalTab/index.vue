@@ -19,6 +19,7 @@
           ></u-image>
         </view>
         <view v-if="!isPrd">当前环境：{{ currentEnv }}</view>
+        <view>{{ userInfo.account }}</view>
         <view>{{ userInfo.name }} - {{ userInfo.jobName }}</view>
         <view>{{ userInfo.orgName }}</view>
       </view>
@@ -108,7 +109,7 @@ export default {
     },
   },
   onShow() {
-    this.currentEnv = storageTool.getEnv();
+    this.currentEnv = storageTool.getEnvName();
     this.isPrd = __wxConfig.envVersion == "release";
     console.log("this.isPrd", this.isPrd);
     this.userInfo = storageTool.getUserInfo();

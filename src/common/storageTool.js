@@ -197,6 +197,22 @@ const storageTool = {
         }
         return env;
     },
+    /**获取环境变量中文名
+     * @param {*}
+     * @return {*}
+     */
+    getEnvName() {
+        let env = storageTool.getEnv();
+        let name = "";
+        if (env === 'dev') {
+            name = '开发环境';
+        } else if (env === 'int') {
+            name = '内测环境';
+        } else if (env === 'uat') {
+            name = '用户测试环境';
+        }
+        return name;
+    },
 
 
 
