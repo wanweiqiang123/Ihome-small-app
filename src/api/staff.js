@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-10 15:30:58
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-25 09:24:31
+ * @LastEditTime: 2021-04-29 16:12:15
  */
 import { getApi, postApi } from '../common/http.js';
 
@@ -516,4 +516,14 @@ export async function getReportById(data = {}, option = {}) {
  */
 export async function postAddDocs(data = {}, option = {}) {
   return await postApi(`/sales-api/deal/deal/addDocs`, data, option)
+}
+
+/**
+ * @description: 根据账号获取用户信息
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function getSessionUserByAccount(data = {}, option = {}) {
+  return await getApi(`/sales-api/system/sessionUser/getSessionUserByAccount/${data.account}`, null, option)
 }

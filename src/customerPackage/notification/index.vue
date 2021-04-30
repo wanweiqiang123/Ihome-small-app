@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-30 10:23:11
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 11:47:34
+ * @LastEditTime: 2021-04-28 11:31:27
 -->
 <template>
   <LoginPage>
@@ -37,13 +37,16 @@
         start-text="签署"
       ></u-verification-code>
     </view>
+    <Attestation v-model="attestationShow"></Attestation>
   </LoginPage>
 </template>
 <script>
 import { getPdf2PicApi } from "../../api/index";
 import { postSignApi } from "../../api/customer";
 import { getAllByTypeApi } from "../../api/index";
+import Attestation from "../attestation/index";
 export default {
+  components: { Attestation },
   data() {
     return {
       templateId: "",
@@ -55,6 +58,7 @@ export default {
       type: "",
       NotificationType: [],
       notificationType: "",
+      attestationShow: false,
     };
   },
   async onLoad(options) {
@@ -117,9 +121,7 @@ export default {
           notificationType: this.notificationType,
           type: "one",
         };
-        uni.navigateTo({
-          url: `/customerPackage/attestation/index`,
-        });
+        this.attestationShow = true;
       } else {
         getApp().globalData.webViewSrc = res.signedAddress;
         uni.navigateTo({

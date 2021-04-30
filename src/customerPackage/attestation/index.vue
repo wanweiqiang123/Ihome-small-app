@@ -4,127 +4,139 @@
  * @Author: wwq
  * @Date: 2020-12-30 17:20:45
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-27 18:45:49
+ * @LastEditTime: 2021-04-30 09:45:10
 -->
 <template>
-  <view class="base-info-wrapper">
-    <view class="imageInfo">
-      <u-icon
-        name="photo"
-        size="100"
-      ></u-icon>
-      <view>完成身份验证，可核对真实身份，</view>
-      <view>保障合法权益</view>
-    </view>
-    <view v-if="phoneShow">
-      <view class="form">
-        <u-field
-          label-width="150"
-          v-model="info.custName"
-          label="姓名"
-          disabled
-        >
-        </u-field>
-        <u-field
-          label-width="150"
-          v-model="info.certificateNumber"
-          label="身份证号码"
-          disabled
-        >
-        </u-field>
-        <u-field
-          label-width="150"
-          v-model="info.custTel"
-          label="手机号码"
-          disabled
-        >
-        </u-field>
-        <u-field
-          label-width="150"
-          v-model="info.shortMsg"
-          label="验证码"
-          placeholder="请填写验证码"
-        >
-          <u-button
-            size="mini"
-            slot="right"
-            type="success"
-            @click="getCode"
-          >{{codeText}}</u-button>
-        </u-field>
-        <u-verification-code
-          ref="uCode"
-          @change="codeChange"
-        ></u-verification-code>
+  <u-popup
+    :value="value"
+    mode="right"
+    width="100%"
+    :mask="true"
+    close-icon-pos="top-left"
+    closeable
+    safe-area-inset-bottom
+    close-icon-size="40"
+    @close="close"
+  >
+    <view class="base-info-wrapper">
+      <view class="imageInfo">
+        <u-icon
+          name="photo"
+          size="100"
+        ></u-icon>
+        <view>完成身份验证，可核对真实身份，</view>
+        <view>保障合法权益</view>
       </view>
-    </view>
-    <!-- <view v-else>
-      <view class="form">
-        <u-field
-          label-width="150"
-          v-model="info.custName"
-          label="姓名"
-          disabled
-        >
-        </u-field>
-        <u-field
-          label-width="150"
-          v-model="info.certificateNumber"
-          label="身份证号码"
-          disabled
-        >
-        </u-field>
-      </view>
-      <u-gap
-        height="20"
-        bg-color="#f1f1f1"
-      ></u-gap>
-      <view class="form face">
-        <view class="face-title">选择扫脸方式</view>
-        <u-radio-group
-          class="rodioGroup"
-          v-model="info.faceauthMode"
-          wrap
-        >
-          <u-radio
-            @change="radioChange"
-            v-for="(item, index) in FaceRecognition"
-            :key="index"
-            :name="item.code"
+      <view v-if="phoneShow">
+        <view class="form">
+          <u-field
+            label-width="150"
+            v-model="info.custName"
+            label="姓名"
+            disabled
           >
-            {{item.name}}
-          </u-radio>
-        </u-radio-group>
+          </u-field>
+          <u-field
+            label-width="150"
+            v-model="info.certificateNumber"
+            label="身份证号码"
+            disabled
+          >
+          </u-field>
+          <u-field
+            label-width="150"
+            v-model="info.custTel"
+            label="手机号码"
+            disabled
+          >
+          </u-field>
+          <u-field
+            label-width="150"
+            v-model="info.shortMsg"
+            label="验证码"
+            placeholder="请填写验证码"
+          >
+            <u-button
+              size="mini"
+              slot="right"
+              type="success"
+              @click="getCode"
+            >{{codeText}}</u-button>
+          </u-field>
+          <u-verification-code
+            ref="uCode"
+            @change="codeChange"
+          ></u-verification-code>
+        </view>
       </view>
-    </view> -->
-    <!-- <view
-      class="other"
-      @click="otherChange"
-    >其他认证方式</view> -->
-    <view class="buttons">
-      <u-button
-        :loading="nextLoading"
-        type="primary"
-        @click="gotoAttestation"
-      >下一步</u-button>
-    </view>
+      <view v-else>
+        <view class="form">
+          <u-field
+            label-width="150"
+            v-model="info.custName"
+            label="姓名"
+            disabled
+          >
+          </u-field>
+          <u-field
+            label-width="150"
+            v-model="info.certificateNumber"
+            label="身份证号码"
+            disabled
+          >
+          </u-field>
+        </view>
+        <u-gap
+          height="20"
+          bg-color="#f1f1f1"
+        ></u-gap>
+        <view class="form face">
+          <view class="face-title">选择方式</view>
+          <u-radio-group
+            class="rodioGroup"
+            v-model="info.faceauthMode"
+            wrap
+          >
+            <u-radio
+              @change="radioChange"
+              v-for="(item, index) in FaceRecognition"
+              :key="index"
+              :name="item.code"
+            >
+              {{item.name}}
+            </u-radio>
+          </u-radio-group>
+        </view>
+      </view>
+      <view
+        class="other"
+        @click="otherChange"
+      >其他认证方式</view>
+      <view class="buttons">
+        <u-button
+          :loading="nextLoading"
+          type="primary"
+          @click="gotoAttestation"
+        >下一步</u-button>
+      </view>
 
-    <u-action-sheet
-      v-model="showSwitchOther"
-      :list="switchList"
-      :tips="{
+      <u-action-sheet
+        v-model="showSwitchOther"
+        :list="switchList"
+        :tips="{
           text: '请选择认证方式'
         }"
-      @click="submitSwitchOther"
-      safe-area-inset-bottom
-    ></u-action-sheet>
-    <Linkto
-      v-model="linktoShow"
-      :url="linkUrl"
-      :custTel="info.custTel"
-      :custName="info.custName"
-    ></Linkto>
-  </view>
+        @click="submitSwitchOther"
+        safe-area-inset-bottom
+      ></u-action-sheet>
+      <Linkto
+        v-model="linktoShow"
+        :url="linkUrl"
+        :custTel="info.custTel"
+        :custName="info.custName"
+      ></Linkto>
+    </view>
+  </u-popup>
 </template>
 <script>
 import {
@@ -136,6 +148,11 @@ import { getAllByTypeApi } from "../../api/index";
 import Linkto from "./linkto.vue";
 export default {
   components: { Linkto },
+  props: {
+    value: {
+      type: Boolean,
+    },
+  },
   data() {
     return {
       info: {
@@ -150,28 +167,42 @@ export default {
         faceauthMode: "",
       },
       codeText: "",
-      phoneShow: true,
+      phoneShow: false,
       showSwitchOther: false,
       switchList: [],
       nextLoading: false,
       FaceRecognition: [],
       linktoShow: false,
       linkUrl: "",
-      hidePayStatus: true,
+      // hidePayStatus: true,
+      attestationType: [],
     };
   },
-  async onShow() {
-    this.FaceRecognition = await this.getDictAll("FaceRecognition");
-    this.hidePayStatus = this.$storageTool.hidePay();
-    this.info = {
-      ...getApp().globalData.attestationInfo,
-      custName: getApp().globalData.attestationInfo.ownerName,
-      custTel: getApp().globalData.attestationInfo.ownerMobile,
-      certificateNumber: getApp().globalData.attestationInfo.ownerCertificateNo,
-      faceauthMode: "ZHIMACREDIT",
-    };
+  watch: {
+    value: {
+      immediate: true,
+      async handler(v) {
+        if (v) {
+          this.FaceRecognition = await this.getDictAll("FaceRecognition");
+          this.attestationType = await this.getDictAll("AuthenticationMethod");
+          // this.hidePayStatus = this.$storageTool.hidePay();
+          this.info = {
+            ...getApp().globalData.attestationInfo,
+            custName: getApp().globalData.attestationInfo.ownerName,
+            custTel: getApp().globalData.attestationInfo.ownerMobile,
+            certificateNumber: getApp().globalData.attestationInfo
+              .ownerCertificateNo,
+            faceauthMode: "ZHIMACREDIT",
+          };
+          console.log(this.info);
+        }
+      },
+    },
   },
   methods: {
+    close() {
+      this.$emit("input", false);
+    },
     // 字典翻译
     async getDictAll(type) {
       const dictList = await getAllByTypeApi({ type });
@@ -210,7 +241,15 @@ export default {
     otherChange() {
       this.switchList = [
         {
-          // text: this.phoneShow ? "" : "短信认证",
+          text: this.phoneShow
+            ? this.getDictName(
+                "FacialRecognitionTechnology",
+                this.attestationType
+              )
+            : this.getDictName(
+                "MessageAuthenticationCode",
+                this.attestationType
+              ),
         },
       ];
       this.showSwitchOther = true;
@@ -244,11 +283,11 @@ export default {
               notificationType: this.info.notificationType,
               type: "sign",
             };
-            uni.navigateTo({
+            uni.redirectTo({
               url: `/customerPackage/notification/index`,
             });
           } else {
-            uni.navigateTo({
+            uni.redirectTo({
               url: `/customerPackage/signMore/index`,
             });
           }

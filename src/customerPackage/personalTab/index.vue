@@ -18,6 +18,7 @@
             :src="photo"
           ></u-image>
         </view>
+        <view v-if="!isPrd">当前环境：{{ currentEnv }}</view>
         <view>{{ userInfo.name | emptyFilter }}</view>
         <view>{{ userInfo.mobilePhone | emptyFilter }}</view>
       </view>
@@ -78,12 +79,17 @@ export default {
   mixins: [switchUser],
   data() {
     return {
+      isPrd: true,
+      currentEnv: "",
       isShow: false,
       userInfo: {},
       photo: require("@/static/img/photo.png"),
     };
   },
   onShow() {
+    this.currentEnv = storageTool.getEnvName();
+    this.isPrd = __wxConfig.envVersion == "release";
+    console.log('this.isPrd', this.isPrd);
     this.userInfo = storageTool.getUserInfo();
   },
 };
@@ -100,9 +106,10 @@ export default {
   align-items: center;
   .person-avatar-wrapper {
     width: 100%;
-    height: 380rpx;
+    //height: 380rpx;
     box-sizing: border-box;
-    padding-bottom: 38rpx;
+    padding-top: 20rpx;
+    padding-bottom: 60rpx;
     display: flex;
     flex-direction: column;
     justify-content: center;

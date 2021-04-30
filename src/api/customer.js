@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-15 18:08:02
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-22 18:48:01
+ * @LastEditTime: 2021-04-30 09:12:41
  */
 import { getApi, postApi } from '../common/http.js';
 
@@ -136,7 +136,7 @@ export async function getMsgCheckAndShimingSaveApi(data = {}, option = {}) {
   return await postApi(`/sales-api/customer/customer/getMsgCheckAndShimingSave`, data, option)
 }
 
-// 扫描人脸识别
+// 扫描
 export async function getfaceRecognitionApi(data = {}, option = {}) {
   return await postApi(`/sales-api/customer/customer/getfaceRecognition`, data, option)
 }

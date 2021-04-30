@@ -167,7 +167,7 @@
           <u-form-item
             :label="getDictName(item.notificationType, NotificationTypeList)"
             v-for="(item, index) in postData.offerNoticeVO" :key="index">
-            <view>{{item.noticeNo}}</view>
+            <view class="notice-under-line" @click="handleViewNotice(item)">{{item.noticeNo}}</view>
           </u-form-item>
         </u-form>
       </view>
@@ -190,7 +190,7 @@
             class="receive-wrapper"
             v-for="(item, index) in postData.serviceReceiveVO" :key="index">
             <view class="left">
-              <view class="title">{{item.partyACustomerName}}</view>
+              <view class="title">{{item.partyACustomerName}}服务费</view>
               <view :class="item.packageId ? 'name active-package' : 'name'">
                 {{item.packageId ? "收派标准" : "请选择收派标准"}}
               </view>
@@ -205,7 +205,7 @@
             class="receive-wrapper"
             v-for="(item, index) in postData.agentReceiveVO" :key="index">
             <view class="left">
-              <view class="title">{{item.partyACustomerName}}</view>
+              <view class="title">{{item.partyACustomerName}}代理费</view>
               <view :class="item.packageId ? 'active-package name' : 'name'">
                 {{item.packageId ? "收派标准" : "请选择收派标准"}}
               </view>
@@ -544,6 +544,44 @@ export default {
         this.postData.offerNoticeVO = [];
       }
     },
+    // 预览优惠告知书
+    handleViewNotice(item) {
+      console.log(item);
+      if (item.templateType === "ElectronicTemplate") {
+        // pdf文件
+        let url = this.$tool.getFileUrl(item.templateId);
+        uni.downloadFile({
+          url: url,
+          success: function (res) {
+            let filePath = res.tempFilePath;
+            uni.openDocument({
+              filePath: filePath,
+              fileType: "pdf",
+              showMenu: true,
+              success: function (res) {
+                console.log("打开文档成功");
+              },
+            });
+          },
+        });
+      } else {
+        // 图片
+        let imgList = item.noticeAttachmentList || item.annexList;
+        let urls = [];
+        if (imgList && imgList.length) {
+          imgList.forEach((item) => {
+            if (item.fileNo) {
+              urls.push(this.$tool.getFileUrl(item.fileNo));
+            }
+          });
+          uni.previewImage({
+            urls: urls
+          });
+        } else {
+          this.$tool.toast("附件为空");
+        }
+      }
+    },
     // 构建附件信息
     initDocumentList(list = []) {
       let fileList = JSON.parse(JSON.stringify(this.DealFileTypeList)); // 附件类型
@@ -724,6 +762,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.notice-under-line {
+  color: $u-type-primary;
+  text-decoration: underline;
+}
 .performance {
   background-color: $u-bg-color;
   min-height: 100vh;

@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-29 15:58:19
- * @LastEditors: zyc
- * @LastEditTime: 2021-03-04 11:21:43
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-04-28 15:08:43
 -->
 <template>
   <view class="page login-page-style">
@@ -209,6 +209,19 @@
     <!-- <view class="register-wrapper">
       <u-button shape="circle" @click="handleRegister">渠道商注册</u-button>
     </view> -->
+    <view
+      v-show="!loginWechat"
+      style="margin-top: 40rpx; text-align: right; margin-right: 80rpx"
+    >
+      <u-button
+        shape="circle"
+        hover-class="none"
+        :custom-style="customStyleNone"
+        size="mini"
+        @click="hendleGoTest"
+        >webView</u-button
+      >
+    </view>
     <view class="img-bottom">
       <image
         style="width: 100%"
@@ -311,24 +324,42 @@ export default {
       this.loginWechat = type;
     },
     async getPhoneNumber(e) {
+      let that = this;
       console.log(e);
       console.log(e.detail.errMsg);
       if (e.detail.errMsg.startsWith("getPhoneNumber:fail")) {
         //用户拒绝
       } else {
         try {
-          let uuid = storageTool.getUUID();
-          if (e.detail.encryptedData && e.detail.iv) {
-            let p = {
-              uuid: uuid,
-              encryptedData: e.detail.encryptedData,
-              iv: e.detail.iv,
-            };
-            console.log(p);
-            const res = await postGetPhoneNumberApi(p);
-            console.log(res);
-            this.loginSuccess(res);
-          }
+          uni.login({
+            success(res) {
+              console.log(res);
+              getOpenidApi(res.code, {
+                hideLoading: true,
+              })
+                .then(async (infoRes) => {
+                  storageTool.setUUID(infoRes.uuid);
+                  let uuid = storageTool.getUUID();
+                  if (e.detail.encryptedData && e.detail.iv) {
+                    let p = {
+                      uuid: uuid,
+                      encryptedData: e.detail.encryptedData,
+                      iv: e.detail.iv,
+                    };
+                    console.log(p);
+                    const res = await postGetPhoneNumberApi(p);
+                    console.log(res);
+                    that.loginSuccess(res);
+                  }
+                })
+                .catch((error) => {
+                  storageTool.removeUUID();
+                  let title = error?.msg || "登录失败!请重新进入小程序。";
+                  console.log(title);
+                  tool.toast(title);
+                });
+            },
+          });
         } catch (error) {
           console.log(error);
           storageTool.removeUUID();
@@ -370,7 +401,7 @@ export default {
       storageTool.setToken(res.access_token, res.expires_in);
       const userInfo = await getUserInfoApi();
       storageTool.setUserInfo(userInfo);
-      console.log(this.redirect)
+      console.log(this.redirect);
       storageTool.goHome(this.redirect);
     },
     async loginPhone() {
@@ -452,6 +483,12 @@ export default {
     gotoEnv() {
       uni.navigateTo({
         url: "/pages/login/index/switchEnv",
+      });
+    },
+    hendleGoTest() {
+      getApp().globalData.webViewSrc = "https://intm.polyihome.com/";
+      uni.navigateTo({
+        url: "/pages/webView/preview/index",
       });
     },
   },

@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-11-23 11:22:52
- * @LastEditors: zyc
- * @LastEditTime: 2021-02-16 10:46:04
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-04-29 17:24:41
 -->
 <template>
   <StaffTabBar>
@@ -18,7 +18,9 @@
             :src="photo"
           ></u-image>
         </view>
-        <view>{{ userInfo.name }}</view>
+        <view v-if="!isPrd">当前环境：{{ currentEnv }}</view>
+        <view>{{ userInfo.account }}</view>
+        <view>{{ userInfo.name }} - {{ userInfo.jobName }}</view>
         <view>{{ userInfo.orgName }}</view>
       </view>
       <view class="person-item-wrapper">
@@ -42,6 +44,13 @@
             :arrow="true"
           ></u-cell-item>
           <u-cell-item
+            @click="userToolGoto()"
+            icon="search"
+            v-if="isShowUserTool"
+            title="用户查询工具"
+            :arrow="true"
+          ></u-cell-item>
+          <u-cell-item
             v-if="qrcodeShow"
             @click="qrcodeGoto()"
             icon="share"
@@ -52,9 +61,11 @@
       </view>
 
       <view class="btn-container">
-        <u-button shape="circle" type="primary" @click="handleLoginOut"
-          >退出账号</u-button
-        >
+        <u-button
+          shape="circle"
+          type="primary"
+          @click="handleLoginOut"
+        >退出账号</u-button>
       </view>
     </view>
     <!-- 退出 -->
@@ -78,19 +89,32 @@
 
 <script>
 import storageTool from "../../common/storageTool";
-import { userSwitchApi, getUserInfoApi } from "../../api/index";
+// import { userSwitchApi, getUserInfoApi } from "../../api/index";
 import switchUser from "../../mixins/switchUser";
 export default {
   mixins: [switchUser],
   name: "personal-tab",
   data() {
     return {
+      isPrd: true,
+      isShow: false,
+      isShowUserTool: this.$has("B.WXAPP.STAFF.CENTER.USERTOOL"),
+      currentEnv: "",
       userInfo: {},
       photo: require("@/static/img/photo.png"),
     };
   },
-  methods: {},
+  methods: {
+    userToolGoto() {
+      uni.navigateTo({
+        url: "/staffPackage/personalTab/userTool",
+      });
+    },
+  },
   onShow() {
+    this.currentEnv = storageTool.getEnvName();
+    this.isPrd = __wxConfig.envVersion == "release";
+    console.log("this.isPrd", this.isPrd);
     this.userInfo = storageTool.getUserInfo();
   },
 };
@@ -107,9 +131,10 @@ export default {
   align-items: center;
   .person-avatar-wrapper {
     width: 100%;
-    height: 380rpx;
+    //height: 410rpx;
     box-sizing: border-box;
-    padding-bottom: 38rpx;
+    padding-top: 20rpx;
+    padding-bottom: 60rpx;
     display: flex;
     flex-direction: column;
     justify-content: center;
