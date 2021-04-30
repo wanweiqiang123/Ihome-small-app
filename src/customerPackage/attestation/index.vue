@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-30 17:20:45
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-28 11:46:08
+ * @LastEditTime: 2021-04-30 09:45:10
 -->
 <template>
   <u-popup
@@ -91,7 +91,7 @@
           bg-color="#f1f1f1"
         ></u-gap>
         <view class="form face">
-          <view class="face-title">选择扫脸方式</view>
+          <view class="face-title">选择方式</view>
           <u-radio-group
             class="rodioGroup"
             v-model="info.faceauthMode"
@@ -175,6 +175,7 @@ export default {
       linktoShow: false,
       linkUrl: "",
       // hidePayStatus: true,
+      attestationType: [],
     };
   },
   watch: {
@@ -183,6 +184,7 @@ export default {
       async handler(v) {
         if (v) {
           this.FaceRecognition = await this.getDictAll("FaceRecognition");
+          this.attestationType = await this.getDictAll("AuthenticationMethod");
           // this.hidePayStatus = this.$storageTool.hidePay();
           this.info = {
             ...getApp().globalData.attestationInfo,
@@ -239,7 +241,15 @@ export default {
     otherChange() {
       this.switchList = [
         {
-          text: this.phoneShow ? "扫脸识别" : "短信认证",
+          text: this.phoneShow
+            ? this.getDictName(
+                "FacialRecognitionTechnology",
+                this.attestationType
+              )
+            : this.getDictName(
+                "MessageAuthenticationCode",
+                this.attestationType
+              ),
         },
       ];
       this.showSwitchOther = true;
