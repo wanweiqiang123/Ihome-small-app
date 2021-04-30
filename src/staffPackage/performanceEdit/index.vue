@@ -2845,6 +2845,8 @@ export default {
         flag = tempList.every((item) => {
           return (item.showData && item.showData.length > 0);
         });
+      } else {
+        flag = true;
       }
       return flag;
     },
