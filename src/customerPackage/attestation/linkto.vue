@@ -21,13 +21,9 @@
   >
     <view class="box">
       <view>
-        <u-icon
-          name="clock"
-          color="#2979ff"
-          size="200"
-        ></u-icon>
+        <u-icon name="clock" color="#2979ff" size="200"></u-icon>
       </view>
-      <view>点击复制链接打开浏览器已完成支付</view>
+      <view>点击复制链接打开浏览器完成实名</view>
       <view class="router">
         <u-parse
           :html="url"
@@ -35,15 +31,10 @@
           style="width: min-content"
         ></u-parse>
       </view>
-      <u-button
-        type="primary"
-        @click="copyUrl"
-      >复制链接</u-button>
-      <u-button
-        style="margin-top: 20rpx"
-        @click="getInfo"
-        type="primary"
-      >查询是否认证成功</u-button>
+      <u-button type="primary" @click="copyUrl">复制链接</u-button>
+      <u-button style="margin-top: 20rpx" @click="getInfo" type="primary"
+        >查询是否认证成功</u-button
+      >
     </view>
   </u-popup>
 </template>
