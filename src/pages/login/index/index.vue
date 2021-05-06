@@ -209,7 +209,7 @@
     <!-- <view class="register-wrapper">
       <u-button shape="circle" @click="handleRegister">渠道商注册</u-button>
     </view> -->
-    <view
+    <!-- <view
       v-show="!loginWechat"
       style="margin-top: 40rpx; text-align: right; margin-right: 80rpx"
     >
@@ -221,7 +221,7 @@
         @click="hendleGoTest"
         >webView</u-button
       >
-    </view>
+    </view> -->
     <view class="img-bottom">
       <image
         style="width: 100%"
