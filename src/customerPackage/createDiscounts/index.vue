@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
- * @LastEditors: ywl
- * @LastEditTime: 2021-04-22 18:41:16
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-05-07 16:05:32
 -->
 <template>
   <view>
@@ -473,6 +473,7 @@ export default {
           try {
             this.submitLoading = true;
             const res = await postNoticeCreateApi(this.form);
+            this.submitLoading = false;
             uni.showToast({
               title: "保存成功",
               icon: "none",
@@ -483,7 +484,7 @@ export default {
               notificationType: "Notification",
               type: "view",
             };
-            uni.navigateTo({
+            uni.reLaunch({
               url: `/customerPackage/notification/index`,
             });
           } catch (error) {
