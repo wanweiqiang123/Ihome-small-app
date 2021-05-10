@@ -527,3 +527,23 @@ export async function postAddDocs(data = {}, option = {}) {
 export async function getSessionUserByAccount(data = {}, option = {}) {
   return await getApi(`/sales-api/system/sessionUser/getSessionUserByAccount/${data.account}`, null, option)
 }
+
+/**
+ * @description: 根据项目周期及房号，查询明源数据
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function getMingYuanData(data = {}, option = {}) {
+  return await postApi(`/sales-api/deal/pageData/getMingYuanData`, data, option)
+}
+
+/**
+ * @description: 根据收派套餐，计算收派金额
+ * @param {*} data
+ * @param {*} option
+ * @return {*} Promise
+ */
+export async function post_pageData_calculateReceiveAmounts(data = {}, option = {}) {
+  return await postApi(`/sales-api/deal/pageData/calculateReceiveAmounts`, data, option)
+}
