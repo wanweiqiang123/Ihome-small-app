@@ -154,6 +154,12 @@
 					"style": {
 						"navigationBarTitleText": "预览签署优惠告知书"
 					}
+				},
+				{
+					"path": "createDiscounts/invalid",
+					"style": {
+						"navigationBarTitleText": "优惠码提示信息"
+					}
 				}
 			]
 		},

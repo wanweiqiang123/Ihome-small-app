@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-13 15:23:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-05-07 16:05:32
+ * @LastEditTime: 2021-05-11 10:03:30
 -->
 <template>
   <view>
@@ -324,22 +324,31 @@ export default {
     async getInfo() {
       const res = await getDetailApi(this.noticeId);
       console.log(res);
-      Object.assign(this.form, {
-        channel: "Customer",
-        cycleId: res.termId,
-        explain: res.modeDescription,
-        noticeAttachmentList: [],
-        ownerList: [],
-        ownerType: "Personal",
-        paymentAmount: res.premiumReceived,
-        promotionMethod: "Automatic",
-        refundDays: res.partyARefundDays,
-        templateType: "ElectronicTemplate",
-        proName: res.proName,
-        exPreferentialItem: res.exPreferentialItem,
-      });
-      this.proId = res.proId;
-      this.isRecognize = await getRecognizeById(res.termId);
+      switch (res.state) {
+        case "Start":
+          Object.assign(this.form, {
+            channel: "Customer",
+            cycleId: res.termId,
+            explain: res.modeDescription,
+            noticeAttachmentList: [],
+            ownerList: [],
+            ownerType: "Personal",
+            paymentAmount: res.premiumReceived,
+            promotionMethod: "Automatic",
+            refundDays: res.partyARefundDays,
+            templateType: "ElectronicTemplate",
+            proName: res.proName,
+            exPreferentialItem: res.exPreferentialItem,
+          });
+          this.proId = res.proId;
+          this.isRecognize = await getRecognizeById(res.termId);
+          break;
+        default:
+          uni.reLaunch({
+            url: `/customerPackage/createDiscounts/invalid?type=${res.state}`,
+          });
+          break;
+      }
       this.roomRules = {
         buyUnitName: [
           {
@@ -473,7 +482,6 @@ export default {
           try {
             this.submitLoading = true;
             const res = await postNoticeCreateApi(this.form);
-            this.submitLoading = false;
             uni.showToast({
               title: "保存成功",
               icon: "none",
@@ -484,7 +492,7 @@ export default {
               notificationType: "Notification",
               type: "view",
             };
-            uni.reLaunch({
+            uni.navigateTo({
               url: `/customerPackage/notification/index`,
             });
           } catch (error) {
