@@ -1375,18 +1375,18 @@ export default {
     },
     // 确定选择细分业务模式
     confirmRefineModel(item) {
-      let self = this;
+      // let self = this;
       if (item && item.length) {
         this.postData.refineModelName = item[0].label;
         this.postData.refineModel = item[0].value;
-        // 初始化收派套餐
-        this.$nextTick(async () => {
-          if (self.postData.roomId) {
-            await this.initReceiveByRoom();
-          } else {
-            await this.initReceive();
-          }
-        });
+        // 初始化收派套餐 --- 2021-05-13 取消细分业务模式和收派套餐的关联
+        // this.$nextTick(async () => {
+        //   if (self.postData.roomId) {
+        //     await this.initReceiveByRoom();
+        //   } else {
+        //     await this.initReceive();
+        //   }
+        // });
       }
     },
     // 改变了细分业务模式需要重置收派套餐信息
@@ -2910,7 +2910,7 @@ export default {
         costTypeEnum: item.type, // 费用类型
         partyAId: item.partyACustomer, // 甲方或客户
         property: this.postData.propertyType, // 物业类型
-        subdivide: this.postData.refineModel, // 细分业务模式
+        // subdivide: this.postData.refineModel, // 细分业务模式
       };
       this.showPackage = true;
     },
