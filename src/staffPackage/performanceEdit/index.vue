@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-26 09:38:11
  * @LastEditors: lsj
- * @LastEditTime: 2021-04-16 10:48:50
+ * @LastEditTime: 2021-05-14 15:27:22
 -->
 <template>
   <view class="performance">
@@ -1158,91 +1158,91 @@ export default {
       this.$nextTick(() => {
         // 编辑页面：自动更新明源数据
         // 备案情况
-        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.recordState) {
-          this.postData.recordState = baseInfo?.myReturnVO?.dealVO?.recordState;
+        if (baseInfo && baseInfo.dealVO && baseInfo.dealVO.recordState) {
+          this.postData.recordState = baseInfo?.dealVO?.recordState;
         } else {
           this.postData.recordState = info.recordState;
         }
         // 建筑面积
-        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.area) {
-          this.postData.area = baseInfo?.myReturnVO?.houseVO?.area;
+        if (baseInfo && baseInfo.houseVO && baseInfo.houseVO.area) {
+          this.postData.area = baseInfo?.houseVO?.area;
         } else {
           this.postData.area = info?.house?.area;
         }
         // 户型
-        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.room) {
-          this.postData.room = baseInfo?.myReturnVO?.houseVO?.room;
+        if (baseInfo && baseInfo.houseVO && baseInfo.houseVO.room) {
+          this.postData.room = baseInfo?.houseVO?.room;
         } else {
           this.postData.room = info?.house?.room;
         }
-        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.hall) {
-          this.postData.hall = baseInfo?.myReturnVO?.houseVO?.hall;
+        if (baseInfo && baseInfo.houseVO && baseInfo.houseVO.hall) {
+          this.postData.hall = baseInfo?.houseVO?.hall;
         } else {
           this.postData.hall = info?.house?.hall;
         }
-        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.toilet) {
-          this.postData.toilet = baseInfo?.myReturnVO?.houseVO?.toilet;
+        if (baseInfo && baseInfo.houseVO && baseInfo.houseVO.toilet) {
+          this.postData.toilet = baseInfo?.houseVO?.toilet;
         } else {
           this.postData.toilet = info?.house?.toilet;
         }
         // 预售合同编号
-        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.propertyNo) {
-          this.postData.propertyNo = baseInfo.myReturnVO.houseVO?.propertyNo;
+        if (baseInfo && baseInfo.houseVO && baseInfo.houseVO.propertyNo) {
+          this.postData.propertyNo = baseInfo.houseVO?.propertyNo;
         } else {
           this.postData.propertyNo = info?.house?.propertyNo;
         }
         // 签约类型
-        if (baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.signType) {
-          this.postData.signType = baseInfo?.myReturnVO?.dealVO?.signType;
+        if (baseInfo && baseInfo.dealVO && baseInfo.dealVO.signType) {
+          this.postData.signType = baseInfo?.dealVO?.signType;
         } else {
           this.postData.signType = info.signType;
         }
         // 成交阶段
-        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.dealStage) {
-          this.postData.stage = baseInfo.myReturnVO.dealVO.dealStage;
+        if (baseInfo && baseInfo.dealVO && baseInfo.dealVO.dealStage) {
+          this.postData.stage = baseInfo.dealVO.dealStage;
         } else {
           this.postData.stage = info.stage;
         }
         this.postData.stageName = this.postData.stage ? this.getDictName(this.postData.stage, this.DealStageList) : '';
         // 现场销售
-        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.sceneSales) {
-          this.postData.sceneSales = baseInfo.myReturnVO.dealVO?.sceneSales;
+        if (baseInfo && baseInfo.dealVO && baseInfo.dealVO.sceneSales) {
+          this.postData.sceneSales = baseInfo.dealVO?.sceneSales;
         } else {
           this.postData.sceneSales = info?.sceneSales;
         }
         // 房款回笼比例(%)
-        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.returnRatio) {
-          this.postData.returnRatio = baseInfo.myReturnVO.dealVO?.returnRatio;
+        if (baseInfo && baseInfo.dealVO && baseInfo.dealVO.returnRatio) {
+          this.postData.returnRatio = baseInfo.dealVO?.returnRatio;
         } else {
           this.postData.returnRatio = info.returnRatio;
         }
         // 认购价格
-        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.subscribePrice) {
-          this.postData.subscribePrice = baseInfo?.myReturnVO?.dealVO?.subscribePrice;
+        if (baseInfo && baseInfo.dealVO && baseInfo.dealVO.subscribePrice) {
+          this.postData.subscribePrice = baseInfo?.dealVO?.subscribePrice;
         } else {
           this.postData.subscribePrice = info?.subscribePrice ? info?.subscribePrice : '0';
         }
         // 认购日期
-        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.subscribeDate) {
-          this.postData.subscribeDate = baseInfo?.myReturnVO?.dealVO?.subscribeDate;
+        if (baseInfo && baseInfo.dealVO && baseInfo.dealVO.subscribeDate) {
+          this.postData.subscribeDate = baseInfo?.dealVO?.subscribeDate;
         } else {
           this.postData.subscribeDate = info.subscribeDate;
         }
         // 签约价格
-        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.signPrice) {
-          this.postData.signPrice = baseInfo?.myReturnVO?.dealVO?.signPrice;
+        if (baseInfo && baseInfo.dealVO && baseInfo.dealVO.signPrice) {
+          this.postData.signPrice = baseInfo?.dealVO?.signPrice;
         } else {
           this.postData.signPrice = info?.signPrice ? info?.signPrice : '0';
         }
         // 签约日期
-        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.signDate) {
-          this.postData.signDate = baseInfo?.myReturnVO?.dealVO?.signDate;
+        if (baseInfo && baseInfo.dealVO && baseInfo.dealVO.signDate) {
+          this.postData.signDate = baseInfo?.dealVO?.signDate;
         } else {
           this.postData.signDate = info.signDate;
         }
         // 数据标志
-        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dataSign) {
-          this.postData.dataSign = baseInfo?.myReturnVO?.dataSign;
+        if (baseInfo && baseInfo.dataSign) {
+          this.postData.dataSign = baseInfo?.dataSign;
         } else {
           this.postData.dataSign = info.dataSign;
         }
