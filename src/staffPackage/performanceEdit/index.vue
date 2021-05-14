@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-26 09:38:11
  * @LastEditors: lsj
- * @LastEditTime: 2021-05-14 15:27:22
+ * @LastEditTime: 2021-05-14 17:05:33
 -->
 <template>
   <view class="performance">
@@ -1276,7 +1276,10 @@ export default {
         list.forEach((item) => {
           postData.vos.push(
             {
-              detail: item,
+              detail: {
+                ...item,
+                ...item.collectandsendDetailDealVO
+              },
               signPrice: signPrice,
               subscribePrice: subscribePrice
             }
