@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-26 14:24:10
- * @LastEditors: wwq
- * @LastEditTime: 2021-03-05 11:51:24
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-05-15 10:03:42
 -->
 <template>
   <view class="initiate-commission-wrapper">
@@ -578,6 +578,8 @@ export default {
       const res = await postPayDealApi({
         projectId: this.info.payApplyVO.projectId,
         agencyId: this.$storageTool.getUserInfo().channelId,
+        // agencyId: 3142,
+        companyKind: "ChannelCompany", // 暂时
         pageNum: 1,
         pageSize: 500,
         ...this.projectCaseForm,
@@ -725,7 +727,10 @@ export default {
             payApplyDetailList: [],
           };
           let arr = [];
-          obj.payApplyVO = { ...this.info.payApplyVO };
+          obj.payApplyVO = {
+            ...this.info.payApplyVO,
+            companyKind: "ChannelCompany", // 添加公司类型是渠道公司
+          };
           this.showDealList.forEach((v) => {
             arr = arr.concat(v.dealList);
           });

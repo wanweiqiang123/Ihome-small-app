@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-12 10:16:57
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-01 15:58:38
+ * @LastEditTime: 2021-05-15 08:54:29
 -->
 <template>
   <LoginPage>
@@ -83,6 +83,34 @@
           </view>
         </view>
       </view>
+      <!-- <view class="home-container">
+        <view class="">
+          <view class="title">快捷创建</view>
+          <u-grid
+            :col="4"
+            :border="false"
+          >
+            <u-grid-item
+              v-for="(item, index) in gridList"
+              :index="item.path"
+              :key="index"
+              :custom-style="{ padding: '20rpx 0' }"
+              @click="handleGoto()"
+              v-show="item.isShow"
+            >
+              <u-badge
+                :count="item.count"
+                :offset="[15, 45]"
+              ></u-badge>
+              <u-icon
+                :name="item.icon"
+                :size="82"
+              ></u-icon>
+              <text class="grid-text">{{ item.item }}</text>
+            </u-grid-item>
+          </u-grid>
+        </view>
+      </view> -->
     </StaffTabBar>
   </LoginPage>
 </template>
@@ -302,10 +330,5 @@ export default {
       }
     }
   }
-}
-</style>
-<style lang="scss">
-page {
-  background: $u-bg-color;
 }
 </style>
