@@ -1285,11 +1285,11 @@ export default {
             }
           )
         });
-        let calculateList = await post_pageData_calculateReceiveAmounts(postData);
-        console.log('calculateReceiveAmounts:', calculateList);
+        let calculateInfo = await post_pageData_calculateReceiveAmounts(postData);
+        console.log('calculateReceiveAmounts:', calculateInfo);
         let tempList = [];
-        if (calculateList && calculateList.length) {
-          calculateList.forEach((caList, caIndex) => {
+        if (calculateInfo && calculateInfo.vos && calculateInfo.vos.length) {
+          calculateInfo.vos.forEach((caList, caIndex) => {
             list.forEach((listItem, listIndex) => {
               if (caIndex === listIndex) {
                 tempList.push(
