@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-12-17 14:29:26
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-04 09:46:34
+ * @LastEditTime: 2021-05-24 09:57:14
  */
 
 import storageTool from './common/storageTool'
@@ -64,9 +64,9 @@ let env = storageTool.getEnv();
 if (__wxConfig.envVersion == 'release') {
     env = 'prd';
 }
-if (env == 'dev') {
-    env = 'int';
-}
+// if (env == 'dev') {
+//     env = 'int';
+// }
 const currentEnvConfig = envAll[env];
 
 /** api请求域名，带协议
